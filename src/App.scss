@@ -1,0 +1,38 @@
+// common
+.vertical-centered {
+  margin: 0 auto;
+}
+
+// header
+
+.header {
+  background-color: #282c34;
+  padding: 10px 0;
+}
+
+.menu {
+  display: flex;
+  justify-content: space-around;
+  margin: unset;
+  font-size: 22px;
+  list-style: none;
+
+  li a {
+    text-decoration: none;
+    background-color: #eeeeee;
+    color: #333333;
+    padding: 2px 6px 2px 6px;
+  }
+}
+
+// general grid
+
+.general-grid {
+  height: 90vh;
+  width: 619px;
+}
+
+.survey-grid {
+  height: 90vh;
+  width: 402px;
+}
