@@ -21,7 +21,6 @@ function SurveyGrid() {
     },
   ]);
   const [rowData, setRowData] = useState(null);
-  const [chart] = useState(null);
 
   const createChartContainer = (chartRef) => {
     // setChart(chartRef.chartElement);
