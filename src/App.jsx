@@ -9,6 +9,7 @@ import { Helmet } from "react-helmet";
 
 import "./App.scss";
 import { GeneralGrid, SurveyGrid } from "./components";
+import { loadFromClaroline } from "./server";
 
 ModuleRegistry.registerModules(AllModules);
 
@@ -38,6 +39,7 @@ class App extends Component {
               <SurveyGrid />
             </Route>
           </Switch>
+          <button onClick={loadFromClaroline}>Load from Claroline</button>
         </div>
       </Router>
     );
