@@ -13,6 +13,7 @@
     "ag-grid-community": "^23.2.1",
     "ag-grid-enterprise": "^23.2.1",
     "ag-grid-react": "^23.2.1",
+    "bootstrap": "^4.5.2",
     "husky": "^4.3.0",
     "lint-staged": "^10.3.0",
     "node-sass": "^4.14.1",
@@ -21,7 +22,8 @@
     "react-dom": "^16.13.1",
     "react-helmet": "^6.1.0",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "3.4.3"
+    "react-scripts": "3.4.3",
+    "reactstrap": "^8.5.1"
   },
   "scripts": {
     "start": "react-scripts start",
