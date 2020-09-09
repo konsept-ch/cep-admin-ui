@@ -1,4 +1,4 @@
-import GeneralGrid from "./GeneralGrid";
-import SurveyGrid from "./SurveyGrid";
+import GeneralGrid from './GeneralGrid'
+import SurveyGrid from './SurveyGrid'
 
-export { GeneralGrid, SurveyGrid };
+export { GeneralGrid, SurveyGrid }
