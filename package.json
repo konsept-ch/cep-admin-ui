@@ -13,7 +13,8 @@
     "ag-grid-community": "^23.2.1",
     "ag-grid-enterprise": "^23.2.1",
     "ag-grid-react": "^23.2.1",
-    "base-64": "^0.1.0",
+    "husky": "^4.3.0",
+    "lint-staged": "^10.3.0",
     "node-sass": "^4.14.1",
     "prettier": "^2.1.1",
     "react": "^16.13.1",
@@ -22,19 +23,12 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3"
   },
-  "lint-staged": {
-    "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
-      "prettier --write"
-    ]
-  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
+    "eject": "react-scripts eject",
+    "lint:fix": "eslint src/**/*.js --fix"
   },
   "browserslist": {
     "production": [
