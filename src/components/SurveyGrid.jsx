@@ -22,11 +22,6 @@ function SurveyGrid() {
   ]);
   const [rowData, setRowData] = useState(null);
 
-  const createChartContainer = (chartRef) => {
-    // setChart(chartRef.chartElement);
-    console.log(chartRef.chartElement);
-  };
-
   useEffect(() => {
     fetch("https://cep-dev.ch/apiv2/workspace/3", {
       method: "GET",
@@ -50,7 +45,6 @@ function SurveyGrid() {
           rowData={rowData}
           enableCharts={true}
           enableRangeSelection={true}
-          createChartContainer={createChartContainer}
           popupParent={document.body}
         ></AgGridReact>
       </div>
