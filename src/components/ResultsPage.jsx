@@ -8,7 +8,7 @@ import { AgGridReact } from 'ag-grid-react'
 import { ModuleRegistry, AllModules } from '@ag-grid-enterprise/all-modules'
 ModuleRegistry.registerModules(AllModules)
 
-function SurveyGrid() {
+function ResultsPage() {
     const [columnDefs] = useState([
         {
             headerName: 'Response',
@@ -24,19 +24,16 @@ function SurveyGrid() {
     useEffect(() => setRowData(surveyDataMock), [])
 
     return (
-        <div>
-            <div className="chart-container"></div>
-            <div className="ag-theme-alpine survey-grid vertical-centered">
-                <AgGridReact
-                    columnDefs={columnDefs}
-                    rowData={rowData}
-                    enableCharts={true}
-                    enableRangeSelection={true}
-                    popupParent={document.body}
-                ></AgGridReact>
-            </div>
+        <div className="page ag-theme-alpine general-grid mb-3 mx-auto">
+            <AgGridReact
+                columnDefs={columnDefs}
+                rowData={rowData}
+                enableCharts={true}
+                enableRangeSelection={true}
+                popupParent={document.body}
+            ></AgGridReact>
         </div>
     )
 }
 
-export default SurveyGrid
+export default ResultsPage

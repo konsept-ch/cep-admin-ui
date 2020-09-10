@@ -40,7 +40,7 @@ class GeneralGrid extends Component {
 
     render() {
         return (
-            <div className="ag-theme-alpine general-grid vertical-centered">
+            <div className="ag-theme-alpine general-grid page mx-auto mb-3">
                 <AgGridReact
                     enableCharts={true}
                     enableRangeSelection={true}

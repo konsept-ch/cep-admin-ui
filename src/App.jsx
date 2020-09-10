@@ -4,11 +4,11 @@ import 'ag-grid-enterprise'
 import { ModuleRegistry, AllModules } from '@ag-grid-enterprise/all-modules'
 
 import React, { Component } from 'react'
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
+import { Button, Nav, NavLink } from 'reactstrap'
 
-import './App.scss'
-import { GeneralGrid, SurveyGrid } from './components'
+import { GeneralGrid, SurveyPage } from './components'
 import { loadFromClaroline } from './server'
 
 ModuleRegistry.registerModules(AllModules)
@@ -20,27 +20,27 @@ class App extends Component {
                 <Helmet>
                     <title>Survey data</title>
                 </Helmet>
-                <div>
-                    <div className="header">
-                        <ul className="menu">
-                            <li>
-                                <Link to="/">General grid</Link>
-                            </li>
-                            <li>
-                                <Link to="/survey">Survey grid</Link>
-                            </li>
-                        </ul>
-                    </div>
-                    <Switch>
-                        <Route exact path="/">
-                            <GeneralGrid />
-                        </Route>
-                        <Route path="/survey">
-                            <SurveyGrid />
-                        </Route>
-                    </Switch>
-                    <button onClick={loadFromClaroline}>Load from Claroline</button>
+                <div className="header mb-3 py-3">
+                    <Nav className="menu">
+                        <NavLink className="link" href="/">
+                            Data Grid
+                        </NavLink>
+                        <NavLink className="link" href="/survey">
+                            Survey Grid
+                        </NavLink>
+                    </Nav>
                 </div>
+                <Switch>
+                    <Route exact path="/">
+                        <GeneralGrid />
+                    </Route>
+                    <Route path="/survey/">
+                        <SurveyPage />
+                    </Route>
+                </Switch>
+                <Button className="mx-auto d-block" onClick={loadFromClaroline}>
+                    Load from Claroline
+                </Button>
             </Router>
         )
     }
