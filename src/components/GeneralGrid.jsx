@@ -1,55 +1,35 @@
-import 'ag-grid-community/dist/styles/ag-grid.css'
-import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
-import 'ag-grid-enterprise'
-
-import React, { Component } from 'react'
+import React from 'react'
+import { useSelector } from 'react-redux'
 import { AgGridReact } from 'ag-grid-react'
-import { ModuleRegistry, AllModules } from '@ag-grid-enterprise/all-modules'
+import { dataSelector } from '../reducers/data'
 
-ModuleRegistry.registerModules(AllModules)
+function GeneralGrid() {
+    const columnDefs = [
+        {
+            headerName: 'Name',
+            field: 'name',
+        },
+        {
+            headerName: 'Id',
+            field: '_id',
+        },
+        {
+            headerName: 'V',
+            field: '__v',
+        },
+    ]
+    const data = useSelector(dataSelector)
 
-class GeneralGrid extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            columnDefs: [
-                {
-                    headerName: 'Make',
-                    field: 'make',
-                },
-                {
-                    headerName: 'Model',
-                    field: 'model',
-                },
-                {
-                    headerName: 'Price',
-                    field: 'price',
-                },
-            ],
-            rowData: null,
-        }
-    }
-
-    componentDidMount() {
-        fetch(
-            'https://raw.githubusercontent.com/ag-grid/ag-grid/master/grid-packages/ag-grid-docs/src/sample-data/rowData.json'
-        )
-            .then((result) => result.json())
-            .then((rowData) => this.setState({ rowData }))
-    }
-
-    render() {
-        return (
-            <div className="ag-theme-alpine general-grid page mx-auto mb-3">
-                <AgGridReact
-                    enableCharts={true}
-                    enableRangeSelection={true}
-                    columnDefs={this.state.columnDefs}
-                    rowData={this.state.rowData}
-                ></AgGridReact>
-            </div>
-        )
-    }
+    return (
+        <div className="ag-theme-alpine general-grid page mx-auto mb-3">
+            <AgGridReact
+                enableCharts={true}
+                enableRangeSelection={true}
+                columnDefs={columnDefs}
+                rowData={data}
+            ></AgGridReact>
+        </div>
+    )
 }
 
 export default GeneralGrid

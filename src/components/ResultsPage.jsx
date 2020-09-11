@@ -1,15 +1,9 @@
-import 'ag-grid-community/dist/styles/ag-grid.css'
-import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
-import 'ag-grid-enterprise'
-import surveyDataMock from './../mock/survey-data'
-
 import React, { useState, useEffect } from 'react'
 import { AgGridReact } from 'ag-grid-react'
-import { ModuleRegistry, AllModules } from '@ag-grid-enterprise/all-modules'
-ModuleRegistry.registerModules(AllModules)
+import surveyDataMock from './../mock/survey-data'
 
 function ResultsPage() {
-    const [columnDefs] = useState([
+    const columnDefs = [
         {
             headerName: 'Response',
             field: 'response',
@@ -18,7 +12,7 @@ function ResultsPage() {
             headerName: 'Count',
             field: 'count',
         },
-    ])
+    ]
     const [rowData, setRowData] = useState(null)
 
     useEffect(() => setRowData(surveyDataMock), [])
