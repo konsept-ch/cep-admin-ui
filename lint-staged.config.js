@@ -1,5 +1,5 @@
 module.exports = {
-    'src/**/*.{js,jsx,ts,tsx,json,css,scss,md}': ['prettier --check'],
-    'src/**/*.{js,jsx,ts,tsx}': ['eslint'],
-    'src/**/*.{scss, css}': ['stylelint'],
+    '**/*.{js,jsx,ts,tsx,json,css,scss,md}': ['prettier --check'],
+    '**/*.{js,jsx,ts,tsx}': ['eslint'],
+    '**/*.{scss, css}': ['stylelint'],
 }
