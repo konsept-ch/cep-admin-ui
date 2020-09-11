@@ -4,15 +4,15 @@
 
 .menu {
     justify-content: space-between;
-    width: $width;
     margin: 0 auto;
+    width: $width;
 }
 
 .link {
-    border-radius: 4px;
-    padding: 2px 6px 2px 6px;
     background-color: map_get($theme-colors, 'secondary');
-    color: white;
+    border-radius: 4px;
+    color: #fff;
+    padding: 2px 6px;
 
     &:hover {
         background-color: darken(map_get($theme-colors, 'secondary'), 20%);

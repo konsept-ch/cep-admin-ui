@@ -1,9 +1,7 @@
-@import './var-overrides.scss';
-
-@import '~bootstrap/scss/bootstrap.scss';
-
-@import './class-overrides.scss';
-@import './custom-variables.scss';
-@import './generic.scss';
-@import './grids.scss';
-@import './header.scss';
+@import './var-overrides';
+@import '~bootstrap/scss/bootstrap';
+@import './class-overrides';
+@import './custom-variables';
+@import './generic';
+@import './grids';
+@import './header';
