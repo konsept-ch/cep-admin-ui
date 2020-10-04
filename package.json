@@ -11,17 +11,17 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "build": "react-scripts build",
     "markdownlint:check": "markdownlint README.md",
     "markdownlint:fix": "markdownlint README.md --fix",
+    "stylelint:check": "stylelint **/*.scss",
+    "stylelint:fix": "stylelint **/*.scss --fix",
     "eslint:check": "eslint src/**/*.js",
     "eslint:fix": "eslint src/**/*.js --fix",
     "prettier:check": "prettier src/**/* --check",
     "prettier:fix": "prettier src/**/* --write",
-    "stylelint:check": "stylelint **/*.scss",
-    "stylelint:fix": "stylelint **/*.scss --fix"
+    "ci:check": "npm run prettier:check && npm run eslint:check && npm run stylelint:check && npm run markdownlint:check && npm run build && npm run test"
   },
   "dependencies": {
     "@ag-grid-community/client-side-row-model": "24.0.0",
@@ -29,10 +29,10 @@
     "@testing-library/jest-dom": "5.11.4",
     "@testing-library/react": "11.0.4",
     "@testing-library/user-event": "12.1.7",
-    "@types/jest": "^26.0.14",
-    "@types/node": "^14.11.2",
-    "@types/react": "^16.9.50",
-    "@types/react-dom": "^16.9.8",
+    "@types/jest": "26.0.14",
+    "@types/node": "14.11.2",
+    "@types/react": "16.9.50",
+    "@types/react-dom": "16.9.8",
     "ag-charts-community": "2.0.0",
     "ag-charts-react": "2.0.0",
     "ag-grid-community": "24.0.0",
@@ -43,8 +43,8 @@
     "eslint-plugin-prettier": "3.1.4",
     "husky": "4.3.0",
     "lint-staged": "10.4.0",
-    "markdownlint": "^0.21.0",
-    "markdownlint-cli": "^0.24.0",
+    "markdownlint": "0.21.0",
+    "markdownlint-cli": "0.24.0",
     "node-sass": "4.14.1",
     "prettier": "2.1.2",
     "react": "16.13.1",
@@ -63,6 +63,6 @@
     "stylelint-config-sass-guidelines": "7.1.0",
     "stylelint-config-standard": "20.0.0",
     "stylelint-prettier": "1.1.2",
-    "typescript": "^4.0.3"
+    "typescript": "4.0.3"
   }
 }
