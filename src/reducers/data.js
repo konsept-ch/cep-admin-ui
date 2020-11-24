@@ -4,7 +4,7 @@ const initialState = {
     data: [],
 }
 
-export default (state = initialState, action) => {
+export const dataReducer = (state = initialState, action) => {
     switch (action.type) {
         case SAVE_DATA:
             // eslint-disable-next-line no-console

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { AgGridReact } from 'ag-grid-react'
-import surveyDataMock from './../mock/survey-data'
+import { surveyDataMock } from './../mock/survey-data'
 
 function ResultsPage() {
     const columnDefs = [

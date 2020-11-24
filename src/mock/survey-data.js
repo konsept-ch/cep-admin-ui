@@ -1,4 +1,4 @@
-export default [
+export const surveyDataMock = [
     {
         response: 'Yes',
         count: 20,
