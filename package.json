@@ -9,6 +9,7 @@
     "node": ">=14.13.0",
     "npm": ">=6.14.8"
   },
+  "homepage": "/stats",
   "scripts": {
     "start": "react-scripts start",
     "test": "react-scripts test",

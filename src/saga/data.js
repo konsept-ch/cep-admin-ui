@@ -1,9 +1,12 @@
 import { put, call, takeEvery } from 'redux-saga/effects'
 import { GET_DATA } from '../constants/actions'
 import { saveDataAction } from '../actions/data'
-import { usersDataUrl } from '../server'
+import { usersDataUrl, loadFromClaroline } from '../server'
 
 function* getData() {
+    // eslint-disable-next-line no-console
+    loadFromClaroline(console.info)
+
     const json = yield call(() =>
         fetch(usersDataUrl)
             .then((response) => response.json())

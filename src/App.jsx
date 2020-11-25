@@ -9,7 +9,7 @@ export function App() {
     const dispatch = useDispatch()
 
     return (
-        <BrowserRouter>
+        <BrowserRouter basename={process.env.PUBLIC_URL}>
             <Helmet>
                 <title>Survey data</title>
             </Helmet>
