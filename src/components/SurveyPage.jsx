@@ -1,8 +1,7 @@
-import React from 'react'
 import { Link, Switch, Route, useLocation } from 'react-router-dom'
 import { ResultsPage } from './'
 
-function SurveyPage() {
+export function SurveyPage() {
     const location = useLocation()
 
     return (
@@ -22,5 +21,3 @@ function SurveyPage() {
         </div>
     )
 }
-
-export default SurveyPage

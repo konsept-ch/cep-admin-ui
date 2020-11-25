@@ -12,6 +12,6 @@ function* getData() {
 
     yield put(saveDataAction(json))
 }
-export default function* rootSaga() {
+export function* rootSaga() {
     yield takeEvery(GET_DATA, getData)
 }

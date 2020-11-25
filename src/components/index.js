@@ -1,5 +1,3 @@
-import GeneralGrid from './GeneralGrid'
-import SurveyPage from './SurveyPage'
-import ResultsPage from './ResultsPage'
-
-export { GeneralGrid, SurveyPage, ResultsPage }
+export { GeneralGrid } from './GeneralGrid'
+export { SurveyPage } from './SurveyPage'
+export { ResultsPage } from './ResultsPage'

@@ -1,21 +1,15 @@
-import 'ag-grid-community/dist/styles/ag-grid.css'
-import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
-import 'ag-grid-enterprise'
-
-import React from 'react'
 import { useDispatch } from 'react-redux'
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
+import { BrowserRouter, Switch, Route, Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 import { Button, Nav } from 'reactstrap'
-
 import { GeneralGrid, SurveyPage } from './components'
 import { getDataAction } from './actions/data'
 
-function App() {
+export function App() {
     const dispatch = useDispatch()
 
     return (
-        <Router>
+        <BrowserRouter>
             <Helmet>
                 <title>Survey data</title>
             </Helmet>
@@ -40,8 +34,6 @@ function App() {
             <Button className="mx-auto d-block" onClick={() => dispatch(getDataAction())}>
                 Load from Claroline
             </Button>
-        </Router>
+        </BrowserRouter>
     )
 }
-
-export default App

@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import { surveyDataMock } from './../mock/survey-data'
 
-function ResultsPage() {
+export function ResultsPage() {
     const columnDefs = [
         {
             headerName: 'Response',
@@ -29,5 +29,3 @@ function ResultsPage() {
         </div>
     )
 }
-
-export default ResultsPage
