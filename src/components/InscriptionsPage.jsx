@@ -35,7 +35,7 @@ export function InscriptionsPage() {
 
     return (
         <>
-            <Container>
+            <Container fluid>
                 <h1 className="mt-3">Inscriptions</h1>
                 <Col md="6">
                     <InputGroup className="mb-4">
@@ -49,24 +49,23 @@ export function InscriptionsPage() {
                         </Button>
                     </InputGroup>
                 </Col>
+                <div className="ag-theme-alpine general-grid page mx-auto mb-3">
+                    <AgGridReact
+                        {...{
+                            enableCharts: true,
+                            enableRangeSelection: true,
+                            defaultColDef: {
+                                resizable: true,
+                                sortable: true,
+                            },
+                            columnDefs,
+                            rowData,
+                            localeText,
+                            onFirstDataRendered,
+                        }}
+                    />
+                </div>
             </Container>
-
-            <div className="ag-theme-alpine general-grid page mx-auto mb-3">
-                <AgGridReact
-                    {...{
-                        enableCharts: true,
-                        enableRangeSelection: true,
-                        defaultColDef: {
-                            resizable: true,
-                            sortable: true,
-                        },
-                        columnDefs,
-                        rowData,
-                        localeText,
-                        onFirstDataRendered,
-                    }}
-                />
-            </div>
         </>
     )
 }
