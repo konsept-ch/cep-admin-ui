@@ -1,9 +1,11 @@
 @import '~ag-grid-community/dist/styles/ag-grid.css';
 @import '~ag-grid-community/dist/styles/ag-theme-alpine.css';
-@import './var-overrides';
+@import 'var-overrides';
 @import '~bootstrap/scss/bootstrap';
-@import './class-overrides';
-@import './custom-variables';
-@import './generic';
-@import './grids';
-@import './header';
+@import 'class-overrides';
+@import 'custom-variables';
+@import 'fonts';
+@import 'typography';
+@import 'generic';
+@import 'grids';
+@import 'header';

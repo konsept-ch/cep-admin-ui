@@ -1,0 +1,113 @@
+h1 {
+    font-weight: 200;
+    font-size: 36pt;
+    line-height: 43.2pt;
+    margin-bottom: 12px;
+    color: #a59f9b;
+}
+
+h2 {
+    font-weight: 300;
+    font-size: 28pt;
+    line-height: 33.6pt;
+    margin-bottom: 12px;
+    color: darken($secondary, 11%);
+}
+
+h3 {
+    font-weight: 400;
+    font-size: 24pt;
+    line-height: 28.8pt;
+    margin-bottom: 12px;
+    color: #78a5b6;
+}
+
+h4 {
+    font-weight: 900;
+    font-size: 18pt;
+    line-height: 21.6pt;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    color: #a59f9b;
+}
+
+h5 {
+    font-weight: 900;
+    font-size: 18pt;
+    line-height: 21.6pt;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    color: darken($secondary, 11%);
+}
+
+h6 {
+    font-weight: 900;
+    font-size: 18pt;
+    line-height: 21.6pt;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    color: #78a5b6;
+}
+
+p {
+    font-weight: 300;
+    font-size: 12pt;
+    line-height: 16pt;
+    margin-bottom: 6px;
+    color: #6a615b;
+}
+
+ul {
+    list-style: none;
+    padding-left: 0;
+
+    li {
+        margin: 3px 0;
+        font-weight: 300;
+        font-size: 12pt;
+        line-height: 16pt;
+        margin-bottom: 6px;
+        color: #6a615b;
+
+        &::before {
+            content: '\25AA';
+            display: inline-block;
+            width: 37px;
+            font-size: 30px;
+            line-height: 16px;
+            padding-left: 18px;
+            color: $secondary;
+            vertical-align: bottom;
+        }
+    }
+}
+
+ol {
+    list-style: none;
+    counter-reset: li;
+    padding-left: 0;
+
+    li {
+        counter-increment: li;
+        margin: 3px 0;
+        font-weight: 300;
+        font-size: 12pt;
+        line-height: 16pt;
+        margin-bottom: 6px;
+        color: #6a615b;
+
+        &::before {
+            content: '.' counter(li);
+            display: inline-block;
+            width: 30px;
+            margin-right: 7px;
+            text-align: right;
+            direction: rtl;
+            font-weight: 900;
+            font-size: 12pt;
+            line-height: 16pt;
+            padding-left: 5px;
+            color: #78a5b6;
+        }
+    }
+}

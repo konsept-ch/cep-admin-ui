@@ -2,31 +2,37 @@
 @import 'node_modules/bootstrap/scss/variables';
 @import 'node_modules/bootstrap/scss/mixins';
 
-body {
-    font-size: $font-size-base;
-}
+// body {
+//     font-size: $font-size-base;
+// }
 
-$theme-colors: (
-    'primary': #78a5b6,
-    'secondary': #fee223,
-    'success': #fff7ae,
-    'danger': #e3655b,
-    'warning': #e57a44,
-    'info': #778153,
-);
+// $theme-colors: (
+//     'primary': #78a5b6,
+//     'secondary': #fee223,
+//     'success': #fff7ae,
+//     'danger': #e3655b,
+//     'warning': #e57a44,
+//     'info': #778153,
+// );
 
-@each $color, $value in $theme-colors {
-    .btn-#{$color} {
-        background-color: $value;
-        border-color: $value;
+// @each $color, $value in $theme-colors {
+//     .btn-#{$color} {
+//         background-color: $value;
+//         border-color: $value;
 
-        &:hover {
-            background-color: darken($value, 20%);
-            border-color: darken($value, 20%);
-        }
-    }
-}
+//         &:hover {
+//             background-color: darken($value, 20%);
+//             border-color: darken($value, 20%);
+//         }
+//     }
+// }
 
 .btn-primary {
-    color: #fff;
+    color: #ffffff;
+
+    &:hover,
+    &:focus,
+    &:active {
+        color: #ffffff;
+    }
 }
