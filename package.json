@@ -1,8 +1,8 @@
 {
   "name": "cep-survey-chart",
   "version": "1.0.0",
-  "description": "CEP Survey Chart",
-  "author": "konsept Sàrl",
+  "description": "CEP Management",
+  "author": "konsept.ch",
   "license": "SEE LICENSE IN LICENSE.txt",
   "private": true,
   "engines": {

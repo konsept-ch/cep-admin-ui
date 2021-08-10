@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux'
 import { AgGridReact } from 'ag-grid-react'
 import { dataSelector } from '../reducers/data'
+import { localeText } from '../localeText'
 
 export function GeneralGrid() {
     const columnDefs = [
@@ -26,6 +27,7 @@ export function GeneralGrid() {
                 enableRangeSelection={true}
                 columnDefs={columnDefs}
                 rowData={data}
+                localeText={localeText}
             ></AgGridReact>
         </div>
     )

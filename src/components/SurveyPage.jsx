@@ -6,7 +6,7 @@ export function SurveyPage() {
 
     return (
         <div className="page mx-auto">
-            <h2>Welcome to the survey page</h2>
+            <h2>Facturation</h2>
             {location.pathname.includes('results') ? (
                 <Switch>
                     <Route path="/survey/:results">
@@ -15,7 +15,7 @@ export function SurveyPage() {
                 </Switch>
             ) : (
                 <Link to={`${location.pathname}/results`} className="link">
-                    Results
+                    Résultats
                 </Link>
             )}
         </div>

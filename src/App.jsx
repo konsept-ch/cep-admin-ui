@@ -12,7 +12,7 @@ export function App() {
         <BrowserRouter basename={process.env.PUBLIC_URL}>
             <HelmetProvider>
                 <Helmet>
-                    <title>Survey data</title>
+                    <title>Gestion CEP</title>
                 </Helmet>
                 <div className="header mb-3 py-3">
                     <Nav className="menu">
@@ -20,7 +20,7 @@ export function App() {
                             Data Grid
                         </Link>
                         <Link className="link" to="/survey">
-                            Survey Grid
+                            Facturation Grid
                         </Link>
                     </Nav>
                 </div>
@@ -33,7 +33,7 @@ export function App() {
                     </Route>
                 </Switch>
                 <Button variant="primary" className="mx-auto d-block" onClick={() => dispatch(getDataAction())}>
-                    Load from Claroline
+                    API Claroline
                 </Button>
             </HelmetProvider>
         </BrowserRouter>

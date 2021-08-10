@@ -7,8 +7,8 @@ body {
 }
 
 $theme-colors: (
-    'primary': #422040,
-    'secondary': #bcd8c1,
+    'primary': #78a5b6,
+    'secondary': #fee223,
     'success': #fff7ae,
     'danger': #e3655b,
     'warning': #e57a44,
@@ -25,4 +25,8 @@ $theme-colors: (
             border-color: darken($value, 20%);
         }
     }
+}
+
+.btn-primary {
+    color: #fff;
 }

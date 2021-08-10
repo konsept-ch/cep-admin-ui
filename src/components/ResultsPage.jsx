@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import { surveyDataMock } from './../mock/survey-data'
+import { localeText } from '../localeText'
 
 export function ResultsPage() {
     const columnDefs = [
@@ -25,6 +26,7 @@ export function ResultsPage() {
                 enableCharts={true}
                 enableRangeSelection={true}
                 popupParent={document.body}
+                localeText={localeText}
             ></AgGridReact>
         </div>
     )
