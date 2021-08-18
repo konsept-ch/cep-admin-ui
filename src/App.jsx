@@ -12,8 +12,9 @@ import {
     faFileInvoiceDollar,
     faUserCheck,
     faGraduationCap,
+    faCalendarDays,
 } from '@fortawesome/pro-light-svg-icons'
-import { InscriptionsPage, SurveyPage } from './components'
+import { InscriptionsPage, SurveyPage, AgendaPage } from './components'
 import { getDataAction } from './actions/data'
 
 export function App() {
@@ -31,6 +32,9 @@ export function App() {
                         <Navbar.Toggle aria-controls="basic-navbar-nav" />
                         <Navbar.Collapse id="basic-navbar-nav">
                             <Nav className="me-auto">
+                                <Nav.Link href="/agenda">
+                                    <FontAwesomeIcon icon={faCalendarDays} /> Agenda
+                                </Nav.Link>
                                 <Nav.Link>
                                     <FontAwesomeIcon icon={faUserCheck} /> Inscriptions
                                 </Nav.Link>
@@ -78,6 +82,9 @@ export function App() {
                 <Switch>
                     <Route exact path="/">
                         <InscriptionsPage />
+                    </Route>
+                    <Route exact path="/agenda">
+                        <AgendaPage />
                     </Route>
                     <Route path="/survey/">
                         <SurveyPage />
