@@ -2,21 +2,30 @@
 //     background-color: map_get($theme-colors, 'primary');
 // }
 
-.menu {
-    justify-content: space-between;
-    margin: 0 auto;
-    width: $width;
+// .link {
+//     background-color: map_get($theme-colors, 'secondary');
+//     border-radius: 4px;
+//     color: #69605a;
+//     padding: 2px 6px;
+//     text-decoration: none;
+
+//     &:hover {
+//         background-color: darken(map_get($theme-colors, 'secondary'), 20%);
+//         border-color: darken(map_get($theme-colors, 'secondary'), 20%);
+//     }
+// }
+
+.navbar {
+    @media print {
+        display: none;
+    }
 }
 
-.link {
-    background-color: map_get($theme-colors, 'secondary');
-    border-radius: 4px;
-    color: #69605a;
-    padding: 2px 6px;
-    text-decoration: none;
+.nav-link {
+    transition: box-shadow 0.15s linear;
+    box-shadow: 0 0 0 0 #fee223;
 
-    &:hover {
-        background-color: darken(map_get($theme-colors, 'secondary'), 20%);
-        border-color: darken(map_get($theme-colors, 'secondary'), 20%);
+    &.active {
+        box-shadow: 0 8px 0 0 #fee223;
     }
 }

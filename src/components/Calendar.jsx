@@ -99,7 +99,7 @@ export const Calendar = ({ resources, events }) => {
                     backdropClassName="offcanvas-backdrop"
                 >
                     <Offcanvas.Header closeButton>
-                        <Offcanvas.Title>{selectedEvent.title}</Offcanvas.Title>
+                        <Offcanvas.Title as="h4">{selectedEvent.title}</Offcanvas.Title>
                     </Offcanvas.Header>
                     <Offcanvas.Body>
                         <dl>
@@ -123,5 +123,3 @@ export const Calendar = ({ resources, events }) => {
         </div>
     )
 }
-
-Calendar.displayName = 'Calendar'

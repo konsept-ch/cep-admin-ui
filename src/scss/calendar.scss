@@ -1,0 +1,11 @@
+.fc-toolbar .fc-button {
+    @media print {
+        display: none;
+    }
+}
+
+.bulk-selection {
+    @media print {
+        display: none;
+    }
+}
