@@ -11,7 +11,7 @@ export const AgendaPage = () => {
 
     useEffect(() => {
         const fetchRooms = async () => {
-            const response = await fetch('http://localhost:4000/rooms')
+            const response = await fetch('http://localhost:4000/roomsAndEvents')
             const roomsAndEvents = await response.json()
 
             if (typeof roomsAndEvents === 'object') {
@@ -23,8 +23,10 @@ export const AgendaPage = () => {
 
                 setEvents(newEvents)
 
-                const newRooms = roomsAndEvents.rooms.map((room) => ({ ...room, title: room.name }))
-                selectAllRooms({ rooms: newRooms })
+                const newRooms = roomsAndEvents.rooms
+                    .filter((room) => room.capacity > 0)
+                    .map((room) => ({ ...room, title: room.name }))
+                setSelectedRooms(selectAllRooms({ rooms: newRooms }))
                 setRooms(newRooms)
             }
         }
@@ -34,7 +36,10 @@ export const AgendaPage = () => {
 
     return (
         <Container fluid className="my-3">
-            <Calendar resources={rooms.filter(({ id }) => selectedRooms[id])} events={events} />
+            <Calendar
+                resources={rooms.filter(({ id }) => selectedRooms[id])}
+                events={events.filter(({ room: { id } }) => selectedRooms[id])}
+            />
             {rooms.map(({ title, id }) => (
                 <Form.Check
                     inline

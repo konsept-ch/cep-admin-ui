@@ -25,22 +25,44 @@ export const Calendar = ({ resources, events }) => {
                 nowIndicator
                 editable
                 aspectRatio={3}
+                weekends={false}
                 locale={frLocale}
                 resources={resources}
                 events={events}
+                resourceOrder="title"
                 resourceAreaHeaderContent="Salles"
-                height="65vh"
+                height="calc(100vh - 160px)"
                 schedulerLicenseKey="CC-Attribution-NonCommercial-NoDerivatives"
                 themeSystem="bootstrap"
                 initialView="resourceTimeGridDay"
                 headerToolbar={{
                     left: 'prev,next today',
                     center: 'title',
-                    right: 'timeGridWeek,timeGridDay,workDays,resourceTimeGridDay,resourceTimeline',
+                    right: 'dayGridDay,dayGridWeek,dayGridMonth timeGridDay,timeGridWeek resourceTimeGridDay,resourceTimeGridWeek resourceTimeline,resourceTimelineWorkWeek',
                 }}
-                eventClick={function (info) {
-                    info.jsEvent.preventDefault()
-                    setSelectedEvent({ ...info.event._def, range: info.event._instance.range })
+                views={{
+                    timeGridDay: {
+                        buttonText: 'Jour (heures)',
+                    },
+                    timeGridWeek: {
+                        buttonText: 'Semaine (heures)',
+                    },
+                    resourceTimeGridDay: {
+                        buttonText: 'Jour vertical',
+                    },
+                    resourceTimeGridWeek: {
+                        type: 'resourceTimeGrid',
+                        duration: { week: 1 },
+                        buttonText: 'Semaine verticale',
+                    },
+                    resourceTimeline: {
+                        buttonText: 'Jour timeline',
+                    },
+                    resourceTimelineWorkWeek: {
+                        type: 'resourceTimeline',
+                        duration: { week: 1 },
+                        buttonText: 'Semaine timeline',
+                    },
                 }}
                 plugins={[
                     dayGridPlugin,
@@ -49,27 +71,26 @@ export const Calendar = ({ resources, events }) => {
                     resourceTimeGridPlugin,
                     adaptivePlugin,
                 ]}
-                views={{
-                    workDays: {
-                        type: 'timeGrid',
-                        duration: { days: 5 },
-                        buttonText: '5 jours',
-                    },
-                    resourceTimeGridDay: {
-                        buttonText: 'Jour vertical',
-                    },
+                eventClick={function (info) {
+                    info.jsEvent.preventDefault()
+                    setSelectedEvent({ ...info.event._def, range: info.event._instance.range })
                 }}
                 eventContent={(eventInfo) => (
                     <>
-                        {eventInfo.timeText && (
-                            <>
-                                <b>{eventInfo.timeText}</b>
-                                <br />
-                            </>
-                        )}
+                        <b>
+                            <span className="event-content-room">{eventInfo.event._def.extendedProps.room.name}</span> |{' '}
+                            {eventInfo.timeText}
+                        </b>
+                        <br />
                         <i>{eventInfo.event.title}</i>
                     </>
                 )}
+                businessHours={{
+                    startTime: '08:00',
+                    endTime: '18:00',
+                }}
+                slotMinTime="07:00"
+                slotMaxTime="19:00"
             />
             {selectedEvent && (
                 <Offcanvas
