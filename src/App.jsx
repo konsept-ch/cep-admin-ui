@@ -1,7 +1,6 @@
-import { useDispatch } from 'react-redux'
-import { BrowserRouter, Switch, Route } from 'react-router-dom'
+import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom'
 import { HelmetProvider, Helmet } from 'react-helmet-async'
-import { Button, Nav, Navbar, Container, NavDropdown } from 'react-bootstrap'
+import { Nav, Navbar, Container, NavDropdown } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
     faDollar,
@@ -14,12 +13,11 @@ import {
     faGraduationCap,
     faCalendarDays,
 } from '@fortawesome/pro-light-svg-icons'
-import { InscriptionsPage, SurveyPage, AgendaPage } from './components'
-import { getDataAction } from './actions/data'
+import { InscriptionsPage } from './pages/InscriptionsPage'
+import { SurveyPage } from './pages/SurveyPage'
+import { AgendaPage } from './pages/AgendaPage'
 
 export function App() {
-    const dispatch = useDispatch()
-
     return (
         <BrowserRouter basename={process.env.PUBLIC_URL}>
             <HelmetProvider>
@@ -35,7 +33,7 @@ export function App() {
                                 <Nav.Link href="/agenda">
                                     <FontAwesomeIcon icon={faCalendarDays} /> Agenda
                                 </Nav.Link>
-                                <Nav.Link>
+                                <Nav.Link href="/inscriptions">
                                     <FontAwesomeIcon icon={faUserCheck} /> Inscriptions
                                 </Nav.Link>
                                 <Nav.Link>
@@ -80,7 +78,11 @@ export function App() {
                     </Nav>
                 </div> */}
                 <Switch>
+                    <Redirect exact from="/" to="/agenda" />
                     <Route exact path="/">
+                        <AgendaPage />
+                    </Route>
+                    <Route exact path="/inscriptions">
                         <InscriptionsPage />
                     </Route>
                     <Route exact path="/agenda">
@@ -90,9 +92,6 @@ export function App() {
                         <SurveyPage />
                     </Route>
                 </Switch>
-                <Button variant="primary" className="mx-auto d-block" onClick={() => dispatch(getDataAction())}>
-                    API Claroline
-                </Button>
             </HelmetProvider>
         </BrowserRouter>
     )

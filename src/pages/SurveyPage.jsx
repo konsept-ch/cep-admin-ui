@@ -1,5 +1,5 @@
 import { Link, Switch, Route, useLocation } from 'react-router-dom'
-import { ResultsPage } from './'
+import { ResultsPage } from './ResultsPage'
 
 export function SurveyPage() {
     const location = useLocation()

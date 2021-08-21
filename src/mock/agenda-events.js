@@ -66,3 +66,26 @@ export const agendaEvents = [
         start: '2021-08-20',
     },
 ]
+
+export const timelineEvents = [
+    { resourceId: 'a', title: 'GBON-AV2GYR', start: '2021-08-21T10:00:00+00:00', end: '2021-08-21T15:00:00+00:00' },
+    { resourceId: 'b', title: 'CPEI-8JFEPQ', start: '2021-08-21T10:00:00+00:00', end: '2021-08-21T15:00:00+00:00' },
+    { resourceId: 'c', title: 'CPEI-8749GU', start: '2021-08-21T12:00:00+00:00', end: '2021-08-22T06:00:00+00:00' },
+    { resourceId: 'e', title: 'LZUY-BRCHZE', start: '2021-08-21T09:00:00+00:00', end: '2021-08-21T10:00:00+00:00' },
+    { resourceId: 'e', title: 'LZUY-BRCHZE', start: '2021-08-21T11:00:00+00:00', end: '2021-08-21T14:00:00+00:00' },
+    { resourceId: 'e', title: 'LZUY-BRCHZE', start: '2021-08-21T16:00:00+00:00', end: '2021-08-21T17:00:00+00:00' },
+    { resourceId: 'f', title: 'SCTN-BULDST', start: '2021-08-21T07:30:00+00:00', end: '2021-08-21T09:30:00+00:00' },
+]
+
+export const timelineResources = [
+    { id: 'a', title: 'Salle 1' },
+    { id: 'b', title: 'Salle 2', eventColor: 'green' },
+    { id: 'c', title: 'Salle 3', eventColor: 'orange' },
+    { id: 'd', title: 'Salle 4' },
+    { id: 'e', title: 'Salle 5', eventColor: 'red' },
+    { id: 'f', title: 'Salle 6' },
+    { id: 'g', title: 'Salle 7' },
+    { id: 'h', title: 'Salle 8' },
+    { id: 'i', title: 'Salle 9' },
+    { id: 'j', title: 'Salle 10' },
+]

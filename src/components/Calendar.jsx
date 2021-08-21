@@ -1,11 +1,15 @@
 import React, { useState } from 'react'
-import { Container, Offcanvas } from 'react-bootstrap'
-import FullCalendar from '@fullcalendar/react' // must go before plugins
-import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
-import timeGridPlugin from '@fullcalendar/timegrid' // a plugin!
-import { agendaEvents } from '../mock/agenda-events' // a plugin!
+import { Offcanvas } from 'react-bootstrap'
+import FullCalendar from '@fullcalendar/react'
+import dayGridPlugin from '@fullcalendar/daygrid'
+import timeGridPlugin from '@fullcalendar/timegrid'
+import resourceTimelinePlugin from '@fullcalendar/resource-timeline'
+import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid'
+import frLocale from '@fullcalendar/core/locales/fr'
+import adaptivePlugin from '@fullcalendar/adaptive'
+import { timelineEvents } from '../mock/agenda-events'
 
-export const AgendaPage = React.memo(() => {
+export const Calendar = React.memo(({ resources }) => {
     const [selectedEvent, setSelectedEvent] = useState(null)
 
     const dateOptions = {
@@ -17,29 +21,45 @@ export const AgendaPage = React.memo(() => {
     }
 
     return (
-        <Container fluid className="my-3">
+        <>
             <FullCalendar
+                nowIndicator
+                editable
+                aspectRatio={3}
+                locale={frLocale}
+                resources={resources}
+                events={timelineEvents}
+                resourceAreaHeaderContent="Salles"
+                height="65vh"
+                schedulerLicenseKey="CC-Attribution-NonCommercial-NoDerivatives"
+                themeSystem="bootstrap"
+                initialView="resourceTimeGridDay"
+                headerToolbar={{
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'timeGridWeek,timeGridDay,workDays,resourceTimeGridDay,resourceTimeline',
+                }}
                 eventClick={function (info) {
                     info.jsEvent.preventDefault()
                     setSelectedEvent({ ...info.event._def, range: info.event._instance.range })
                 }}
-                height="65vh"
-                plugins={[dayGridPlugin, timeGridPlugin]}
-                headerToolbar={{
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'timeGridWeek,timeGridDay,timeGridFourDay',
-                }}
+                plugins={[
+                    dayGridPlugin,
+                    timeGridPlugin,
+                    resourceTimelinePlugin,
+                    resourceTimeGridPlugin,
+                    adaptivePlugin,
+                ]}
                 views={{
-                    timeGridFourDay: {
+                    workDays: {
                         type: 'timeGrid',
-                        duration: { days: 4 },
-                        buttonText: '4 day',
+                        duration: { days: 5 },
+                        buttonText: '5 jours',
+                    },
+                    resourceTimeGridDay: {
+                        buttonText: 'Jour vertical',
                     },
                 }}
-                timeZone="UTC"
-                initialView="timeGridWeek"
-                events={agendaEvents}
                 eventContent={(eventInfo) => (
                     <>
                         {eventInfo.timeText && (
@@ -80,8 +100,8 @@ export const AgendaPage = React.memo(() => {
                     </Offcanvas.Body>
                 </Offcanvas>
             )}
-        </Container>
+        </>
     )
 })
 
-AgendaPage.displayName = 'AgendaPage'
+Calendar.displayName = 'Calendar'
