@@ -69,7 +69,7 @@ export const AgendaPage = () => {
                     onClick={selectAllRooms}
                     active={!Object.values(selectedRooms).includes(false)}
                 >
-                    Toutes
+                    Toutes ({Object.keys(selectedRooms).length})
                 </Button>{' '}
                 <Button
                     variant="outline-primary"

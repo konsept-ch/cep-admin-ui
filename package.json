@@ -21,7 +21,7 @@
     "eslint:fix": "eslint \"src/**/*.js\" --fix",
     "prettier:check": "prettier \"src/**/*\" --ignore-unknown --check",
     "prettier:fix": "prettier \"src/**/*\" --ignore-unknown --write",
-    "ci:check": "npm run prettier:check && npm run eslint:check && npm run stylelint:check && npm run markdownlint:check && npm run build && npm run test"
+    "ci:check": "npm run prettier:check && npm run eslint:check && npm run stylelint:check && npm run markdownlint:check && npm run test"
   },
   "dependencies": {
     "@ag-grid-community/client-side-row-model": "26.0.0",
