@@ -7,9 +7,8 @@ import resourceTimelinePlugin from '@fullcalendar/resource-timeline'
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid'
 import frLocale from '@fullcalendar/core/locales/fr'
 import adaptivePlugin from '@fullcalendar/adaptive'
-import { timelineEvents } from '../mock/agenda-events'
 
-export const Calendar = React.memo(({ resources }) => {
+export const Calendar = ({ resources, events }) => {
     const [selectedEvent, setSelectedEvent] = useState(null)
 
     const dateOptions = {
@@ -21,14 +20,14 @@ export const Calendar = React.memo(({ resources }) => {
     }
 
     return (
-        <>
+        <div className="mb-3">
             <FullCalendar
                 nowIndicator
                 editable
                 aspectRatio={3}
                 locale={frLocale}
                 resources={resources}
-                events={timelineEvents}
+                events={events}
                 resourceAreaHeaderContent="Salles"
                 height="65vh"
                 schedulerLicenseKey="CC-Attribution-NonCommercial-NoDerivatives"
@@ -83,25 +82,25 @@ export const Calendar = React.memo(({ resources }) => {
                     </Offcanvas.Header>
                     <Offcanvas.Body>
                         <dl>
-                            <dt>Desctiprion</dt>
+                            <dt>Description</dt>
                             <dd>{selectedEvent.extendedProps.description}</dd>
 
-                            <dt>Room</dt>
-                            <dd>{selectedEvent.extendedProps.room}</dd>
+                            <dt>Salle</dt>
+                            <dd>{selectedEvent.extendedProps.room.name}</dd>
 
-                            <dt>Time</dt>
+                            <dt>Temps</dt>
                             <dd className="pl-3">
-                                <b>Start</b> -{' '}
+                                <b>Début</b> -
                                 {Intl.DateTimeFormat('fr-CH', dateOptions).format(selectedEvent.range.start)}
                                 <br />
-                                <b>End</b> - {Intl.DateTimeFormat('fr-CH', dateOptions).format(selectedEvent.range.end)}
+                                <b>Fin</b> - {Intl.DateTimeFormat('fr-CH', dateOptions).format(selectedEvent.range.end)}
                             </dd>
                         </dl>
                     </Offcanvas.Body>
                 </Offcanvas>
             )}
-        </>
+        </div>
     )
-})
+}
 
 Calendar.displayName = 'Calendar'

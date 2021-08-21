@@ -1,6 +1,6 @@
 export const usersDataUrl = 'http://localhost:3002/usernames'
 
-const token = '718d6b1f87eb4544652966188d5d42db4eef'
+const token = '0344f22f5d85c9413840e89967a4e19f09ce'
 
 export const otherParams = {
     method: 'GET',
@@ -14,8 +14,7 @@ export const otherParams = {
 
 export const loadFromClaroline = (saveData) => {
     const api = '/apiv2/user'
-    // const baseUrl = 'https://cep-dev.ch'
-    const baseUrl = 'http://localhost'
+    const baseUrl = 'https://www.cep-val.ch'
     const url = `${baseUrl}${api}?apitoken=${token}`
 
     fetch(url, otherParams)

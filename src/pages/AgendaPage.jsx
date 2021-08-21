@@ -1,17 +1,41 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Container, Form } from 'react-bootstrap'
 import { Calendar } from '../components'
-import { timelineResources } from '../mock/agenda-events'
 
-export const AgendaPage = React.memo(() => {
-    const [selectedRooms, setSelectedRooms] = useState(
-        timelineResources.reduce((allRooms, { id }) => ({ ...allRooms, [id]: true }), {})
-    )
+const selectAllRooms = ({ rooms }) => rooms.reduce((allRooms, { id }) => ({ ...allRooms, [id]: true }), {})
+
+export const AgendaPage = () => {
+    const [rooms, setRooms] = useState([])
+    const [events, setEvents] = useState([])
+    const [selectedRooms, setSelectedRooms] = useState(selectAllRooms({ rooms }))
+
+    useEffect(() => {
+        const fetchRooms = async () => {
+            const response = await fetch('http://localhost:4000/rooms')
+            const roomsAndEvents = await response.json()
+
+            if (typeof roomsAndEvents === 'object') {
+                const newEvents = roomsAndEvents.events.map((event) => ({
+                    ...event,
+                    resourceId: event.room.id,
+                    title: event.name,
+                }))
+
+                setEvents(newEvents)
+
+                const newRooms = roomsAndEvents.rooms.map((room) => ({ ...room, title: room.name }))
+                selectAllRooms({ rooms: newRooms })
+                setRooms(newRooms)
+            }
+        }
+
+        fetchRooms()
+    }, [])
 
     return (
         <Container fluid className="my-3">
-            <Calendar resources={timelineResources.filter(({ id }) => selectedRooms[id])} />
-            {timelineResources.map(({ title, id }) => (
+            <Calendar resources={rooms.filter(({ id }) => selectedRooms[id])} events={events} />
+            {rooms.map(({ title, id }) => (
                 <Form.Check
                     inline
                     type="checkbox"
@@ -23,6 +47,6 @@ export const AgendaPage = React.memo(() => {
             ))}
         </Container>
     )
-})
+}
 
 AgendaPage.displayName = 'AgendaPage'
