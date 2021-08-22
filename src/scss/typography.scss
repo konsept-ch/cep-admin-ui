@@ -1,9 +1,13 @@
+body {
+    color: $cep-brown;
+}
+
 h1 {
     font-weight: 200;
     font-size: 36pt;
     line-height: 43.2pt;
     margin-bottom: 12px;
-    color: #a59f9b;
+    color: $cep-brown;
 }
 
 h2 {
@@ -11,7 +15,7 @@ h2 {
     font-size: 28pt;
     line-height: 33.6pt;
     margin-bottom: 12px;
-    color: darken($secondary, 15%);
+    color: $secondary;
 }
 
 h3 {
@@ -28,7 +32,7 @@ h4 {
     line-height: 21.6pt;
     margin-bottom: 12px;
     text-transform: uppercase;
-    color: #a59f9b;
+    color: $cep-brown;
 }
 
 h5 {
@@ -37,7 +41,7 @@ h5 {
     line-height: 21.6pt;
     margin-bottom: 6px;
     text-transform: uppercase;
-    color: darken($secondary, 11%);
+    color: $secondary;
 }
 
 h6 {
