@@ -34,9 +34,21 @@ export const Navigation = () => {
                         <Nav.Link href="/agenda" onClick={goTo('/agenda')}>
                             <FontAwesomeIcon icon={faCalendarDays} /> Agenda
                         </Nav.Link>
-                        <Nav.Link href="/inscriptions" onClick={goTo('/inscriptions')}>
-                            <FontAwesomeIcon icon={faUserCheck} /> Inscriptions
-                        </Nav.Link>
+                        <NavDropdown
+                            title={
+                                <>
+                                    <FontAwesomeIcon icon={faDollar} /> Statuses
+                                </>
+                            }
+                            active={location.pathname.startsWith('/statuses')}
+                        >
+                            <NavDropdown.Item href="/statuses/inscriptions" onClick={goTo('/statuses/inscriptions')}>
+                                <FontAwesomeIcon icon={faUserCheck} /> Inscriptions
+                            </NavDropdown.Item>
+                            <NavDropdown.Item href="/statuses/sessions" onClick={goTo('/statuses/sessions')}>
+                                <FontAwesomeIcon icon={faUserCheck} /> Sessions
+                            </NavDropdown.Item>
+                        </NavDropdown>
                         <Nav.Link>
                             <FontAwesomeIcon icon={faFileSignature} /> Contrats
                         </Nav.Link>

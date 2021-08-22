@@ -3,6 +3,7 @@ import { HelmetProvider, Helmet } from 'react-helmet-async'
 
 import { InscriptionsPage } from './pages/InscriptionsPage'
 import { SurveyPage } from './pages/SurveyPage'
+import { SessionsPage } from './pages/SessionsPage'
 import { AgendaPage } from './pages/AgendaPage'
 import { Navigation } from './components'
 
@@ -14,12 +15,15 @@ export function App() {
             </Helmet>
             <Navigation />
             <Switch>
-                <Redirect exact from="/" to="/inscriptions" />
+                <Redirect exact from="/" to="/statuses/inscriptions" />
                 <Route exact path="/agenda">
                     <AgendaPage />
                 </Route>
-                <Route exact path="/inscriptions">
+                <Route exact path="/statuses/inscriptions">
                     <InscriptionsPage />
+                </Route>
+                <Route exact path="/statuses/sessions">
+                    <SessionsPage />
                 </Route>
                 <Route path="/survey/">
                     <SurveyPage />

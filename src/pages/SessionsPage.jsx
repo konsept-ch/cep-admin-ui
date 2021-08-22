@@ -5,15 +5,15 @@ import { Container, InputGroup, FormControl, Button, Col } from 'react-bootstrap
 import { dataSelector } from '../reducers/data'
 import { localeText } from '../localeText'
 
-export function InscriptionsPage() {
+export function SessionsPage() {
     const rowData = useSelector(dataSelector)
 
     useEffect(() => {
         const fetchRooms = async () => {
-            const inscriptionsResponse = await fetch('http://localhost:4000/inscriptions')
-            const inscriptions = await inscriptionsResponse.json()
+            const sessionsResponse = await fetch('http://localhost:4000/sessions')
+            const sessions = await sessionsResponse.json()
 
-            console.log('inscriptions', inscriptions)
+            console.log('🚀 ~ file: SessionsPage.jsx ~ line 15 ~ fetchRooms ~ sessions', sessions)
         }
 
         fetchRooms()
