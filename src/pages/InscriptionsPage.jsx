@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { AgGridReact } from 'ag-grid-react'
 import { Container, InputGroup, FormControl, Button, Col } from 'react-bootstrap'
@@ -6,6 +7,21 @@ import { localeText } from '../localeText'
 
 export function InscriptionsPage() {
     const rowData = useSelector(dataSelector)
+
+    useEffect(() => {
+        const fetchRooms = async () => {
+            const sessionsResponse = await fetch('http://localhost:4000/sessions')
+            const inscriptionsResponse = await fetch('http://localhost:4000/inscriptions')
+            const sessions = await sessionsResponse.json()
+            const inscriptions = await inscriptionsResponse.json()
+
+            console.log('sessions', sessions)
+            console.log('inscriptions', inscriptions)
+        }
+
+        fetchRooms()
+    }, [])
+
     const columnDefs = [
         {
             headerName: 'Participant',

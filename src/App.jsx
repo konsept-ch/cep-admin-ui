@@ -14,15 +14,12 @@ export function App() {
             </Helmet>
             <Navigation />
             <Switch>
-                <Redirect exact from="/" to="/agenda" />
-                <Route exact path="/">
+                <Redirect exact from="/" to="/inscriptions" />
+                <Route exact path="/agenda">
                     <AgendaPage />
                 </Route>
                 <Route exact path="/inscriptions">
                     <InscriptionsPage />
-                </Route>
-                <Route exact path="/agenda">
-                    <AgendaPage />
                 </Route>
                 <Route path="/survey/">
                     <SurveyPage />
