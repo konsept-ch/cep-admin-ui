@@ -5,6 +5,7 @@ import { InscriptionsPage } from './pages/InscriptionsPage'
 import { SurveyPage } from './pages/SurveyPage'
 import { SessionsPage } from './pages/SessionsPage'
 import { AgendaPage } from './pages/AgendaPage'
+import { TypographyPage } from './pages/TypographyPage'
 import { Navigation } from './components'
 
 export function App() {
@@ -27,6 +28,9 @@ export function App() {
                 </Route>
                 <Route path="/survey/">
                     <SurveyPage />
+                </Route>
+                <Route path="/typography">
+                    <TypographyPage />
                 </Route>
             </Switch>
         </HelmetProvider>
