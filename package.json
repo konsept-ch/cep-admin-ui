@@ -36,6 +36,7 @@
     "@fortawesome/pro-thin-svg-icons": "^6.0.0-beta1",
     "@fortawesome/react-fontawesome": "^0.1.15",
     "@fullcalendar/adaptive": "^5.9.0",
+    "@fullcalendar/bootstrap": "^5.9.0",
     "@fullcalendar/core": "^5.9.0",
     "@fullcalendar/daygrid": "^5.9.0",
     "@fullcalendar/react": "^5.9.0",
