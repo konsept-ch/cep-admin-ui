@@ -1,8 +1,9 @@
 import { useSelector } from 'react-redux'
+import React from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import { Container, InputGroup, FormControl, Button, Col } from 'react-bootstrap'
 import { dataSelector } from '../reducers/data'
-import { localeText } from '../localeText'
+// import { localeText } from '../localeText'
 
 export function InscriptionsPage() {
     const rowData = useSelector(dataSelector)
@@ -26,12 +27,29 @@ export function InscriptionsPage() {
         {
             headerName: 'Date de début',
             field: 'startDate',
+            // This is needed if it is more complicated object with cellRenderer
+            // getQuickFilterText: function(params) {
+            //     return params.value.name;
+            // }
         },
     ]
 
     const onFirstDataRendered = (params) => {
         params.columnApi.autoSizeAllColumns()
     }
+
+    const onFilterInputChanged = () => {
+        if (gridApi) {
+            gridApi.setQuickFilter(filterValue)
+        }
+    }
+
+    const [gridApi, setGridApi] = React.useState(null)
+    const [filterValue, setFilterValue] = React.useState('')
+
+    React.useEffect(() => {
+        onFilterInputChanged()
+    }, [filterValue])
 
     return (
         <>
@@ -43,8 +61,12 @@ export function InscriptionsPage() {
                             placeholder="participant/formation/statut/date/... "
                             aria-label="participant/formation/statut/date/... "
                             aria-describedby="basic-addon2"
+                            value={filterValue}
+                            onChange={(e) => {
+                                setFilterValue(e.target.value)
+                            }}
                         />
-                        <Button variant="primary" id="button-addon2">
+                        <Button variant="primary" id="button-addon2" onClick={onFilterInputChanged}>
                             Rechercher
                         </Button>
                     </InputGroup>
@@ -60,8 +82,11 @@ export function InscriptionsPage() {
                             },
                             columnDefs,
                             rowData,
-                            localeText,
+                            //localeText,
                             onFirstDataRendered,
+                            onGridReady: ({ api }) => {
+                                setGridApi(api)
+                            },
                         }}
                     />
                 </div>
