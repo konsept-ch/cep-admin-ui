@@ -20,6 +20,7 @@ export const Calendar = ({ resources, events }) => {
                 editable
                 aspectRatio={3}
                 weekends={false}
+                allDaySlot={false}
                 locale={frLocale}
                 resources={resources}
                 events={events}

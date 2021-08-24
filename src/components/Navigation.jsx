@@ -26,7 +26,7 @@ export const Navigation = () => {
         <Navbar bg="light" expand="lg">
             <Container fluid>
                 <Navbar.Brand href="/" onClick={goTo('/')}>
-                    CEP - Gestionnaire
+                    CEP - Former22
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
