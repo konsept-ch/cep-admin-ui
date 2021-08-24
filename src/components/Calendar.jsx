@@ -3,6 +3,7 @@ import { Offcanvas } from 'react-bootstrap'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
+import bootstrapPlugin from '@fullcalendar/bootstrap'
 import resourceTimelinePlugin from '@fullcalendar/resource-timeline'
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid'
 import frLocale from '@fullcalendar/core/locales/fr'
@@ -19,6 +20,7 @@ export const Calendar = ({ resources, events }) => {
                 editable
                 aspectRatio={3}
                 weekends={false}
+                allDaySlot={false}
                 locale={frLocale}
                 resources={resources}
                 events={events}
@@ -63,6 +65,7 @@ export const Calendar = ({ resources, events }) => {
                     resourceTimelinePlugin,
                     resourceTimeGridPlugin,
                     adaptivePlugin,
+                    bootstrapPlugin,
                 ]}
                 eventClick={function (info) {
                     info.jsEvent.preventDefault()
