@@ -21,6 +21,7 @@ export const localeText = {
     cancelFilter: 'Annuler',
     equals: 'Egale',
     notEquals: 'Pas égal',
+    notEqual: 'Pas égal',
 
     // for number filter
     lessThan: 'moins que',

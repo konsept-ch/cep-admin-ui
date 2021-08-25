@@ -42,7 +42,7 @@ export function InscriptionsPage() {
                 ],
             },
         },
-        { field: 'startDate', headerName: 'Date de début' },
+        { field: 'startDate', headerName: 'Date de début', filter: 'agDateColumnFilter' },
     ]
 
     // console.log('inscriptions', inscriptions)
