@@ -32,13 +32,14 @@ export function InscriptionsPage() {
             cellEditorParams: {
                 values: [
                     'En attente',
-                    'En validation RH',
-                    'Réfusé RH',
+                    'À traiter par RH',
+                    'Réfusée par RH',
                     'Entrée Web',
+                    'Acceptée par CEP',
                     'Invitée',
                     'Proposée',
                     'Annulée',
-                    'Écarté',
+                    'Écartée',
                 ],
             },
         },

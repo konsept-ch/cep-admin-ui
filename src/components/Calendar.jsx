@@ -19,7 +19,6 @@ export const Calendar = ({ resources, events }) => {
                 nowIndicator
                 editable
                 aspectRatio={3}
-                weekends={false}
                 allDaySlot={false}
                 locale={frLocale}
                 resources={resources}
@@ -28,8 +27,8 @@ export const Calendar = ({ resources, events }) => {
                 resourceAreaHeaderContent="Salles"
                 height="calc(100vh - 160px)"
                 schedulerLicenseKey="CC-Attribution-NonCommercial-NoDerivatives"
-                themeSystem="bootstrap"
-                initialView="resourceTimeGridDay"
+                // themeSystem="bootstrap"
+                initialView="dayGridWeek" // TODO order by salle ?
                 headerToolbar={{
                     left: 'prev,next today',
                     center: 'title',
@@ -82,11 +81,11 @@ export const Calendar = ({ resources, events }) => {
                     </>
                 )}
                 businessHours={{
-                    startTime: '08:00',
-                    endTime: '18:00',
+                    startTime: '08:30',
+                    endTime: '17:00',
                 }}
                 slotMinTime="07:00"
-                slotMaxTime="19:00"
+                slotMaxTime="22:00"
             />
             {selectedEvent && (
                 <Offcanvas

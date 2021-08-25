@@ -11,6 +11,7 @@ import {
     faUserCheck,
     faGraduationCap,
     faCalendarDays,
+    faMemo,
 } from '@fortawesome/pro-light-svg-icons'
 
 export const Navigation = () => {
@@ -75,6 +76,9 @@ export const Navigation = () => {
                         </Nav.Link>
                         <Nav.Link>
                             <FontAwesomeIcon icon={faGear} /> Paramètres
+                        </Nav.Link>
+                        <Nav.Link>
+                            <FontAwesomeIcon icon={faMemo} /> Logs
                         </Nav.Link>
                     </Nav>
                 </Navbar.Collapse>

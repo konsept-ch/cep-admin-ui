@@ -24,7 +24,7 @@ export const AgendaPage = () => {
                 setEvents(newEvents)
 
                 const newRooms = roomsAndEvents.rooms
-                    .filter((room) => room.capacity > 0)
+                    // .filter((room) => room.capacity > 0)
                     .map((room) => ({ ...room, title: room.name }))
                 setSelectedRooms(markAllRoomsAsSelected({ rooms: newRooms }))
                 setRooms(newRooms)

@@ -7,15 +7,13 @@ const dateOptions = {
 }
 
 export const Event = ({ selectedEvent }) =>
-    console.log(selectedEvent) || (
+    console.log(selectedEvent.extendedProps) || (
         <dl>
             <dt>Description :</dt>
             <dd>{selectedEvent.extendedProps.description}</dd>
 
             <dt>Salle :</dt>
-            <dd>
-                {selectedEvent.extendedProps.room.name} <br /> {JSON.stringify(selectedEvent.extendedProps)}
-            </dd>
+            <dd>{selectedEvent.extendedProps.room.name}</dd>
 
             <dt>Temps</dt>
             <dd className="pl-3">
