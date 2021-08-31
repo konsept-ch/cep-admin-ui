@@ -25,7 +25,7 @@ export const Calendar = ({ resources, events }) => {
                 events={events}
                 resourceOrder="title"
                 resourceAreaHeaderContent="Salles"
-                height="calc(100vh - 160px)"
+                height="calc(100vh - 200px)"
                 schedulerLicenseKey="CC-Attribution-NonCommercial-NoDerivatives"
                 // themeSystem="bootstrap"
                 initialView="dayGridWeek" // TODO order by salle ?
