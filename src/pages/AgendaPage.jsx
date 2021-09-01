@@ -3,6 +3,7 @@ import { Container, Form, Button } from 'react-bootstrap'
 import { Calendar } from '../components'
 
 const markAllRoomsAsSelected = ({ rooms }) => rooms.reduce((allRooms, { id }) => ({ ...allRooms, [id]: true }), {})
+// rooms.reduce((allRooms, { id, capacity }) => ({ ...allRooms, [id]: capacity > 0 }), {})
 
 export const AgendaPage = () => {
     const [rooms, setRooms] = useState([])
@@ -24,9 +25,11 @@ export const AgendaPage = () => {
                 setEvents(newEvents)
 
                 const newRooms = roomsAndEvents.rooms
-                    // .filter((room) => room.capacity > 0)
+                    // .filter(({ capacity }) => capacity > 0)
                     .map((room) => ({ ...room, title: room.name }))
-                setSelectedRooms(markAllRoomsAsSelected({ rooms: newRooms }))
+                setSelectedRooms(
+                    newRooms.reduce((allRooms, { id, capacity }) => ({ ...allRooms, [id]: capacity > 0 }), {})
+                )
                 setRooms(newRooms)
             }
         }
@@ -46,6 +49,26 @@ export const AgendaPage = () => {
                 {}
             )
         )
+    const selectZoomRooms = () =>
+        setSelectedRooms(
+            Object.keys(selectedRooms).reduce(
+                (allRooms, roomId) => ({
+                    ...allRooms,
+                    [roomId]: rooms.find(({ id }) => id === roomId)?.capacity === 0 ? true : selectedRooms[roomId],
+                }),
+                {}
+            )
+        )
+    const removeZoomRooms = () =>
+        setSelectedRooms(
+            Object.keys(selectedRooms).reduce(
+                (allRooms, roomId) => ({
+                    ...allRooms,
+                    [roomId]: rooms.find(({ id }) => id === roomId)?.capacity === 0 ? false : selectedRooms[roomId],
+                }),
+                {}
+            )
+        )
 
     return (
         <Container fluid className="my-3">
@@ -59,6 +82,7 @@ export const AgendaPage = () => {
                     type="checkbox"
                     checked={selectedRooms[id]}
                     id={id}
+                    key={id}
                     label={title}
                     onChange={({ target }) => setSelectedRooms({ ...selectedRooms, [id]: target.checked })}
                 />
@@ -67,9 +91,9 @@ export const AgendaPage = () => {
                 <Button
                     variant="outline-primary"
                     onClick={selectAllRooms}
-                    active={!Object.values(selectedRooms).includes(false)}
+                    active={rooms.every(({ id }) => selectedRooms[id] === true)}
                 >
-                    Toutes ({Object.keys(selectedRooms).length})
+                    Toutes salles ({rooms.length})
                 </Button>{' '}
                 <Button
                     variant="outline-primary"
@@ -80,6 +104,24 @@ export const AgendaPage = () => {
                 </Button>{' '}
                 <Button variant="outline-primary" onClick={inverseAllRooms}>
                     Inverse
+                </Button>{' '}
+                <Button
+                    variant="outline-primary"
+                    onClick={selectZoomRooms}
+                    active={rooms
+                        .filter(({ capacity }) => capacity === 0)
+                        .every(({ id }) => selectedRooms[id] === true)}
+                >
+                    + Zoom
+                </Button>{' '}
+                <Button
+                    variant="outline-primary"
+                    onClick={removeZoomRooms}
+                    active={rooms
+                        .filter(({ capacity }) => capacity === 0)
+                        .every(({ id }) => selectedRooms[id] === false)}
+                >
+                    - Zoom
                 </Button>
             </div>
         </Container>
