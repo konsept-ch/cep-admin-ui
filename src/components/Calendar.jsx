@@ -69,20 +69,20 @@ export const Calendar = ({ isLoading, resources, events }) => {
                     adaptivePlugin,
                     bootstrapPlugin,
                 ]}
-                // eventClick={function (info) {
-                //     // info.jsEvent.preventDefault()
-                //     setSelectedEvent({ ...info.event._def, range: info.event._instance.range })
-                // }}
-                // eventContent={(eventInfo) => (
-                //     <>
-                //         <b>
-                //             <span className="event-content-room">{eventInfo.event._def.extendedProps.room.name}</span> |{' '}
-                //             {eventInfo.timeText}
-                //         </b>
-                //         <br />
-                //         <i>{eventInfo.event.title}</i>
-                //     </>
-                // )}
+                eventClick={(info) => {
+                    info.jsEvent.preventDefault()
+                    setSelectedEvent({ ...info.event._def, range: info.event._instance.range })
+                }}
+                eventContent={(eventInfo) => (
+                    <>
+                        <b>
+                            <span className="event-content-room">{eventInfo.event._def.extendedProps.room.name}</span> |{' '}
+                            {eventInfo.timeText}
+                        </b>
+                        <br />
+                        <i>{eventInfo.event.title}</i>
+                    </>
+                )}
                 businessHours={{
                     startTime: '08:30',
                     endTime: '17:00',

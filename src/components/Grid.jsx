@@ -6,7 +6,7 @@ import { faFilterCircleXmark } from '@fortawesome/pro-light-svg-icons'
 
 import { localeText } from '../agGridLocaleText'
 
-export function Grid({ rowData, columnDefs }) {
+export const Grid = ({ rowData, columnDefs }) => {
     const [gridApi, setGridApi] = useState(null)
     const [filterValue, setFilterValue] = useState('')
 
