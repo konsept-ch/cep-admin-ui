@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Container } from 'react-bootstrap'
 
 import { Grid } from '../components'
+import { MIDDLEWARE_URL } from '../constants/config'
 import { transformFlagsToStatus } from '../utils'
 
 export function InscriptionsPage() {
@@ -9,7 +10,7 @@ export function InscriptionsPage() {
 
     useEffect(() => {
         const fetchInscriptions = async () => {
-            const inscriptionsResponse = await fetch('http://localhost:4000/inscriptions')
+            const inscriptionsResponse = await fetch(`${MIDDLEWARE_URL}/inscriptions`)
             setInscriptions(await inscriptionsResponse.json())
         }
 
@@ -46,7 +47,7 @@ export function InscriptionsPage() {
             onCellValueChanged: ({ data: { inscriptionId }, newValue }) => {
                 // console.log(node)
                 ;(async () => {
-                    const inscriptionsResponse = await fetch(`http://localhost:4000/inscriptions/${inscriptionId}`, {
+                    const inscriptionsResponse = await fetch(`${MIDDLEWARE_URL}/inscriptions/${inscriptionId}`, {
                         method: 'post',
                         mode: 'no-cors',
                         body: JSON.stringify({ status: newValue }),

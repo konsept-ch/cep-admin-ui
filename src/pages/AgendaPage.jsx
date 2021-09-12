@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Container, Form, Button } from 'react-bootstrap'
 
 import { Calendar } from '../components'
+import { MIDDLEWARE_URL } from '../constants/config'
 
 const markAllRoomsAsSelected = ({ rooms }) => rooms.reduce((allRooms, { id }) => ({ ...allRooms, [id]: true }), {})
 
@@ -14,7 +15,7 @@ export const AgendaPage = () => {
     useEffect(() => {
         const fetchRooms = async () => {
             setIsAgendaLoading(true)
-            const response = await fetch('http://localhost:4000/roomsAndEvents')
+            const response = await fetch(`${MIDDLEWARE_URL}/roomsAndEvents`)
             const roomsAndEvents = await response.json()
 
             if (typeof roomsAndEvents === 'object') {
