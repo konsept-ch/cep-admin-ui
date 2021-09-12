@@ -3,6 +3,7 @@ import { AgGridReact } from 'ag-grid-react'
 import { Row, Col, InputGroup, FloatingLabel, FormControl, Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFilterCircleXmark } from '@fortawesome/pro-light-svg-icons'
+
 import { localeText } from '../agGridLocaleText'
 
 export function Grid({ rowData, columnDefs }) {

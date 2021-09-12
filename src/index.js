@@ -2,11 +2,12 @@ import { StrictMode } from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
+import 'ag-grid-enterprise'
+
 import { store } from './store'
 import { App } from './App'
 // import { register } from './serviceWorker'
 // import { reportWebVitals } from './reportWebVitals'
-import 'ag-grid-enterprise'
 import './scss/index.scss'
 
 render(

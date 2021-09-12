@@ -1,4 +1,5 @@
 import { put, call, takeEvery } from 'redux-saga/effects'
+
 import { GET_DATA } from '../constants/actions'
 import { saveDataAction } from '../actions/data'
 import { usersDataUrl, loadFromClaroline, otherParams } from '../server'

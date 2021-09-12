@@ -8,9 +8,10 @@ import resourceTimelinePlugin from '@fullcalendar/resource-timeline'
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid'
 import frLocale from '@fullcalendar/core/locales/fr'
 import adaptivePlugin from '@fullcalendar/adaptive'
+
 import { Event } from './Event'
 
-export const Calendar = ({ resources, events }) => {
+export const Calendar = ({ isLoading, resources, events }) => {
     const [selectedEvent, setSelectedEvent] = useState(null)
 
     return (
@@ -18,12 +19,14 @@ export const Calendar = ({ resources, events }) => {
             <FullCalendar
                 nowIndicator
                 editable
+                navLinks
                 aspectRatio={3}
                 allDaySlot={false}
                 locale={frLocale}
                 resources={resources}
                 events={events}
                 resourceOrder="title"
+                titleFormat={isLoading ? () => 'Changement des séances...' : null}
                 resourceAreaHeaderContent="Salles"
                 height="calc(100vh - 200px)"
                 schedulerLicenseKey="CC-Attribution-NonCommercial-NoDerivatives"
@@ -66,20 +69,20 @@ export const Calendar = ({ resources, events }) => {
                     adaptivePlugin,
                     bootstrapPlugin,
                 ]}
-                eventClick={function (info) {
-                    info.jsEvent.preventDefault()
-                    setSelectedEvent({ ...info.event._def, range: info.event._instance.range })
-                }}
-                eventContent={(eventInfo) => (
-                    <>
-                        <b>
-                            <span className="event-content-room">{eventInfo.event._def.extendedProps.room.name}</span> |{' '}
-                            {eventInfo.timeText}
-                        </b>
-                        <br />
-                        <i>{eventInfo.event.title}</i>
-                    </>
-                )}
+                // eventClick={function (info) {
+                //     // info.jsEvent.preventDefault()
+                //     setSelectedEvent({ ...info.event._def, range: info.event._instance.range })
+                // }}
+                // eventContent={(eventInfo) => (
+                //     <>
+                //         <b>
+                //             <span className="event-content-room">{eventInfo.event._def.extendedProps.room.name}</span> |{' '}
+                //             {eventInfo.timeText}
+                //         </b>
+                //         <br />
+                //         <i>{eventInfo.event.title}</i>
+                //     </>
+                // )}
                 businessHours={{
                     startTime: '08:30',
                     endTime: '17:00',

@@ -1,17 +1,19 @@
 import { useState, useEffect } from 'react'
 import { Container, Form, Button } from 'react-bootstrap'
+
 import { Calendar } from '../components'
 
 const markAllRoomsAsSelected = ({ rooms }) => rooms.reduce((allRooms, { id }) => ({ ...allRooms, [id]: true }), {})
-// rooms.reduce((allRooms, { id, capacity }) => ({ ...allRooms, [id]: capacity > 0 }), {})
 
 export const AgendaPage = () => {
+    const [isAgendaLoading, setIsAgendaLoading] = useState([])
     const [rooms, setRooms] = useState([])
     const [events, setEvents] = useState([])
     const [selectedRooms, setSelectedRooms] = useState(markAllRoomsAsSelected({ rooms }))
 
     useEffect(() => {
         const fetchRooms = async () => {
+            setIsAgendaLoading(true)
             const response = await fetch('http://localhost:4000/roomsAndEvents')
             const roomsAndEvents = await response.json()
 
@@ -24,14 +26,13 @@ export const AgendaPage = () => {
 
                 setEvents(newEvents)
 
-                const newRooms = roomsAndEvents.rooms
-                    // .filter(({ capacity }) => capacity > 0)
-                    .map((room) => ({ ...room, title: room.name }))
+                const newRooms = roomsAndEvents.rooms.map((room) => ({ ...room, title: room.name }))
                 setSelectedRooms(
                     newRooms.reduce((allRooms, { id, capacity }) => ({ ...allRooms, [id]: capacity > 0 }), {})
                 )
                 setRooms(newRooms)
             }
+            setIsAgendaLoading(false)
         }
 
         fetchRooms()
@@ -73,57 +74,64 @@ export const AgendaPage = () => {
     return (
         <Container fluid className="my-3">
             <Calendar
+                isLoading={isAgendaLoading}
                 resources={rooms.filter(({ id }) => selectedRooms[id])}
                 events={events.filter(({ room: { id } }) => selectedRooms[id])}
             />
-            {rooms.map(({ title, id }) => (
-                <Form.Check
-                    inline
-                    type="checkbox"
-                    checked={selectedRooms[id]}
-                    id={id}
-                    key={id}
-                    label={title}
-                    onChange={({ target }) => setSelectedRooms({ ...selectedRooms, [id]: target.checked })}
-                />
-            ))}
-            <div className="bulk-selection">
-                <Button
-                    variant="outline-primary"
-                    onClick={selectAllRooms}
-                    active={rooms.every(({ id }) => selectedRooms[id] === true)}
-                >
-                    Toutes salles ({rooms.length})
-                </Button>{' '}
-                <Button
-                    variant="outline-primary"
-                    onClick={unselectAllRooms}
-                    active={!Object.values(selectedRooms).includes(true)}
-                >
-                    Aucune
-                </Button>{' '}
-                <Button variant="outline-primary" onClick={inverseAllRooms}>
-                    Inverse
-                </Button>{' '}
-                <Button
-                    variant="outline-primary"
-                    onClick={selectZoomRooms}
-                    active={rooms
-                        .filter(({ capacity }) => capacity === 0)
-                        .every(({ id }) => selectedRooms[id] === true)}
-                >
-                    + Zoom
-                </Button>{' '}
-                <Button
-                    variant="outline-primary"
-                    onClick={removeZoomRooms}
-                    active={rooms
-                        .filter(({ capacity }) => capacity === 0)
-                        .every(({ id }) => selectedRooms[id] === false)}
-                >
-                    - Zoom
-                </Button>
-            </div>
+            {isAgendaLoading ? (
+                'Chargement des salles...'
+            ) : (
+                <>
+                    {rooms.map(({ title, id }) => (
+                        <Form.Check
+                            inline
+                            type="checkbox"
+                            checked={selectedRooms[id]}
+                            id={id}
+                            key={id}
+                            label={title}
+                            onChange={({ target }) => setSelectedRooms({ ...selectedRooms, [id]: target.checked })}
+                        />
+                    ))}
+                    <div className="bulk-selection">
+                        <Button
+                            variant="outline-primary"
+                            onClick={selectAllRooms}
+                            active={rooms.every(({ id }) => selectedRooms[id] === true)}
+                        >
+                            Toutes salles ({rooms.length})
+                        </Button>{' '}
+                        <Button
+                            variant="outline-primary"
+                            onClick={unselectAllRooms}
+                            active={!Object.values(selectedRooms).includes(true)}
+                        >
+                            Aucune
+                        </Button>{' '}
+                        <Button variant="outline-primary" onClick={inverseAllRooms}>
+                            Inverse
+                        </Button>{' '}
+                        <Button
+                            variant="outline-primary"
+                            onClick={selectZoomRooms}
+                            active={rooms
+                                .filter(({ capacity }) => capacity === 0)
+                                .every(({ id }) => selectedRooms[id] === true)}
+                        >
+                            + Zoom
+                        </Button>{' '}
+                        <Button
+                            variant="outline-primary"
+                            onClick={removeZoomRooms}
+                            active={rooms
+                                .filter(({ capacity }) => capacity === 0)
+                                .every(({ id }) => selectedRooms[id] === false)}
+                        >
+                            - Zoom
+                        </Button>
+                    </div>
+                </>
+            )}
         </Container>
     )
 }
