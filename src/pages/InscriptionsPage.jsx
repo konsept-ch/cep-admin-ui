@@ -4,7 +4,7 @@ import { Grid } from '../components'
 import { transformFlagsToStatus } from '../utils'
 
 export function InscriptionsPage() {
-    const [inscriptions, setInscriptions] = useState([])
+    const [inscriptions, setInscriptions] = useState(null)
 
     useEffect(() => {
         const fetchInscriptions = async () => {
@@ -48,7 +48,7 @@ export function InscriptionsPage() {
 
     // console.log('inscriptions', inscriptions)
 
-    const rowData = inscriptions.map(({ user, session, validated, confirmed, date }) => ({
+    const rowData = inscriptions?.map(({ user, session, validated, confirmed, date }) => ({
         participant: user.name,
         profession: '(à faire)',
         session: session.name,

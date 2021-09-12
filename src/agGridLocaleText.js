@@ -8,7 +8,7 @@ export const localeText = {
     last: 'Dérnier',
     first: 'Premier',
     previous: 'Précedant',
-    loadingOoo: 'Chargement...',
+    loadingOoo: 'Chargement des données...',
 
     // for set filter
     selectAll: 'Sélectionner tous',
