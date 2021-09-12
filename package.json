@@ -1,13 +1,13 @@
 {
   "name": "cep-former22",
   "version": "1.0.0",
-  "description": "CEP - Former22",
+  "description": "CEP - Former22 - Gestion Admin - UI",
   "author": "konsept.ch",
   "license": "SEE LICENSE IN LICENSE.txt",
   "private": true,
   "engines": {
-    "node": ">=16.7.0",
-    "npm": ">=7.20.3"
+    "node": ">=16.9.1",
+    "npm": ">=7.21.1"
   },
   "scripts": {
     "start": "react-scripts start",
