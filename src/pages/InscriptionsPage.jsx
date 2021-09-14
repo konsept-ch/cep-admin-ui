@@ -45,7 +45,6 @@ export function InscriptionsPage() {
                 ],
             },
             onCellValueChanged: ({ data: { inscriptionId }, newValue }) => {
-                // console.log(node)
                 ;(async () => {
                     const inscriptionsResponse = await fetch(`${MIDDLEWARE_URL}/inscriptions/${inscriptionId}`, {
                         method: 'post',

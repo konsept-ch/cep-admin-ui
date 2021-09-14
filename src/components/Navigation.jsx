@@ -43,10 +43,18 @@ export const Navigation = () => {
                             }
                             active={location.pathname.startsWith('/statuses')}
                         >
-                            <NavDropdown.Item href="/statuses/inscriptions" onClick={goTo('/statuses/inscriptions')}>
+                            <NavDropdown.Item
+                                eventKey="/statuses/inscriptions"
+                                href="/statuses/inscriptions"
+                                onClick={goTo('/statuses/inscriptions')}
+                            >
                                 <FontAwesomeIcon icon={faUserCheck} /> Inscriptions
                             </NavDropdown.Item>
-                            <NavDropdown.Item href="/statuses/sessions" onClick={goTo('/statuses/sessions')}>
+                            <NavDropdown.Item
+                                eventKey="/statuses/sessions"
+                                href="/statuses/sessions"
+                                onClick={goTo('/statuses/sessions')}
+                            >
                                 <FontAwesomeIcon icon={faUserCheck} /> Sessions
                             </NavDropdown.Item>
                         </NavDropdown>
