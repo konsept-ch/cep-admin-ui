@@ -13,7 +13,7 @@ import {
     faCalendarDays,
     faMemo,
 } from '@fortawesome/pro-light-svg-icons'
-import { PATH_INSCRIPTIONS, PATH_SESSIONS } from '../constants/constants'
+import { PATH_INSCRIPTIONS, PATH_SESSIONS, PATH_AGENDA } from '../constants/constants'
 
 export const Navigation = () => {
     const history = useHistory()
@@ -33,7 +33,7 @@ export const Navigation = () => {
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto" activeKey={location.pathname}>
-                        <Nav.Link href="/agenda" onClick={goTo('/agenda')}>
+                        <Nav.Link href="/agenda" onClick={goTo(PATH_AGENDA)}>
                             <FontAwesomeIcon icon={faCalendarDays} /> Agenda
                         </Nav.Link>
                         <NavDropdown

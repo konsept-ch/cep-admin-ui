@@ -7,7 +7,7 @@ import { SessionsPage } from './pages/SessionsPage'
 import { AgendaPage } from './pages/AgendaPage'
 import { TypographyPage } from './pages/TypographyPage'
 import { Navigation } from './components'
-import { PATH_INSCRIPTIONS, PATH_SESSIONS } from './constants/constants'
+import { PATH_INSCRIPTIONS, PATH_SESSIONS, PATH_AGENDA } from './constants/constants'
 
 export function App() {
     return (
@@ -18,7 +18,7 @@ export function App() {
             <Navigation />
             <Switch>
                 <Redirect exact from="/" to={PATH_INSCRIPTIONS} />
-                <Route exact path="/agenda">
+                <Route exact path={PATH_AGENDA}>
                     <AgendaPage />
                 </Route>
                 <Route exact path={PATH_INSCRIPTIONS}>
