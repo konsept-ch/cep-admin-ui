@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Container, Form, Button } from 'react-bootstrap'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEye, faEyeSlash } from '@fortawesome/pro-light-svg-icons'
 
 import { Calendar } from '../components'
 import { MIDDLEWARE_URL } from '../constants/config'
@@ -83,17 +85,28 @@ export const AgendaPage = () => {
                 'Chargement des salles...'
             ) : (
                 <>
-                    {rooms.map(({ title, id }) => (
-                        <Form.Check
-                            inline
-                            type="checkbox"
-                            checked={selectedRooms[id]}
-                            id={id}
-                            key={id}
-                            label={title}
-                            onChange={({ target }) => setSelectedRooms({ ...selectedRooms, [id]: target.checked })}
-                        />
-                    ))}
+                    <div className="room-selection">
+                        {rooms.map(({ title, id }) => (
+                            <Form.Check
+                                inline
+                                type="checkbox"
+                                checked={selectedRooms[id]}
+                                id={id}
+                                key={id}
+                                label={
+                                    <>
+                                        {selectedRooms[id] ? (
+                                            <FontAwesomeIcon icon={faEye} />
+                                        ) : (
+                                            <FontAwesomeIcon icon={faEyeSlash} />
+                                        )}{' '}
+                                        {title}
+                                    </>
+                                }
+                                onChange={({ target }) => setSelectedRooms({ ...selectedRooms, [id]: target.checked })}
+                            />
+                        ))}
+                    </div>
                     <div className="bulk-selection">
                         <Button
                             variant="outline-primary"

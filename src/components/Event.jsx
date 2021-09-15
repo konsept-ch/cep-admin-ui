@@ -1,3 +1,5 @@
+import { DATE_FORMAT_SWISS_FRENCH } from '../constants/constants'
+
 const dateOptions = {
     year: 'numeric',
     month: 'long',
@@ -23,17 +25,17 @@ export const Event = ({ selectedEvent }) => (
         <dt>Temps</dt>
         <dd className="pl-3">
             <b>Début</b> :<br />
-            {Intl.DateTimeFormat('fr-CH', dateOptions).format(selectedEvent.range.start)}
+            {Intl.DateTimeFormat(DATE_FORMAT_SWISS_FRENCH, dateOptions).format(selectedEvent.range.start)}
             <br />
             <b>Fin</b> :<br />
-            {Intl.DateTimeFormat('fr-CH', dateOptions).format(selectedEvent.range.end)}
+            {Intl.DateTimeFormat(DATE_FORMAT_SWISS_FRENCH, dateOptions).format(selectedEvent.range.end)}
         </dd>
 
         <dt>Créé par :</dt>
         <dd className="pl-3">
-            <b>Début</b> -{Intl.DateTimeFormat('fr-CH', dateOptions).format(selectedEvent.range.start)}
+            <b>Début</b> -{Intl.DateTimeFormat(DATE_FORMAT_SWISS_FRENCH, dateOptions).format(selectedEvent.range.start)}
             <br />
-            <b>Fin</b> - {Intl.DateTimeFormat('fr-CH', dateOptions).format(selectedEvent.range.end)}
+            <b>Fin</b> - {Intl.DateTimeFormat(DATE_FORMAT_SWISS_FRENCH, dateOptions).format(selectedEvent.range.end)}
         </dd>
     </dl>
 )

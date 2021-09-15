@@ -13,6 +13,7 @@ import {
     faCalendarDays,
     faMemo,
 } from '@fortawesome/pro-light-svg-icons'
+import { PATH_INSCRIPTIONS, PATH_SESSIONS } from '../constants/constants'
 
 export const Navigation = () => {
     const history = useHistory()
@@ -43,18 +44,10 @@ export const Navigation = () => {
                             }
                             active={location.pathname.startsWith('/statuses')}
                         >
-                            <NavDropdown.Item
-                                eventKey="/statuses/inscriptions"
-                                href="/statuses/inscriptions"
-                                onClick={goTo('/statuses/inscriptions')}
-                            >
+                            <NavDropdown.Item eventKey={PATH_INSCRIPTIONS} onClick={goTo(PATH_INSCRIPTIONS)}>
                                 <FontAwesomeIcon icon={faUserCheck} /> Inscriptions
                             </NavDropdown.Item>
-                            <NavDropdown.Item
-                                eventKey="/statuses/sessions"
-                                href="/statuses/sessions"
-                                onClick={goTo('/statuses/sessions')}
-                            >
+                            <NavDropdown.Item eventKey={PATH_SESSIONS} onClick={goTo(PATH_SESSIONS)}>
                                 <FontAwesomeIcon icon={faUserCheck} /> Sessions
                             </NavDropdown.Item>
                         </NavDropdown>
