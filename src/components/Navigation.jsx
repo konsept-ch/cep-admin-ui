@@ -33,7 +33,7 @@ export const Navigation = () => {
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto" activeKey={location.pathname}>
-                        <Nav.Link href="/agenda" onClick={goTo(PATH_AGENDA)}>
+                        <Nav.Link href={PATH_AGENDA} onClick={goTo(PATH_AGENDA)}>
                             <FontAwesomeIcon icon={faCalendarDays} /> Agenda
                         </Nav.Link>
                         <NavDropdown

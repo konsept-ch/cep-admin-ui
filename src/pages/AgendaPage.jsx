@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Container, Form, Button } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEye, faEyeSlash } from '@fortawesome/pro-light-svg-icons'
+import { faEye, faEyeSlash } from '@fortawesome/pro-solid-svg-icons'
 
 import { Calendar } from '../components'
 import { MIDDLEWARE_URL } from '../constants/config'
