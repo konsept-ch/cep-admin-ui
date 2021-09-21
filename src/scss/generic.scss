@@ -8,3 +8,14 @@
     border-radius: 50px;
     display: inline-block;
 }
+
+#root {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.content {
+    flex: 1 0 auto;
+    padding: 10px;
+}
