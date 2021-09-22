@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash } from '@fortawesome/pro-solid-svg-icons'
 
 import { Calendar } from '../components'
-import { MIDDLEWARE_URL } from '../constants/config'
+import { callService } from '../utils'
 
 const markAllRoomsAsSelected = ({ rooms }) => rooms.reduce((allRooms, { id }) => ({ ...allRooms, [id]: true }), {})
 
@@ -17,8 +17,9 @@ export const AgendaPage = () => {
     useEffect(() => {
         const fetchRooms = async () => {
             setIsAgendaLoading(true)
-            const response = await fetch(`${MIDDLEWARE_URL}/roomsAndEvents`)
-            const roomsAndEvents = await response.json()
+            const roomsAndEvents = await callService('roomsAndEvents')
+
+            // console.log(roomsAndEvents)
 
             if (typeof roomsAndEvents === 'object') {
                 const newEvents = roomsAndEvents.events.map((event) => ({

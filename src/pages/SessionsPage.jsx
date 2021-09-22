@@ -4,15 +4,15 @@ import { Container, InputGroup, FormControl, Button, Col } from 'react-bootstrap
 
 import { dataSelector } from '../reducers/data'
 import { Grid } from '../components'
-import { MIDDLEWARE_URL } from '../constants/config'
+import { callService } from '../utils'
 
 export function SessionsPage() {
     const rowData = useSelector(dataSelector)
 
     useEffect(() => {
         const fetchRooms = async () => {
-            const sessionsResponse = await fetch(`${MIDDLEWARE_URL}/sessions`)
-            const sessions = await sessionsResponse.json()
+            const sessionsResponse = await callService('sessions')
+            const sessions = await sessionsResponse
 
             console.log('🚀 ~ file: SessionsPage.jsx ~ line 15 ~ fetchRooms ~ sessions', sessions)
         }
