@@ -2,15 +2,15 @@ import { useEffect, useState } from 'react'
 import { Container } from 'react-bootstrap'
 
 import { Grid } from '../components'
-import { transformFlagsToStatus, callService } from '../utils'
+import { transformFlagsToStatus } from '../utils'
 
 export function InscriptionsPage() {
     const [inscriptions, setInscriptions] = useState(null)
 
     useEffect(() => {
         const fetchInscriptions = async () => {
-            const inscriptionsResponse = await callService('inscriptions')
-            setInscriptions(inscriptionsResponse)
+            // const inscriptionsResponse = await callService('inscriptions')
+            // setInscriptions(inscriptionsResponse)
         }
 
         fetchInscriptions()
@@ -43,22 +43,18 @@ export function InscriptionsPage() {
                     'Écartée',
                 ],
             },
-            onCellValueChanged: ({ data: { inscriptionId }, newValue }) => {
-                ;(async () => {
-                    const inscriptionsResponse = await callService(`inscriptions/${inscriptionId}`, {
-                        method: 'post',
-                        mode: 'no-cors',
-                        body: JSON.stringify({ status: newValue }),
-                    })
-
-                    console.log(inscriptionsResponse)
-                })()
-            },
+            // onCellValueChanged: ({ data: { inscriptionId }, newValue }) => {
+            //     ;(async () => {
+            //         const inscriptionsResponse = await callService(`inscriptions/${inscriptionId}`, {
+            //             method: 'post',
+            //             mode: 'no-cors',
+            //             body: JSON.stringify({ status: newValue }),
+            //         })
+            //     })()
+            // },
         },
         { field: 'startDate', headerName: 'Date de début', filter: 'agDateColumnFilter' },
     ]
-
-    console.log('inscriptions', inscriptions)
 
     const rowData = inscriptions?.map(({ id: inscriptionId, user, session, validated, confirmed, date }) => ({
         inscriptionId,

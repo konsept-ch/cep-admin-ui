@@ -1,20 +1,16 @@
 import { useEffect } from 'react'
-import { useSelector } from 'react-redux'
 import { Container, InputGroup, FormControl, Button, Col } from 'react-bootstrap'
 
-import { dataSelector } from '../reducers/data'
 import { Grid } from '../components'
-import { callService } from '../utils'
+// import { callService } from '../utils'
 
 export function SessionsPage() {
-    const rowData = useSelector(dataSelector)
+    const rowData = null
 
     useEffect(() => {
         const fetchRooms = async () => {
-            const sessionsResponse = await callService('sessions')
-            const sessions = await sessionsResponse
-
-            console.log('🚀 ~ file: SessionsPage.jsx ~ line 15 ~ fetchRooms ~ sessions', sessions)
+            // const sessionsResponse = await callService('sessions')
+            // const sessions = await sessionsResponse
         }
 
         fetchRooms()

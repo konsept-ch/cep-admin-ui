@@ -1,45 +1,45 @@
 import { useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Container, Form, Button } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash } from '@fortawesome/pro-solid-svg-icons'
 
 import { Calendar } from '../components'
-import { callService } from '../utils'
+import { fetchAgendaAction } from '../actions/agenda.ts'
+import { roomsAndEventsSelector } from '../reducers'
 
 const markAllRoomsAsSelected = ({ rooms }) => rooms.reduce((allRooms, { id }) => ({ ...allRooms, [id]: true }), {})
 
 export const AgendaPage = () => {
-    const [isAgendaLoading, setIsAgendaLoading] = useState([])
-    const [rooms, setRooms] = useState([])
-    const [events, setEvents] = useState([])
+    const [isAgendaLoading, setIsAgendaLoading] = useState(false)
+    const { rooms, events } = useSelector(roomsAndEventsSelector)
     const [selectedRooms, setSelectedRooms] = useState(markAllRoomsAsSelected({ rooms }))
+    const dispatch = useDispatch()
 
     useEffect(() => {
-        const fetchRooms = async () => {
-            setIsAgendaLoading(true)
-            const roomsAndEvents = await callService('roomsAndEvents')
+        dispatch(fetchAgendaAction())
+        // const fetchRooms = async () => {
+        //     setIsAgendaLoading(true)
 
-            // console.log(roomsAndEvents)
+        //     if (typeof roomsAndEvents === 'object') {
+        //         const newEvents = roomsAndEvents.events.map((event) => ({
+        //             ...event,
+        //             resourceId: event.room.id,
+        //             title: event.name,
+        //         }))
 
-            if (typeof roomsAndEvents === 'object') {
-                const newEvents = roomsAndEvents.events.map((event) => ({
-                    ...event,
-                    resourceId: event.room.id,
-                    title: event.name,
-                }))
+        //         setEvents(newEvents)
 
-                setEvents(newEvents)
+        //         const newRooms = roomsAndEvents.rooms.map((room) => ({ ...room, title: room.name }))
+        //         setSelectedRooms(
+        //             newRooms.reduce((allRooms, { id, capacity }) => ({ ...allRooms, [id]: capacity > 0 }), {})
+        //         )
+        //         setRooms(newRooms)
+        //     }
+        //     setIsAgendaLoading(false)
+        // }
 
-                const newRooms = roomsAndEvents.rooms.map((room) => ({ ...room, title: room.name }))
-                setSelectedRooms(
-                    newRooms.reduce((allRooms, { id, capacity }) => ({ ...allRooms, [id]: capacity > 0 }), {})
-                )
-                setRooms(newRooms)
-            }
-            setIsAgendaLoading(false)
-        }
-
-        fetchRooms()
+        // fetchRooms()
     }, [])
 
     const selectAllRooms = () => setSelectedRooms(markAllRoomsAsSelected({ rooms }))

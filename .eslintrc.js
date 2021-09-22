@@ -9,7 +9,7 @@ module.exports = {
         'no-useless-call': 'error',
         'no-useless-concat': 'error',
         'no-console': 'warn',
-        'no-unused-vars': 'error',
+        'no-unused-vars': 'warn',
         'no-duplicate-imports': 'error',
         'no-param-reassign': 'error',
         'no-shadow': 'error',

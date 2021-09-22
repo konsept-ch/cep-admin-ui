@@ -12,8 +12,9 @@ import {
     faGraduationCap,
     faCalendarDays,
     faMemo,
+    faMessage,
 } from '@fortawesome/pro-light-svg-icons'
-import { PATH_INSCRIPTIONS, PATH_SESSIONS, PATH_AGENDA } from '../constants/constants'
+import { PATH_INSCRIPTIONS, PATH_SESSIONS, PATH_AGENDA, PATH_NOTIFICATIONS } from '../constants/constants'
 
 export const Navigation = () => {
     const history = useHistory()
@@ -80,6 +81,11 @@ export const Navigation = () => {
                         </Nav.Link>
                         <Nav.Link>
                             <FontAwesomeIcon icon={faMemo} /> Logs
+                        </Nav.Link>
+                    </Nav>
+                    <Nav activeKey={location.pathname}>
+                        <Nav.Link href={PATH_NOTIFICATIONS} onClick={goTo(PATH_NOTIFICATIONS)}>
+                            <FontAwesomeIcon icon={faMessage} /> Notifications
                         </Nav.Link>
                     </Nav>
                 </Navbar.Collapse>

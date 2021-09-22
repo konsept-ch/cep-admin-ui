@@ -6,9 +6,10 @@ import { SurveyPage } from './pages/SurveyPage'
 import { SessionsPage } from './pages/SessionsPage'
 import { AgendaPage } from './pages/AgendaPage'
 import { TypographyPage } from './pages/TypographyPage'
+import { NotificationsPage } from './pages/NotificationsPage'
 import { Navigation } from './components'
 import { Footer } from './components/Footer'
-import { PATH_INSCRIPTIONS, PATH_SESSIONS, PATH_AGENDA } from './constants/constants'
+import { PATH_INSCRIPTIONS, PATH_SESSIONS, PATH_AGENDA, PATH_NOTIFICATIONS } from './constants/constants'
 
 export function App() {
     return (
@@ -28,6 +29,9 @@ export function App() {
                     </Route>
                     <Route exact path={PATH_SESSIONS}>
                         <SessionsPage />
+                    </Route>
+                    <Route exact path={PATH_NOTIFICATIONS}>
+                        <NotificationsPage />
                     </Route>
                     <Route path="/survey/">
                         <SurveyPage />
