@@ -1,19 +1,22 @@
 import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Container, InputGroup, FormControl, Button, Col } from 'react-bootstrap'
+
+import { fetchSessionsAction } from '../actions/sessions.ts'
+import { sessionsSelector } from '../reducers'
 
 import { Grid } from '../components'
 // import { callService } from '../utils'
 
 export function SessionsPage() {
+    const dispatch = useDispatch()
+    const sessions = useSelector(sessionsSelector)
     const rowData = null
 
-    useEffect(() => {
-        const fetchRooms = async () => {
-            // const sessionsResponse = await callService('sessions')
-            // const sessions = await sessionsResponse
-        }
+    console.log(sessions)
 
-        fetchRooms()
+    useEffect(() => {
+        dispatch(fetchSessionsAction())
     }, [])
 
     const columnDefs = [
@@ -41,7 +44,7 @@ export function SessionsPage() {
 
     return (
         <Container fluid>
-            <h1 className="mt-3">Inscriptions</h1>
+            <h1 className="mt-3">Sessions</h1>
             <Col md="6">
                 <InputGroup className="mb-4">
                     <FormControl
