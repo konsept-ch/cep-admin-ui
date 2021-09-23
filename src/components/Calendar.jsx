@@ -11,7 +11,7 @@ import adaptivePlugin from '@fullcalendar/adaptive'
 
 import { Event } from './Event'
 
-export const Calendar = ({ isLoading, resources, events }) => {
+export const Calendar = ({ resources, events }) => {
     const [selectedEvent, setSelectedEvent] = useState(null)
 
     return (
@@ -23,10 +23,9 @@ export const Calendar = ({ isLoading, resources, events }) => {
                 aspectRatio={3}
                 allDaySlot={false}
                 locale={frLocale}
-                resources={resources}
-                events={events}
+                resources={resources.map((resource) => ({ ...resource, title: resource.name }))}
+                events={events.map((event) => ({ ...event, title: event.name, resourceId: event.room.id }))}
                 resourceOrder="title"
-                titleFormat={isLoading ? () => 'Changement des séances...' : null}
                 resourceAreaHeaderContent="Salles"
                 height="calc(100vh - 200px)"
                 schedulerLicenseKey="CC-Attribution-NonCommercial-NoDerivatives"

@@ -1,19 +1,18 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Container } from 'react-bootstrap'
 
 import { Grid } from '../components'
 import { transformFlagsToStatus } from '../utils'
+import { fetchInscriptionsAction } from '../actions/inscriptions.ts'
+import { inscriptionsSelector } from '../reducers'
 
 export function InscriptionsPage() {
-    const [inscriptions, setInscriptions] = useState(null)
+    const dispatch = useDispatch()
+    const inscriptions = useSelector(inscriptionsSelector)
 
     useEffect(() => {
-        const fetchInscriptions = async () => {
-            // const inscriptionsResponse = await callService('inscriptions')
-            // setInscriptions(inscriptionsResponse)
-        }
-
-        fetchInscriptions()
+        dispatch(fetchInscriptionsAction())
     }, [])
 
     const columnDefs = [

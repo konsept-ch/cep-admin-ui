@@ -11,6 +11,6 @@ function* getNotificationsSaga() {
     console.log(serviceResult)
 }
 
-export function* inscriptionsSaga() {
+export function* notificationsSaga() {
     yield takeEvery(GET_NOTIFICATIONS, getNotificationsSaga)
 }
