@@ -10,10 +10,6 @@ export const Grid = ({ rowData, columnDefs }) => {
     const [gridApi, setGridApi] = useState(null)
     const [filterValue, setFilterValue] = useState('')
 
-    const onFirstDataRendered = ({ columnApi }) => {
-        columnApi.autoSizeAllColumns()
-    }
-
     useEffect(() => {
         gridApi?.setQuickFilter(filterValue)
     }, [filterValue, gridApi])
@@ -45,17 +41,53 @@ export const Grid = ({ rowData, columnDefs }) => {
             <div className="ag-theme-alpine general-grid page mx-auto mb-4">
                 <AgGridReact
                     {...{
+                        sideBar: true,
                         enableCharts: true,
                         enableRangeSelection: true,
+                        enableCellChangeFlash: true,
+                        enableFillHandle: true,
+                        paginationAutoPageSize: true,
+                        animateRows: true,
+                        groupIncludeFooter: true,
+                        groupSelectsChildren: true,
+                        debug: true,
+                        rowSelection: 'multiple',
+                        rowGroupPanelShow: 'always',
+                        pivotPanelShow: 'always',
+                        groupDisplayType: 'multipleColumns',
                         defaultColDef: {
+                            enableValue: true,
+                            enablePivot: true,
+                            enableRowGroup: true,
                             resizable: true,
                             sortable: true,
                             filter: true,
+                            aggFunc: 'count',
                         },
+                        statusBar: {
+                            statusPanels: [
+                                { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
+                                { statusPanel: 'agTotalRowCountComponent', align: 'center' },
+                                { statusPanel: 'agFilteredRowCountComponent' },
+                                { statusPanel: 'agSelectedRowCountComponent' },
+                                { statusPanel: 'agAggregationComponent' },
+                            ],
+                        },
+                        getContextMenuItems: () => [
+                            'autoSizeAll',
+                            'expandAll',
+                            'contractAll',
+                            'copy',
+                            'copyWithHeaders',
+                            'paste',
+                            'resetColumns',
+                            'export',
+                            'chartRange',
+                        ],
                         columnDefs,
                         rowData,
                         localeText,
-                        onFirstDataRendered,
+                        onFirstDataRendered: ({ columnApi }) => columnApi.autoSizeAllColumns(),
                         onGridReady: ({ api }) => setGridApi(api),
                     }}
                 />

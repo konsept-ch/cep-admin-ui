@@ -21,9 +21,17 @@ export function InscriptionsPage() {
             headerName: 'Participant',
             filter: 'agSetColumnFilter',
             filterParams: { excelMode: 'windows' },
+            headerTooltip: "L'utilisateur qui est inscrit à la session",
+            checkboxSelection: true,
+            headerCheckboxSelection: true,
         },
         { field: 'profession', headerName: 'Fonction/Profession' },
-        { field: 'session', headerName: 'Session', filter: 'agTextColumnFilter' },
+        {
+            field: 'session',
+            headerName: 'Session',
+            filter: 'agTextColumnFilter',
+            headerTooltip: "Le nom de la session dans laquelle l'utilisateur s'est inscrit",
+        },
         {
             field: 'status',
             headerName: 'Statut',
@@ -52,7 +60,12 @@ export function InscriptionsPage() {
             //     })()
             // },
         },
-        { field: 'startDate', headerName: 'Date de début', filter: 'agDateColumnFilter' },
+        {
+            field: 'startDate',
+            headerName: 'Date de début',
+            filter: 'agDateColumnFilter',
+            headerTooltip: 'La date de début de la session',
+        },
     ]
 
     const rowData = inscriptions?.map(({ id: inscriptionId, user, session, validated, confirmed, date }) => ({

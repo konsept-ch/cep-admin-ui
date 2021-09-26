@@ -1,9 +1,8 @@
 import { useState } from 'react'
 import { Offcanvas } from 'react-bootstrap'
 import FullCalendar from '@fullcalendar/react'
+import listPlugin from '@fullcalendar/list'
 import dayGridPlugin from '@fullcalendar/daygrid'
-import timeGridPlugin from '@fullcalendar/timegrid'
-import bootstrapPlugin from '@fullcalendar/bootstrap'
 import resourceTimelinePlugin from '@fullcalendar/resource-timeline'
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid'
 import frLocale from '@fullcalendar/core/locales/fr'
@@ -29,14 +28,16 @@ export const Calendar = ({ resources, events }) => {
                 resourceAreaHeaderContent="Salles"
                 height="calc(100vh - 200px)"
                 schedulerLicenseKey="CC-Attribution-NonCommercial-NoDerivatives"
-                // themeSystem="bootstrap"
                 initialView="dayGridWeek" // TODO order by salle ?
                 headerToolbar={{
                     left: 'today prev,next',
                     center: 'title',
-                    right: 'dayGridDay,dayGridWeek,dayGridMonth resourceTimeGridDay,resourceTimeGridWeek resourceTimeline,resourceTimelineWorkWeek',
+                    right: 'dayGridDay,dayGridWeek,dayGridMonth listWeek resourceTimeGridDay,resourceTimeGridWeek resourceTimeline,resourceTimelineWorkWeek',
                 }}
                 views={{
+                    listWeek: {
+                        buttonText: 'Liste',
+                    },
                     resourceTimeGridDay: {
                         buttonText: 'Jour vertical',
                     },
@@ -54,14 +55,7 @@ export const Calendar = ({ resources, events }) => {
                         buttonText: 'Semaine timeline',
                     },
                 }}
-                plugins={[
-                    dayGridPlugin,
-                    timeGridPlugin,
-                    resourceTimelinePlugin,
-                    resourceTimeGridPlugin,
-                    adaptivePlugin,
-                    bootstrapPlugin,
-                ]}
+                plugins={[dayGridPlugin, listPlugin, resourceTimelinePlugin, resourceTimeGridPlugin, adaptivePlugin]}
                 eventClick={(info) => {
                     info.jsEvent.preventDefault()
                     setSelectedEvent({ ...info.event._def, range: info.event._instance.range })
