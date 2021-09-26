@@ -32,7 +32,7 @@ export const Calendar = ({ resources, events }) => {
                 // themeSystem="bootstrap"
                 initialView="dayGridWeek" // TODO order by salle ?
                 headerToolbar={{
-                    left: 'prev,next today',
+                    left: 'today prev,next',
                     center: 'title',
                     right: 'dayGridDay,dayGridWeek,dayGridMonth resourceTimeGridDay,resourceTimeGridWeek resourceTimeline,resourceTimelineWorkWeek',
                 }}
