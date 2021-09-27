@@ -8,7 +8,7 @@ import {
     faGear,
     faSitemap,
     faFileInvoiceDollar,
-    faUserCheck,
+    faPresentationScreen,
     faGraduationCap,
     faCalendarDays,
     faMemo,
@@ -37,23 +37,14 @@ export const Navigation = () => {
                         <Nav.Link href={PATH_AGENDA} onClick={goTo(PATH_AGENDA)}>
                             <FontAwesomeIcon icon={faCalendarDays} /> Agenda
                         </Nav.Link>
-                        <NavDropdown
-                            title={
-                                <>
-                                    <FontAwesomeIcon icon={faDollar} /> Statuses
-                                </>
-                            }
-                            active={location.pathname.startsWith('/statuses')}
-                        >
-                            <NavDropdown.Item eventKey={PATH_INSCRIPTIONS} onClick={goTo(PATH_INSCRIPTIONS)}>
-                                <FontAwesomeIcon icon={faUserCheck} /> Inscriptions
-                            </NavDropdown.Item>
-                            <NavDropdown.Item eventKey={PATH_SESSIONS} onClick={goTo(PATH_SESSIONS)}>
-                                <FontAwesomeIcon icon={faUserCheck} /> Sessions
-                            </NavDropdown.Item>
-                        </NavDropdown>
+                        <Nav.Link href={PATH_INSCRIPTIONS} onClick={goTo(PATH_INSCRIPTIONS)}>
+                            <FontAwesomeIcon icon={faCalendarDays} /> Inscriptions
+                        </Nav.Link>
+                        <Nav.Link href={PATH_SESSIONS} onClick={goTo(PATH_SESSIONS)}>
+                            <FontAwesomeIcon icon={faPresentationScreen} /> Sessions
+                        </Nav.Link>
                         <Nav.Link>
-                            <FontAwesomeIcon icon={faFileSignature} /> Contrats
+                            <FontAwesomeIcon icon={faGraduationCap} /> Formations
                         </Nav.Link>
                         <NavDropdown
                             title={
@@ -64,13 +55,13 @@ export const Navigation = () => {
                             id="basic-nav-dropdown"
                         >
                             <NavDropdown.Item>
+                                <FontAwesomeIcon icon={faFileSignature} /> Contrats
+                            </NavDropdown.Item>
+                            <NavDropdown.Item>
                                 <FontAwesomeIcon icon={faFileInvoiceDollar} /> Factures
                             </NavDropdown.Item>
                             <NavDropdown.Item>
                                 <FontAwesomeIcon icon={faSitemap} /> Clients
-                            </NavDropdown.Item>
-                            <NavDropdown.Item>
-                                <FontAwesomeIcon icon={faGraduationCap} /> Formations
                             </NavDropdown.Item>
                         </NavDropdown>
                         <Nav.Link>
