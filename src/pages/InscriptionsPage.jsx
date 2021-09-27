@@ -4,7 +4,7 @@ import { Container } from 'react-bootstrap'
 
 import { Grid } from '../components'
 import { transformFlagsToStatus } from '../utils'
-import { fetchInscriptionsAction } from '../actions/inscriptions.ts'
+import { fetchInscriptionsAction, updateInscriptionStatusAction } from '../actions/inscriptions.ts'
 import { inscriptionsSelector } from '../reducers'
 
 export function InscriptionsPage() {
@@ -42,15 +42,11 @@ export function InscriptionsPage() {
                     'Écartée',
                 ],
             },
-            // onCellValueChanged: ({ data: { inscriptionId }, newValue }) => {
-            //     ;(async () => {
-            //         const inscriptionsResponse = await callService(`inscriptions/${inscriptionId}`, {
-            //             method: 'post',
-            //             mode: 'no-cors',
-            //             body: JSON.stringify({ status: newValue }),
-            //         })
-            //     })()
-            // },
+            onCellValueChanged: ({ data: { inscriptionId }, newValue }) => {
+                ;(async () => {
+                    dispatch(updateInscriptionStatusAction({ inscriptionId, newValue }))
+                })()
+            },
         },
         { field: 'startDate', headerName: 'Date de début', filter: 'agDateColumnFilter' },
     ]
