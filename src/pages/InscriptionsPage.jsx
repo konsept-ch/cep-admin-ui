@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Container } from 'react-bootstrap'
 
 import { Grid } from '../components'
-import { transformFlagsToStatus } from '../utils'
 import { fetchInscriptionsAction, updateInscriptionStatusAction } from '../actions/inscriptions.ts'
 import { inscriptionsSelector } from '../reducers'
 
@@ -64,12 +63,12 @@ export function InscriptionsPage() {
         },
     ]
 
-    const rowData = inscriptions?.map(({ id: inscriptionId, user, session, validated, confirmed, date }) => ({
+    const rowData = inscriptions?.map(({ id: inscriptionId, user, session, status, date }) => ({
         inscriptionId,
         participant: user.name,
         profession: '(à faire)',
         session: session.name,
-        status: transformFlagsToStatus({ validated, confirmed }),
+        status,
         startDate: date,
     }))
 
