@@ -19,6 +19,10 @@ export const AgendaPage = () => {
         dispatch(fetchAgendaAction())
     }, [])
 
+    useEffect(() => {
+        setSelectedRooms(rooms.reduce((allRooms, { id, capacity }) => ({ ...allRooms, [id]: capacity > 0 }), {}))
+    }, [rooms])
+
     const selectAllRooms = () => setSelectedRooms(markAllRoomsAsSelected({ rooms }))
     const unselectAllRooms = () =>
         setSelectedRooms(
@@ -52,6 +56,11 @@ export const AgendaPage = () => {
             )
         )
 
+    const onRoomCheckboxClick =
+        ({ currentlySelectedRooms, id }) =>
+        ({ target }) =>
+            setSelectedRooms({ ...currentlySelectedRooms, [id]: target.checked })
+
     return (
         <Container fluid className="my-3">
             <Calendar
@@ -63,7 +72,7 @@ export const AgendaPage = () => {
                     <Form.Check
                         inline
                         type="checkbox"
-                        checked={selectedRooms[id]}
+                        checked={selectedRooms[id] === true}
                         id={id}
                         key={id}
                         label={
@@ -76,7 +85,7 @@ export const AgendaPage = () => {
                                 {name}
                             </>
                         }
-                        onChange={({ target }) => setSelectedRooms({ ...selectedRooms, [id]: target.checked })}
+                        onChange={onRoomCheckboxClick({ currentlySelectedRooms: selectedRooms, id })}
                     />
                 ))}
             </div>
