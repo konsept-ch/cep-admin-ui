@@ -28,6 +28,17 @@
     --fc-now-indicator-color: #ff0000;
 }
 
+.calendar-page {
+    display: flex;
+    height: calc(100% - 132px); // 132px is the height of the header + footer
+}
+
+.room-selection {
+    height: 100%;
+    width: 300px;
+    overflow-y: auto;
+}
+
 .fc-toolbar {
     flex-flow: row wrap;
 
@@ -69,6 +80,13 @@
     @media print {
         display: none;
     }
+
+    display: flex;
+    flex-direction: column;
+
+    button {
+        margin-left: 5px;
+    }
 }
 
 .fc-event-main > i {
@@ -81,4 +99,8 @@
 
 .svg-inline--fa.fa-w-18 {
     width: 1.25em;
+}
+
+.toggle-room-selection {
+    height: 100%;
 }
