@@ -14,7 +14,7 @@ export const Calendar = ({ resources, events }) => {
     const [selectedEvent, setSelectedEvent] = useState(null)
 
     return (
-        <div className="mb-3">
+        <>
             <FullCalendar
                 nowIndicator
                 editable
@@ -26,7 +26,7 @@ export const Calendar = ({ resources, events }) => {
                 events={events.map((event) => ({ ...event, title: event.name, resourceId: event.room.id }))}
                 resourceOrder="title"
                 resourceAreaHeaderContent="Salles"
-                height="calc(100vh - 200px)"
+                height="100%"
                 schedulerLicenseKey="CC-Attribution-NonCommercial-NoDerivatives"
                 initialView="dayGridWeek" // TODO order by salle ?
                 headerToolbar={{
@@ -91,6 +91,6 @@ export const Calendar = ({ resources, events }) => {
                     </Offcanvas.Body>
                 </Offcanvas>
             )}
-        </div>
+        </>
     )
 }
