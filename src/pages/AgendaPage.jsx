@@ -14,7 +14,8 @@ export const AgendaPage = () => {
     const { rooms, events } = useSelector(roomsAndEventsSelector)
     const [selectedRooms, setSelectedRooms] = useState(markAllRoomsAsSelected({ rooms }))
     const dispatch = useDispatch()
-    const [isRoomSelectionExpanded, setRoomSelectionExpanded] = useState(false)
+    const [isRoomSelectionExpanded, setRoomSelectionExpanded] = useState(true)
+    console.log(rooms) // to be deleted
 
     useEffect(() => {
         dispatch(fetchAgendaAction())
@@ -62,6 +63,23 @@ export const AgendaPage = () => {
         ({ target }) =>
             setSelectedRooms({ ...currentlySelectedRooms, [id]: target.checked })
 
+    const mapRoomsToCheckboxes = ({ name, id }) => (
+        <li key={id}>
+            <Form.Check
+                type="checkbox"
+                checked={selectedRooms[id] === true}
+                id={id}
+                label={
+                    <>
+                        {selectedRooms[id] ? <FontAwesomeIcon icon={faEye} /> : <FontAwesomeIcon icon={faEyeSlash} />}{' '}
+                        {name}
+                    </>
+                }
+                onChange={onRoomCheckboxClick({ currentlySelectedRooms: selectedRooms, id })}
+            />
+        </li>
+    )
+
     return (
         <div className="calendar-page mt-3">
             <Container fluid>
@@ -73,25 +91,37 @@ export const AgendaPage = () => {
             <div className="d-flex">
                 <div className={`room-selection collapse collapse-horizontal ${isRoomSelectionExpanded ? 'show' : ''}`}>
                     <div className="card card-body">
-                        {rooms.map(({ name, id }) => (
-                            <Form.Check
-                                type="checkbox"
-                                checked={selectedRooms[id] === true}
-                                id={id}
-                                key={id}
-                                label={
-                                    <>
-                                        {selectedRooms[id] ? (
-                                            <FontAwesomeIcon icon={faEye} />
-                                        ) : (
-                                            <FontAwesomeIcon icon={faEyeSlash} />
-                                        )}{' '}
-                                        {name}
-                                    </>
-                                }
-                                onChange={onRoomCheckboxClick({ currentlySelectedRooms: selectedRooms, id })}
-                            />
-                        ))}
+                        <div>
+                            Toutes salles
+                            <ul>
+                                <li>
+                                    Internes
+                                    <ul>
+                                        <li>
+                                            Physiques
+                                            {rooms
+                                                .filter((room) => room.location?.name === 'CEP')
+                                                .map(mapRoomsToCheckboxes)}
+                                        </li>
+                                        <li>
+                                            Virtuelles
+                                            {rooms
+                                                .filter((room) => room.location?.name === 'CEP ZOOM')
+                                                .map(mapRoomsToCheckboxes)}
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    Externes
+                                    {rooms
+                                        .filter(
+                                            (room) =>
+                                                room.location?.name !== 'CEP' && room.location?.name !== 'CEP ZOOM'
+                                        )
+                                        .map(mapRoomsToCheckboxes)}
+                                </li>
+                            </ul>
+                        </div>
                         <div className="bulk-selection">
                             <Button
                                 variant="outline-primary"
@@ -135,7 +165,7 @@ export const AgendaPage = () => {
                     className="toggle-room-selection btn btn-outline-primary"
                     type="button"
                     onClick={() => {
-                        setRoomSelectionExpanded(!isRoomSelectionExpanded) // при клик извикваме set с обратното на is
+                        setRoomSelectionExpanded(!isRoomSelectionExpanded) // при клик извикваме set с обратното на is, типичен патърн при тогълване
                     }}
                     aria-expanded="false"
                     aria-controls="collapseExample"

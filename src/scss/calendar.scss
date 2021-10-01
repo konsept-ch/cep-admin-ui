@@ -37,6 +37,14 @@
     height: 100%;
     width: 300px;
     overflow-y: auto;
+
+    ul {
+        padding-left: 20px;
+    }
+
+    li::before {
+        content: none;
+    }
 }
 
 .fc-toolbar {
