@@ -165,7 +165,7 @@ export const AgendaPage = () => {
                     className="toggle-room-selection btn btn-outline-primary"
                     type="button"
                     onClick={() => {
-                        setRoomSelectionExpanded(!isRoomSelectionExpanded) // при клик извикваме set с обратното на is, типичен патърн при тогълване
+                        setRoomSelectionExpanded(!isRoomSelectionExpanded)
                     }}
                     aria-expanded="false"
                     aria-controls="collapseExample"
