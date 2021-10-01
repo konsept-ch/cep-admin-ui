@@ -1,0 +1,11 @@
+.status-change-modal {
+    max-width: 1500px;
+
+    .list-group-item:hover {
+        background-color: $color-brown-10;
+    }
+
+    .template-preview {
+        white-space: pre-wrap;
+    }
+}

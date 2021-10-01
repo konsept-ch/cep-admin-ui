@@ -1,12 +1,5 @@
 import { DATE_FORMAT_SWISS_FRENCH } from '../constants/constants'
-
-const dateOptions = {
-    year: 'numeric',
-    month: 'long',
-    weekday: 'long',
-    hour: 'numeric',
-    minute: 'numeric',
-}
+import { dateOptions } from '../utils'
 
 export const Event = ({ selectedEvent }) => (
     <dl>

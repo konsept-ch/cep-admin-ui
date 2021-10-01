@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 import { Switch, Route, Redirect } from 'react-router-dom'
 import { HelmetProvider, Helmet } from 'react-helmet-async'
 
@@ -10,8 +12,15 @@ import { NotificationsPage } from './pages/NotificationsPage'
 import { Navigation } from './components'
 import { Footer } from './components/Footer'
 import { PATH_INSCRIPTIONS, PATH_SESSIONS, PATH_AGENDA, PATH_NOTIFICATIONS } from './constants/constants'
+import { fetchParametersAction } from './actions/parameters'
 
 export function App() {
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        dispatch(fetchParametersAction())
+    }, [])
+
     return (
         <>
             <HelmetProvider>

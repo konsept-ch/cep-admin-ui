@@ -1,13 +1,14 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Container } from 'react-bootstrap'
 
-import { Grid } from '../components'
+import { Grid, StatusChangeModal } from '../components'
 import { fetchInscriptionsAction, updateInscriptionStatusAction } from '../actions/inscriptions.ts'
 import { inscriptionsSelector } from '../reducers'
 
 export function InscriptionsPage() {
     const dispatch = useDispatch()
+    const [statusChangeData, setStatusChangeData] = useState(null)
     const inscriptions = useSelector(inscriptionsSelector)
 
     useEffect(() => {
@@ -51,7 +52,10 @@ export function InscriptionsPage() {
             },
             onCellValueChanged: ({ data: { inscriptionId }, newValue }) => {
                 ;(async () => {
-                    dispatch(updateInscriptionStatusAction({ inscriptionId, newValue }))
+                    setStatusChangeData({
+                        ...inscriptions.find(({ id }) => id === inscriptionId),
+                        newStatus: newValue,
+                    })
                 })()
             },
         },
@@ -77,6 +81,13 @@ export function InscriptionsPage() {
             <h1 className="mt-3">Inscriptions</h1>
 
             <Grid columnDefs={columnDefs} rowData={rowData} />
+            {statusChangeData && (
+                <StatusChangeModal
+                    closeModal={() => setStatusChangeData(null)}
+                    statusChangeData={statusChangeData}
+                    updateStatus={() => dispatch(updateInscriptionStatusAction(statusChangeData))}
+                />
+            )}
         </Container>
     )
 }
