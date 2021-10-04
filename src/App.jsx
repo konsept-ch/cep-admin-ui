@@ -13,6 +13,7 @@ import { Navigation } from './components'
 import { Footer } from './components/Footer'
 import { PATH_INSCRIPTIONS, PATH_SESSIONS, PATH_AGENDA, PATH_NOTIFICATIONS } from './constants/constants'
 import { fetchParametersAction } from './actions/parameters'
+import { ErrorBoundary } from './pages/ErrorBoundaryPage'
 
 export function App() {
     const dispatch = useDispatch()
@@ -28,27 +29,29 @@ export function App() {
                     <title>CEP - Former22</title>
                 </Helmet>
                 <Navigation />
-                <Switch>
-                    <Redirect exact from="/" to={PATH_INSCRIPTIONS} />
-                    <Route exact path={PATH_AGENDA}>
-                        <AgendaPage />
-                    </Route>
-                    <Route exact path={PATH_INSCRIPTIONS}>
-                        <InscriptionsPage />
-                    </Route>
-                    <Route exact path={PATH_SESSIONS}>
-                        <SessionsPage />
-                    </Route>
-                    <Route exact path={PATH_NOTIFICATIONS}>
-                        <NotificationsPage />
-                    </Route>
-                    <Route path="/survey/">
-                        <SurveyPage />
-                    </Route>
-                    <Route path="/typography">
-                        <TypographyPage />
-                    </Route>
-                </Switch>
+                <ErrorBoundary>
+                    <Switch>
+                        <Redirect exact from="/" to={PATH_INSCRIPTIONS} />
+                        <Route exact path={PATH_AGENDA}>
+                            <AgendaPage />
+                        </Route>
+                        <Route exact path={PATH_INSCRIPTIONS}>
+                            <InscriptionsPage />
+                        </Route>
+                        <Route exact path={PATH_SESSIONS}>
+                            <SessionsPage />
+                        </Route>
+                        <Route exact path={PATH_NOTIFICATIONS}>
+                            <NotificationsPage />
+                        </Route>
+                        <Route path="/survey/">
+                            <SurveyPage />
+                        </Route>
+                        <Route path="/typography">
+                            <TypographyPage />
+                        </Route>
+                    </Switch>
+                </ErrorBoundary>
             </HelmetProvider>
             <Footer />
         </>
