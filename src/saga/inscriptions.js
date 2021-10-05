@@ -10,7 +10,7 @@ function* fetchInscriptionsSaga() {
     yield put(setInscriptionsAction({ inscriptions }))
 }
 
-function* updateInscriptionsSaga({ payload: { inscriptionId, newValue } }) {
+function* updateInscriptionsSaga({ payload: { inscriptionId, newStatus } }) {
     yield call(callService, {
         endpoint: `inscriptions/${inscriptionId}`,
         options: {
@@ -18,7 +18,7 @@ function* updateInscriptionsSaga({ payload: { inscriptionId, newValue } }) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ status: newValue }),
+            body: JSON.stringify({ status: newStatus }),
         },
     })
 }

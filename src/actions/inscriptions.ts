@@ -10,7 +10,13 @@ export const setInscriptionsAction = ({ inscriptions }: { inscriptions: any }) =
     payload: { inscriptions },
 })
 
-export const updateInscriptionStatusAction = ({ inscriptionId, newValue }: { inscriptionId: any; newValue: any }) => ({
+export const updateInscriptionStatusAction = ({
+    inscriptionId,
+    newStatus,
+}: {
+    inscriptionId: any
+    newStatus: any
+}) => ({
     type: UPDATE_INSCRIPTIONS,
-    payload: { inscriptionId, newValue },
+    payload: { inscriptionId, newStatus },
 })

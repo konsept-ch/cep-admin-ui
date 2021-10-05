@@ -51,12 +51,10 @@ export function InscriptionsPage() {
                 ],
             },
             onCellValueChanged: ({ data: { inscriptionId }, newValue }) => {
-                ;(async () => {
-                    setStatusChangeData({
-                        ...inscriptions.find(({ id }) => id === inscriptionId),
-                        newStatus: newValue,
-                    })
-                })()
+                setStatusChangeData({
+                    ...inscriptions.find(({ id }) => id === inscriptionId),
+                    newStatus: newValue,
+                })
             },
         },
         {
@@ -85,7 +83,14 @@ export function InscriptionsPage() {
                 <StatusChangeModal
                     closeModal={() => setStatusChangeData(null)}
                     statusChangeData={statusChangeData}
-                    updateStatus={() => dispatch(updateInscriptionStatusAction(statusChangeData))}
+                    updateStatus={() =>
+                        dispatch(
+                            updateInscriptionStatusAction({
+                                inscriptionId: statusChangeData.id,
+                                newStatus: statusChangeData.newStatus,
+                            })
+                        )
+                    }
                 />
             )}
         </Container>

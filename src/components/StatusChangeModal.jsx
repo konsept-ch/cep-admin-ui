@@ -7,8 +7,6 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
     const [selectedTemplate, setSelectedTemplate] = useState(null)
     const parameters = useSelector(parametersSelector)
 
-    console.log(statusChangeData)
-
     const emailTemplates = parameters.emailTemplates[statusChangeData.newStatus]
 
     return (
@@ -84,13 +82,21 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
             </Modal.Body>
             <Modal.Footer>
                 <Button
-                    variant="secondary"
+                    variant="primary"
                     onClick={() => {
                         closeModal()
                         updateStatus()
                     }}
                 >
-                    Close
+                    Confirmer
+                </Button>
+                <Button
+                    variant="secondary"
+                    onClick={() => {
+                        closeModal()
+                    }}
+                >
+                    Annuler
                 </Button>
             </Modal.Footer>
         </Modal>
