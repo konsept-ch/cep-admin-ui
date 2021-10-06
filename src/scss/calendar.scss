@@ -112,3 +112,19 @@
 .toggle-room-selection {
     height: 100%;
 }
+
+.form-check-label {
+    display: flex;
+}
+
+.room-name {
+    padding-left: 5px;
+}
+
+.expand-controller {
+    padding-right: 5px;
+}
+
+.collapse.show .form-check {
+    padding-left: 0;
+}

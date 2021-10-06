@@ -2,7 +2,14 @@ import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Container, Form, Button } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEye, faEyeSlash, faArrowLeftFromLine, faArrowRightToLine } from '@fortawesome/pro-solid-svg-icons'
+import {
+    faEye,
+    faEyeSlash,
+    faArrowLeftFromLine,
+    faArrowRightToLine,
+    faChevronDown,
+    faChevronRight,
+} from '@fortawesome/pro-solid-svg-icons'
 
 import { Calendar } from '../components'
 import { fetchAgendaAction } from '../actions/agenda.ts'
@@ -16,6 +23,11 @@ export const AgendaPage = () => {
     const dispatch = useDispatch()
     const [isRoomSelectionExpanded, setRoomSelectionExpanded] = useState(true)
     console.log(rooms) // to be deleted
+    const [isAllRoomsExpanded, setAllRoomsExpanded] = useState(true)
+    const [isInternalRoomsExpanded, setInternalRoomsExpanded] = useState(true)
+    const [isPhysicalRoomsExpanded, setPhysicalRoomsExpanded] = useState(true)
+    const [isVirtualRoomsExpanded, setVirtualRoomsExpanded] = useState(true)
+    const [isExternalRoomsExpanded, setExternalRoomsExpanded] = useState(true)
 
     useEffect(() => {
         dispatch(fetchAgendaAction())
@@ -72,7 +84,7 @@ export const AgendaPage = () => {
                 label={
                     <>
                         {selectedRooms[id] ? <FontAwesomeIcon icon={faEye} /> : <FontAwesomeIcon icon={faEyeSlash} />}{' '}
-                        {name}
+                        <div className="room-name">{name}</div>
                     </>
                 }
                 onChange={onRoomCheckboxClick({ currentlySelectedRooms: selectedRooms, id })}
@@ -92,33 +104,99 @@ export const AgendaPage = () => {
                 <div className={`room-selection collapse collapse-horizontal ${isRoomSelectionExpanded ? 'show' : ''}`}>
                     <div className="card card-body">
                         <div>
+                            <span
+                                className="expand-controller"
+                                onClick={() => {
+                                    setAllRoomsExpanded(!isAllRoomsExpanded)
+                                }}
+                            >
+                                {isAllRoomsExpanded ? (
+                                    <FontAwesomeIcon icon={faChevronDown} />
+                                ) : (
+                                    <FontAwesomeIcon icon={faChevronRight} />
+                                )}
+                            </span>
                             Toutes salles
-                            <ul>
+                            <ul className={`collapse ${isAllRoomsExpanded ? 'show' : ''}`}>
                                 <li>
+                                    <span
+                                        className="expand-controller"
+                                        onClick={() => {
+                                            setInternalRoomsExpanded(!isInternalRoomsExpanded)
+                                        }}
+                                    >
+                                        {isInternalRoomsExpanded ? (
+                                            <FontAwesomeIcon icon={faChevronDown} />
+                                        ) : (
+                                            <FontAwesomeIcon icon={faChevronRight} />
+                                        )}
+                                    </span>
                                     Internes
-                                    <ul>
+                                    <ul className={`collapse ${isInternalRoomsExpanded ? 'show' : ''}`}>
                                         <li>
+                                            <span
+                                                className="expand-controller"
+                                                onClick={() => {
+                                                    setPhysicalRoomsExpanded(!isPhysicalRoomsExpanded)
+                                                }}
+                                            >
+                                                {isPhysicalRoomsExpanded ? (
+                                                    <FontAwesomeIcon icon={faChevronDown} />
+                                                ) : (
+                                                    <FontAwesomeIcon icon={faChevronRight} />
+                                                )}
+                                            </span>
                                             Physiques
-                                            {rooms
-                                                .filter((room) => room.location?.name === 'CEP')
-                                                .map(mapRoomsToCheckboxes)}
+                                            <ul className={`collapse ${isPhysicalRoomsExpanded ? 'show' : ''}`}>
+                                                {rooms
+                                                    .filter((room) => room.location?.name === 'CEP')
+                                                    .map(mapRoomsToCheckboxes)}
+                                            </ul>
                                         </li>
                                         <li>
+                                            <span
+                                                className="expand-controller"
+                                                onClick={() => {
+                                                    setVirtualRoomsExpanded(!isVirtualRoomsExpanded)
+                                                }}
+                                            >
+                                                {isVirtualRoomsExpanded ? (
+                                                    <FontAwesomeIcon icon={faChevronDown} />
+                                                ) : (
+                                                    <FontAwesomeIcon icon={faChevronRight} />
+                                                )}
+                                            </span>
                                             Virtuelles
-                                            {rooms
-                                                .filter((room) => room.location?.name === 'CEP ZOOM')
-                                                .map(mapRoomsToCheckboxes)}
+                                            <ul className={`collapse ${isVirtualRoomsExpanded ? 'show' : ''}`}>
+                                                {rooms
+                                                    .filter((room) => room.location?.name === 'CEP ZOOM')
+                                                    .map(mapRoomsToCheckboxes)}
+                                            </ul>
                                         </li>
                                     </ul>
                                 </li>
                                 <li>
+                                    <span
+                                        className="expand-controller"
+                                        onClick={() => {
+                                            setExternalRoomsExpanded(!isExternalRoomsExpanded)
+                                        }}
+                                    >
+                                        {isExternalRoomsExpanded ? (
+                                            <FontAwesomeIcon icon={faChevronDown} />
+                                        ) : (
+                                            <FontAwesomeIcon icon={faChevronRight} />
+                                        )}
+                                    </span>
                                     Externes
-                                    {rooms
-                                        .filter(
-                                            (room) =>
-                                                room.location?.name !== 'CEP' && room.location?.name !== 'CEP ZOOM'
-                                        )
-                                        .map(mapRoomsToCheckboxes)}
+                                    <ul className={`collapse ${isExternalRoomsExpanded ? 'show' : ''}`}>
+                                        {rooms
+                                            .filter(
+                                                (room) =>
+                                                    room.location?.name !== 'CEP' && room.location?.name !== 'CEP ZOOM'
+                                            )
+                                            .map(mapRoomsToCheckboxes)}
+                                    </ul>
                                 </li>
                             </ul>
                         </div>
