@@ -32,11 +32,14 @@ export const Calendar = ({ resources, events }) => {
                 headerToolbar={{
                     left: 'today prev,next',
                     center: 'title',
-                    right: 'dayGridDay,dayGridWeek,dayGridMonth listWeek resourceTimeGridDay,resourceTimeGridWeek resourceTimeline,resourceTimelineWorkWeek',
+                    right: 'dayGridDay,dayGridWeek,dayGridMonth listWeek,listMonth resourceTimeGridDay,resourceTimeGridWeek resourceTimeline,resourceTimelineWorkWeek',
                 }}
                 views={{
                     listWeek: {
-                        buttonText: 'Liste',
+                        buttonText: 'Liste semaine',
+                    },
+                    listMonth: {
+                        buttonText: 'Liste mois',
                     },
                     resourceTimeGridDay: {
                         buttonText: 'Jour vertical',

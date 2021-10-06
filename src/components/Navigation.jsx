@@ -26,7 +26,7 @@ export const Navigation = () => {
     }
 
     return (
-        <Navbar bg="light" expand="lg">
+        <Navbar bg="light" expand="xl">
             <Container fluid>
                 <Navbar.Brand href="/" onClick={goTo('/')}>
                     CEP - Former22

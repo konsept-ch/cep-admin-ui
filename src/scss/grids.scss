@@ -1,7 +1,11 @@
 .general-grid {
-    height: 65vh;
+    height: calc(100% - 208px);
 }
 
 .grid-search-label {
-    min-width: 600px;
+    width: calc(100% - 60px);
+}
+
+.ag-theme-alpine .ag-root-wrapper {
+    border-width: 0;
 }

@@ -1,12 +1,22 @@
 import { useState, useEffect } from 'react'
 import { AgGridReact } from 'ag-grid-react'
-import { Row, Col, InputGroup, FloatingLabel, FormControl, Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import {
+    Row,
+    Col,
+    InputGroup,
+    FloatingLabel,
+    FormControl,
+    Button,
+    OverlayTrigger,
+    Tooltip,
+    Container,
+} from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFilterCircleXmark } from '@fortawesome/pro-light-svg-icons'
 
 import { localeText } from '../agGridLocaleText'
 
-export const Grid = ({ rowData, columnDefs }) => {
+export const Grid = ({ name, rowData, columnDefs }) => {
     const [gridApi, setGridApi] = useState(null)
     const [filterValue, setFilterValue] = useState('')
 
@@ -15,33 +25,44 @@ export const Grid = ({ rowData, columnDefs }) => {
     }, [filterValue, gridApi])
 
     return (
-        <Row>
-            <Col className="mb-4">
-                <InputGroup>
-                    <OverlayTrigger
-                        placement="top"
-                        delay={{ show: 50, hide: 150 }}
-                        overlay={(props) => <Tooltip {...props}>Effacer le filtre</Tooltip>}
-                    >
-                        <Button variant="outline-danger" size="lg" onClick={() => setFilterValue('')}>
-                            <FontAwesomeIcon icon={faFilterCircleXmark} />
-                        </Button>
-                    </OverlayTrigger>
-                    <FloatingLabel label="Rechercher" className="grid-search-label">
-                        <FormControl
-                            placeholder="Rechercher..."
-                            aria-label="Rechercher..."
-                            aria-describedby="rechercher"
-                            value={filterValue}
-                            onChange={({ target }) => setFilterValue(target.value)}
-                        />
-                    </FloatingLabel>
-                </InputGroup>
-            </Col>
-            <div className="ag-theme-alpine general-grid page mx-auto mb-4">
+        <>
+            <Container fluid>
+                <Row>
+                    <Col>
+                        <h1 className="mt-4">{name}</h1>
+                    </Col>
+                    <Col className="d-flex align-items-center">
+                        <InputGroup className="justify-content-end">
+                            <OverlayTrigger
+                                placement="top"
+                                delay={{ show: 50, hide: 150 }}
+                                overlay={(props) => <Tooltip {...props}>Effacer le filtre</Tooltip>}
+                            >
+                                <Button variant="outline-danger" size="lg" onClick={() => setFilterValue('')}>
+                                    <FontAwesomeIcon icon={faFilterCircleXmark} />
+                                </Button>
+                            </OverlayTrigger>
+                            <FloatingLabel label="Rechercher" className="grid-search-label">
+                                <FormControl
+                                    placeholder="Rechercher..."
+                                    aria-label="Rechercher..."
+                                    aria-describedby="rechercher"
+                                    value={filterValue}
+                                    onChange={({ target }) => setFilterValue(target.value)}
+                                />
+                            </FloatingLabel>
+                        </InputGroup>
+                    </Col>
+                </Row>
+            </Container>
+            <div className="ag-theme-alpine general-grid">
                 <AgGridReact
                     {...{
-                        sideBar: true,
+                        sideBar: {
+                            toolPanels: ['columns', 'filters'],
+                            defaultToolPanel: false,
+                            hiddenByDefault: false,
+                        },
                         enableCharts: true,
                         enableRangeSelection: true,
                         enableCellChangeFlash: true,
@@ -50,6 +71,7 @@ export const Grid = ({ rowData, columnDefs }) => {
                         animateRows: true,
                         groupIncludeFooter: true,
                         groupSelectsChildren: true,
+                        suppressAggFuncInHeader: true,
                         debug: true,
                         rowSelection: 'multiple',
                         rowGroupPanelShow: 'always',
@@ -92,6 +114,6 @@ export const Grid = ({ rowData, columnDefs }) => {
                     }}
                 />
             </div>
-        </Row>
+        </>
     )
 }
