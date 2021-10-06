@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Container } from 'react-bootstrap'
 
 import { Grid, StatusChangeModal } from '../components'
 import { fetchInscriptionsAction, updateInscriptionStatusAction } from '../actions/inscriptions.ts'
-import { inscriptionsSelector } from '../reducers'
+import { inscriptionsSelector, loadingSelector } from '../reducers'
 
 export function InscriptionsPage() {
     const dispatch = useDispatch()
     const [statusChangeData, setStatusChangeData] = useState(null)
     const inscriptions = useSelector(inscriptionsSelector)
+    const isSagaLoading = useSelector(loadingSelector)
 
     useEffect(() => {
         dispatch(fetchInscriptionsAction())
@@ -78,7 +78,7 @@ export function InscriptionsPage() {
         <>
             <Grid name="Inscriptions" columnDefs={columnDefs} rowData={rowData} />
 
-            {statusChangeData && (
+            {statusChangeData || isSagaLoading ? (
                 <StatusChangeModal
                     closeModal={() => setStatusChangeData(null)}
                     statusChangeData={statusChangeData}
@@ -88,11 +88,15 @@ export function InscriptionsPage() {
                                 inscriptionId: statusChangeData.id,
                                 newStatus: statusChangeData.newStatus,
                                 emailTemplateName,
+                                successCallback: () => {
+                                    setStatusChangeData(null)
+                                    dispatch(fetchInscriptionsAction())
+                                },
                             })
                         )
                     }
                 />
-            )}
+            ) : null}
         </>
     )
 }

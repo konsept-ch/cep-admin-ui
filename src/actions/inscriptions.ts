@@ -14,11 +14,13 @@ export const updateInscriptionStatusAction = ({
     inscriptionId,
     newStatus,
     emailTemplateName,
+    successCallback,
 }: {
     inscriptionId: any
     newStatus: any
     emailTemplateName: any
+    successCallback: any
 }) => ({
     type: UPDATE_INSCRIPTIONS,
-    payload: { inscriptionId, newStatus, emailTemplateName },
+    payload: { inscriptionId, newStatus, emailTemplateName, successCallback },
 })

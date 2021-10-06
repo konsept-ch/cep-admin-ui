@@ -2,6 +2,7 @@ import { call, takeEvery, put } from 'redux-saga/effects'
 
 import { FETCH_INSCRIPTIONS, UPDATE_INSCRIPTIONS } from '../constants/inscriptions'
 import { setInscriptionsAction } from '../actions/inscriptions'
+import { setLoadingAction } from '../actions/loading'
 import { callService } from './sagaUtils'
 
 function* fetchInscriptionsSaga() {
@@ -10,7 +11,9 @@ function* fetchInscriptionsSaga() {
     yield put(setInscriptionsAction({ inscriptions }))
 }
 
-function* updateInscriptionsSaga({ payload: { inscriptionId, newStatus, emailTemplateName } }) {
+function* updateInscriptionsSaga({ payload: { inscriptionId, newStatus, emailTemplateName, successCallback } }) {
+    yield put(setLoadingAction({ loading: true }))
+
     yield call(callService, {
         endpoint: `inscriptions/${inscriptionId}`,
         options: {
@@ -21,6 +24,10 @@ function* updateInscriptionsSaga({ payload: { inscriptionId, newStatus, emailTem
             body: JSON.stringify({ status: newStatus, emailTemplateName }),
         },
     })
+
+    yield put(setLoadingAction({ loading: false }))
+
+    successCallback()
 }
 
 export function* inscriptionsSaga() {

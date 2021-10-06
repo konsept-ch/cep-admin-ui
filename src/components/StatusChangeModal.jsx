@@ -1,11 +1,12 @@
 import { useState } from 'react'
-import { Modal, Button, Card, ListGroup, Alert } from 'react-bootstrap'
+import { Modal, Button, Card, ListGroup, Alert, Spinner } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
-import { parametersSelector } from '../reducers'
+import { parametersSelector, loadingSelector } from '../reducers'
 
 export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }) => {
     const [selectedTemplateData, setSelectedTemplateData] = useState(null)
     const parameters = useSelector(parametersSelector)
+    const isSagaLoading = useSelector(loadingSelector)
 
     const emailTemplates = parameters.emailTemplates[statusChangeData.newStatus]
 
@@ -90,11 +91,16 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                 <Button
                     variant="primary"
                     onClick={() => {
-                        closeModal()
                         updateStatus({ emailTemplateName: selectedTemplateData?.name })
                     }}
                 >
-                    Confirmer
+                    {isSagaLoading ? (
+                        <>
+                            <Spinner animation="grow" size="sm" /> Confirmer...
+                        </>
+                    ) : (
+                        'Confirmer'
+                    )}
                 </Button>
                 <Button
                     variant="secondary"
