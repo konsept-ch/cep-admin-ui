@@ -45,6 +45,19 @@
     li::before {
         content: none;
     }
+
+    .form-check {
+        padding-left: 0;
+    }
+
+    .btn {
+        margin-bottom: 10px;
+    }
+}
+
+.collapse-horizontal,
+.collapsing.collapse-horizontal {
+    height: 100%;
 }
 
 .fc-toolbar {
@@ -123,8 +136,4 @@
 
 .expand-controller {
     padding-right: 5px;
-}
-
-.collapse.show .form-check {
-    padding-left: 0;
 }
