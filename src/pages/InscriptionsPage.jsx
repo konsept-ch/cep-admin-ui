@@ -75,10 +75,9 @@ export function InscriptionsPage() {
     }))
 
     return (
-        <Container fluid>
-            <h1 className="mt-3">Inscriptions</h1>
+        <>
+            <Grid name="Inscriptions" columnDefs={columnDefs} rowData={rowData} />
 
-            <Grid columnDefs={columnDefs} rowData={rowData} />
             {statusChangeData && (
                 <StatusChangeModal
                     closeModal={() => setStatusChangeData(null)}
@@ -93,6 +92,6 @@ export function InscriptionsPage() {
                     }
                 />
             )}
-        </Container>
+        </>
     )
 }
