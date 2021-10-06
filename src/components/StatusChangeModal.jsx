@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import { Modal, Button, Card, ListGroup } from 'react-bootstrap'
+import { Modal, Button, Card, ListGroup, Alert } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 import { parametersSelector } from '../reducers'
 
 export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }) => {
-    const [selectedTemplate, setSelectedTemplate] = useState(null)
+    const [selectedTemplateData, setSelectedTemplateData] = useState(null)
     const parameters = useSelector(parametersSelector)
 
     const emailTemplates = parameters.emailTemplates[statusChangeData.newStatus]
@@ -32,7 +32,11 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                     <hr />
                     <dl>
                         <dt>Nom du participant</dt>
-                        <dd>{statusChangeData.date}</dd>
+                        <dd>{statusChangeData.user.name}</dd>
+                        <dt>E-mail du participant</dt>
+                        <dd>
+                            <a href={`mailto:${statusChangeData.user.email}`}>{statusChangeData.user.email}</a>
+                        </dd>
                         <dt>Profession du participant</dt>
                         <dd>(à faire)</dd>
                     </dl>
@@ -47,22 +51,24 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                     </dl>
                 </div>
                 <div className="col">
-                    <dl>
-                        <dt>Nouveau statut</dt>
-                        <dd>{statusChangeData.newStatus}</dd>
-                    </dl>
+                    <Alert variant="primary">
+                        <h6>Nouveau statut</h6>
+                        <Alert.Heading as="h3" className="mb-0">
+                            {statusChangeData.newStatus}
+                        </Alert.Heading>
+                    </Alert>
                     <h6>Choix de template</h6>
                     <Card>
                         {emailTemplates.length > 0 ? (
                             <ListGroup variant="flush">
-                                <ListGroup.Item onClick={() => setSelectedTemplate(null)}>
+                                <ListGroup.Item onClick={() => setSelectedTemplateData(null)}>
                                     <dl>
                                         <dt>Aucun e-mail</dt>
                                         <dd>Aucun e-mail ne sera envoyé</dd>
                                     </dl>
                                 </ListGroup.Item>
                                 {emailTemplates.map(({ name, description, template }) => (
-                                    <ListGroup.Item onClick={() => setSelectedTemplate(template)}>
+                                    <ListGroup.Item onClick={() => setSelectedTemplateData({ template, name })}>
                                         <dl>
                                             <dt>Nom</dt>
                                             <dd>{name}</dd>
@@ -77,7 +83,7 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                 </div>
                 <div className="col template-preview">
                     <h6>Aperçu de l'e-mail</h6>
-                    {selectedTemplate ?? 'Aucun e-mail ne sera envoyé'}
+                    {selectedTemplateData !== null ? selectedTemplateData.template : 'Aucun e-mail ne sera envoyé'}
                 </div>
             </Modal.Body>
             <Modal.Footer>
@@ -85,7 +91,7 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                     variant="primary"
                     onClick={() => {
                         closeModal()
-                        updateStatus()
+                        updateStatus({ emailTemplateName: selectedTemplateData?.name })
                     }}
                 >
                     Confirmer

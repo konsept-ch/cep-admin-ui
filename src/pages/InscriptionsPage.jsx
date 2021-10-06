@@ -83,11 +83,12 @@ export function InscriptionsPage() {
                 <StatusChangeModal
                     closeModal={() => setStatusChangeData(null)}
                     statusChangeData={statusChangeData}
-                    updateStatus={() =>
+                    updateStatus={({ emailTemplateName }) =>
                         dispatch(
                             updateInscriptionStatusAction({
                                 inscriptionId: statusChangeData.id,
                                 newStatus: statusChangeData.newStatus,
+                                emailTemplateName,
                             })
                         )
                     }
