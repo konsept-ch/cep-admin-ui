@@ -121,15 +121,36 @@ export const AgendaPage = () => {
                                     <span
                                         className="bulk-select"
                                         onClick={() => {
-                                            // setAllRoomsExpanded(!isAllRoomsExpanded)
+                                            const allRoomsSelected = rooms.filter(
+                                                ({ location }) =>
+                                                    location?.name === 'CEP' ||
+                                                    location?.name === 'CEP ZOOM' ||
+                                                    location?.name !== 'CEP' ||
+                                                    location?.name !== 'CEP ZOOM'
+                                            )
+                                            const areAllRoomsSelected = allRoomsSelected.every(
+                                                ({ id }) => selectedRooms[id] === true
+                                            )
+                                            setSelectedRooms({
+                                                ...selectedRooms,
+                                                ...allRoomsSelected.reduce(
+                                                    (allRooms, { id }) => ({
+                                                        ...allRooms,
+                                                        [id]: !areAllRoomsSelected,
+                                                    }),
+                                                    {}
+                                                ),
+                                            })
                                         }}
                                     >
-                                        {true ? (
+                                        {rooms
+                                            .filter(({ location }) => location?.name === 'CEP')
+                                            .every(({ id }) => selectedRooms[id] === true) ? (
                                             <FontAwesomeIcon icon={faEye} />
                                         ) : (
                                             <FontAwesomeIcon icon={faEyeSlash} />
                                         )}
-                                    </span>
+                                    </span>{' '}
                                     Toutes salles
                                     <ul className={`collapse ${isAllRoomsExpanded ? 'show' : ''}`}>
                                         <li>
@@ -148,15 +169,33 @@ export const AgendaPage = () => {
                                             <span
                                                 className="bulk-select"
                                                 onClick={() => {
-                                                    // setAllRoomsExpanded(!isAllRoomsExpanded)
+                                                    const internalRooms = rooms.filter(
+                                                        ({ location }) =>
+                                                            location?.name === 'CEP' || location?.name === 'CEP ZOOM'
+                                                    )
+                                                    const areAllInternalRoomsSelected = internalRooms.every(
+                                                        ({ id }) => selectedRooms[id] === true
+                                                    )
+                                                    setSelectedRooms({
+                                                        ...selectedRooms,
+                                                        ...internalRooms.reduce(
+                                                            (allRooms, { id }) => ({
+                                                                ...allRooms,
+                                                                [id]: !areAllInternalRoomsSelected,
+                                                            }),
+                                                            {}
+                                                        ),
+                                                    })
                                                 }}
                                             >
-                                                {true ? (
+                                                {rooms
+                                                    .filter(({ location }) => location?.name === 'CEP')
+                                                    .every(({ id }) => selectedRooms[id] === true) ? (
                                                     <FontAwesomeIcon icon={faEye} />
                                                 ) : (
                                                     <FontAwesomeIcon icon={faEyeSlash} />
                                                 )}
-                                            </span>
+                                            </span>{' '}
                                             Internes
                                             <ul className={`collapse ${isInternalRoomsExpanded ? 'show' : ''}`}>
                                                 <li>
@@ -200,7 +239,7 @@ export const AgendaPage = () => {
                                                         ) : (
                                                             <FontAwesomeIcon icon={faEyeSlash} />
                                                         )}
-                                                    </span>
+                                                    </span>{' '}
                                                     Physiques
                                                     <ul className={`collapse ${isPhysicalRoomsExpanded ? 'show' : ''}`}>
                                                         {rooms
@@ -249,7 +288,7 @@ export const AgendaPage = () => {
                                                         ) : (
                                                             <FontAwesomeIcon icon={faEyeSlash} />
                                                         )}
-                                                    </span>
+                                                    </span>{' '}
                                                     Virtuelles
                                                     <ul className={`collapse ${isVirtualRoomsExpanded ? 'show' : ''}`}>
                                                         {rooms
@@ -304,7 +343,7 @@ export const AgendaPage = () => {
                                                 ) : (
                                                     <FontAwesomeIcon icon={faEyeSlash} />
                                                 )}
-                                            </span>
+                                            </span>{' '}
                                             Externes
                                             <ul className={`collapse ${isExternalRoomsExpanded ? 'show' : ''}`}>
                                                 {rooms
@@ -317,43 +356,6 @@ export const AgendaPage = () => {
                                             </ul>
                                         </li>
                                     </ul>
-                                </div>
-                                <div className="bulk-selection">
-                                    <Button
-                                        variant="outline-primary"
-                                        onClick={selectAllRooms}
-                                        active={rooms.every(({ id }) => selectedRooms[id] === true)}
-                                    >
-                                        Toutes salles ({rooms.length})
-                                    </Button>{' '}
-                                    <Button
-                                        variant="outline-primary"
-                                        onClick={unselectAllRooms}
-                                        active={!Object.values(selectedRooms).includes(true)}
-                                    >
-                                        Aucune
-                                    </Button>{' '}
-                                    <Button variant="outline-primary" onClick={inverseAllRooms}>
-                                        Inverse
-                                    </Button>{' '}
-                                    <Button
-                                        variant="outline-primary"
-                                        onClick={selectZoomRooms}
-                                        active={rooms
-                                            .filter(({ capacity }) => capacity === 0)
-                                            .every(({ id }) => selectedRooms[id] === true)}
-                                    >
-                                        + Zoom
-                                    </Button>{' '}
-                                    <Button
-                                        variant="outline-primary"
-                                        onClick={removeZoomRooms}
-                                        active={rooms
-                                            .filter(({ capacity }) => capacity === 0)
-                                            .every(({ id }) => selectedRooms[id] === false)}
-                                    >
-                                        - Zoom
-                                    </Button>
                                 </div>
                             </div>
                         </div>
