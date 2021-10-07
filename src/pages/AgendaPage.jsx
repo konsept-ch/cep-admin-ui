@@ -224,10 +224,27 @@ export const AgendaPage = () => {
                                                     <span
                                                         className="bulk-select"
                                                         onClick={() => {
-                                                            // setAllRoomsExpanded(!isAllRoomsExpanded)
+                                                            const virtualRooms = rooms.filter(
+                                                                ({ location }) => location?.name === 'CEP ZOOM'
+                                                            )
+                                                            const areAllVirtualRoomsSelected = virtualRooms.every(
+                                                                ({ id }) => selectedRooms[id] === true
+                                                            )
+                                                            setSelectedRooms({
+                                                                ...selectedRooms,
+                                                                ...virtualRooms.reduce(
+                                                                    (allRooms, { id }) => ({
+                                                                        ...allRooms,
+                                                                        [id]: !areAllVirtualRoomsSelected,
+                                                                    }),
+                                                                    {}
+                                                                ),
+                                                            })
                                                         }}
                                                     >
-                                                        {true ? (
+                                                        {rooms
+                                                            .filter(({ location }) => location?.name === 'CEP ZOOM')
+                                                            .every(({ id }) => selectedRooms[id] === true) ? (
                                                             <FontAwesomeIcon icon={faEye} />
                                                         ) : (
                                                             <FontAwesomeIcon icon={faEyeSlash} />
@@ -258,10 +275,31 @@ export const AgendaPage = () => {
                                             <span
                                                 className="bulk-select"
                                                 onClick={() => {
-                                                    // setAllRoomsExpanded(!isAllRoomsExpanded)
+                                                    const externalRooms = rooms.filter(
+                                                        ({ location }) =>
+                                                            location?.name !== 'CEP' && location?.name !== 'CEP ZOOM'
+                                                    )
+                                                    const areAllExternalRoomsSelected = externalRooms.every(
+                                                        ({ id }) => selectedRooms[id] === true
+                                                    )
+                                                    setSelectedRooms({
+                                                        ...selectedRooms,
+                                                        ...externalRooms.reduce(
+                                                            (allRooms, { id }) => ({
+                                                                ...allRooms,
+                                                                [id]: !areAllExternalRoomsSelected,
+                                                            }),
+                                                            {}
+                                                        ),
+                                                    })
                                                 }}
                                             >
-                                                {true ? (
+                                                {rooms
+                                                    .filter(
+                                                        ({ location }) =>
+                                                            location?.name !== 'CEP' && location?.name !== 'CEP ZOOM'
+                                                    )
+                                                    .every(({ id }) => selectedRooms[id] === true) ? (
                                                     <FontAwesomeIcon icon={faEye} />
                                                 ) : (
                                                     <FontAwesomeIcon icon={faEyeSlash} />
