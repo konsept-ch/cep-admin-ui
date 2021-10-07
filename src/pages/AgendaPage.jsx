@@ -19,7 +19,7 @@ const markAllRoomsAsSelected = ({ rooms }) => rooms.reduce((allRooms, { id }) =>
 
 export const AgendaPage = () => {
     const { rooms, events } = useSelector(roomsAndEventsSelector)
-    const [selectedRooms, setSelectedRooms] = useState(markAllRoomsAsSelected({ rooms }))
+    const [selectedRooms, setSelectedRooms] = useState({})
     const dispatch = useDispatch()
     const [isRoomSelectionExpanded, setRoomSelectionExpanded] = useState(true)
     console.log(rooms) // to be deleted
@@ -118,6 +118,18 @@ export const AgendaPage = () => {
                                             <FontAwesomeIcon icon={faChevronRight} />
                                         )}
                                     </span>
+                                    <span
+                                        className="bulk-select"
+                                        onClick={() => {
+                                            // setAllRoomsExpanded(!isAllRoomsExpanded)
+                                        }}
+                                    >
+                                        {true ? (
+                                            <FontAwesomeIcon icon={faEye} />
+                                        ) : (
+                                            <FontAwesomeIcon icon={faEyeSlash} />
+                                        )}
+                                    </span>
                                     Toutes salles
                                     <ul className={`collapse ${isAllRoomsExpanded ? 'show' : ''}`}>
                                         <li>
@@ -133,6 +145,18 @@ export const AgendaPage = () => {
                                                     <FontAwesomeIcon icon={faChevronRight} />
                                                 )}
                                             </span>
+                                            <span
+                                                className="bulk-select"
+                                                onClick={() => {
+                                                    // setAllRoomsExpanded(!isAllRoomsExpanded)
+                                                }}
+                                            >
+                                                {true ? (
+                                                    <FontAwesomeIcon icon={faEye} />
+                                                ) : (
+                                                    <FontAwesomeIcon icon={faEyeSlash} />
+                                                )}
+                                            </span>
                                             Internes
                                             <ul className={`collapse ${isInternalRoomsExpanded ? 'show' : ''}`}>
                                                 <li>
@@ -146,6 +170,35 @@ export const AgendaPage = () => {
                                                             <FontAwesomeIcon icon={faChevronDown} />
                                                         ) : (
                                                             <FontAwesomeIcon icon={faChevronRight} />
+                                                        )}
+                                                    </span>
+                                                    <span
+                                                        className="bulk-select"
+                                                        onClick={() => {
+                                                            const physicalRooms = rooms.filter(
+                                                                ({ location }) => location?.name === 'CEP'
+                                                            )
+                                                            const areAllPhysicalRoomsSelected = physicalRooms.every(
+                                                                ({ id }) => selectedRooms[id] === true
+                                                            )
+                                                            setSelectedRooms({
+                                                                ...selectedRooms,
+                                                                ...physicalRooms.reduce(
+                                                                    (allRooms, { id }) => ({
+                                                                        ...allRooms,
+                                                                        [id]: !areAllPhysicalRoomsSelected,
+                                                                    }),
+                                                                    {}
+                                                                ),
+                                                            })
+                                                        }}
+                                                    >
+                                                        {rooms
+                                                            .filter(({ location }) => location?.name === 'CEP')
+                                                            .every(({ id }) => selectedRooms[id] === true) ? (
+                                                            <FontAwesomeIcon icon={faEye} />
+                                                        ) : (
+                                                            <FontAwesomeIcon icon={faEyeSlash} />
                                                         )}
                                                     </span>
                                                     Physiques
@@ -168,6 +221,18 @@ export const AgendaPage = () => {
                                                             <FontAwesomeIcon icon={faChevronRight} />
                                                         )}
                                                     </span>
+                                                    <span
+                                                        className="bulk-select"
+                                                        onClick={() => {
+                                                            // setAllRoomsExpanded(!isAllRoomsExpanded)
+                                                        }}
+                                                    >
+                                                        {true ? (
+                                                            <FontAwesomeIcon icon={faEye} />
+                                                        ) : (
+                                                            <FontAwesomeIcon icon={faEyeSlash} />
+                                                        )}
+                                                    </span>
                                                     Virtuelles
                                                     <ul className={`collapse ${isVirtualRoomsExpanded ? 'show' : ''}`}>
                                                         {rooms
@@ -188,6 +253,18 @@ export const AgendaPage = () => {
                                                     <FontAwesomeIcon icon={faChevronDown} />
                                                 ) : (
                                                     <FontAwesomeIcon icon={faChevronRight} />
+                                                )}
+                                            </span>
+                                            <span
+                                                className="bulk-select"
+                                                onClick={() => {
+                                                    // setAllRoomsExpanded(!isAllRoomsExpanded)
+                                                }}
+                                            >
+                                                {true ? (
+                                                    <FontAwesomeIcon icon={faEye} />
+                                                ) : (
+                                                    <FontAwesomeIcon icon={faEyeSlash} />
                                                 )}
                                             </span>
                                             Externes

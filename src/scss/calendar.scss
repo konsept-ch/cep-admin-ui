@@ -38,16 +38,13 @@
     width: 300px;
     overflow-y: auto;
 
-    ul {
+    ul,
+    .form-check {
         padding-left: 20px;
     }
 
     li::before {
         content: none;
-    }
-
-    .form-check {
-        padding-left: 0;
     }
 
     .btn {
