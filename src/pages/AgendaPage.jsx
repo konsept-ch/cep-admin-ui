@@ -121,19 +121,12 @@ export const AgendaPage = () => {
                                     <span
                                         className="bulk-select"
                                         onClick={() => {
-                                            const allRoomsSelected = rooms.filter(
-                                                ({ location }) =>
-                                                    location?.name === 'CEP' ||
-                                                    location?.name === 'CEP ZOOM' ||
-                                                    location?.name !== 'CEP' ||
-                                                    location?.name !== 'CEP ZOOM'
-                                            )
-                                            const areAllRoomsSelected = allRoomsSelected.every(
+                                            const areAllRoomsSelected = rooms.every(
                                                 ({ id }) => selectedRooms[id] === true
                                             )
                                             setSelectedRooms({
                                                 ...selectedRooms,
-                                                ...allRoomsSelected.reduce(
+                                                ...rooms.reduce(
                                                     (allRooms, { id }) => ({
                                                         ...allRooms,
                                                         [id]: !areAllRoomsSelected,
