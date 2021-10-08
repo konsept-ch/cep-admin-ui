@@ -6,12 +6,19 @@ import { HelmetProvider, Helmet } from 'react-helmet-async'
 import { InscriptionsPage } from './pages/InscriptionsPage'
 import { SurveyPage } from './pages/SurveyPage'
 import { SessionsPage } from './pages/SessionsPage'
+import { CoursesPage } from './pages/CoursesPage'
 import { AgendaPage } from './pages/AgendaPage'
 import { TypographyPage } from './pages/TypographyPage'
 import { NotificationsPage } from './pages/NotificationsPage'
 import { Navigation } from './components'
 import { Footer } from './components/Footer'
-import { PATH_INSCRIPTIONS, PATH_SESSIONS, PATH_AGENDA, PATH_NOTIFICATIONS } from './constants/constants'
+import {
+    PATH_INSCRIPTIONS,
+    PATH_SESSIONS,
+    PATH_AGENDA,
+    PATH_NOTIFICATIONS,
+    PATH_FORMATIONS,
+} from './constants/constants'
 import { fetchParametersAction } from './actions/parameters'
 import { ErrorBoundary } from './pages/ErrorBoundaryPage'
 
@@ -40,6 +47,9 @@ export function App() {
                         </Route>
                         <Route exact path={PATH_SESSIONS}>
                             <SessionsPage />
+                        </Route>
+                        <Route exact path={PATH_FORMATIONS}>
+                            <CoursesPage />
                         </Route>
                         <Route exact path={PATH_NOTIFICATIONS}>
                             <NotificationsPage />
