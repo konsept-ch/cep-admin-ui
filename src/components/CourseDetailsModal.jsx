@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Modal, Button, Form, FloatingLabel, Row, Col } from 'react-bootstrap'
 import { v4 as uuidv4 } from 'uuid'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faUp, faUpLong, faDown, faDownLong } from '@fortawesome/pro-solid-svg-icons'
 
 export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
     const generateDefaultEvent = () => ({ id: uuidv4(), type: 'f2f', title: 'test title', description: 'test desc' })
@@ -23,11 +25,12 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
                 <Row>
                     <Col sm={4}>
                         <h4>Construction du déroulement</h4>
-                        {events.map(({ id, type, title, description }) => (
+                        {events.map(({ id, type, title, description }, eventOrder) => (
                             <Form key={id} className="mb-4">
                                 <Row>
                                     <Col sm={2}>
                                         <Button
+                                            className="d-block mb-3"
                                             variant="danger"
                                             onClick={() =>
                                                 setEvents((previousEvents) =>
@@ -37,6 +40,58 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
                                         >
                                             Effacer
                                         </Button>
+                                        {events.length > 1 && (
+                                            <>
+                                                {eventOrder !== 0 && (
+                                                    <Button
+                                                        className="d-block mb-1"
+                                                        variant="primary"
+                                                        onClick={() =>
+                                                            setEvents((previousEvents) => {
+                                                                const copyOfPreviousEvents = [...previousEvents]
+                                                                const from = eventOrder
+                                                                const to = eventOrder - 1
+                                                                const on = 1
+
+                                                                copyOfPreviousEvents.splice(
+                                                                    to,
+                                                                    0,
+                                                                    ...copyOfPreviousEvents.splice(from, on)
+                                                                )
+
+                                                                return copyOfPreviousEvents
+                                                            })
+                                                        }
+                                                    >
+                                                        <FontAwesomeIcon icon={faUp} />
+                                                    </Button>
+                                                )}
+                                                {eventOrder !== events.length - 1 && (
+                                                    <Button
+                                                        className="d-block"
+                                                        variant="primary"
+                                                        onClick={() =>
+                                                            setEvents((previousEvents) => {
+                                                                const copyOfPreviousEvents = [...previousEvents]
+                                                                const from = eventOrder
+                                                                const to = eventOrder + 1
+                                                                const on = 1
+
+                                                                copyOfPreviousEvents.splice(
+                                                                    to,
+                                                                    0,
+                                                                    ...copyOfPreviousEvents.splice(from, on)
+                                                                )
+
+                                                                return copyOfPreviousEvents
+                                                            })
+                                                        }
+                                                    >
+                                                        <FontAwesomeIcon icon={faDown} />
+                                                    </Button>
+                                                )}
+                                            </>
+                                        )}
                                     </Col>
                                     <Col sm={10}>
                                         <FloatingLabel controlId="title" label="Titre" className="mb-3">
@@ -72,7 +127,7 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
                             </Form>
                         ))}
                         <Button
-                            variant="primary"
+                            variant="success"
                             onClick={() => setEvents((previousEvents) => [...previousEvents, generateDefaultEvent()])}
                         >
                             Ajouter
