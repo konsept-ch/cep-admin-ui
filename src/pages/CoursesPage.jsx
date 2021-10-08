@@ -64,9 +64,10 @@ export function CoursesPage() {
         },
         {
             field: 'hidden',
-            headerName: 'Cachée',
+            headerName: 'Visibilité',
             filter: 'agSetColumnFilter',
             headerTooltip: 'Est-ce que la formation est cachée',
+            valueGetter: ({ data: { hidden } }) => (hidden ? 'Cachée' : 'Visible'),
         },
     ]
 

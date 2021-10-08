@@ -1,17 +1,13 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Container, InputGroup, FormControl, Button, Col } from 'react-bootstrap'
 
 import { fetchSessionsAction } from '../actions/sessions.ts'
 import { sessionsSelector } from '../reducers'
-
 import { Grid } from '../components'
-// import { callService } from '../utils'
 
 export function SessionsPage() {
     const dispatch = useDispatch()
     const sessions = useSelector(sessionsSelector)
-    const rowData = null
 
     console.log(sessions)
 
@@ -21,43 +17,61 @@ export function SessionsPage() {
 
     const columnDefs = [
         {
-            headerName: 'Participant',
-            field: 'participant',
+            field: 'name',
+            headerName: 'Titre de la session',
+            filter: 'agTextColumnFilter',
+            headerTooltip: 'Le nom de la session',
         },
         {
-            headerName: 'Fonction/Profession',
-            field: 'profession',
+            field: 'code',
+            headerName: 'Code',
+            filter: 'agTextColumnFilter',
+            headerTooltip: 'Le code de la formation',
         },
         {
-            headerName: 'Session',
-            field: 'session',
+            field: 'duration',
+            headerName: 'Durée',
+            filter: 'agNumberColumnFilter',
+            headerTooltip: 'La durée de la formation',
         },
         {
-            headerName: 'Statut',
-            field: 'status',
+            field: 'price',
+            headerName: 'Coût',
+            filter: 'agNumberColumnFilter',
+            headerTooltip: 'Le prix de la formation',
         },
         {
-            headerName: 'Date de début',
-            field: 'startDate',
+            field: 'creationDate',
+            headerName: 'Date de création',
+            filter: 'agDateColumnFilter',
+            headerTooltip: 'La date de création de la formation',
+        },
+        {
+            field: 'lastModifiedDate',
+            headerName: 'Dernière modification',
+            filter: 'agDateColumnFilter',
+            headerTooltip: 'La date de la dernière modification',
+        },
+        {
+            field: 'hidden',
+            headerName: 'Visibilité',
+            filter: 'agSetColumnFilter',
+            headerTooltip: 'Est-ce que la formation est cachée',
+            valueGetter: ({ data: { hidden } }) => (hidden ? 'Cachée' : 'Visible'),
         },
     ]
 
-    return (
-        <Container fluid>
-            <h1 className="mt-3">Sessions</h1>
-            <Col md="6">
-                <InputGroup className="mb-4">
-                    <FormControl
-                        placeholder="participant/formation/statut/date/... "
-                        aria-label="participant/formation/statut/date/... "
-                        aria-describedby="basic-addon2"
-                    />
-                    <Button variant="primary" id="button-addon2">
-                        Rechercher
-                    </Button>
-                </InputGroup>
-            </Col>
-            <Grid columnDefs={columnDefs} rowData={rowData} />
-        </Container>
+    const rowData = sessions?.map(
+        ({ name, code, restrictions: { hidden }, pricing: { price }, meta: { created, updated, duration } }) => ({
+            name,
+            code,
+            duration,
+            price,
+            creationDate: created,
+            lastModifiedDate: updated,
+            hidden,
+        })
     )
+
+    return <Grid name="Sessions" columnDefs={columnDefs} rowData={rowData} />
 }
