@@ -106,7 +106,7 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
                                             <Form.Control
                                                 as="textarea"
                                                 placeholder="Description de la séance"
-                                                style={{ height: '200px' }}
+                                                style={{ height: '100px' }}
                                                 value={description}
                                                 onChange={onChangeEventField({ fieldName: 'description', id })}
                                             />
