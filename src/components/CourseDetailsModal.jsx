@@ -1,15 +1,16 @@
 import { useState } from 'react'
 import { Modal, Button, Form, FloatingLabel, Row, Col } from 'react-bootstrap'
+import { v4 as uuidv4 } from 'uuid'
 
 export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
-    const defaultEvent = { type: 'f2f', title: 'test title', description: 'test desc' }
-    const [events, setEvents] = useState([defaultEvent])
+    const generateDefaultEvent = () => ({ id: uuidv4(), type: 'f2f', title: 'test title', description: 'test desc' })
+    const [events, setEvents] = useState([generateDefaultEvent()])
     const onChangeEventField =
-        ({ fieldName, eventOrder }) =>
+        ({ fieldName, id }) =>
         ({ target: { value } }) =>
             setEvents((previousEvents) =>
-                previousEvents.map((previousEvent, previousEventOrder) =>
-                    previousEventOrder === eventOrder ? { ...previousEvent, [fieldName]: value } : previousEvent
+                previousEvents.map((previousEvent) =>
+                    previousEvent.id === id ? { ...previousEvent, [fieldName]: value } : previousEvent
                 )
             )
 
@@ -22,17 +23,15 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
                 <Row>
                     <Col sm={4}>
                         <h4>Construction du déroulement</h4>
-                        {events.map(({ type, title, description }, eventOrder) => (
-                            <Form key={title} className="mb-4">
+                        {events.map(({ id, type, title, description }) => (
+                            <Form key={id} className="mb-4">
                                 <Row>
                                     <Col sm={2}>
                                         <Button
                                             variant="danger"
                                             onClick={() =>
                                                 setEvents((previousEvents) =>
-                                                    previousEvents.filter(
-                                                        (_, previousEventOrder) => eventOrder !== previousEventOrder
-                                                    )
+                                                    previousEvents.filter(({ id: previousId }) => previousId !== id)
                                                 )
                                             }
                                         >
@@ -45,7 +44,7 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
                                                 type="text"
                                                 placeholder="Titre de la séance"
                                                 value={title}
-                                                onChange={onChangeEventField({ fieldName: 'title', eventOrder })}
+                                                onChange={onChangeEventField({ fieldName: 'title', id })}
                                             />
                                         </FloatingLabel>
                                         <FloatingLabel controlId="description" label="Description" className="mb-3">
@@ -54,14 +53,14 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
                                                 placeholder="Description de la séance"
                                                 style={{ height: '200px' }}
                                                 value={description}
-                                                onChange={onChangeEventField({ fieldName: 'description', eventOrder })}
+                                                onChange={onChangeEventField({ fieldName: 'description', id })}
                                             />
                                         </FloatingLabel>
                                         <FloatingLabel controlId="type" label="Type de séance" className="mb-3">
                                             <Form.Select
                                                 aria-label="Type de séance"
                                                 value={type}
-                                                onChange={onChangeEventField({ fieldName: 'type', eventOrder })}
+                                                onChange={onChangeEventField({ fieldName: 'type', id })}
                                             >
                                                 <option value="f2f">En salle</option>
                                                 <option value="sync">En ligne - Synchronne (en salle virtuelle)</option>
@@ -74,7 +73,7 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
                         ))}
                         <Button
                             variant="primary"
-                            onClick={() => setEvents((previousEvents) => [...previousEvents, defaultEvent])}
+                            onClick={() => setEvents((previousEvents) => [...previousEvents, generateDefaultEvent()])}
                         >
                             Ajouter
                         </Button>
