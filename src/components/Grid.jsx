@@ -16,7 +16,7 @@ import { faFilterCircleXmark } from '@fortawesome/pro-light-svg-icons'
 
 import { localeText } from '../agGridLocaleText'
 
-export const Grid = ({ name, rowData, columnDefs }) => {
+export const Grid = ({ name, ...gridProps }) => {
     const [gridApi, setGridApi] = useState(null)
     const [filterValue, setFilterValue] = useState('')
 
@@ -106,11 +106,10 @@ export const Grid = ({ name, rowData, columnDefs }) => {
                             'export',
                             'chartRange',
                         ],
-                        columnDefs,
-                        rowData,
                         localeText,
                         onFirstDataRendered: ({ columnApi }) => columnApi.autoSizeAllColumns(),
                         onGridReady: ({ api }) => setGridApi(api),
+                        ...gridProps,
                     }}
                 />
             </div>

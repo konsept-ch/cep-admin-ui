@@ -1,7 +1,7 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { Grid } from '../components'
+import { Grid, CourseDetailsModal } from '../components'
 import { fetchCoursesAction } from '../actions/courses.ts'
 import { coursesSelector } from '../reducers'
 
@@ -73,6 +73,7 @@ export function CoursesPage() {
 
     const rowData = courses?.map(
         ({
+            id,
             name,
             code,
             restrictions: { hidden },
@@ -81,6 +82,7 @@ export function CoursesPage() {
             // coordinator,
             // responsible,
         }) => ({
+            id,
             name,
             code,
             duration,
@@ -93,5 +95,25 @@ export function CoursesPage() {
         })
     )
 
-    return <Grid name="Courses" columnDefs={columnDefs} rowData={rowData} />
+    const [selectedCourseId, setSelectedCourseId] = useState()
+
+    return (
+        <>
+            <Grid
+                {...{
+                    name: 'Courses',
+                    columnDefs,
+                    rowData,
+                    onRowDoubleClicked: ({ data: { id } }) => console.log(id) || setSelectedCourseId(id),
+                }}
+            />
+
+            {typeof selectedCourseId !== 'undefined' ? (
+                <CourseDetailsModal
+                    closeModal={() => setSelectedCourseId()}
+                    courseDetailsData={courses.find(({ id }) => id === selectedCourseId)}
+                />
+            ) : null}
+        </>
+    )
 }
