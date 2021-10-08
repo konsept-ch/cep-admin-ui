@@ -34,7 +34,9 @@ export const AgendaPage = () => {
     }, [])
 
     useEffect(() => {
-        setSelectedRooms(rooms.reduce((allRooms, { id, capacity }) => ({ ...allRooms, [id]: capacity > 0 }), {}))
+        setSelectedRooms(
+            rooms.reduce((allRooms, { id, location }) => ({ ...allRooms, [id]: location?.name === 'CEP' }), {})
+        )
     }, [rooms])
 
     const selectAllRooms = () => setSelectedRooms(markAllRoomsAsSelected({ rooms }))
@@ -136,9 +138,7 @@ export const AgendaPage = () => {
                                             })
                                         }}
                                     >
-                                        {rooms
-                                            .filter(({ location }) => location?.name === 'CEP')
-                                            .every(({ id }) => selectedRooms[id] === true) ? (
+                                        {rooms.every(({ id }) => selectedRooms[id] === true) ? (
                                             <FontAwesomeIcon icon={faEye} />
                                         ) : (
                                             <FontAwesomeIcon icon={faEyeSlash} />
