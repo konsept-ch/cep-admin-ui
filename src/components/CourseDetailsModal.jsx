@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUp, faUpLong, faDown, faDownLong } from '@fortawesome/pro-solid-svg-icons'
 
 export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
-    const generateDefaultEvent = () => ({ id: uuidv4(), type: 'f2f', title: 'test title', description: 'test desc' })
+    const generateDefaultEvent = () => ({ id: uuidv4(), type: 'f2f', title: '', description: '' })
     const [events, setEvents] = useState([generateDefaultEvent()])
     const onChangeEventField =
         ({ fieldName, id }) =>
@@ -139,8 +139,9 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
                         {events.map(({ type, title, description }) => (
                             <div>
                                 <hr />
-                                <p>{type}</p>
-                                <p>{title}</p>
+                                {type === 'f2f' && <h5>{title}</h5>}
+                                {type === 'sync' && <h6>{title}</h6>}
+                                {type === 'async' && <h4>{title}</h4>}
                                 <p>{description}</p>
                             </div>
                         ))}
