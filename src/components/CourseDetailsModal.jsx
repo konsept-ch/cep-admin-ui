@@ -94,7 +94,7 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
                                         )}
                                     </Col>
                                     <Col sm={10}>
-                                        <FloatingLabel controlId="title" label="Titre" className="mb-3">
+                                        <FloatingLabel controlId="title" label="Titre" className="mb-2">
                                             <Form.Control
                                                 type="text"
                                                 placeholder="Titre de la séance"
@@ -102,7 +102,7 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
                                                 onChange={onChangeEventField({ fieldName: 'title', id })}
                                             />
                                         </FloatingLabel>
-                                        <FloatingLabel controlId="description" label="Description" className="mb-3">
+                                        <FloatingLabel controlId="description" label="Description" className="mb-2">
                                             <Form.Control
                                                 as="textarea"
                                                 placeholder="Description de la séance"
@@ -111,7 +111,7 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
                                                 onChange={onChangeEventField({ fieldName: 'description', id })}
                                             />
                                         </FloatingLabel>
-                                        <FloatingLabel controlId="type" label="Type de séance" className="mb-3">
+                                        <FloatingLabel controlId="type" label="Type de séance" className="mb-2">
                                             <Form.Select
                                                 aria-label="Type de séance"
                                                 value={type}
@@ -124,6 +124,7 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
                                         </FloatingLabel>
                                     </Col>
                                 </Row>
+                                <hr />
                             </Form>
                         ))}
                         <Button
@@ -137,6 +138,7 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
                         <h4>Prévisualisation de la description</h4>
                         {events.map(({ type, title, description }) => (
                             <div>
+                                <hr />
                                 <p>{type}</p>
                                 <p>{title}</p>
                                 <p>{description}</p>
