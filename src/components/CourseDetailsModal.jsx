@@ -2,8 +2,7 @@ import { useState } from 'react'
 import { Modal, Button, Form, FloatingLabel, Row, Col } from 'react-bootstrap'
 import { v4 as uuidv4 } from 'uuid'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUp, faUpLong, faDown, faDownLong } from '@fortawesome/pro-solid-svg-icons'
-import { callService } from '../saga/sagaUtils'
+import { faUp, faDown } from '@fortawesome/pro-solid-svg-icons'
 import { MIDDLEWARE_URL } from '../constants/config'
 
 export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
@@ -159,33 +158,12 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
 
                         const splitComment = '<!-- AUTO -->'
 
-                        const headingType = ({ type }) =>
-                            ({
-                                f2f: 'h5',
-                                sync: 'h6',
-                                async: 'h4',
-                            }[type])
-
                         const mapEventTypeToClassName = ({ type }) =>
                             ({
                                 f2f: 'presence-course',
                                 sync: 'online-sync',
                                 async: 'online-async',
                             }[type])
-
-                        const printHeading = ({ type, title }) =>
-                            `<${headingType({ type })}>${title}</${headingType({ type })}>`
-
-                        const textToAppend = `${splitComment}${events
-                            .map(
-                                ({ type, title, description }) =>
-                                    `<div>
-                                <hr />
-                                ${printHeading({ type, title })}
-                                <p>${description}</p>
-                            </div>`
-                            )
-                            .join('')}`
 
                         const programText = `${splitComment}
                         <!-- START Resume section-->
@@ -226,7 +204,7 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
                             ${events
                                 .map(
                                     ({ type, title, description }, eventOrder) =>
-                                        `<div class=${mapEventTypeToClassName({ type })}>
+                                        `<div class="${mapEventTypeToClassName({ type })}">
                                       <div class="day-counter">jour ${eventOrder + 1}/${events.length}</div>
                                       <div class="content-holder">
                                         <div class="heading-holder">
@@ -242,19 +220,15 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
                                 .join('')}
                         </div>`
 
-                        const body = JSON.stringify({
-                            ...courseJson,
-                            description: `${courseJson.description.split(splitComment)[0]}${programText}`,
-                        })
-                        console.log(courseJson, body)
                         const savedCourseResponse = await fetch(
                             `${MIDDLEWARE_URL}/saveCourseById/${courseDetailsData.id}`,
                             {
                                 method: 'put',
-                                headers: {
-                                    'content-type': 'application/json',
-                                },
-                                body,
+                                headers: { 'content-type': 'application/json' },
+                                body: JSON.stringify({
+                                    ...courseJson,
+                                    description: `${courseJson.description.split(splitComment)[0]}${programText}`,
+                                }),
                             }
                         )
                         console.log(savedCourseResponse)
