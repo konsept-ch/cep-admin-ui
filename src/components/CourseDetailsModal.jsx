@@ -4,10 +4,23 @@ import { v4 as uuidv4 } from 'uuid'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUp, faDown } from '@fortawesome/pro-solid-svg-icons'
 import { MIDDLEWARE_URL } from '../constants/config'
+import { mapClassNameToEventType, mapEventTypeToClassName } from '../utils'
 
 export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
     const generateDefaultEvent = () => ({ id: uuidv4(), type: 'f2f', title: '', description: '' })
-    const [events, setEvents] = useState([generateDefaultEvent()])
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(courseDetailsData.description, 'text/html')
+
+    const existingHtmlNodes = doc.querySelectorAll('.courses-list > div')
+
+    const existing = Array.from(existingHtmlNodes).map((courseItemNode) => ({
+        id: uuidv4(),
+        type: mapClassNameToEventType({ className: courseItemNode.className }),
+        title: courseItemNode.querySelector('h2').innerText,
+        description: courseItemNode.querySelector('p').innerText,
+    }))
+    const [events, setEvents] = useState(existing)
+
     const onChangeEventField =
         ({ fieldName, id }) =>
         ({ target: { value } }) =>
@@ -157,13 +170,6 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
                         const courseJson = await courseData.json()
 
                         const splitComment = '<!-- AUTO -->'
-
-                        const mapEventTypeToClassName = ({ type }) =>
-                            ({
-                                f2f: 'presence-course',
-                                sync: 'online-sync',
-                                async: 'online-async',
-                            }[type])
 
                         const programText = `${splitComment}
                         <!-- START Resume section-->
