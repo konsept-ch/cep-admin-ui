@@ -157,12 +157,32 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
                         const courseData = await fetch(`${MIDDLEWARE_URL}/courseBySlug/${courseDetailsData.slug}`)
                         const courseJson = await courseData.json()
 
+                        const splitComment = '<!-- AUTO -->'
+
+                        const headingType = ({ type }) =>
+                            ({
+                                f2f: 'h5',
+                                sync: 'h6',
+                                async: 'h4',
+                            }[type])
+
+                        const printHeading = ({ type, title }) =>
+                            `<${headingType({ type })}>${title}</${headingType({ type })}>`
+
+                        const textToAppend = `${splitComment}${events
+                            .map(
+                                ({ type, title, description }) =>
+                                    `<div>
+                                <hr />
+                                ${printHeading({ type, title })}
+                                <p>${description}</p>
+                            </div>`
+                            )
+                            .join('')}`
+
                         const body = JSON.stringify({
                             ...courseJson,
-                            description: `${courseJson.description}
-
-                            <p>test append</p>
-                            `,
+                            description: `${courseJson.description.split(splitComment)[0]}${textToAppend}`,
                         })
                         console.log(courseJson, body)
                         const savedCourseResponse = await fetch(
