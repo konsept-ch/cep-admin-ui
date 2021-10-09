@@ -1,0 +1,348 @@
+.course-resume {
+    background-image: url('images/resume.jpg');
+    background-position: bottom 15px left 15px;
+    background-repeat: no-repeat;
+    background-size: 95px auto;
+    text-align: left;
+
+    @media (max-width: 745px) {
+        background-position: center left 15px;
+    }
+
+    h3 {
+        text-transform: uppercase;
+        font-size: 20px;
+        line-height: 23.6px;
+        font-weight: 900;
+        margin-top: 0;
+    }
+
+    h4 {
+        text-transform: uppercase;
+        font-size: 16px;
+        line-height: 18.8px;
+        font-weight: 900;
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+
+    h5 {
+        text-transform: lowercase;
+        font-size: 16px;
+        line-height: 18.8px;
+        font-weight: 700;
+        color: #6a615b;
+        margin-top: 0;
+        margin-bottom: 10px;
+    }
+
+    h6 {
+        text-transform: uppercase;
+        font-size: 12px;
+        line-height: 14px;
+        font-weight: 900;
+        color: #a59f9b;
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+}
+
+.info-holder {
+    padding: 25px 25px 25px 130px;
+}
+
+.course-durations {
+    display: flex;
+    flex-direction: column;
+
+    @media (min-width: 745px) {
+        flex-direction: row;
+    }
+}
+
+.duration-holder {
+    display: flex;
+    flex-direction: column;
+
+    @media (min-width: 745px) {
+        flex-direction: row;
+    }
+
+    .dur-first-label,
+    .dur-label {
+        font-size: 12px;
+        line-height: 14px;
+        font-weight: 700;
+    }
+
+    .dur-info {
+        font-size: 12px;
+        line-height: 14px;
+        font-weight: 400;
+    }
+
+    .dur-first-label::before {
+        display: none;
+    }
+
+    .dur-label::before {
+        content: '| ';
+        font-size: 12px;
+        line-height: 14px;
+        font-weight: 700;
+
+        @media (max-width: 745px) {
+            display: none;
+        }
+    }
+
+    .dur-first-label::after,
+    .dur-label::after,
+    .dur-info::after {
+        content: '\00a0';
+    }
+}
+
+.course-type {
+    display: none;
+}
+
+@media (min-width: 745px) {
+    .course-type {
+        display: flex;
+        justify-content: space-around;
+
+        h3 {
+            text-transform: uppercase;
+            font-size: 24px;
+            line-height: 28.8px;
+            color: #78a5b6;
+            font-weight: 300;
+        }
+    }
+}
+
+.courses-list {
+    display: block;
+    text-align: left;
+
+    .presence-course,
+    .conclusion-course {
+        width: 100%;
+        padding-bottom: 25px;
+        border-right: 0;
+
+        &:last-child {
+            padding-bottom: 0;
+        }
+
+        .day-counter {
+            display: flex;
+            justify-content: flex-end;
+            box-shadow: 0 10px 0 0 #e6ca11;
+            padding-right: 0;
+        }
+
+        .content-holder {
+            margin-right: 0;
+        }
+
+        .heading-holder {
+            background-color: #fef6bb;
+            background-image: url('images/presence-course.svg');
+
+            h2::after {
+                content: 'En Salle';
+                display: block;
+                text-transform: uppercase;
+                text-align: center;
+                font-size: 24px;
+                line-height: 28.8px;
+                color: #78a5b6;
+                font-weight: 300;
+                padding-top: 8px;
+            }
+        }
+
+        .description-holder {
+            background-color: #fffdeb;
+            white-space: pre-wrap;
+        }
+    }
+
+    .online-sync,
+    .online-async {
+        width: 100%;
+        padding-bottom: 25px;
+        box-shadow: none;
+
+        &:last-child {
+            padding-bottom: 0;
+        }
+
+        .day-counter {
+            display: flex;
+            justify-content: flex-end;
+            padding-left: 0;
+        }
+
+        .heading-holder {
+            h2::after {
+                content: 'En Ligne';
+                display: block;
+                text-transform: uppercase;
+                text-align: center;
+                font-size: 24px;
+                line-height: 28.8px;
+                color: #78a5b6;
+                font-weight: 300;
+                padding-top: 8px;
+            }
+        }
+
+        .content-holder {
+            margin-left: 0;
+        }
+    }
+
+    .online-sync {
+        .heading-holder {
+            background-image: url('images/online-sync.svg');
+            background-color: #d6e4e9;
+        }
+
+        .day-counter {
+            box-shadow: 0 10px 0 0 #5a8799;
+        }
+
+        .description-holder {
+            background-color: #f1f6f7;
+        }
+    }
+
+    .online-async {
+        .heading-holder {
+            background-image: url('images/online-async.svg');
+            background-color: #e4e2e1;
+        }
+
+        .day-counter {
+            box-shadow: 0 10px 0 0 #6a615b;
+        }
+
+        .description-holder {
+            background-color: #f0efef;
+        }
+    }
+
+    .day-counter {
+        font-size: 24px;
+        line-height: 24px;
+        font-weight: 300;
+        color: #a59f9b;
+    }
+
+    .heading-holder {
+        display: flex;
+        min-height: 140px;
+        margin-top: 10px;
+        background-position: center top 15px;
+        background-repeat: no-repeat;
+        background-size: 95px auto;
+        padding: 15px;
+
+        @media (max-width: 745px) {
+            justify-content: center;
+        }
+
+        h2 {
+            font-size: 24px;
+            line-height: 27px;
+            font-weight: 400;
+            margin-top: 10px;
+            margin-bottom: 0;
+            padding: 100px 0 0;
+            align-self: center;
+            color: #6a615b;
+        }
+    }
+
+    .description-holder {
+        padding: 25px 25px 25px 15px;
+
+        h3 {
+            text-transform: uppercase;
+            color: #a59f9b;
+            font-size: 18px;
+            line-height: 21.6px;
+            font-weight: 900;
+            margin: 0;
+            padding-bottom: 15px;
+        }
+
+        p {
+            color: #6a615b;
+            font-size: 12px;
+            line-height: 16px;
+            font-weight: 300;
+            margin: 0;
+        }
+    }
+}
+
+@media (min-width: 745px) {
+    .courses-list {
+        display: flex;
+        flex-flow: column;
+
+        .presence-course,
+        .conclusion-course {
+            max-width: 50%;
+            border-right: 2px solid #78a5b6;
+
+            .day-counter {
+                padding-right: 14px;
+            }
+
+            .heading-holder {
+                h2::after {
+                    display: none;
+                }
+            }
+
+            .content-holder {
+                margin-right: 14px;
+            }
+        }
+
+        .online-sync,
+        .online-async {
+            max-width: 50%;
+            align-self: flex-end;
+            box-shadow: -1.9px 0 0 0 #78a5b6;
+
+            .day-counter {
+                justify-content: flex-start;
+                padding-left: 14px;
+            }
+
+            .heading-holder {
+                h2::after {
+                    display: none;
+                }
+            }
+
+            .content-holder {
+                margin-left: 14px;
+            }
+        }
+
+        .heading-holder {
+            background-position: center left 15px;
+
+            h2 {
+                padding: 0 0 0 125px;
+            }
+        }
+    }
+}

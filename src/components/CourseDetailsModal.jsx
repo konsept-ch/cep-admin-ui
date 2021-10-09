@@ -42,18 +42,10 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
                         {events.map(({ id, type, title, description }, eventOrder) => (
                             <Form key={id} className="mb-4">
                                 <Row>
-                                    <Col sm={2}>
-                                        <Button
-                                            className="d-block mb-3"
-                                            variant="danger"
-                                            onClick={() =>
-                                                setEvents((previousEvents) =>
-                                                    previousEvents.filter(({ id: previousId }) => previousId !== id)
-                                                )
-                                            }
-                                        >
-                                            Effacer
-                                        </Button>
+                                    <Col sm={3}>
+                                        <p>
+                                            Jour {eventOrder + 1}/{events.length}
+                                        </p>
                                         {events.length > 1 && (
                                             <>
                                                 {eventOrder !== 0 && (
@@ -106,8 +98,19 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
                                                 )}
                                             </>
                                         )}
+                                        <Button
+                                            className="d-block mt-3"
+                                            variant="danger"
+                                            onClick={() =>
+                                                setEvents((previousEvents) =>
+                                                    previousEvents.filter(({ id: previousId }) => previousId !== id)
+                                                )
+                                            }
+                                        >
+                                            Supprimer
+                                        </Button>
                                     </Col>
-                                    <Col sm={10}>
+                                    <Col sm={9}>
                                         <FloatingLabel controlId="title" label="Titre" className="mb-2">
                                             <Form.Control
                                                 type="text"
@@ -150,15 +153,56 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
                     </Col>
                     <Col sm={8}>
                         <h4>Prévisualisation de la description</h4>
-                        {events.map(({ type, title, description }) => (
-                            <div>
-                                <hr />
-                                {type === 'f2f' && <h5>{title}</h5>}
-                                {type === 'sync' && <h6>{title}</h6>}
-                                {type === 'async' && <h4>{title}</h4>}
-                                <p>{description}</p>
+                        <div class="course-resume">
+                            <div class="info-holder">
+                                <h3>résumé</h3>
+                                <h4>durée totale</h4>
+                                <h5>{events.length} jours</h5>
+                                <h6>dont</h6>
+                                <div class="course-durations">
+                                    <div class="duration-holder">
+                                        <p class="dur-first-label">Présentiel:&nbsp;</p>
+                                        <p class="dur-info">
+                                            {events.filter(({ type }) => type === 'f2f').length} jours &nbsp;
+                                        </p>
+                                    </div>
+                                    <div class="duration-holder">
+                                        <p class="dur-label">Synchrone:&nbsp;</p>
+                                        <p class="dur-info">
+                                            {events.filter(({ type }) => type === 'sync').length} jours &nbsp;
+                                        </p>
+                                    </div>
+                                    <div class="duration-holder">
+                                        <p class="dur-label">Asynchrone:&nbsp;</p>
+                                        <p class="dur-info">
+                                            {events.filter(({ type }) => type === 'async').length} jours &nbsp;
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
-                        ))}
+                        </div>
+                        <div class="course-type">
+                            <h3>En salle</h3>
+                            <h3>En ligne</h3>
+                        </div>
+                        <div class="courses-list">
+                            {events.map(({ type, title, description }, eventOrder) => (
+                                <div class={mapEventTypeToClassName({ type })}>
+                                    <div class="day-counter">
+                                        jour {eventOrder + 1}/{events.length}
+                                    </div>
+                                    <div class="content-holder">
+                                        <div class="heading-holder">
+                                            <h2>{title}</h2>
+                                        </div>
+                                        <div class="description-holder">
+                                            <h3>Description</h3>
+                                            <p>{description}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </Col>
                 </Row>
             </Modal.Body>
@@ -189,13 +233,13 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
                               <div class="duration-holder">
                                 <p class="dur-label">Synchrone:&nbsp;</p>
                                 <p class="dur-info">${
-                                    events.filter(({ type }) => type === 'f2f').length
+                                    events.filter(({ type }) => type === 'sync').length
                                 } jours &nbsp;</p>
                               </div>
                               <div class="duration-holder">
                                 <p class="dur-label">Asynchrone:&nbsp;</p>
                                 <p class="dur-info">${
-                                    events.filter(({ type }) => type === 'f2f').length
+                                    events.filter(({ type }) => type === 'async').length
                                 } jours &nbsp;</p>
                               </div>
                             </div>
