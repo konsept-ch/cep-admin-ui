@@ -166,6 +166,13 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
                                 async: 'h4',
                             }[type])
 
+                        const mapEventTypeToClassName = ({ type }) =>
+                            ({
+                                f2f: 'presence-course',
+                                sync: 'online-sync',
+                                async: 'online-async',
+                            }[type])
+
                         const printHeading = ({ type, title }) =>
                             `<${headingType({ type })}>${title}</${headingType({ type })}>`
 
@@ -180,9 +187,64 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
                             )
                             .join('')}`
 
+                        const programText = `${splitComment}
+                        <!-- START Resume section-->
+                        <div class="course-resume">
+                          <div class="info-holder">
+                            <h3>résumé</h3>
+                            <h4>durée totale</h4>
+                            <h5>${events.length} jours</h5>
+                            <h6>dont</h6>
+                            <div class="course-durations">
+                              <div class="duration-holder">
+                                <p class="dur-first-label">Présentiel:&nbsp;</p>
+                                <p class="dur-info">${
+                                    events.filter(({ type }) => type === 'f2f').length
+                                } jours &nbsp;</p>
+                              </div>
+                              <div class="duration-holder">
+                                <p class="dur-label">Synchrone:&nbsp;</p>
+                                <p class="dur-info">${
+                                    events.filter(({ type }) => type === 'f2f').length
+                                } jours &nbsp;</p>
+                              </div>
+                              <div class="duration-holder">
+                                <p class="dur-label">Asynchrone:&nbsp;</p>
+                                <p class="dur-info">${
+                                    events.filter(({ type }) => type === 'f2f').length
+                                } jours &nbsp;</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- END Resume section-->
+                        <div class="course-type">
+                          <h3>En salle</h3>
+                          <h3>En ligne</h3>
+                        </div>
+                        <div class="courses-list">
+                            ${events
+                                .map(
+                                    ({ type, title, description }, eventOrder) =>
+                                        `<div class=${mapEventTypeToClassName({ type })}>
+                                      <div class="day-counter">jour ${eventOrder + 1}/${events.length}</div>
+                                      <div class="content-holder">
+                                        <div class="heading-holder">
+                                          <h2>${title}</h2>
+                                        </div>
+                                        <div class="description-holder">
+                                          <h3>Description</h3>
+                                          <p>${description}</p>
+                                        </div>
+                                      </div>
+                                    </div>`
+                                )
+                                .join('')}
+                        </div>`
+
                         const body = JSON.stringify({
                             ...courseJson,
-                            description: `${courseJson.description.split(splitComment)[0]}${textToAppend}`,
+                            description: `${courseJson.description.split(splitComment)[0]}${programText}`,
                         })
                         console.log(courseJson, body)
                         const savedCourseResponse = await fetch(
