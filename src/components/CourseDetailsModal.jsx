@@ -3,6 +3,8 @@ import { Modal, Button, Form, FloatingLabel, Row, Col } from 'react-bootstrap'
 import { v4 as uuidv4 } from 'uuid'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUp, faUpLong, faDown, faDownLong } from '@fortawesome/pro-solid-svg-icons'
+import { callService } from '../saga/sagaUtils'
+import { MIDDLEWARE_URL } from '../constants/config'
 
 export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
     const generateDefaultEvent = () => ({ id: uuidv4(), type: 'f2f', title: '', description: '' })
@@ -149,7 +151,35 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
                 </Row>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="primary">Confirmer</Button>
+                <Button
+                    variant="primary"
+                    onClick={async () => {
+                        const courseData = await fetch(`${MIDDLEWARE_URL}/courseBySlug/${courseDetailsData.slug}`)
+                        const courseJson = await courseData.json()
+
+                        const body = JSON.stringify({
+                            ...courseJson,
+                            description: `${courseJson.description}
+
+                            <p>test append</p>
+                            `,
+                        })
+                        console.log(courseJson, body)
+                        const savedCourseResponse = await fetch(
+                            `${MIDDLEWARE_URL}/saveCourseById/${courseDetailsData.id}`,
+                            {
+                                method: 'put',
+                                headers: {
+                                    'content-type': 'application/json',
+                                },
+                                body,
+                            }
+                        )
+                        console.log(savedCourseResponse)
+                    }}
+                >
+                    Confirmer
+                </Button>
                 <Button variant="secondary" onClick={closeModal}>
                     Annuler
                 </Button>
