@@ -5,6 +5,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUp, faDown } from '@fortawesome/pro-solid-svg-icons'
 import { MIDDLEWARE_URL } from '../constants/config'
 import { mapClassNameToEventType, mapEventTypeToClassName } from '../utils'
+import { splitComment } from '../constants/constants'
+import { RichEditor } from './RichEditor'
 
 export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
     const generateDefaultEvent = () => ({ id: uuidv4(), type: 'f2f', title: '', description: '' })
@@ -36,6 +38,11 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
                 <Modal.Title as="h3">Formation : {courseDetailsData.name}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
+                <Row>
+                    <Col>
+                        <RichEditor initialText={courseDetailsData.description?.split(splitComment)[0]} />
+                    </Col>
+                </Row>
                 <Row>
                     <Col sm={4}>
                         <h4>Construction du déroulement</h4>
@@ -212,8 +219,6 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
                     onClick={async () => {
                         const courseData = await fetch(`${MIDDLEWARE_URL}/courseBySlug/${courseDetailsData.slug}`)
                         const courseJson = await courseData.json()
-
-                        const splitComment = '<!-- AUTO -->'
 
                         const programText = `${splitComment}
                         <!-- START Resume section-->

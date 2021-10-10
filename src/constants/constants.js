@@ -5,3 +5,5 @@ export const PATH_SESSIONS = '/sessions'
 export const PATH_FORMATIONS = '/formations'
 export const PATH_AGENDA = '/agenda'
 export const PATH_NOTIFICATIONS = '/notifications'
+
+export const splitComment = '<!-- AUTO -->'
