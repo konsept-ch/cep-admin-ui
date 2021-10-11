@@ -51,7 +51,7 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
                                 <Row>
                                     <Col sm={3}>
                                         <p>
-                                            Jour {eventOrder + 1}/{events.length}
+                                            Étape {eventOrder + 1}/{events.length}
                                         </p>
                                         {events.length > 1 && (
                                             <>
@@ -164,25 +164,25 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
                             <div class="info-holder">
                                 <h3>résumé</h3>
                                 <h4>durée totale</h4>
-                                <h5>{events.length} jours</h5>
+                                <h5>{events.length} étapes</h5>
                                 <h6>dont</h6>
                                 <div class="course-durations">
                                     <div class="duration-holder">
                                         <p class="dur-first-label">Présentiel:&nbsp;</p>
                                         <p class="dur-info">
-                                            {events.filter(({ type }) => type === 'f2f').length} jours &nbsp;
+                                            {events.filter(({ type }) => type === 'f2f').length} étape(s) &nbsp;
                                         </p>
                                     </div>
                                     <div class="duration-holder">
                                         <p class="dur-label">Synchrone:&nbsp;</p>
                                         <p class="dur-info">
-                                            {events.filter(({ type }) => type === 'sync').length} jours &nbsp;
+                                            {events.filter(({ type }) => type === 'sync').length} étape(s) &nbsp;
                                         </p>
                                     </div>
                                     <div class="duration-holder">
                                         <p class="dur-label">Asynchrone:&nbsp;</p>
                                         <p class="dur-info">
-                                            {events.filter(({ type }) => type === 'async').length} jours &nbsp;
+                                            {events.filter(({ type }) => type === 'async').length} étape(s) &nbsp;
                                         </p>
                                     </div>
                                 </div>
@@ -196,7 +196,7 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
                             {events.map(({ type, title, description }, eventOrder) => (
                                 <div class={mapEventTypeToClassName({ type })}>
                                     <div class="day-counter">
-                                        jour {eventOrder + 1}/{events.length}
+                                        étape {eventOrder + 1}/{events.length}
                                     </div>
                                     <div class="content-holder">
                                         <div class="heading-holder">
@@ -226,26 +226,26 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
                           <div class="info-holder">
                             <h3>résumé</h3>
                             <h4>durée totale</h4>
-                            <h5>${events.length} jours</h5>
+                            <h5>${events.length} étapes</h5>
                             <h6>dont</h6>
                             <div class="course-durations">
                               <div class="duration-holder">
                                 <p class="dur-first-label">Présentiel:&nbsp;</p>
                                 <p class="dur-info">${
                                     events.filter(({ type }) => type === 'f2f').length
-                                } jours &nbsp;</p>
+                                } étapes &nbsp;</p>
                               </div>
                               <div class="duration-holder">
                                 <p class="dur-label">Synchrone:&nbsp;</p>
                                 <p class="dur-info">${
                                     events.filter(({ type }) => type === 'sync').length
-                                } jours &nbsp;</p>
+                                } étapes &nbsp;</p>
                               </div>
                               <div class="duration-holder">
                                 <p class="dur-label">Asynchrone:&nbsp;</p>
                                 <p class="dur-info">${
                                     events.filter(({ type }) => type === 'async').length
-                                } jours &nbsp;</p>
+                                } étapes &nbsp;</p>
                               </div>
                             </div>
                           </div>
@@ -260,7 +260,7 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
                                 .map(
                                     ({ type, title, description }, eventOrder) =>
                                         `<div class="${mapEventTypeToClassName({ type })}">
-                                      <div class="day-counter">jour ${eventOrder + 1}/${events.length}</div>
+                                      <div class="day-counter">étape ${eventOrder + 1}/${events.length}</div>
                                       <div class="content-holder">
                                         <div class="heading-holder">
                                           <h2>${title}</h2>
