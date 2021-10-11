@@ -7,8 +7,9 @@ import { MIDDLEWARE_URL } from '../constants/config'
 import { mapClassNameToEventType, mapEventTypeToClassName } from '../utils'
 import { splitComment } from '../constants/constants'
 import { RichEditor } from './RichEditor'
+import cogoToast from 'cogo-toast'
 
-export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
+export const CourseDetailsModal = ({ closeModal, courseDetailsData, onAfterSave }) => {
     const generateDefaultEvent = () => ({ id: uuidv4(), type: 'f2f', title: '', description: '' })
     const parser = new DOMParser()
     const doc = parser.parseFromString(courseDetailsData.description, 'text/html')
@@ -40,7 +41,9 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
             <Modal.Body>
                 <Row>
                     <Col>
-                        <RichEditor initialText={courseDetailsData.description?.split(splitComment)[0]} />
+                        {courseDetailsData.description?.split(splitComment)[0] && (
+                            <RichEditor initialText={courseDetailsData.description?.split(splitComment)[0]} />
+                        )}
                     </Col>
                 </Row>
                 <Row>
@@ -220,73 +223,87 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData }) => {
                         const courseData = await fetch(`${MIDDLEWARE_URL}/courseBySlug/${courseDetailsData.slug}`)
                         const courseJson = await courseData.json()
 
-                        const programText = `${splitComment}
-                        <!-- START Resume section-->
-                        <div class="course-resume">
-                          <div class="info-holder">
-                            <h3>résumé</h3>
-                            <h4>durée totale</h4>
-                            <h5>${events.length} étapes</h5>
-                            <h6>dont</h6>
-                            <div class="course-durations">
-                              <div class="duration-holder">
-                                <p class="dur-first-label">Présentiel:&nbsp;</p>
-                                <p class="dur-info">${
-                                    events.filter(({ type }) => type === 'f2f').length
-                                } étapes &nbsp;</p>
-                              </div>
-                              <div class="duration-holder">
-                                <p class="dur-label">Synchrone:&nbsp;</p>
-                                <p class="dur-info">${
-                                    events.filter(({ type }) => type === 'sync').length
-                                } étapes &nbsp;</p>
-                              </div>
-                              <div class="duration-holder">
-                                <p class="dur-label">Asynchrone:&nbsp;</p>
-                                <p class="dur-info">${
-                                    events.filter(({ type }) => type === 'async').length
-                                } étapes &nbsp;</p>
+                        console.log('compare', courseJson.description, courseDetailsData.description)
+
+                        if (courseJson.description !== courseDetailsData.description) {
+                            cogoToast.error(
+                                'Erreur ! Des modifications sur la même formation ont été faites directement dans Claroline, vous devriez refaire vos modifications.',
+                                { position: 'top-right' }
+                            )
+                            closeModal()
+                            return
+                        } else {
+                            const programText = `${splitComment}
+                            <!-- START Resume section-->
+                            <div class="course-resume">
+                              <div class="info-holder">
+                                <h3>résumé</h3>
+                                <h4>durée totale</h4>
+                                <h5>${events.length} étapes</h5>
+                                <h6>dont</h6>
+                                <div class="course-durations">
+                                  <div class="duration-holder">
+                                    <p class="dur-first-label">Présentiel:&nbsp;</p>
+                                    <p class="dur-info">${
+                                        events.filter(({ type }) => type === 'f2f').length
+                                    } étapes &nbsp;</p>
+                                  </div>
+                                  <div class="duration-holder">
+                                    <p class="dur-label">Synchrone:&nbsp;</p>
+                                    <p class="dur-info">${
+                                        events.filter(({ type }) => type === 'sync').length
+                                    } étapes &nbsp;</p>
+                                  </div>
+                                  <div class="duration-holder">
+                                    <p class="dur-label">Asynchrone:&nbsp;</p>
+                                    <p class="dur-info">${
+                                        events.filter(({ type }) => type === 'async').length
+                                    } étapes &nbsp;</p>
+                                  </div>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        </div>
-                        <!-- END Resume section-->
-                        <div class="course-type">
-                          <h3>En salle</h3>
-                          <h3>En ligne</h3>
-                        </div>
-                        <div class="courses-list">
-                            ${events
-                                .map(
-                                    ({ type, title, description }, eventOrder) =>
-                                        `<div class="${mapEventTypeToClassName({ type })}">
-                                      <div class="day-counter">étape ${eventOrder + 1}/${events.length}</div>
-                                      <div class="content-holder">
-                                        <div class="heading-holder">
-                                          <h2>${title}</h2>
-                                        </div>
-                                        <div class="description-holder">
-                                          <h3>Description</h3>
-                                          <p>${description}</p>
-                                        </div>
-                                      </div>
-                                    </div>`
-                                )
-                                .join('')}
-                        </div>`
+                            <!-- END Resume section-->
+                            <div class="course-type">
+                              <h3>En salle</h3>
+                              <h3>En ligne</h3>
+                            </div>
+                            <div class="courses-list">
+                                ${events
+                                    .map(
+                                        ({ type, title, description }, eventOrder) =>
+                                            `<div class="${mapEventTypeToClassName({ type })}">
+                                          <div class="day-counter">étape ${eventOrder + 1}/${events.length}</div>
+                                          <div class="content-holder">
+                                            <div class="heading-holder">
+                                              <h2>${title}</h2>
+                                            </div>
+                                            <div class="description-holder">
+                                              <h3>Description</h3>
+                                              <p>${description}</p>
+                                            </div>
+                                          </div>
+                                        </div>`
+                                    )
+                                    .join('')}
+                            </div>`
 
-                        const savedCourseResponse = await fetch(
-                            `${MIDDLEWARE_URL}/saveCourseById/${courseDetailsData.id}`,
-                            {
-                                method: 'put',
-                                headers: { 'content-type': 'application/json' },
-                                body: JSON.stringify({
-                                    ...courseJson,
-                                    description: `${courseJson.description.split(splitComment)[0]}${programText}`,
-                                }),
-                            }
-                        )
-                        console.log(savedCourseResponse)
+                            const savedCourseResponse = await fetch(
+                                `${MIDDLEWARE_URL}/saveCourseById/${courseDetailsData.id}`,
+                                {
+                                    method: 'put',
+                                    headers: { 'content-type': 'application/json' },
+                                    body: JSON.stringify({
+                                        ...courseJson,
+                                        description: `${courseJson.description.split(splitComment)[0]}${programText}`,
+                                    }),
+                                }
+                            )
+                            console.log(savedCourseResponse)
+                            cogoToast.success('Succès !', { position: 'top-right' })
+                        }
+
+                        onAfterSave()
                     }}
                 >
                     Confirmer

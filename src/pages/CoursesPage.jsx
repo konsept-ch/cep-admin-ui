@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { Grid, CourseDetailsModal } from '../components'
@@ -8,10 +8,11 @@ import { coursesSelector } from '../reducers'
 export function CoursesPage() {
     const dispatch = useDispatch()
     const courses = useSelector(coursesSelector)
+    const fetchCourses = useCallback(() => dispatch(fetchCoursesAction()), [dispatch])
 
     useEffect(() => {
-        dispatch(fetchCoursesAction())
-    }, [])
+        fetchCourses()
+    }, [fetchCourses])
 
     const columnDefs = [
         {
@@ -112,6 +113,7 @@ export function CoursesPage() {
                 <CourseDetailsModal
                     closeModal={() => setSelectedCourseId()}
                     courseDetailsData={courses.find(({ id }) => id === selectedCourseId)}
+                    onAfterSave={fetchCourses}
                 />
             ) : null}
         </>
