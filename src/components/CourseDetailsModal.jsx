@@ -227,8 +227,8 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData, onAfterSave 
 
                         if (courseJson.description !== courseDetailsData.description) {
                             cogoToast.error(
-                                'Erreur ! Des modifications sur la même formation ont été faites directement dans Claroline, vous devriez refaire vos modifications.',
-                                { position: 'top-right' }
+                                'Erreur ! Des modifications sur la même formation ont été faites directement dans Claroline, vous devriez refaire vos modifications, veuillez rafraîchir la page (bouton F5) avant de continuer.',
+                                { position: 'top-right', hideAfter: 0 }
                             )
                             closeModal()
                             return
