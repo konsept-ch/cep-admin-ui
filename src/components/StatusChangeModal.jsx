@@ -58,7 +58,7 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                             {statusChangeData.newStatus}
                         </Alert.Heading>
                     </Alert>
-                    <h6>Choix de template</h6>
+                    <h6>Choix de modèle</h6>
                     <Card>
                         {emailTemplates.length > 0 ? (
                             <ListGroup variant="flush">
