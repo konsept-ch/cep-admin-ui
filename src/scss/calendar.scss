@@ -50,6 +50,10 @@
     .btn {
         margin-bottom: 10px;
     }
+
+    .form-check input {
+        display: none;
+    }
 }
 
 .collapse-horizontal,
@@ -109,10 +113,6 @@
 
 .fc-event-main > i {
     font-style: normal;
-}
-
-.room-selection input {
-    display: none;
 }
 
 .svg-inline--fa.fa-w-18 {
