@@ -50,6 +50,14 @@
     .btn {
         margin-bottom: 10px;
     }
+
+    .form-check input {
+        display: none;
+    }
+
+    .cleanup-button {
+        margin-bottom: 0;
+    }
 }
 
 .collapse-horizontal,
@@ -111,8 +119,8 @@
     font-style: normal;
 }
 
-.room-selection input {
-    display: none;
+.svg-inline--fa.fa-w-10 {
+    width: 0.875em;
 }
 
 .svg-inline--fa.fa-w-18 {

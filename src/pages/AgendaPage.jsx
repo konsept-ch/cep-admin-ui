@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Container, Form, Button, Collapse } from 'react-bootstrap'
+import { Container, Form, Button, Collapse, InputGroup, FormControl, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
     faEye,
@@ -9,6 +9,7 @@ import {
     faArrowRightToLine,
     faChevronDown,
     faChevronRight,
+    faFilterCircleXmark,
 } from '@fortawesome/pro-solid-svg-icons'
 
 import { Calendar } from '../components'
@@ -28,6 +29,7 @@ export const AgendaPage = () => {
     const [isPhysicalRoomsExpanded, setPhysicalRoomsExpanded] = useState(true)
     const [isVirtualRoomsExpanded, setVirtualRoomsExpanded] = useState(true)
     const [isExternalRoomsExpanded, setExternalRoomsExpanded] = useState(true)
+    const [searchTerm, setSearchTerm] = useState('')
 
     useEffect(() => {
         dispatch(fetchAgendaAction())
@@ -38,39 +40,6 @@ export const AgendaPage = () => {
             rooms.reduce((allRooms, { id, location }) => ({ ...allRooms, [id]: location?.name === 'CEP' }), {})
         )
     }, [rooms])
-
-    const selectAllRooms = () => setSelectedRooms(markAllRoomsAsSelected({ rooms }))
-    const unselectAllRooms = () =>
-        setSelectedRooms(
-            Object.keys(selectedRooms).reduce((allRooms, roomId) => ({ ...allRooms, [roomId]: false }), {})
-        )
-    const inverseAllRooms = () =>
-        setSelectedRooms(
-            Object.keys(selectedRooms).reduce(
-                (allRooms, roomId) => ({ ...allRooms, [roomId]: !selectedRooms[roomId] }),
-                {}
-            )
-        )
-    const selectZoomRooms = () =>
-        setSelectedRooms(
-            Object.keys(selectedRooms).reduce(
-                (allRooms, roomId) => ({
-                    ...allRooms,
-                    [roomId]: rooms.find(({ id }) => id === roomId)?.capacity === 0 ? true : selectedRooms[roomId],
-                }),
-                {}
-            )
-        )
-    const removeZoomRooms = () =>
-        setSelectedRooms(
-            Object.keys(selectedRooms).reduce(
-                (allRooms, roomId) => ({
-                    ...allRooms,
-                    [roomId]: rooms.find(({ id }) => id === roomId)?.capacity === 0 ? false : selectedRooms[roomId],
-                }),
-                {}
-            )
-        )
 
     const onRoomCheckboxClick =
         ({ currentlySelectedRooms, id }) =>
@@ -94,11 +63,15 @@ export const AgendaPage = () => {
         </li>
     )
 
+    const handleSearch = (e) => setSearchTerm(e.target.value)
+
+    const searchedRooms = rooms.filter((room) => room.name.toLowerCase().includes(searchTerm.toLowerCase()))
+
     return (
         <div className="calendar-page mt-3">
             <Container fluid>
                 <Calendar
-                    resources={rooms.filter(({ id }) => selectedRooms[id])}
+                    resources={searchedRooms.filter(({ id }) => selectedRooms[id])}
                     events={events.filter(({ room: { id } }) => selectedRooms[id])}
                 />
             </Container>
@@ -108,6 +81,32 @@ export const AgendaPage = () => {
                         <div>
                             <div className="room-selection card card-body">
                                 <div>
+                                    <div>
+                                        <InputGroup className="mb-3">
+                                            <OverlayTrigger
+                                                placement="top"
+                                                delay={{ show: 50, hide: 150 }}
+                                                overlay={(props) => <Tooltip {...props}>Effacer le filtre</Tooltip>}
+                                            >
+                                                <Button
+                                                    variant="outline-danger"
+                                                    id="button-addon1"
+                                                    className="cleanup-button"
+                                                    onClick={() => setSearchTerm('')}
+                                                >
+                                                    <FontAwesomeIcon icon={faFilterCircleXmark} />
+                                                </Button>
+                                            </OverlayTrigger>
+                                            <FormControl
+                                                type="text"
+                                                value={searchTerm}
+                                                placeholder="Rechercher"
+                                                onChange={handleSearch}
+                                                aria-label="Rechercher"
+                                                aria-describedby="rechercher"
+                                            />
+                                        </InputGroup>
+                                    </div>
                                     <span
                                         className="expand-controller"
                                         onClick={() => {
@@ -123,12 +122,12 @@ export const AgendaPage = () => {
                                     <span
                                         className="bulk-select"
                                         onClick={() => {
-                                            const areAllRoomsSelected = rooms.every(
+                                            const areAllRoomsSelected = searchedRooms.every(
                                                 ({ id }) => selectedRooms[id] === true
                                             )
                                             setSelectedRooms({
                                                 ...selectedRooms,
-                                                ...rooms.reduce(
+                                                ...searchedRooms.reduce(
                                                     (allRooms, { id }) => ({
                                                         ...allRooms,
                                                         [id]: !areAllRoomsSelected,
@@ -138,7 +137,7 @@ export const AgendaPage = () => {
                                             })
                                         }}
                                     >
-                                        {rooms.every(({ id }) => selectedRooms[id] === true) ? (
+                                        {searchedRooms.every(({ id }) => selectedRooms[id] === true) ? (
                                             <FontAwesomeIcon icon={faEye} />
                                         ) : (
                                             <FontAwesomeIcon icon={faEyeSlash} />
@@ -162,7 +161,7 @@ export const AgendaPage = () => {
                                             <span
                                                 className="bulk-select"
                                                 onClick={() => {
-                                                    const internalRooms = rooms.filter(
+                                                    const internalRooms = searchedRooms.filter(
                                                         ({ location }) =>
                                                             location?.name === 'CEP' || location?.name === 'CEP ZOOM'
                                                     )
@@ -181,7 +180,7 @@ export const AgendaPage = () => {
                                                     })
                                                 }}
                                             >
-                                                {rooms
+                                                {searchedRooms
                                                     .filter(({ location }) => location?.name === 'CEP')
                                                     .every(({ id }) => selectedRooms[id] === true) ? (
                                                     <FontAwesomeIcon icon={faEye} />
@@ -207,7 +206,7 @@ export const AgendaPage = () => {
                                                     <span
                                                         className="bulk-select"
                                                         onClick={() => {
-                                                            const physicalRooms = rooms.filter(
+                                                            const physicalRooms = searchedRooms.filter(
                                                                 ({ location }) => location?.name === 'CEP'
                                                             )
                                                             const areAllPhysicalRoomsSelected = physicalRooms.every(
@@ -225,7 +224,7 @@ export const AgendaPage = () => {
                                                             })
                                                         }}
                                                     >
-                                                        {rooms
+                                                        {searchedRooms
                                                             .filter(({ location }) => location?.name === 'CEP')
                                                             .every(({ id }) => selectedRooms[id] === true) ? (
                                                             <FontAwesomeIcon icon={faEye} />
@@ -235,7 +234,7 @@ export const AgendaPage = () => {
                                                     </span>{' '}
                                                     Physiques
                                                     <ul className={`collapse ${isPhysicalRoomsExpanded ? 'show' : ''}`}>
-                                                        {rooms
+                                                        {searchedRooms
                                                             .filter((room) => room.location?.name === 'CEP')
                                                             .map(mapRoomsToCheckboxes)}
                                                     </ul>
@@ -256,7 +255,7 @@ export const AgendaPage = () => {
                                                     <span
                                                         className="bulk-select"
                                                         onClick={() => {
-                                                            const virtualRooms = rooms.filter(
+                                                            const virtualRooms = searchedRooms.filter(
                                                                 ({ location }) => location?.name === 'CEP ZOOM'
                                                             )
                                                             const areAllVirtualRoomsSelected = virtualRooms.every(
@@ -274,7 +273,7 @@ export const AgendaPage = () => {
                                                             })
                                                         }}
                                                     >
-                                                        {rooms
+                                                        {searchedRooms
                                                             .filter(({ location }) => location?.name === 'CEP ZOOM')
                                                             .every(({ id }) => selectedRooms[id] === true) ? (
                                                             <FontAwesomeIcon icon={faEye} />
@@ -284,7 +283,7 @@ export const AgendaPage = () => {
                                                     </span>{' '}
                                                     Virtuelles
                                                     <ul className={`collapse ${isVirtualRoomsExpanded ? 'show' : ''}`}>
-                                                        {rooms
+                                                        {searchedRooms
                                                             .filter((room) => room.location?.name === 'CEP ZOOM')
                                                             .map(mapRoomsToCheckboxes)}
                                                     </ul>
@@ -307,7 +306,7 @@ export const AgendaPage = () => {
                                             <span
                                                 className="bulk-select"
                                                 onClick={() => {
-                                                    const externalRooms = rooms.filter(
+                                                    const externalRooms = searchedRooms.filter(
                                                         ({ location }) =>
                                                             location?.name !== 'CEP' && location?.name !== 'CEP ZOOM'
                                                     )
@@ -326,7 +325,7 @@ export const AgendaPage = () => {
                                                     })
                                                 }}
                                             >
-                                                {rooms
+                                                {searchedRooms
                                                     .filter(
                                                         ({ location }) =>
                                                             location?.name !== 'CEP' && location?.name !== 'CEP ZOOM'
@@ -339,7 +338,7 @@ export const AgendaPage = () => {
                                             </span>{' '}
                                             Externes
                                             <ul className={`collapse ${isExternalRoomsExpanded ? 'show' : ''}`}>
-                                                {rooms
+                                                {searchedRooms
                                                     .filter(
                                                         (room) =>
                                                             room.location?.name !== 'CEP' &&
