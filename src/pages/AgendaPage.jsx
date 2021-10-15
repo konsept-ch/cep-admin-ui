@@ -16,11 +16,9 @@ import { Calendar } from '../components'
 import { fetchAgendaAction } from '../actions/agenda.ts'
 import { roomsAndEventsSelector } from '../reducers'
 
-const markAllRoomsAsSelected = ({ rooms }) => rooms.reduce((allRooms, { id }) => ({ ...allRooms, [id]: true }), {})
-
 export const AgendaPage = () => {
     const { rooms, events } = useSelector(roomsAndEventsSelector)
-    const [selectedRooms, setSelectedRooms] = useState({})
+    const [selectedRoomIds, setSelectedRoomIds] = useState({})
     const dispatch = useDispatch()
     const [isRoomSelectionExpanded, setRoomSelectionExpanded] = useState(true)
     console.log(rooms) // to be deleted
@@ -33,10 +31,10 @@ export const AgendaPage = () => {
 
     useEffect(() => {
         dispatch(fetchAgendaAction())
-    }, [])
+    }, [dispatch])
 
     useEffect(() => {
-        setSelectedRooms(
+        setSelectedRoomIds(
             rooms.reduce((allRooms, { id, location }) => ({ ...allRooms, [id]: location?.name === 'CEP' }), {})
         )
     }, [rooms])
@@ -44,35 +42,49 @@ export const AgendaPage = () => {
     const onRoomCheckboxClick =
         ({ currentlySelectedRooms, id }) =>
         ({ target }) =>
-            setSelectedRooms({ ...currentlySelectedRooms, [id]: target.checked })
+            setSelectedRoomIds({ ...currentlySelectedRooms, [id]: target.checked })
 
     const mapRoomsToCheckboxes = ({ name, id }) => (
         <li key={id}>
             <Form.Check
                 type="checkbox"
-                checked={selectedRooms[id] === true}
+                checked={selectedRoomIds[id] === true}
                 id={id}
                 label={
                     <>
-                        {selectedRooms[id] ? <FontAwesomeIcon icon={faEye} /> : <FontAwesomeIcon icon={faEyeSlash} />}{' '}
+                        {selectedRoomIds[id] ? <FontAwesomeIcon icon={faEye} /> : <FontAwesomeIcon icon={faEyeSlash} />}{' '}
                         <div className="room-name">{name}</div>
                     </>
                 }
-                onChange={onRoomCheckboxClick({ currentlySelectedRooms: selectedRooms, id })}
+                onChange={onRoomCheckboxClick({ currentlySelectedRooms: selectedRoomIds, id })}
             />
         </li>
     )
 
     const handleSearch = (e) => setSearchTerm(e.target.value)
 
-    const searchedRooms = rooms.filter((room) => room.name.toLowerCase().includes(searchTerm.toLowerCase()))
+    const searchedRooms = rooms.filter((room) =>
+        room.name
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/\p{Diacritic}/gu, '')
+            .includes(
+                searchTerm
+                    .toLowerCase()
+                    .normalize('NFD')
+                    .replace(/\p{Diacritic}/gu, '')
+            )
+    )
 
     return (
         <div className="calendar-page mt-3">
             <Container fluid>
                 <Calendar
-                    resources={searchedRooms.filter(({ id }) => selectedRooms[id])}
-                    events={events.filter(({ room: { id } }) => selectedRooms[id])}
+                    resources={searchedRooms.filter(({ id }) => selectedRoomIds[id])}
+                    events={events.filter(
+                        ({ room: { id } }) =>
+                            selectedRoomIds[id] && searchedRooms.some((searchedRoom) => searchedRoom.id === id)
+                    )}
                 />
             </Container>
             <div className="d-flex">
@@ -123,10 +135,10 @@ export const AgendaPage = () => {
                                         className="bulk-select"
                                         onClick={() => {
                                             const areAllRoomsSelected = searchedRooms.every(
-                                                ({ id }) => selectedRooms[id] === true
+                                                ({ id }) => selectedRoomIds[id] === true
                                             )
-                                            setSelectedRooms({
-                                                ...selectedRooms,
+                                            setSelectedRoomIds({
+                                                ...selectedRoomIds,
                                                 ...searchedRooms.reduce(
                                                     (allRooms, { id }) => ({
                                                         ...allRooms,
@@ -137,7 +149,7 @@ export const AgendaPage = () => {
                                             })
                                         }}
                                     >
-                                        {searchedRooms.every(({ id }) => selectedRooms[id] === true) ? (
+                                        {searchedRooms.every(({ id }) => selectedRoomIds[id] === true) ? (
                                             <FontAwesomeIcon icon={faEye} />
                                         ) : (
                                             <FontAwesomeIcon icon={faEyeSlash} />
@@ -166,10 +178,10 @@ export const AgendaPage = () => {
                                                             location?.name === 'CEP' || location?.name === 'CEP ZOOM'
                                                     )
                                                     const areAllInternalRoomsSelected = internalRooms.every(
-                                                        ({ id }) => selectedRooms[id] === true
+                                                        ({ id }) => selectedRoomIds[id] === true
                                                     )
-                                                    setSelectedRooms({
-                                                        ...selectedRooms,
+                                                    setSelectedRoomIds({
+                                                        ...selectedRoomIds,
                                                         ...internalRooms.reduce(
                                                             (allRooms, { id }) => ({
                                                                 ...allRooms,
@@ -182,7 +194,7 @@ export const AgendaPage = () => {
                                             >
                                                 {searchedRooms
                                                     .filter(({ location }) => location?.name === 'CEP')
-                                                    .every(({ id }) => selectedRooms[id] === true) ? (
+                                                    .every(({ id }) => selectedRoomIds[id] === true) ? (
                                                     <FontAwesomeIcon icon={faEye} />
                                                 ) : (
                                                     <FontAwesomeIcon icon={faEyeSlash} />
@@ -210,10 +222,10 @@ export const AgendaPage = () => {
                                                                 ({ location }) => location?.name === 'CEP'
                                                             )
                                                             const areAllPhysicalRoomsSelected = physicalRooms.every(
-                                                                ({ id }) => selectedRooms[id] === true
+                                                                ({ id }) => selectedRoomIds[id] === true
                                                             )
-                                                            setSelectedRooms({
-                                                                ...selectedRooms,
+                                                            setSelectedRoomIds({
+                                                                ...selectedRoomIds,
                                                                 ...physicalRooms.reduce(
                                                                     (allRooms, { id }) => ({
                                                                         ...allRooms,
@@ -226,7 +238,7 @@ export const AgendaPage = () => {
                                                     >
                                                         {searchedRooms
                                                             .filter(({ location }) => location?.name === 'CEP')
-                                                            .every(({ id }) => selectedRooms[id] === true) ? (
+                                                            .every(({ id }) => selectedRoomIds[id] === true) ? (
                                                             <FontAwesomeIcon icon={faEye} />
                                                         ) : (
                                                             <FontAwesomeIcon icon={faEyeSlash} />
@@ -259,10 +271,10 @@ export const AgendaPage = () => {
                                                                 ({ location }) => location?.name === 'CEP ZOOM'
                                                             )
                                                             const areAllVirtualRoomsSelected = virtualRooms.every(
-                                                                ({ id }) => selectedRooms[id] === true
+                                                                ({ id }) => selectedRoomIds[id] === true
                                                             )
-                                                            setSelectedRooms({
-                                                                ...selectedRooms,
+                                                            setSelectedRoomIds({
+                                                                ...selectedRoomIds,
                                                                 ...virtualRooms.reduce(
                                                                     (allRooms, { id }) => ({
                                                                         ...allRooms,
@@ -275,7 +287,7 @@ export const AgendaPage = () => {
                                                     >
                                                         {searchedRooms
                                                             .filter(({ location }) => location?.name === 'CEP ZOOM')
-                                                            .every(({ id }) => selectedRooms[id] === true) ? (
+                                                            .every(({ id }) => selectedRoomIds[id] === true) ? (
                                                             <FontAwesomeIcon icon={faEye} />
                                                         ) : (
                                                             <FontAwesomeIcon icon={faEyeSlash} />
@@ -311,10 +323,10 @@ export const AgendaPage = () => {
                                                             location?.name !== 'CEP' && location?.name !== 'CEP ZOOM'
                                                     )
                                                     const areAllExternalRoomsSelected = externalRooms.every(
-                                                        ({ id }) => selectedRooms[id] === true
+                                                        ({ id }) => selectedRoomIds[id] === true
                                                     )
-                                                    setSelectedRooms({
-                                                        ...selectedRooms,
+                                                    setSelectedRoomIds({
+                                                        ...selectedRoomIds,
                                                         ...externalRooms.reduce(
                                                             (allRooms, { id }) => ({
                                                                 ...allRooms,
@@ -330,7 +342,7 @@ export const AgendaPage = () => {
                                                         ({ location }) =>
                                                             location?.name !== 'CEP' && location?.name !== 'CEP ZOOM'
                                                     )
-                                                    .every(({ id }) => selectedRooms[id] === true) ? (
+                                                    .every(({ id }) => selectedRoomIds[id] === true) ? (
                                                     <FontAwesomeIcon icon={faEye} />
                                                 ) : (
                                                     <FontAwesomeIcon icon={faEyeSlash} />

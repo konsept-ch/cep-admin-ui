@@ -13,6 +13,8 @@ import { Event } from './Event'
 export const Calendar = ({ resources, events }) => {
     const [selectedEvent, setSelectedEvent] = useState(null)
 
+    console.log(resources)
+
     return (
         <>
             <FullCalendar
