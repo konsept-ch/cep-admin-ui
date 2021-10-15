@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Container, Form, Button, Collapse } from 'react-bootstrap'
+import { Container, Form, Button, Collapse, InputGroup, FormControl, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
     faEye,
@@ -9,6 +9,7 @@ import {
     faArrowRightToLine,
     faChevronDown,
     faChevronRight,
+    faFilterCircleXmark,
 } from '@fortawesome/pro-solid-svg-icons'
 
 import { Calendar } from '../components'
@@ -65,9 +66,6 @@ export const AgendaPage = () => {
     const handleSearch = (e) => setSearchTerm(e.target.value)
 
     const searchedRooms = rooms.filter((room) => room.name.toLowerCase().includes(searchTerm.toLowerCase()))
-    // .map((filteredName) => <li>{filteredName}</li>)
-
-    console.log(searchedRooms)
 
     return (
         <div className="calendar-page mt-3">
@@ -84,12 +82,30 @@ export const AgendaPage = () => {
                             <div className="room-selection card card-body">
                                 <div>
                                     <div>
-                                        <input
-                                            type="text"
-                                            value={searchTerm}
-                                            placeholder="Rechercher"
-                                            onChange={handleSearch}
-                                        />
+                                        <InputGroup className="mb-3">
+                                            <OverlayTrigger
+                                                placement="top"
+                                                delay={{ show: 50, hide: 150 }}
+                                                overlay={(props) => <Tooltip {...props}>Effacer le filtre</Tooltip>}
+                                            >
+                                                <Button
+                                                    variant="outline-danger"
+                                                    id="button-addon1"
+                                                    className="cleanup-button"
+                                                    onClick={() => setSearchTerm('')}
+                                                >
+                                                    <FontAwesomeIcon icon={faFilterCircleXmark} />
+                                                </Button>
+                                            </OverlayTrigger>
+                                            <FormControl
+                                                type="text"
+                                                value={searchTerm}
+                                                placeholder="Rechercher"
+                                                onChange={handleSearch}
+                                                aria-label="Rechercher"
+                                                aria-describedby="rechercher"
+                                            />
+                                        </InputGroup>
                                     </div>
                                     <span
                                         className="expand-controller"

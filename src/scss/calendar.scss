@@ -54,6 +54,10 @@
     .form-check input {
         display: none;
     }
+
+    .cleanup-button {
+        margin-bottom: 0;
+    }
 }
 
 .collapse-horizontal,
@@ -113,6 +117,10 @@
 
 .fc-event-main > i {
     font-style: normal;
+}
+
+.svg-inline--fa.fa-w-10 {
+    width: 0.875em;
 }
 
 .svg-inline--fa.fa-w-18 {
