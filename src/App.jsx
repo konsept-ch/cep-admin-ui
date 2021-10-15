@@ -63,7 +63,7 @@ export function App() {
                     </Switch>
                 </ErrorBoundary>
             </HelmetProvider>
-            <Footer />
+            {/* <Footer /> */}
         </>
     )
 }

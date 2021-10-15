@@ -6,7 +6,7 @@ import { faUp, faDown } from '@fortawesome/pro-solid-svg-icons'
 import { MIDDLEWARE_URL } from '../constants/config'
 import { mapClassNameToEventType, mapEventTypeToClassName } from '../utils'
 import { splitComment } from '../constants/constants'
-import { RichEditor } from './RichEditor'
+// import { RichEditor } from './RichEditor'
 import cogoToast from 'cogo-toast'
 
 export const CourseDetailsModal = ({ closeModal, courseDetailsData, onAfterSave }) => {
@@ -39,13 +39,13 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData, onAfterSave 
                 <Modal.Title as="h3">Formation : {courseDetailsData.name}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Row>
+                {/* <Row>
                     <Col>
                         {courseDetailsData.description?.split(splitComment)[0] && (
                             <RichEditor initialText={courseDetailsData.description?.split(splitComment)[0]} />
                         )}
                     </Col>
-                </Row>
+                </Row> */}
                 <Row>
                     <Col sm={4}>
                         <h4>Construction du déroulement</h4>
