@@ -15,6 +15,7 @@ import {
 import { Calendar } from '../components'
 import { fetchAgendaAction } from '../actions/agenda.ts'
 import { roomsAndEventsSelector } from '../reducers'
+import { all } from '@redux-saga/core/effects'
 
 export const AgendaPage = () => {
     const { rooms, events } = useSelector(roomsAndEventsSelector)
@@ -34,10 +35,13 @@ export const AgendaPage = () => {
     }, [dispatch])
 
     useEffect(() => {
-        setSelectedRoomIds(
-            rooms.reduce((allRooms, { id, location }) => ({ ...allRooms, [id]: location?.name === 'CEP' }), {})
+        const initialSelectedRoomIds = rooms.reduce(
+            (acc, { id, location }) => ({ ...acc, [id]: location?.name === 'CEP' }),
+            {}
         )
-    }, [rooms])
+
+        setSelectedRoomIds(initialSelectedRoomIds)
+    }, [rooms]) // called when rooms are fetched
 
     const onRoomCheckboxClick =
         ({ currentlySelectedRooms, id }) =>
