@@ -39,6 +39,7 @@
     "@fullcalendar/core": "5.10.0",
     "@fullcalendar/daygrid": "5.10.0",
     "@fullcalendar/list": "5.10.0",
+    "@fullcalendar/moment-timezone": "5.10.0",
     "@fullcalendar/react": "5.10.0",
     "@fullcalendar/resource-timegrid": "5.10.0",
     "@fullcalendar/resource-timeline": "5.10.0",
