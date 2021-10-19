@@ -15,7 +15,6 @@ import {
 import { Calendar } from '../components'
 import { fetchAgendaAction } from '../actions/agenda.ts'
 import { roomsAndEventsSelector } from '../reducers'
-import { all } from '@redux-saga/core/effects'
 
 export const AgendaPage = () => {
     const { rooms, events } = useSelector(roomsAndEventsSelector)
