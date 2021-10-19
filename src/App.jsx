@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { Switch, Route, Redirect } from 'react-router-dom'
 import { HelmetProvider, Helmet } from 'react-helmet-async'
+import { ToastContainer } from 'react-toastify'
 
 import { InscriptionsPage } from './pages/InscriptionsPage'
 import { SurveyPage } from './pages/SurveyPage'
@@ -31,11 +32,12 @@ export function App() {
 
     return (
         <>
+            <ToastContainer />
+            <Navigation />
             <HelmetProvider>
                 <Helmet>
                     <title>CEP - Former22</title>
                 </Helmet>
-                <Navigation />
                 <ErrorBoundary>
                     <Switch>
                         <Redirect exact from="/" to={PATH_INSCRIPTIONS} />
