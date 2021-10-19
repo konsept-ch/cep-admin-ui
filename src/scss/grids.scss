@@ -9,3 +9,12 @@
 .ag-theme-alpine .ag-root-wrapper {
     border-width: 0;
 }
+
+.ag-overlay-wrapper .ag-react-container {
+    transform: translate(-50px, -50px);
+
+    // stylelint-disable-next-line
+    & > span > span {
+        border-radius: unset;
+    }
+}
