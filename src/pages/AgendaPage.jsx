@@ -90,7 +90,7 @@ export const AgendaPage = () => {
                                             >
                                                 <Button
                                                     variant="outline-danger"
-                                                    id="button-addon1"
+                                                    id="button-cleanup" // eventually to be deleted
                                                     className="cleanup-button"
                                                     onClick={() => setSearchTerm('')}
                                                 >
