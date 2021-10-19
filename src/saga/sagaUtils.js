@@ -29,6 +29,6 @@ export function* callService({ endpoint, options = {} }) {
 
         return resultJson
     } catch (error) {
-        toast.error(error.message, { hideAfter: 3 })
+        toast.error(error.message, { autoClose: false })
     }
 }

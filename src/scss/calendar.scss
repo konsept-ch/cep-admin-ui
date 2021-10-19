@@ -30,7 +30,7 @@
 
 .calendar-page {
     display: flex;
-    height: calc(100% - 73px); // 132px is the height of the header (73px) + footer (59px)
+    height: calc(100% - 132px); // 132px is the height of the header (73px) + footer (59px)
 }
 
 .room-selection {

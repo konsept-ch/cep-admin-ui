@@ -9,8 +9,8 @@ import {
     faArrowRightToLine,
     faChevronDown,
     faChevronRight,
-    faFilterCircleXmark,
 } from '@fortawesome/pro-solid-svg-icons'
+import { faFilterCircleXmark } from '@fortawesome/pro-light-svg-icons'
 
 import { Calendar } from '../components'
 import { fetchAgendaAction } from '../actions/agenda.ts'

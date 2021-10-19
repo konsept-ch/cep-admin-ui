@@ -228,7 +228,7 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData, onAfterSave 
                         if (courseJson.description !== courseDetailsData.description) {
                             toast.error(
                                 'Erreur ! Des modifications sur la même formation ont été faites directement dans Claroline, vous devriez refaire vos modifications, veuillez rafraîchir la page (bouton F5) avant de continuer.',
-                                { position: 'top-right', hideAfter: 0 }
+                                { position: 'top-right', autoClose: false }
                             )
                             closeModal()
                             return
@@ -300,7 +300,7 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData, onAfterSave 
                                 }
                             )
                             console.log(savedCourseResponse)
-                            toast.success('Succès !', { position: 'top-right' })
+                            toast.success('Succès !')
                         }
 
                         onAfterSave()
