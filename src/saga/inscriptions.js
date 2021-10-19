@@ -2,13 +2,17 @@ import { call, takeEvery, put } from 'redux-saga/effects'
 
 import { FETCH_INSCRIPTIONS, UPDATE_INSCRIPTIONS } from '../constants/inscriptions'
 import { setInscriptionsAction } from '../actions/inscriptions'
-import { setLoadingAction } from '../actions/loading'
+import { setLoadingAction, setGridLoadingAction } from '../actions/loading'
 import { callService } from './sagaUtils'
 
 function* fetchInscriptionsSaga() {
+    yield put(setGridLoadingAction({ loading: true }))
+
     const inscriptions = yield call(callService, { endpoint: 'inscriptions' })
 
     yield put(setInscriptionsAction({ inscriptions }))
+
+    yield put(setGridLoadingAction({ loading: false }))
 }
 
 function* updateInscriptionsSaga({ payload: { inscriptionId, newStatus, emailTemplateName, successCallback } }) {

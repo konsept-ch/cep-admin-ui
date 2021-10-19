@@ -3,17 +3,16 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { Grid, StatusChangeModal } from '../components'
 import { fetchInscriptionsAction, updateInscriptionStatusAction } from '../actions/inscriptions.ts'
-import { inscriptionsSelector, loadingSelector } from '../reducers'
+import { inscriptionsSelector } from '../reducers'
 
 export function InscriptionsPage() {
     const dispatch = useDispatch()
     const [statusChangeData, setStatusChangeData] = useState(null)
     const inscriptions = useSelector(inscriptionsSelector)
-    const isSagaLoading = useSelector(loadingSelector)
 
     useEffect(() => {
         dispatch(fetchInscriptionsAction())
-    }, [])
+    }, [dispatch])
 
     const columnDefs = [
         {
@@ -50,9 +49,9 @@ export function InscriptionsPage() {
                     'Écartée',
                 ],
             },
-            onCellValueChanged: ({ data: { inscriptionId }, newValue }) => {
+            onCellValueChanged: ({ data: { id: currentInscriptionId }, newValue }) => {
                 setStatusChangeData({
-                    ...inscriptions.find(({ id }) => id === inscriptionId),
+                    ...inscriptions.find(({ id }) => id === currentInscriptionId),
                     newStatus: newValue,
                 })
             },
@@ -65,8 +64,8 @@ export function InscriptionsPage() {
         },
     ]
 
-    const rowData = inscriptions?.map(({ id: inscriptionId, user, session, status, date }) => ({
-        inscriptionId,
+    const rowData = inscriptions?.map(({ id, user, session, status, date }) => ({
+        id,
         participant: user.name,
         profession: '(à faire)',
         session: session.name,
@@ -78,9 +77,12 @@ export function InscriptionsPage() {
         <>
             <Grid name="Inscriptions" columnDefs={columnDefs} rowData={rowData} />
 
-            {statusChangeData || isSagaLoading ? (
+            {statusChangeData ? (
                 <StatusChangeModal
-                    closeModal={() => setStatusChangeData(null)}
+                    closeModal={() => {
+                        setStatusChangeData(null)
+                        dispatch(fetchInscriptionsAction())
+                    }}
                     statusChangeData={statusChangeData}
                     updateStatus={({ emailTemplateName }) =>
                         dispatch(
