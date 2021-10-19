@@ -11,6 +11,7 @@ import {
     faChevronRight,
 } from '@fortawesome/pro-solid-svg-icons'
 import { faFilterCircleXmark } from '@fortawesome/pro-light-svg-icons'
+import classNames from 'classnames'
 
 import { Calendar } from '../components'
 import { fetchAgendaAction } from '../actions/agenda.ts'
@@ -48,14 +49,18 @@ export const AgendaPage = () => {
             setSelectedRoomIds({ ...currentlySelectedRooms, [id]: target.checked })
 
     const mapRoomsToCheckboxes = ({ name, id }) => (
-        <li key={id}>
+        <li key={id} className={classNames('room-item', { 'is-visible': selectedRoomIds[id] === true })}>
             <Form.Check
                 type="checkbox"
                 checked={selectedRoomIds[id] === true}
                 id={id}
                 label={
                     <>
-                        {selectedRoomIds[id] ? <FontAwesomeIcon icon={faEye} /> : <FontAwesomeIcon icon={faEyeSlash} />}{' '}
+                        {selectedRoomIds[id] === true ? (
+                            <FontAwesomeIcon icon={faEye} />
+                        ) : (
+                            <FontAwesomeIcon icon={faEyeSlash} />
+                        )}{' '}
                         <div className="room-name">{name}</div>
                     </>
                 }
@@ -158,7 +163,7 @@ export const AgendaPage = () => {
                                             <FontAwesomeIcon icon={faEyeSlash} />
                                         )}
                                     </span>{' '}
-                                    Toutes salles
+                                    <strong>Toutes salles</strong>
                                     <ul className={`collapse ${isAllRoomsExpanded ? 'show' : ''}`}>
                                         <li>
                                             <span
@@ -196,14 +201,17 @@ export const AgendaPage = () => {
                                                 }}
                                             >
                                                 {searchedRooms
-                                                    .filter(({ location }) => location?.name === 'CEP')
+                                                    .filter(
+                                                        ({ location }) =>
+                                                            location?.name === 'CEP' || location?.name === 'CEP ZOOM'
+                                                    )
                                                     .every(({ id }) => selectedRoomIds[id] === true) ? (
                                                     <FontAwesomeIcon icon={faEye} />
                                                 ) : (
                                                     <FontAwesomeIcon icon={faEyeSlash} />
                                                 )}
                                             </span>{' '}
-                                            Internes
+                                            <strong>Internes</strong>
                                             <ul className={`collapse ${isInternalRoomsExpanded ? 'show' : ''}`}>
                                                 <li>
                                                     <span
@@ -247,7 +255,7 @@ export const AgendaPage = () => {
                                                             <FontAwesomeIcon icon={faEyeSlash} />
                                                         )}
                                                     </span>{' '}
-                                                    Physiques
+                                                    <strong>Physiques</strong>
                                                     <ul className={`collapse ${isPhysicalRoomsExpanded ? 'show' : ''}`}>
                                                         {searchedRooms
                                                             .filter((room) => room.location?.name === 'CEP')
@@ -296,7 +304,7 @@ export const AgendaPage = () => {
                                                             <FontAwesomeIcon icon={faEyeSlash} />
                                                         )}
                                                     </span>{' '}
-                                                    Virtuelles
+                                                    <strong>Virtuelles</strong>
                                                     <ul className={`collapse ${isVirtualRoomsExpanded ? 'show' : ''}`}>
                                                         {searchedRooms
                                                             .filter((room) => room.location?.name === 'CEP ZOOM')
@@ -351,7 +359,7 @@ export const AgendaPage = () => {
                                                     <FontAwesomeIcon icon={faEyeSlash} />
                                                 )}
                                             </span>{' '}
-                                            Externes
+                                            <strong>Externes</strong>
                                             <ul className={`collapse ${isExternalRoomsExpanded ? 'show' : ''}`}>
                                                 {searchedRooms
                                                     .filter(
