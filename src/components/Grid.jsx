@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import { AgGridReact } from 'ag-grid-react'
 import {
     Row,
@@ -13,16 +14,36 @@ import {
 } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFilterCircleXmark } from '@fortawesome/pro-light-svg-icons'
+import PuffLoader from 'react-spinners/PuffLoader'
 
 import { localeText } from '../agGridLocaleText'
+import { gridLoadingSelector } from '../reducers'
+
+const Loader = () => <PuffLoader color="#e8ca01" loading size={100} />
 
 export const Grid = ({ name, ...gridProps }) => {
     const [gridApi, setGridApi] = useState(null)
     const [filterValue, setFilterValue] = useState('')
+    const isGridLoading = useSelector(gridLoadingSelector)
 
     useEffect(() => {
         gridApi?.setQuickFilter(filterValue)
     }, [filterValue, gridApi])
+
+    useEffect(() => {
+        gridProps.getGridApi?.(gridApi)
+    }, [gridApi])
+
+    useEffect(() => {
+        // this setTimeout fixes a race condition
+        setTimeout(() => {
+            if (isGridLoading) {
+                gridApi?.showLoadingOverlay()
+            } else {
+                gridApi?.hideOverlay()
+            }
+        }, 0)
+    }, [isGridLoading, gridApi])
 
     return (
         <>
@@ -63,6 +84,7 @@ export const Grid = ({ name, ...gridProps }) => {
                             defaultToolPanel: false,
                             hiddenByDefault: false,
                         },
+                        immutableData: true,
                         enableCharts: true,
                         enableRangeSelection: true,
                         enableCellChangeFlash: true,
@@ -95,6 +117,10 @@ export const Grid = ({ name, ...gridProps }) => {
                                 { statusPanel: 'agAggregationComponent' },
                             ],
                         },
+                        frameworkComponents: {
+                            customLoadingOverlay: Loader,
+                        },
+                        loadingOverlayComponent: 'customLoadingOverlay',
                         getContextMenuItems: () => [
                             'autoSizeAll',
                             'expandAll',
@@ -106,6 +132,7 @@ export const Grid = ({ name, ...gridProps }) => {
                             'export',
                             'chartRange',
                         ],
+                        getRowNodeId: (data) => data.id,
                         localeText,
                         onFirstDataRendered: ({ columnApi }) => columnApi.autoSizeAllColumns(),
                         onGridReady: ({ api }) => setGridApi(api),

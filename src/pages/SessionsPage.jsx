@@ -63,6 +63,7 @@ export function SessionsPage() {
 
     const rowData = sessions?.map(
         ({ name, code, restrictions: { hidden }, pricing: { price }, meta: { created, updated, duration } }) => ({
+            id: code,
             name,
             code,
             duration,

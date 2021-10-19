@@ -5,8 +5,10 @@ import listPlugin from '@fullcalendar/list'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import resourceTimelinePlugin from '@fullcalendar/resource-timeline'
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid'
+import momentTimezonePlugin from '@fullcalendar/moment-timezone'
 import frLocale from '@fullcalendar/core/locales/fr'
 import adaptivePlugin from '@fullcalendar/adaptive'
+import { DATE_FORMAT_SWISS_FRENCH } from '../constants/constants'
 
 import { Event } from './Event'
 
@@ -24,6 +26,7 @@ export const Calendar = ({ resources, events }) => {
                 locale={frLocale}
                 resources={resources.map((resource) => ({ ...resource, title: resource.name }))}
                 events={events.map((event) => ({ ...event, title: event.name, resourceId: event.room.id }))}
+                timeZone="America/New_York"
                 resourceOrder="title"
                 resourceAreaHeaderContent="Salles"
                 height="100%"
@@ -58,7 +61,14 @@ export const Calendar = ({ resources, events }) => {
                         buttonText: 'Semaine timeline',
                     },
                 }}
-                plugins={[dayGridPlugin, listPlugin, resourceTimelinePlugin, resourceTimeGridPlugin, adaptivePlugin]}
+                plugins={[
+                    dayGridPlugin,
+                    listPlugin,
+                    resourceTimelinePlugin,
+                    resourceTimeGridPlugin,
+                    adaptivePlugin,
+                    momentTimezonePlugin,
+                ]}
                 eventClick={(info) => {
                     info.jsEvent.preventDefault()
                     setSelectedEvent({ ...info.event._def, range: info.event._instance.range })
@@ -66,8 +76,11 @@ export const Calendar = ({ resources, events }) => {
                 eventContent={(eventInfo) => (
                     <>
                         <b>
-                            <span className="event-content-room">{eventInfo.event._def.extendedProps.room.name}</span> |{' '}
-                            {eventInfo.timeText}
+                            <span className="event-content-room">{eventInfo.event._def.extendedProps.room.name}</span>|
+                            {Intl.DateTimeFormat(DATE_FORMAT_SWISS_FRENCH, {
+                                hour: 'numeric',
+                                minute: 'numeric',
+                            }).format(new Date(eventInfo.event._instance.range.start))}
                         </b>
                         <br />
                         <i>{eventInfo.event.title}</i>

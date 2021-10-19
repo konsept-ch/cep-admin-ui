@@ -22,4 +22,5 @@ export const inscriptionsSelector = (state) => inscriptionsSelectors.inscription
 export const sessionsSelector = (state) => sessionsSelectors.sessionsSelector(state.sessions)
 export const parametersSelector = (state) => parametersSelectors.parametersSelector(state.parameters)
 export const loadingSelector = (state) => loadingSelectors.loadingSelector(state.loading)
+export const gridLoadingSelector = (state) => loadingSelectors.gridLoadingSelector(state.loading)
 export const coursesSelector = (state) => coursesSelectors.coursesSelector(state.courses)

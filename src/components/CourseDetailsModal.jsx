@@ -6,8 +6,8 @@ import { faUp, faDown } from '@fortawesome/pro-solid-svg-icons'
 import { MIDDLEWARE_URL } from '../constants/config'
 import { mapClassNameToEventType, mapEventTypeToClassName } from '../utils'
 import { splitComment } from '../constants/constants'
-import { RichEditor } from './RichEditor'
-import cogoToast from 'cogo-toast'
+// import { RichEditor } from './RichEditor'
+import { toast } from 'react-toastify'
 
 export const CourseDetailsModal = ({ closeModal, courseDetailsData, onAfterSave }) => {
     const generateDefaultEvent = () => ({ id: uuidv4(), type: 'f2f', title: '', description: '' })
@@ -39,13 +39,13 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData, onAfterSave 
                 <Modal.Title as="h3">Formation : {courseDetailsData.name}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Row>
+                {/* <Row>
                     <Col>
                         {courseDetailsData.description?.split(splitComment)[0] && (
                             <RichEditor initialText={courseDetailsData.description?.split(splitComment)[0]} />
                         )}
                     </Col>
-                </Row>
+                </Row> */}
                 <Row>
                     <Col sm={4}>
                         <h4>Construction du déroulement</h4>
@@ -226,9 +226,9 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData, onAfterSave 
                         console.log('compare', courseJson.description, courseDetailsData.description)
 
                         if (courseJson.description !== courseDetailsData.description) {
-                            cogoToast.error(
+                            toast.error(
                                 'Erreur ! Des modifications sur la même formation ont été faites directement dans Claroline, vous devriez refaire vos modifications, veuillez rafraîchir la page (bouton F5) avant de continuer.',
-                                { position: 'top-right', hideAfter: 0 }
+                                { position: 'top-right', autoClose: false }
                             )
                             closeModal()
                             return
@@ -300,7 +300,7 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData, onAfterSave 
                                 }
                             )
                             console.log(savedCourseResponse)
-                            cogoToast.success('Succès !', { position: 'top-right' })
+                            toast.success('Succès !')
                         }
 
                         onAfterSave()

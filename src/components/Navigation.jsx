@@ -11,6 +11,7 @@ import {
     faPresentationScreen,
     faGraduationCap,
     faCalendarDays,
+    faCalendarStar,
     faMemo,
     faMessage,
 } from '@fortawesome/pro-light-svg-icons'
@@ -44,7 +45,7 @@ export const Navigation = () => {
                             <FontAwesomeIcon icon={faCalendarDays} /> Agenda
                         </Nav.Link>
                         <Nav.Link href={PATH_INSCRIPTIONS} onClick={goTo(PATH_INSCRIPTIONS)}>
-                            <FontAwesomeIcon icon={faCalendarDays} /> Inscriptions
+                            <FontAwesomeIcon icon={faCalendarStar} /> Inscriptions
                         </Nav.Link>
                         <Nav.Link href={PATH_SESSIONS} onClick={goTo(PATH_SESSIONS)}>
                             <FontAwesomeIcon icon={faPresentationScreen} /> Sessions

@@ -30,7 +30,7 @@
 
 .calendar-page {
     display: flex;
-    height: calc(100% - 132px); // 132px is the height of the header + footer
+    height: calc(100% - 132px); // 132px is the height of the header (73px) + footer (59px)
 }
 
 .room-selection {
@@ -39,8 +39,13 @@
     overflow-y: auto;
 
     ul,
-    .form-check {
+    .form-check-label {
         padding-left: 20px;
+        padding-top: 4px;
+    }
+
+    ul {
+        margin-bottom: 12px;
     }
 
     li::before {
@@ -51,12 +56,28 @@
         margin-bottom: 10px;
     }
 
-    .form-check input {
-        display: none;
+    .form-check {
+        padding-left: 0;
+
+        input {
+            display: none;
+        }
     }
 
     .cleanup-button {
         margin-bottom: 0;
+    }
+
+    .room-item {
+        border-radius: $border-radius;
+
+        &.is-visible {
+            background-color: rgba(0, 255, 0, 0.1);
+        }
+
+        &:not(.is-visible) {
+            background-color: rgba(255, 0, 0, 0.1);
+        }
     }
 }
 

@@ -1,4 +1,4 @@
-import cogoToast from 'cogo-toast'
+import { toast } from 'react-toastify'
 import { MIDDLEWARE_URL } from '../constants/config'
 
 export function* callService({ endpoint, options = {} }) {
@@ -7,7 +7,7 @@ export function* callService({ endpoint, options = {} }) {
 
         if (result.status !== 200) {
             const resultText = yield result.text()
-            cogoToast.error(
+            toast.error(
                 <>
                     <p>{`${result.status} - ${result.statusText}`}</p>
                     <p>{`${resultText}`}</p>
@@ -29,6 +29,6 @@ export function* callService({ endpoint, options = {} }) {
 
         return resultJson
     } catch (error) {
-        cogoToast.error(error.message, { hideAfter: 3 })
+        toast.error(error.message, { autoClose: false })
     }
 }

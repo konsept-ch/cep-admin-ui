@@ -54,7 +54,7 @@ h6 {
 }
 
 p {
-    font-weight: 300;
+    // font-weight: 300; // unreadable
     font-size: 12pt;
     line-height: 16pt;
     margin-bottom: 6px;
@@ -67,7 +67,7 @@ ul {
 
     li {
         margin: 3px 0;
-        font-weight: 300;
+        // font-weight: 300; // unreadable
         font-size: 12pt;
         line-height: 16pt;
         margin-bottom: 6px;
@@ -94,7 +94,7 @@ ol {
     li {
         counter-increment: li;
         margin: 3px 0;
-        font-weight: 300;
+        // font-weight: 300; // unreadable
         font-size: 12pt;
         line-height: 16pt;
         margin-bottom: 6px;
