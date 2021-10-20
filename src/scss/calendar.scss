@@ -38,6 +38,10 @@
     width: 300px;
     overflow-y: auto;
 
+    .form-check-label {
+        display: flex;
+    }
+
     ul,
     .form-check-label {
         padding-left: 20px;
@@ -150,10 +154,6 @@
 
 .toggle-room-selection {
     height: 100%;
-}
-
-.form-check-label {
-    display: flex;
 }
 
 .room-name {

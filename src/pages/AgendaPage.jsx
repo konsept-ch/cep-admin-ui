@@ -9,6 +9,7 @@ import {
     faArrowRightToLine,
     faChevronDown,
     faChevronRight,
+    faEyeLowVision,
 } from '@fortawesome/pro-solid-svg-icons'
 import { faFilterCircleXmark } from '@fortawesome/pro-light-svg-icons'
 import classNames from 'classnames'
@@ -29,6 +30,8 @@ export const AgendaPage = () => {
     const [isVirtualRoomsExpanded, setVirtualRoomsExpanded] = useState(true)
     const [isExternalRoomsExpanded, setExternalRoomsExpanded] = useState(true)
     const [searchTerm, setSearchTerm] = useState('')
+
+    const [temperatureValue, setTemperatureValue] = useState('')
 
     useEffect(() => {
         dispatch(fetchAgendaAction())
@@ -159,6 +162,8 @@ export const AgendaPage = () => {
                                     >
                                         {searchedRooms.every(({ id }) => selectedRoomIds[id] === true) ? (
                                             <FontAwesomeIcon icon={faEye} />
+                                        ) : searchedRooms.some(({ id }) => selectedRoomIds[id] === true) ? (
+                                            <FontAwesomeIcon icon={faEyeLowVision} />
                                         ) : (
                                             <FontAwesomeIcon icon={faEyeSlash} />
                                         )}
