@@ -8,4 +8,9 @@
     .template-preview {
         white-space: pre-wrap;
     }
+
+    .list-group-item.active-template,
+    .list-group-item.active-template:hover {
+        background-color: #e6f0e4;
+    }
 }

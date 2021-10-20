@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Modal, Button, Card, ListGroup, Alert, Spinner } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
+import classNames from 'classnames'
 import { parametersSelector, loadingSelector } from '../reducers'
 
 export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }) => {
@@ -62,14 +63,24 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                     <Card>
                         {emailTemplates.length > 0 ? (
                             <ListGroup variant="flush">
-                                <ListGroup.Item onClick={() => setSelectedTemplateData(null)}>
+                                <ListGroup.Item
+                                    onClick={() => setSelectedTemplateData({ name: 'no-email' })}
+                                    className={classNames({
+                                        'active-template': selectedTemplateData?.name === 'no-email',
+                                    })}
+                                >
                                     <dl>
                                         <dt>Aucun e-mail</dt>
                                         <dd>Aucun e-mail ne sera envoyé</dd>
                                     </dl>
                                 </ListGroup.Item>
                                 {emailTemplates.map(({ name, description, template }) => (
-                                    <ListGroup.Item onClick={() => setSelectedTemplateData({ template, name })}>
+                                    <ListGroup.Item
+                                        onClick={() => setSelectedTemplateData({ template, name })}
+                                        className={classNames({
+                                            'active-template': selectedTemplateData?.name === name,
+                                        })}
+                                    >
                                         <dl>
                                             <dt>Nom</dt>
                                             <dd>{name}</dd>
