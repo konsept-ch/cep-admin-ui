@@ -19,3 +19,10 @@ export const mapClassNameToEventType = ({ className }) =>
         'online-sync': 'sync',
         'online-async': 'async',
     }[className])
+
+export const statusWarnings = {
+    Écartée: {
+        'Acceptée par CEP':
+            "Vous êtes en train de changer le de 'Écartée' à 'Acceptée', mais c'est probablement mieux de créer une nouvelle inscription",
+    },
+}
