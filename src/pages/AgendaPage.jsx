@@ -10,7 +10,7 @@ import {
     faChevronDown,
     faChevronRight,
 } from '@fortawesome/pro-solid-svg-icons'
-import { faFilterCircleXmark } from '@fortawesome/pro-light-svg-icons'
+import { faFilterCircleXmark, faEye as faEyeLight } from '@fortawesome/pro-light-svg-icons'
 import classNames from 'classnames'
 
 import { Calendar } from '../components'
@@ -159,6 +159,8 @@ export const AgendaPage = () => {
                                     >
                                         {searchedRooms.every(({ id }) => selectedRoomIds[id] === true) ? (
                                             <FontAwesomeIcon icon={faEye} />
+                                        ) : searchedRooms.some(({ id }) => selectedRoomIds[id] === true) ? (
+                                            <FontAwesomeIcon icon={faEyeLight} />
                                         ) : (
                                             <FontAwesomeIcon icon={faEyeSlash} />
                                         )}
@@ -207,6 +209,13 @@ export const AgendaPage = () => {
                                                     )
                                                     .every(({ id }) => selectedRoomIds[id] === true) ? (
                                                     <FontAwesomeIcon icon={faEye} />
+                                                ) : searchedRooms
+                                                      .filter(
+                                                          ({ location }) =>
+                                                              location?.name === 'CEP' || location?.name === 'CEP ZOOM'
+                                                      )
+                                                      .some(({ id }) => selectedRoomIds[id] === true) ? (
+                                                    <FontAwesomeIcon icon={faEyeLight} />
                                                 ) : (
                                                     <FontAwesomeIcon icon={faEyeSlash} />
                                                 )}
@@ -251,6 +260,10 @@ export const AgendaPage = () => {
                                                             .filter(({ location }) => location?.name === 'CEP')
                                                             .every(({ id }) => selectedRoomIds[id] === true) ? (
                                                             <FontAwesomeIcon icon={faEye} />
+                                                        ) : searchedRooms
+                                                              .filter(({ location }) => location?.name === 'CEP')
+                                                              .some(({ id }) => selectedRoomIds[id] === true) ? (
+                                                            <FontAwesomeIcon icon={faEyeLight} />
                                                         ) : (
                                                             <FontAwesomeIcon icon={faEyeSlash} />
                                                         )}
@@ -300,6 +313,10 @@ export const AgendaPage = () => {
                                                             .filter(({ location }) => location?.name === 'CEP ZOOM')
                                                             .every(({ id }) => selectedRoomIds[id] === true) ? (
                                                             <FontAwesomeIcon icon={faEye} />
+                                                        ) : searchedRooms
+                                                              .filter(({ location }) => location?.name === 'CEP ZOOM')
+                                                              .some(({ id }) => selectedRoomIds[id] === true) ? (
+                                                            <FontAwesomeIcon icon={faEyeLight} />
                                                         ) : (
                                                             <FontAwesomeIcon icon={faEyeSlash} />
                                                         )}
@@ -355,6 +372,13 @@ export const AgendaPage = () => {
                                                     )
                                                     .every(({ id }) => selectedRoomIds[id] === true) ? (
                                                     <FontAwesomeIcon icon={faEye} />
+                                                ) : searchedRooms
+                                                      .filter(
+                                                          ({ location }) =>
+                                                              location?.name !== 'CEP' && location?.name !== 'CEP ZOOM'
+                                                      )
+                                                      .some(({ id }) => selectedRoomIds[id] === true) ? (
+                                                    <FontAwesomeIcon icon={faEyeLight} />
                                                 ) : (
                                                     <FontAwesomeIcon icon={faEyeSlash} />
                                                 )}
