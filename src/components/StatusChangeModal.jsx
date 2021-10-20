@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Modal, Button, Card, ListGroup, Alert, Spinner } from 'react-bootstrap'
+import { Modal, Button, Card, ListGroup, Alert, Spinner, Tooltip, OverlayTrigger } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 import classNames from 'classnames'
 import { parametersSelector, loadingSelector } from '../reducers'
@@ -99,20 +99,32 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                 </div>
             </Modal.Body>
             <Modal.Footer>
-                <Button
-                    variant="primary"
-                    onClick={() => {
-                        updateStatus({ emailTemplateName: selectedTemplateData?.name })
-                    }}
+                <OverlayTrigger
+                    placement="top"
+                    overlay={
+                        <Tooltip>
+                            {selectedTemplateData === null
+                                ? "D'abord sélectionnez un modèle"
+                                : 'Appliquer le changement'}
+                        </Tooltip>
+                    }
                 >
-                    {isSagaLoading ? (
-                        <>
-                            <Spinner animation="grow" size="sm" /> Confirmer...
-                        </>
-                    ) : (
-                        'Confirmer'
-                    )}
-                </Button>
+                    <div>
+                        <Button
+                            disabled={selectedTemplateData === null}
+                            variant="primary"
+                            onClick={() => updateStatus({ emailTemplateName: selectedTemplateData?.name })}
+                        >
+                            {isSagaLoading ? (
+                                <>
+                                    <Spinner animation="grow" size="sm" /> Confirmer...
+                                </>
+                            ) : (
+                                'Confirmer'
+                            )}
+                        </Button>
+                    </div>
+                </OverlayTrigger>
                 <Button
                     variant="secondary"
                     onClick={() => {
