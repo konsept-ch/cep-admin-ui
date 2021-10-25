@@ -26,9 +26,6 @@ export const AgendaPage = () => {
     console.log(rooms) // to be deleted
     const [isAllRoomsExpanded, setAllRoomsExpanded] = useState(true)
     const [isInternalRoomsExpanded, setInternalRoomsExpanded] = useState(true)
-    const [isPhysicalRoomsExpanded, setPhysicalRoomsExpanded] = useState(true)
-    const [isVirtualRoomsExpanded, setVirtualRoomsExpanded] = useState(true)
-    const [isExternalRoomsExpanded, setExternalRoomsExpanded] = useState(true)
     const [searchTerm, setSearchTerm] = useState('')
 
     useEffect(() => {
@@ -43,32 +40,6 @@ export const AgendaPage = () => {
 
         setSelectedRoomIds(initialSelectedRoomIds)
     }, [rooms]) // called when rooms are fetched
-
-    const onRoomCheckboxClick =
-        ({ currentlySelectedRooms, id }) =>
-        ({ target }) =>
-            setSelectedRoomIds({ ...currentlySelectedRooms, [id]: target.checked })
-
-    const mapRoomsToCheckboxes = ({ name, id }) => (
-        <li key={id} className={classNames('room-item', { 'is-visible': selectedRoomIds[id] === true })}>
-            <Form.Check
-                type="checkbox"
-                checked={selectedRoomIds[id] === true}
-                id={id}
-                label={
-                    <>
-                        {selectedRoomIds[id] === true ? (
-                            <FontAwesomeIcon icon={faEye} />
-                        ) : (
-                            <FontAwesomeIcon icon={faEyeSlash} />
-                        )}{' '}
-                        <div className="room-name">{name}</div>
-                    </>
-                }
-                onChange={onRoomCheckboxClick({ currentlySelectedRooms: selectedRoomIds, id })}
-            />
-        </li>
-    )
 
     const handleSearch = (e) => setSearchTerm(e.target.value)
 
@@ -176,11 +147,8 @@ export const AgendaPage = () => {
                                                 <RoomSelection
                                                     {...{
                                                         rooms: searchedRooms,
-                                                        isRoomsExpanded: isPhysicalRoomsExpanded,
-                                                        setRoomsExpanded: setPhysicalRoomsExpanded,
                                                         selectedRoomIds,
                                                         setSelectedRoomIds,
-                                                        onRoomCheckboxClick,
                                                         roomsFilter: ({ location }) => location?.name === 'CEP',
                                                         groupName: 'Physiques',
                                                     }}
@@ -188,11 +156,8 @@ export const AgendaPage = () => {
                                                 <RoomSelection
                                                     {...{
                                                         rooms: searchedRooms,
-                                                        isRoomsExpanded: isVirtualRoomsExpanded,
-                                                        setRoomsExpanded: setVirtualRoomsExpanded,
                                                         selectedRoomIds,
                                                         setSelectedRoomIds,
-                                                        onRoomCheckboxClick,
                                                         roomsFilter: ({ location }) => location?.name === 'CEP ZOOM',
                                                         groupName: 'Virtuelles',
                                                     }}
@@ -202,11 +167,8 @@ export const AgendaPage = () => {
                                         <RoomSelection
                                             {...{
                                                 rooms: searchedRooms,
-                                                isRoomsExpanded: isExternalRoomsExpanded,
-                                                setRoomsExpanded: setExternalRoomsExpanded,
                                                 selectedRoomIds,
                                                 setSelectedRoomIds,
-                                                onRoomCheckboxClick,
                                                 roomsFilter: ({ location }) =>
                                                     location?.name !== 'CEP' && location?.name !== 'CEP ZOOM',
                                                 groupName: 'Externes',
