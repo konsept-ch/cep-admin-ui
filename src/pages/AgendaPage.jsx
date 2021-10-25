@@ -15,8 +15,10 @@ import classNames from 'classnames'
 import { Calendar } from '../components'
 import { fetchAgendaAction } from '../actions/agenda.ts'
 import { roomsAndEventsSelector } from '../reducers'
+
 import { RoomSelection } from '../components/RoomSelection'
 import { BulkSelect } from '../components/BulkSelect'
+import { ExpandController } from '../components/ExpandController'
 
 export const AgendaPage = () => {
     const { rooms, events } = useSelector(roomsAndEventsSelector)
@@ -24,7 +26,7 @@ export const AgendaPage = () => {
     const dispatch = useDispatch()
     const [isRoomSelectionExpanded, setRoomSelectionExpanded] = useState(true)
     console.log(rooms) // to be deleted
-    const [isAllRoomsExpanded, setAllRoomsExpanded] = useState(true)
+    const [isRoomsExpanded, setRoomsExpanded] = useState(true)
     const [isInternalRoomsExpanded, setInternalRoomsExpanded] = useState(true)
     const [searchTerm, setSearchTerm] = useState('')
 
@@ -98,18 +100,7 @@ export const AgendaPage = () => {
                                             />
                                         </InputGroup>
                                     </div>
-                                    <span
-                                        className="expand-controller"
-                                        onClick={() => {
-                                            setAllRoomsExpanded(!isAllRoomsExpanded)
-                                        }}
-                                    >
-                                        {isAllRoomsExpanded ? (
-                                            <FontAwesomeIcon icon={faChevronDown} />
-                                        ) : (
-                                            <FontAwesomeIcon icon={faChevronRight} />
-                                        )}
-                                    </span>
+                                    <ExpandController {...{ isRoomsExpanded, setRoomsExpanded }} />
                                     <BulkSelect
                                         {...{
                                             rooms: searchedRooms,
@@ -119,20 +110,14 @@ export const AgendaPage = () => {
                                         }}
                                     />{' '}
                                     <strong>Toutes salles</strong>
-                                    <ul className={`collapse ${isAllRoomsExpanded ? 'show' : ''}`}>
+                                    <ul className={`collapse ${isRoomsExpanded ? 'show' : ''}`}>
                                         <li>
-                                            <span
-                                                className="expand-controller"
-                                                onClick={() => {
-                                                    setInternalRoomsExpanded(!isInternalRoomsExpanded)
+                                            <ExpandController
+                                                {...{
+                                                    isRoomsExpanded: isInternalRoomsExpanded,
+                                                    setRoomsExpanded: setInternalRoomsExpanded,
                                                 }}
-                                            >
-                                                {isInternalRoomsExpanded ? (
-                                                    <FontAwesomeIcon icon={faChevronDown} />
-                                                ) : (
-                                                    <FontAwesomeIcon icon={faChevronRight} />
-                                                )}
-                                            </span>
+                                            />
                                             <BulkSelect
                                                 {...{
                                                     rooms: searchedRooms,
