@@ -1,6 +1,9 @@
 import { useState } from 'react'
+import { Collapse } from 'react-bootstrap'
+import classNames from 'classnames'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown, faChevronRight } from '@fortawesome/pro-solid-svg-icons'
+
 import { RoomCheckbox } from './RoomCheckbox'
 import { BulkSelect } from './BulkSelect'
 
@@ -26,16 +29,20 @@ export const RoomSelection = ({ rooms, selectedRoomIds, setSelectedRoomIds, room
                 }}
             />{' '}
             <strong>{groupName}</strong>
-            <ul className={`collapse ${isRoomsExpanded ? 'show' : ''}`}>
-                {rooms.filter(roomsFilter).map(({ name, id }) => (
-                    <RoomCheckbox
-                        name={name}
-                        id={id}
-                        selectedRoomIds={selectedRoomIds}
-                        setSelectedRoomIds={setSelectedRoomIds}
-                    />
-                ))}
-            </ul>
+            <Collapse dimension="height" in={isRoomsExpanded}>
+                <div>
+                    <ul>
+                        {rooms.filter(roomsFilter).map(({ name, id }) => (
+                            <RoomCheckbox
+                                name={name}
+                                id={id}
+                                selectedRoomIds={selectedRoomIds}
+                                setSelectedRoomIds={setSelectedRoomIds}
+                            />
+                        ))}
+                    </ul>
+                </div>
+            </Collapse>
         </li>
     )
 }
