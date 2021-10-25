@@ -2,10 +2,16 @@
     max-width: 1500px;
 
     .list-group-item:hover {
-        background-color: $color-brown-10;
+        background-color: lighten($color-brown-10, 3%);
+        cursor: pointer;
     }
 
     .template-preview {
         white-space: pre-wrap;
+    }
+
+    .list-group-item.active-template {
+        background-color: lighten($secondary, 50%);
+        box-shadow: inset -8px 0 0 -5px $secondary;
     }
 }

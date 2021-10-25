@@ -64,14 +64,16 @@ export function InscriptionsPage() {
         },
     ]
 
-    const rowData = inscriptions?.map(({ id, user, session, status, date }) => ({
-        id,
-        participant: user.name,
-        profession: '(à faire)',
-        session: session.name,
-        status,
-        startDate: date,
-    }))
+    const rowData = inscriptions
+        .filter((current) => current != null)
+        .map(({ id, user, session, status, date }) => ({
+            id,
+            participant: user.name,
+            profession: '(à faire)',
+            session: session.name,
+            status,
+            startDate: date,
+        }))
 
     return (
         <>
