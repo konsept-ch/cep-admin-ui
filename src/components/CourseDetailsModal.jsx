@@ -163,49 +163,49 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData, onAfterSave 
                     </Col>
                     <Col sm={8}>
                         <h4>Prévisualisation de la description</h4>
-                        <div class="course-resume">
-                            <div class="info-holder">
+                        <div className="course-resume">
+                            <div className="info-holder">
                                 <h3>résumé</h3>
                                 <h4>durée totale</h4>
                                 <h5>{events.length} étapes</h5>
                                 <h6>dont</h6>
-                                <div class="course-durations">
-                                    <div class="duration-holder">
-                                        <p class="dur-first-label">Présentiel:&nbsp;</p>
-                                        <p class="dur-info">
+                                <div className="course-durations">
+                                    <div className="duration-holder">
+                                        <p className="dur-first-label">Présentiel:&nbsp;</p>
+                                        <p className="dur-info">
                                             {events.filter(({ type }) => type === 'f2f').length} étape(s) &nbsp;
                                         </p>
                                     </div>
-                                    <div class="duration-holder">
-                                        <p class="dur-label">Synchrone:&nbsp;</p>
-                                        <p class="dur-info">
+                                    <div className="duration-holder">
+                                        <p className="dur-label">Synchrone:&nbsp;</p>
+                                        <p className="dur-info">
                                             {events.filter(({ type }) => type === 'sync').length} étape(s) &nbsp;
                                         </p>
                                     </div>
-                                    <div class="duration-holder">
-                                        <p class="dur-label">Asynchrone:&nbsp;</p>
-                                        <p class="dur-info">
+                                    <div className="duration-holder">
+                                        <p className="dur-label">Asynchrone:&nbsp;</p>
+                                        <p className="dur-info">
                                             {events.filter(({ type }) => type === 'async').length} étape(s) &nbsp;
                                         </p>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="course-type">
+                        <div className="course-type">
                             <h3>En salle</h3>
                             <h3>En ligne</h3>
                         </div>
-                        <div class="courses-list">
+                        <div className="courses-list">
                             {events.map(({ type, title, description }, eventOrder) => (
-                                <div class={mapEventTypeToClassName({ type })}>
-                                    <div class="day-counter">
+                                <div className={mapEventTypeToClassName({ type })}>
+                                    <div className="day-counter">
                                         étape {eventOrder + 1}/{events.length}
                                     </div>
-                                    <div class="content-holder">
-                                        <div class="heading-holder">
+                                    <div className="content-holder">
+                                        <div className="heading-holder">
                                             <h2>{title}</h2>
                                         </div>
-                                        <div class="description-holder">
+                                        <div className="description-holder">
                                             <h3>Description</h3>
                                             <p>{description}</p>
                                         </div>

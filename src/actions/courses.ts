@@ -1,4 +1,4 @@
-import { FETCH_COURSES, SET_COURSES } from '../constants/courses'
+import { FETCH_COURSES, SET_COURSES, UPDATE_COURSE } from '../constants/courses'
 
 export const fetchCoursesAction = () => ({
     type: FETCH_COURSES,
@@ -10,17 +10,7 @@ export const setCoursesAction = ({ courses }: { courses: any }) => ({
     payload: { courses },
 })
 
-// export const updateCourseStatusAction = ({
-//     inscriptionId,
-//     newStatus,
-//     emailTemplateName,
-//     successCallback,
-// }: {
-//     inscriptionId: any
-//     newStatus: any
-//     emailTemplateName: any
-//     successCallback: any
-// }) => ({
-//     type: UPDATE_COURSES,
-//     payload: { inscriptionId, newStatus, emailTemplateName, successCallback },
-// })
+export const updateCourseAction = ({ courseId, field, newValue }: { courseId: any; field: any; newValue: any }) => ({
+    type: UPDATE_COURSE,
+    payload: { courseId, field, newValue },
+})

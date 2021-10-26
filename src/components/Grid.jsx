@@ -134,7 +134,6 @@ export const Grid = ({ name, ...gridProps }) => {
                         ],
                         getRowNodeId: (data) => data.id,
                         localeText,
-                        onFirstDataRendered: ({ columnApi }) => columnApi.autoSizeAllColumns(),
                         onGridReady: ({ api }) => setGridApi(api),
                         ...gridProps,
                     }}
