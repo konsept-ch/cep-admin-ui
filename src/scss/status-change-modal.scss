@@ -1,8 +1,10 @@
+@use 'sass:color';
+
 .status-change-modal {
     max-width: 1500px;
 
     .list-group-item:hover {
-        background-color: lighten($color-brown-10, 3%);
+        background-color: color.adjust($color-brown-10, $lightness: 3%);
         cursor: pointer;
     }
 
@@ -11,7 +13,7 @@
     }
 
     .list-group-item.active-template {
-        background-color: lighten($secondary, 50%);
+        background-color: color.adjust($secondary, $lightness: 50%);
         box-shadow: inset -8px 0 0 -5px $secondary;
     }
 }

@@ -12,10 +12,13 @@ import {
 } from '@fortawesome/pro-solid-svg-icons'
 import { faFilterCircleXmark, faEye as faEyeLight } from '@fortawesome/pro-light-svg-icons'
 import classNames from 'classnames'
-
 import { Calendar } from '../components'
 import { fetchAgendaAction } from '../actions/agenda.ts'
 import { roomsAndEventsSelector } from '../reducers'
+
+import { RoomSelection } from '../components/RoomSelection'
+import { BulkSelect } from '../components/BulkSelect'
+import { ExpandController } from '../components/ExpandController'
 
 export const AgendaPage = () => {
     const { rooms, events } = useSelector(roomsAndEventsSelector)
@@ -23,11 +26,8 @@ export const AgendaPage = () => {
     const dispatch = useDispatch()
     const [isRoomSelectionExpanded, setRoomSelectionExpanded] = useState(true)
     console.log(rooms) // to be deleted
-    const [isAllRoomsExpanded, setAllRoomsExpanded] = useState(true)
+    const [isRoomsExpanded, setRoomsExpanded] = useState(true)
     const [isInternalRoomsExpanded, setInternalRoomsExpanded] = useState(true)
-    const [isPhysicalRoomsExpanded, setPhysicalRoomsExpanded] = useState(true)
-    const [isVirtualRoomsExpanded, setVirtualRoomsExpanded] = useState(true)
-    const [isExternalRoomsExpanded, setExternalRoomsExpanded] = useState(true)
     const [searchTerm, setSearchTerm] = useState('')
 
     useEffect(() => {
@@ -42,32 +42,6 @@ export const AgendaPage = () => {
 
         setSelectedRoomIds(initialSelectedRoomIds)
     }, [rooms]) // called when rooms are fetched
-
-    const onRoomCheckboxClick =
-        ({ currentlySelectedRooms, id }) =>
-        ({ target }) =>
-            setSelectedRoomIds({ ...currentlySelectedRooms, [id]: target.checked })
-
-    const mapRoomsToCheckboxes = ({ name, id }) => (
-        <li key={id} className={classNames('room-item', { 'is-visible': selectedRoomIds[id] === true })}>
-            <Form.Check
-                type="checkbox"
-                checked={selectedRoomIds[id] === true}
-                id={id}
-                label={
-                    <>
-                        {selectedRoomIds[id] === true ? (
-                            <FontAwesomeIcon icon={faEye} />
-                        ) : (
-                            <FontAwesomeIcon icon={faEyeSlash} />
-                        )}{' '}
-                        <div className="room-name">{name}</div>
-                    </>
-                }
-                onChange={onRoomCheckboxClick({ currentlySelectedRooms: selectedRoomIds, id })}
-            />
-        </li>
-    )
 
     const handleSearch = (e) => setSearchTerm(e.target.value)
 
@@ -110,7 +84,6 @@ export const AgendaPage = () => {
                                             >
                                                 <Button
                                                     variant="outline-danger"
-                                                    id="button-addon1"
                                                     className="cleanup-button"
                                                     onClick={() => setSearchTerm('')}
                                                 >
@@ -127,273 +100,65 @@ export const AgendaPage = () => {
                                             />
                                         </InputGroup>
                                     </div>
-                                    <span
-                                        className="expand-controller"
-                                        onClick={() => {
-                                            setAllRoomsExpanded(!isAllRoomsExpanded)
+                                    <ExpandController {...{ isRoomsExpanded, setRoomsExpanded }} />
+                                    <BulkSelect
+                                        {...{
+                                            rooms: searchedRooms,
+                                            roomsFilter: () => true,
+                                            selectedRoomIds,
+                                            setSelectedRoomIds,
                                         }}
-                                    >
-                                        {isAllRoomsExpanded ? (
-                                            <FontAwesomeIcon icon={faChevronDown} />
-                                        ) : (
-                                            <FontAwesomeIcon icon={faChevronRight} />
-                                        )}
-                                    </span>
-                                    <span
-                                        className="bulk-select"
-                                        onClick={() => {
-                                            const areAllRoomsSelected = searchedRooms.every(
-                                                ({ id }) => selectedRoomIds[id] === true
-                                            )
-                                            setSelectedRoomIds({
-                                                ...selectedRoomIds,
-                                                ...searchedRooms.reduce(
-                                                    (allRooms, { id }) => ({
-                                                        ...allRooms,
-                                                        [id]: !areAllRoomsSelected,
-                                                    }),
-                                                    {}
-                                                ),
-                                            })
-                                        }}
-                                    >
-                                        {searchedRooms.every(({ id }) => selectedRoomIds[id] === true) ? (
-                                            <FontAwesomeIcon icon={faEye} />
-                                        ) : searchedRooms.some(({ id }) => selectedRoomIds[id] === true) ? (
-                                            <FontAwesomeIcon icon={faEyeLight} />
-                                        ) : (
-                                            <FontAwesomeIcon icon={faEyeSlash} />
-                                        )}
-                                    </span>{' '}
+                                    />{' '}
                                     <strong>Toutes salles</strong>
-                                    <ul className={`collapse ${isAllRoomsExpanded ? 'show' : ''}`}>
+                                    <ul className={`collapse ${isRoomsExpanded ? 'show' : ''}`}>
                                         <li>
-                                            <span
-                                                className="expand-controller"
-                                                onClick={() => {
-                                                    setInternalRoomsExpanded(!isInternalRoomsExpanded)
+                                            <ExpandController
+                                                {...{
+                                                    isRoomsExpanded: isInternalRoomsExpanded,
+                                                    setRoomsExpanded: setInternalRoomsExpanded,
                                                 }}
-                                            >
-                                                {isInternalRoomsExpanded ? (
-                                                    <FontAwesomeIcon icon={faChevronDown} />
-                                                ) : (
-                                                    <FontAwesomeIcon icon={faChevronRight} />
-                                                )}
-                                            </span>
-                                            <span
-                                                className="bulk-select"
-                                                onClick={() => {
-                                                    const internalRooms = searchedRooms.filter(
-                                                        ({ location }) =>
-                                                            location?.name === 'CEP' || location?.name === 'CEP ZOOM'
-                                                    )
-                                                    const areAllInternalRoomsSelected = internalRooms.every(
-                                                        ({ id }) => selectedRoomIds[id] === true
-                                                    )
-                                                    setSelectedRoomIds({
-                                                        ...selectedRoomIds,
-                                                        ...internalRooms.reduce(
-                                                            (allRooms, { id }) => ({
-                                                                ...allRooms,
-                                                                [id]: !areAllInternalRoomsSelected,
-                                                            }),
-                                                            {}
-                                                        ),
-                                                    })
+                                            />
+                                            <BulkSelect
+                                                {...{
+                                                    rooms: searchedRooms,
+                                                    roomsFilter: ({ location }) =>
+                                                        location?.name === 'CEP' || location?.name === 'CEP ZOOM',
+                                                    selectedRoomIds,
+                                                    setSelectedRoomIds,
                                                 }}
-                                            >
-                                                {searchedRooms
-                                                    .filter(
-                                                        ({ location }) =>
-                                                            location?.name === 'CEP' || location?.name === 'CEP ZOOM'
-                                                    )
-                                                    .every(({ id }) => selectedRoomIds[id] === true) ? (
-                                                    <FontAwesomeIcon icon={faEye} />
-                                                ) : searchedRooms
-                                                      .filter(
-                                                          ({ location }) =>
-                                                              location?.name === 'CEP' || location?.name === 'CEP ZOOM'
-                                                      )
-                                                      .some(({ id }) => selectedRoomIds[id] === true) ? (
-                                                    <FontAwesomeIcon icon={faEyeLight} />
-                                                ) : (
-                                                    <FontAwesomeIcon icon={faEyeSlash} />
-                                                )}
-                                            </span>{' '}
+                                            />{' '}
                                             <strong>Internes</strong>
                                             <ul className={`collapse ${isInternalRoomsExpanded ? 'show' : ''}`}>
-                                                <li>
-                                                    <span
-                                                        className="expand-controller"
-                                                        onClick={() => {
-                                                            setPhysicalRoomsExpanded(!isPhysicalRoomsExpanded)
-                                                        }}
-                                                    >
-                                                        {isPhysicalRoomsExpanded ? (
-                                                            <FontAwesomeIcon icon={faChevronDown} />
-                                                        ) : (
-                                                            <FontAwesomeIcon icon={faChevronRight} />
-                                                        )}
-                                                    </span>
-                                                    <span
-                                                        className="bulk-select"
-                                                        onClick={() => {
-                                                            const physicalRooms = searchedRooms.filter(
-                                                                ({ location }) => location?.name === 'CEP'
-                                                            )
-                                                            const areAllPhysicalRoomsSelected = physicalRooms.every(
-                                                                ({ id }) => selectedRoomIds[id] === true
-                                                            )
-                                                            setSelectedRoomIds({
-                                                                ...selectedRoomIds,
-                                                                ...physicalRooms.reduce(
-                                                                    (allRooms, { id }) => ({
-                                                                        ...allRooms,
-                                                                        [id]: !areAllPhysicalRoomsSelected,
-                                                                    }),
-                                                                    {}
-                                                                ),
-                                                            })
-                                                        }}
-                                                    >
-                                                        {searchedRooms
-                                                            .filter(({ location }) => location?.name === 'CEP')
-                                                            .every(({ id }) => selectedRoomIds[id] === true) ? (
-                                                            <FontAwesomeIcon icon={faEye} />
-                                                        ) : searchedRooms
-                                                              .filter(({ location }) => location?.name === 'CEP')
-                                                              .some(({ id }) => selectedRoomIds[id] === true) ? (
-                                                            <FontAwesomeIcon icon={faEyeLight} />
-                                                        ) : (
-                                                            <FontAwesomeIcon icon={faEyeSlash} />
-                                                        )}
-                                                    </span>{' '}
-                                                    <strong>Physiques</strong>
-                                                    <ul className={`collapse ${isPhysicalRoomsExpanded ? 'show' : ''}`}>
-                                                        {searchedRooms
-                                                            .filter((room) => room.location?.name === 'CEP')
-                                                            .map(mapRoomsToCheckboxes)}
-                                                    </ul>
-                                                </li>
-                                                <li>
-                                                    <span
-                                                        className="expand-controller"
-                                                        onClick={() => {
-                                                            setVirtualRoomsExpanded(!isVirtualRoomsExpanded)
-                                                        }}
-                                                    >
-                                                        {isVirtualRoomsExpanded ? (
-                                                            <FontAwesomeIcon icon={faChevronDown} />
-                                                        ) : (
-                                                            <FontAwesomeIcon icon={faChevronRight} />
-                                                        )}
-                                                    </span>
-                                                    <span
-                                                        className="bulk-select"
-                                                        onClick={() => {
-                                                            const virtualRooms = searchedRooms.filter(
-                                                                ({ location }) => location?.name === 'CEP ZOOM'
-                                                            )
-                                                            const areAllVirtualRoomsSelected = virtualRooms.every(
-                                                                ({ id }) => selectedRoomIds[id] === true
-                                                            )
-                                                            setSelectedRoomIds({
-                                                                ...selectedRoomIds,
-                                                                ...virtualRooms.reduce(
-                                                                    (allRooms, { id }) => ({
-                                                                        ...allRooms,
-                                                                        [id]: !areAllVirtualRoomsSelected,
-                                                                    }),
-                                                                    {}
-                                                                ),
-                                                            })
-                                                        }}
-                                                    >
-                                                        {searchedRooms
-                                                            .filter(({ location }) => location?.name === 'CEP ZOOM')
-                                                            .every(({ id }) => selectedRoomIds[id] === true) ? (
-                                                            <FontAwesomeIcon icon={faEye} />
-                                                        ) : searchedRooms
-                                                              .filter(({ location }) => location?.name === 'CEP ZOOM')
-                                                              .some(({ id }) => selectedRoomIds[id] === true) ? (
-                                                            <FontAwesomeIcon icon={faEyeLight} />
-                                                        ) : (
-                                                            <FontAwesomeIcon icon={faEyeSlash} />
-                                                        )}
-                                                    </span>{' '}
-                                                    <strong>Virtuelles</strong>
-                                                    <ul className={`collapse ${isVirtualRoomsExpanded ? 'show' : ''}`}>
-                                                        {searchedRooms
-                                                            .filter((room) => room.location?.name === 'CEP ZOOM')
-                                                            .map(mapRoomsToCheckboxes)}
-                                                    </ul>
-                                                </li>
+                                                <RoomSelection
+                                                    {...{
+                                                        rooms: searchedRooms,
+                                                        selectedRoomIds,
+                                                        setSelectedRoomIds,
+                                                        roomsFilter: ({ location }) => location?.name === 'CEP',
+                                                        groupName: 'Physiques',
+                                                    }}
+                                                />
+                                                <RoomSelection
+                                                    {...{
+                                                        rooms: searchedRooms,
+                                                        selectedRoomIds,
+                                                        setSelectedRoomIds,
+                                                        roomsFilter: ({ location }) => location?.name === 'CEP ZOOM',
+                                                        groupName: 'Virtuelles',
+                                                    }}
+                                                />
                                             </ul>
                                         </li>
-                                        <li>
-                                            <span
-                                                className="expand-controller"
-                                                onClick={() => {
-                                                    setExternalRoomsExpanded(!isExternalRoomsExpanded)
-                                                }}
-                                            >
-                                                {isExternalRoomsExpanded ? (
-                                                    <FontAwesomeIcon icon={faChevronDown} />
-                                                ) : (
-                                                    <FontAwesomeIcon icon={faChevronRight} />
-                                                )}
-                                            </span>
-                                            <span
-                                                className="bulk-select"
-                                                onClick={() => {
-                                                    const externalRooms = searchedRooms.filter(
-                                                        ({ location }) =>
-                                                            location?.name !== 'CEP' && location?.name !== 'CEP ZOOM'
-                                                    )
-                                                    const areAllExternalRoomsSelected = externalRooms.every(
-                                                        ({ id }) => selectedRoomIds[id] === true
-                                                    )
-                                                    setSelectedRoomIds({
-                                                        ...selectedRoomIds,
-                                                        ...externalRooms.reduce(
-                                                            (allRooms, { id }) => ({
-                                                                ...allRooms,
-                                                                [id]: !areAllExternalRoomsSelected,
-                                                            }),
-                                                            {}
-                                                        ),
-                                                    })
-                                                }}
-                                            >
-                                                {searchedRooms
-                                                    .filter(
-                                                        ({ location }) =>
-                                                            location?.name !== 'CEP' && location?.name !== 'CEP ZOOM'
-                                                    )
-                                                    .every(({ id }) => selectedRoomIds[id] === true) ? (
-                                                    <FontAwesomeIcon icon={faEye} />
-                                                ) : searchedRooms
-                                                      .filter(
-                                                          ({ location }) =>
-                                                              location?.name !== 'CEP' && location?.name !== 'CEP ZOOM'
-                                                      )
-                                                      .some(({ id }) => selectedRoomIds[id] === true) ? (
-                                                    <FontAwesomeIcon icon={faEyeLight} />
-                                                ) : (
-                                                    <FontAwesomeIcon icon={faEyeSlash} />
-                                                )}
-                                            </span>{' '}
-                                            <strong>Externes</strong>
-                                            <ul className={`collapse ${isExternalRoomsExpanded ? 'show' : ''}`}>
-                                                {searchedRooms
-                                                    .filter(
-                                                        (room) =>
-                                                            room.location?.name !== 'CEP' &&
-                                                            room.location?.name !== 'CEP ZOOM'
-                                                    )
-                                                    .map(mapRoomsToCheckboxes)}
-                                            </ul>
-                                        </li>
+                                        <RoomSelection
+                                            {...{
+                                                rooms: searchedRooms,
+                                                selectedRoomIds,
+                                                setSelectedRoomIds,
+                                                roomsFilter: ({ location }) =>
+                                                    location?.name !== 'CEP' && location?.name !== 'CEP ZOOM',
+                                                groupName: 'Externes',
+                                            }}
+                                        />
                                     </ul>
                                 </div>
                             </div>
