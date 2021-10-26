@@ -1,8 +1,6 @@
 $font-size-base: 1rem;
-
 $font-family-sans-serif: 'Overpass', sans-serif;
 $headings-font-family: 'Overpass', sans-serif;
-
 $top-bar-bg: #69605a;
 $primary: #78a5b6;
 $secondary: #e8ca01;
@@ -11,5 +9,5 @@ $cep-brown-hover: #a59f9b;
 $footer-bg: #69605a;
 $footer-color: #ffffff;
 $footer-link-color: #e8ca01;
-$footer-link-hover-color: lighten($footer-link-color, 20%);
+$footer-link-hover-color: color.adjust($footer-link-color, $lightness: 20%);
 $login-bg-image: 'https://www.elitefts.com/wp/wp-content/uploads/2012/03/1267399_14479084.jpg';

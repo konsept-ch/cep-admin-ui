@@ -1,7 +1,7 @@
 :root {
     --fc-small-font-size: 0.85em;
     --fc-page-bg-color: #ffffff;
-    --fc-neutral-bg-color: rgba(208, 208, 208, 0.3);
+    --fc-neutral-bg-color: rgba(208 208 208 3%);
     --fc-neutral-text-color: #808080;
     --fc-border-color: #{$color-brown-30};
     --fc-button-text-color: #ffffff;
@@ -14,17 +14,17 @@
     --fc-event-bg-color: #{$color-blue};
     --fc-event-border-color: #{$color-blue};
     --fc-event-text-color: #ffffff;
-    --fc-event-selected-overlay-color: rgba(0, 0, 0, 0.25);
+    --fc-event-selected-overlay-color: rgba(0 0 0 25%);
     --fc-more-link-bg-color: #d0d0d0;
     --fc-more-link-text-color: inherit;
     --fc-event-resizer-thickness: 8px;
     --fc-event-resizer-dot-total-width: 8px;
     --fc-event-resizer-dot-border-width: 1px;
-    --fc-non-business-color: rgba(215, 215, 215, 0.3);
-    --fc-bg-event-color: rgb(143, 223, 130);
+    --fc-non-business-color: rgba(215 215 215 3%);
+    --fc-bg-event-color: rgb(143 223 130);
     --fc-bg-event-opacity: 0.3;
-    --fc-highlight-color: rgba(188, 232, 241, 0.3);
-    --fc-today-bg-color: rgba(255, 220, 40, 0.15);
+    --fc-highlight-color: rgba(188 232 241 3%);
+    --fc-today-bg-color: rgba(255 220 40 15%);
     --fc-now-indicator-color: #ff0000;
 }
 
@@ -76,11 +76,11 @@
         border-radius: $border-radius;
 
         &.is-visible {
-            background-color: rgba(0, 255, 0, 0.1);
+            background-color: rgba(0 255 0 1%);
         }
 
         &:not(.is-visible) {
-            background-color: rgba(255, 0, 0, 0.1);
+            background-color: rgba(255 0 0 1%);
         }
     }
 }
