@@ -110,56 +110,67 @@ export const AgendaPage = () => {
                                         }}
                                     />{' '}
                                     <strong>Toutes salles</strong>
-                                    <ul className={`collapse ${isRoomsExpanded ? 'show' : ''}`}>
-                                        <li>
-                                            <ExpandController
-                                                {...{
-                                                    isRoomsExpanded: isInternalRoomsExpanded,
-                                                    setRoomsExpanded: setInternalRoomsExpanded,
-                                                }}
-                                            />
-                                            <BulkSelect
-                                                {...{
-                                                    rooms: searchedRooms,
-                                                    roomsFilter: ({ location }) =>
-                                                        location?.name === 'CEP' || location?.name === 'CEP ZOOM',
-                                                    selectedRoomIds,
-                                                    setSelectedRoomIds,
-                                                }}
-                                            />{' '}
-                                            <strong>Internes</strong>
-                                            <ul className={`collapse ${isInternalRoomsExpanded ? 'show' : ''}`}>
+                                    <Collapse dimension="height" in={isRoomsExpanded}>
+                                        <div>
+                                            <ul>
+                                                <li>
+                                                    <ExpandController
+                                                        {...{
+                                                            isRoomsExpanded: isInternalRoomsExpanded,
+                                                            setRoomsExpanded: setInternalRoomsExpanded,
+                                                        }}
+                                                    />
+                                                    <BulkSelect
+                                                        {...{
+                                                            rooms: searchedRooms,
+                                                            roomsFilter: ({ location }) =>
+                                                                location?.name === 'CEP' ||
+                                                                location?.name === 'CEP ZOOM',
+                                                            selectedRoomIds,
+                                                            setSelectedRoomIds,
+                                                        }}
+                                                    />{' '}
+                                                    <strong>Internes</strong>
+                                                    <Collapse dimension="height" in={isInternalRoomsExpanded}>
+                                                        <div>
+                                                            <ul>
+                                                                <RoomSelection
+                                                                    {...{
+                                                                        rooms: searchedRooms,
+                                                                        selectedRoomIds,
+                                                                        setSelectedRoomIds,
+                                                                        roomsFilter: ({ location }) =>
+                                                                            location?.name === 'CEP',
+                                                                        groupName: 'Physiques',
+                                                                    }}
+                                                                />
+                                                                <RoomSelection
+                                                                    {...{
+                                                                        rooms: searchedRooms,
+                                                                        selectedRoomIds,
+                                                                        setSelectedRoomIds,
+                                                                        roomsFilter: ({ location }) =>
+                                                                            location?.name === 'CEP ZOOM',
+                                                                        groupName: 'Virtuelles',
+                                                                    }}
+                                                                />
+                                                            </ul>
+                                                        </div>
+                                                    </Collapse>
+                                                </li>
                                                 <RoomSelection
                                                     {...{
                                                         rooms: searchedRooms,
                                                         selectedRoomIds,
                                                         setSelectedRoomIds,
-                                                        roomsFilter: ({ location }) => location?.name === 'CEP',
-                                                        groupName: 'Physiques',
-                                                    }}
-                                                />
-                                                <RoomSelection
-                                                    {...{
-                                                        rooms: searchedRooms,
-                                                        selectedRoomIds,
-                                                        setSelectedRoomIds,
-                                                        roomsFilter: ({ location }) => location?.name === 'CEP ZOOM',
-                                                        groupName: 'Virtuelles',
+                                                        roomsFilter: ({ location }) =>
+                                                            location?.name !== 'CEP' && location?.name !== 'CEP ZOOM',
+                                                        groupName: 'Externes',
                                                     }}
                                                 />
                                             </ul>
-                                        </li>
-                                        <RoomSelection
-                                            {...{
-                                                rooms: searchedRooms,
-                                                selectedRoomIds,
-                                                setSelectedRoomIds,
-                                                roomsFilter: ({ location }) =>
-                                                    location?.name !== 'CEP' && location?.name !== 'CEP ZOOM',
-                                                groupName: 'Externes',
-                                            }}
-                                        />
-                                    </ul>
+                                        </div>
+                                    </Collapse>
                                 </div>
                             </div>
                         </div>
