@@ -33,28 +33,33 @@ export function CoursesPage() {
             filter: 'agTextColumnFilter',
             headerTooltip: 'Le nom de la formation',
             onCellDoubleClicked: ({ data }) => setSelectedCourseId(data.id),
+            width: 400,
         },
         {
             field: 'code',
             headerName: 'Code',
             filter: 'agTextColumnFilter',
             headerTooltip: 'Le code de la formation',
+            width: 200,
         },
         {
             field: 'duration',
             headerName: 'Durée',
             filter: 'agNumberColumnFilter',
             headerTooltip: 'La durée de la formation',
+            width: 100,
         },
         {
             field: 'price',
             headerName: 'Coût',
             filter: 'agNumberColumnFilter',
             headerTooltip: 'Le prix de la formation',
+            width: 100,
+            // TODO format "CHF 1234"
         },
         {
             field: 'cordinator',
-            headerName: 'CF (coordinateur de formation)',
+            headerName: 'CF (coordinateur)',
             filter: 'agTextColumnFilter',
             headerTooltip: 'Le coordinateur de la formation',
             editable: true,
@@ -62,10 +67,11 @@ export function CoursesPage() {
             cellEditorParams: { values: admins },
             onCellValueChanged: (data) =>
                 updateCourse({ courseId: data.data.id, field: data.colDef.field, newValue: data.newValue }),
+            width: 170,
         },
         {
             field: 'responsible',
-            headerName: 'RF (responsable de formation)',
+            headerName: 'RF (responsable)',
             filter: 'agTextColumnFilter',
             headerTooltip: 'Le responsable de la formation',
             editable: true,
@@ -73,6 +79,62 @@ export function CoursesPage() {
             cellEditorParams: { values: admins },
             onCellValueChanged: (data) =>
                 updateCourse({ courseId: data.data.id, field: data.colDef.field, newValue: data.newValue }),
+            width: 170,
+        },
+
+        {
+            field: 'typeStage',
+            headerName: 'Type stage',
+            filter: 'agTextColumnFilter',
+            editable: true,
+            headerTooltip: 'Le type stage',
+            cellEditor: 'agRichSelectCellEditor',
+            cellEditorParams: { values: typeStageValues },
+            onCellValueChanged: (data) =>
+                updateCourse({ courseId: data.data.id, field: data.colDef.field, newValue: data.newValue }),
+            width: 120,
+        },
+        {
+            field: 'teachingMethod',
+            headerName: 'Méthode enseignement',
+            filter: 'agTextColumnFilter',
+            editable: true,
+            headerTooltip: 'La méthode pédagogique',
+            cellEditor: 'agRichSelectCellEditor',
+            cellEditorParams: { values: teachingMethodValues },
+            onCellValueChanged: (data) =>
+                updateCourse({ courseId: data.data.id, field: data.colDef.field, newValue: data.newValue }),
+            width: 210,
+        },
+        {
+            field: 'codeCategory',
+            headerName: 'Code catégorie',
+            filter: 'agTextColumnFilter',
+            editable: true,
+            headerTooltip: 'Le code catégorie',
+            cellEditor: 'agRichSelectCellEditor',
+            cellEditorParams: { values: codeCategoryValues },
+            onCellValueChanged: (data) =>
+                updateCourse({ courseId: data.data.id, field: data.colDef.field, newValue: data.newValue }),
+            width: 150,
+        },
+        {
+            field: 'formatorType',
+            headerName: 'Type - Formateur',
+            filter: 'agTextColumnFilter',
+            editable: true,
+            headerTooltip: 'Le type du formateur',
+            onCellValueChanged: (data) =>
+                updateCourse({ courseId: data.data.id, field: data.colDef.field, newValue: data.newValue }),
+            width: 160,
+        },
+        {
+            field: 'hidden',
+            headerName: 'Visibilité',
+            filter: 'agSetColumnFilter',
+            headerTooltip: 'Est-ce que la formation est cachée',
+            valueGetter: ({ data: { hidden } }) => (hidden ? 'Cachée' : 'Visible'),
+            width: 120,
         },
         {
             field: 'creationDate',
@@ -85,55 +147,6 @@ export function CoursesPage() {
             headerName: 'Dernière modification',
             filter: 'agDateColumnFilter',
             headerTooltip: 'La date de la dernière modification',
-        },
-        {
-            field: 'hidden',
-            headerName: 'Visibilité',
-            filter: 'agSetColumnFilter',
-            headerTooltip: 'Est-ce que la formation est cachée',
-            valueGetter: ({ data: { hidden } }) => (hidden ? 'Cachée' : 'Visible'),
-        },
-        {
-            field: 'typeStage',
-            headerName: 'Type stage',
-            filter: 'agTextColumnFilter',
-            editable: true,
-            headerTooltip: 'Le type stage',
-            cellEditor: 'agRichSelectCellEditor',
-            cellEditorParams: { values: typeStageValues },
-            onCellValueChanged: (data) =>
-                updateCourse({ courseId: data.data.id, field: data.colDef.field, newValue: data.newValue }),
-        },
-        {
-            field: 'teachingMethod',
-            headerName: 'Méthode enseignement (pédagogique)',
-            filter: 'agTextColumnFilter',
-            editable: true,
-            headerTooltip: 'La méthode enseignement',
-            cellEditor: 'agRichSelectCellEditor',
-            cellEditorParams: { values: teachingMethodValues },
-            onCellValueChanged: (data) =>
-                updateCourse({ courseId: data.data.id, field: data.colDef.field, newValue: data.newValue }),
-        },
-        {
-            field: 'codeCategory',
-            headerName: 'Code catégorie',
-            filter: 'agTextColumnFilter',
-            editable: true,
-            headerTooltip: 'Le code catégorie',
-            cellEditor: 'agRichSelectCellEditor',
-            cellEditorParams: { values: codeCategoryValues },
-            onCellValueChanged: (data) =>
-                updateCourse({ courseId: data.data.id, field: data.colDef.field, newValue: data.newValue }),
-        },
-        {
-            field: 'formatorType',
-            headerName: 'Type - Formateur',
-            filter: 'agTextColumnFilter',
-            editable: true,
-            headerTooltip: 'Le type du formateur',
-            onCellValueChanged: (data) =>
-                updateCourse({ courseId: data.data.id, field: data.colDef.field, newValue: data.newValue }),
         },
     ]
 

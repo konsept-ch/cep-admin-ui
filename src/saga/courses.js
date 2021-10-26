@@ -3,12 +3,14 @@ import { call, takeEvery, put } from 'redux-saga/effects'
 import { FETCH_COURSES, UPDATE_COURSE } from '../constants/courses'
 import { setCoursesAction } from '../actions/courses'
 import { callService } from './sagaUtils'
-import { setLoadingAction } from '../actions/loading'
+import { setLoadingAction, setGridLoadingAction } from '../actions/loading'
 
 function* fetchCoursesSaga() {
+    yield put(setGridLoadingAction({ loading: true }))
     const courses = yield call(callService, { endpoint: 'courses' })
 
     yield put(setCoursesAction({ courses }))
+    yield put(setGridLoadingAction({ loading: false }))
 }
 
 function* updateCourseSaga({ payload: { courseId, field, newValue } }) {
