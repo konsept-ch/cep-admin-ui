@@ -119,16 +119,6 @@ export function CoursesPage() {
             width: 150,
         },
         {
-            field: 'formatorType',
-            headerName: 'Type - Formateur',
-            filter: 'agTextColumnFilter',
-            editable: true,
-            headerTooltip: 'Le type du formateur',
-            onCellValueChanged: (data) =>
-                updateCourse({ courseId: data.data.id, field: data.colDef.field, newValue: data.newValue }),
-            width: 160,
-        },
-        {
             field: 'hidden',
             headerName: 'Visibilité',
             filter: 'agSetColumnFilter',
@@ -163,7 +153,6 @@ export function CoursesPage() {
             typeStage,
             teachingMethod,
             codeCategory,
-            formatorType,
         }) => ({
             id,
             name,
@@ -178,7 +167,6 @@ export function CoursesPage() {
             typeStage,
             teachingMethod,
             codeCategory,
-            formatorType,
         })
     )
 

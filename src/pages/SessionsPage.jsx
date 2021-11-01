@@ -1,15 +1,13 @@
-import { useEffect } from 'react'
+import { useEffect, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { fetchSessionsAction } from '../actions/sessions.ts'
+import { fetchSessionsAction, updateSessionAction } from '../actions/sessions.ts'
 import { sessionsSelector } from '../reducers'
 import { Grid } from '../components'
 
 export function SessionsPage() {
     const dispatch = useDispatch()
     const sessions = useSelector(sessionsSelector)
-
-    console.log(sessions)
 
     useEffect(() => {
         dispatch(fetchSessionsAction())
@@ -59,11 +57,31 @@ export function SessionsPage() {
             headerTooltip: 'Est-ce que la formation est cachée',
             valueGetter: ({ data: { hidden } }) => (hidden ? 'Cachée' : 'Visible'),
         },
+        {
+            field: 'invited',
+            headerName: 'Invitée',
+            filter: 'agTextColumnFilter',
+            cellEditor: 'agRichSelectCellEditor',
+            headerTooltip: 'Est-ce que la session est invitée',
+            editable: true,
+            valueGetter: ({ data: { invited } }) => (invited ? 'Oui' : 'Non'),
+            cellEditorParams: { values: ['Oui', 'Non'] },
+            onCellValueChanged: (data) =>
+                dispatch(updateSessionAction({ sessionId: data.data.id, areInvitesSent: data.newValue })),
+        },
     ]
 
     const rowData = sessions?.map(
-        ({ name, code, restrictions: { hidden }, pricing: { price }, meta: { created, updated, duration } }) => ({
-            id: code,
+        ({
+            id,
+            name,
+            code,
+            restrictions: { hidden },
+            pricing: { price },
+            meta: { created, updated, duration },
+            areInvitesSent,
+        }) => ({
+            id,
             name,
             code,
             duration,
@@ -71,6 +89,7 @@ export function SessionsPage() {
             creationDate: created,
             lastModifiedDate: updated,
             hidden,
+            invited: areInvitesSent,
         })
     )
 

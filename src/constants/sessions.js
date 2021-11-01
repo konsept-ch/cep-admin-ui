@@ -1,2 +1,3 @@
 export const FETCH_SESSIONS = 'FETCH_SESSIONS'
 export const SET_SESSIONS = 'SET_SESSIONS'
+export const UPDATE_SESSION = 'UPDATE_SESSION'
