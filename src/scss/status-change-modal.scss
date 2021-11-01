@@ -2,7 +2,10 @@
 
 .status-change-modal {
     max-width: 1500px;
+}
 
+.status-change-modal,
+.templatesPage {
     .list-group-item:hover {
         background-color: color.adjust($color-brown-10, $lightness: 3%);
         cursor: pointer;

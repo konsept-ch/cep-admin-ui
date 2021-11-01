@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Modal, Button, Card, ListGroup, Alert, Spinner, Tooltip, OverlayTrigger } from 'react-bootstrap'
+import { Modal, Button, ListGroup, Alert, Spinner, Tooltip, OverlayTrigger } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 import classNames from 'classnames'
 import { parametersSelector, loadingSelector } from '../reducers'
@@ -68,42 +68,34 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                         </Alert.Heading>
                     </Alert>
                     <h6>Choix de modèle</h6>
-                    <Card>
-                        <ListGroup variant="flush">
-                            <ListGroup.Item
-                                onClick={() =>
-                                    setSelectedTemplateData({
-                                        name: 'no-email',
-                                        template: 'Aucun e-mail ne sera envoyé',
-                                    })
-                                }
-                                className={classNames({
-                                    'active-template': selectedTemplateData?.name === 'no-email',
-                                })}
-                            >
-                                <dl>
-                                    <dt>Aucun e-mail</dt>
-                                    <dd>Aucun e-mail ne sera envoyé</dd>
-                                </dl>
-                            </ListGroup.Item>
-                            {emailTemplates.length > 0 &&
-                                emailTemplates.map(({ name, description, template }) => (
-                                    <ListGroup.Item
-                                        onClick={() => setSelectedTemplateData({ template, name })}
-                                        className={classNames({
-                                            'active-template': selectedTemplateData?.name === name,
-                                        })}
-                                    >
-                                        <dl>
-                                            <dt>Nom</dt>
-                                            <dd>{name}</dd>
-                                            <dt>Description</dt>
-                                            <dd>{description}</dd>
-                                        </dl>
-                                    </ListGroup.Item>
-                                ))}
-                        </ListGroup>
-                    </Card>
+                    <ListGroup>
+                        <ListGroup.Item
+                            onClick={() =>
+                                setSelectedTemplateData({
+                                    name: 'no-email',
+                                    template: 'Aucun e-mail ne sera envoyé',
+                                })
+                            }
+                            className={classNames({
+                                'active-template': selectedTemplateData?.name === 'no-email',
+                            })}
+                        >
+                            <h4>Aucun e-mail</h4>
+                            <p>Aucun e-mail ne sera envoyé</p>
+                        </ListGroup.Item>
+                        {emailTemplates.length > 0 &&
+                            emailTemplates.map(({ name, description, template }) => (
+                                <ListGroup.Item
+                                    onClick={() => setSelectedTemplateData({ template, name })}
+                                    className={classNames({
+                                        'active-template': selectedTemplateData?.name === name,
+                                    })}
+                                >
+                                    <h4>{name}</h4>
+                                    <p>{description}</p>
+                                </ListGroup.Item>
+                            ))}
+                    </ListGroup>
                 </div>
                 <div className="col template-preview">
                     <h6>Aperçu de l'e-mail</h6>

@@ -26,3 +26,9 @@ export const statusWarnings = {
             "Vous êtes en train de changer le de 'Écartée' à 'Acceptée', mais c'est probablement mieux de créer une nouvelle inscription",
     },
 }
+
+export const getUniqueId = () => {
+    const dateString = Date.now().toString(36)
+    const randomness = Math.random().toString(36).substr(2)
+    return dateString + randomness
+}

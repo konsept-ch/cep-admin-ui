@@ -7,6 +7,7 @@ import { parametersReducer, parametersSelectors } from './parameters'
 import { loadingReducer, loadingSelectors } from './loading'
 import { coursesReducer, coursesSelectors } from './courses'
 import { usersReducer, usersSelectors } from './users'
+import { templatesReducer, templatesSelectors } from './templates'
 
 export const rootReducer = combineReducers({
     notifications: notificationsReducer,
@@ -17,6 +18,7 @@ export const rootReducer = combineReducers({
     loading: loadingReducer,
     courses: coursesReducer,
     users: usersReducer,
+    templates: templatesReducer,
 })
 
 export const roomsAndEventsSelector = (state) => agendaSelectors.roomsAndEventsSelector(state.agenda)
@@ -27,3 +29,4 @@ export const loadingSelector = (state) => loadingSelectors.loadingSelector(state
 export const gridLoadingSelector = (state) => loadingSelectors.gridLoadingSelector(state.loading)
 export const coursesSelector = (state) => coursesSelectors.coursesSelector(state.courses)
 export const adminsSelector = (state) => usersSelectors.adminsSelector(state.users)
+export const templatesSelector = (state) => templatesSelectors.templatesSelector(state.templates)

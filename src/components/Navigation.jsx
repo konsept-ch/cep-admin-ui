@@ -14,6 +14,7 @@ import {
     faCalendarStar,
     faMemo,
     faMessage,
+    faEnvelopeOpenText,
 } from '@fortawesome/pro-light-svg-icons'
 import {
     PATH_INSCRIPTIONS,
@@ -21,6 +22,7 @@ import {
     PATH_AGENDA,
     PATH_NOTIFICATIONS,
     PATH_FORMATIONS,
+    PATH_TEMPLATES,
 } from '../constants/constants'
 
 export const Navigation = () => {
@@ -52,6 +54,9 @@ export const Navigation = () => {
                         </Nav.Link>
                         <Nav.Link href={PATH_FORMATIONS} onClick={goTo(PATH_FORMATIONS)}>
                             <FontAwesomeIcon icon={faGraduationCap} /> Formations
+                        </Nav.Link>
+                        <Nav.Link href={PATH_TEMPLATES} onClick={goTo(PATH_TEMPLATES)}>
+                            <FontAwesomeIcon icon={faEnvelopeOpenText} /> Modèles
                         </Nav.Link>
                         <NavDropdown
                             title={

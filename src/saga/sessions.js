@@ -14,8 +14,6 @@ function* fetchSessionsSaga() {
 }
 
 function* updateSessionSaga({ payload: { sessionId, areInvitesSent } }) {
-    console.log(sessionId, areInvitesSent)
-
     yield put(setGridLoadingAction({ loading: true }))
 
     yield call(callService, {

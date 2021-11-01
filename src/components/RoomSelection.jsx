@@ -1,7 +1,5 @@
 import { useState } from 'react'
 import { Collapse } from 'react-bootstrap'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronDown, faChevronRight } from '@fortawesome/pro-solid-svg-icons'
 
 import { RoomCheckbox } from './RoomCheckbox'
 import { BulkSelect } from './BulkSelect'

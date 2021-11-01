@@ -6,6 +6,7 @@ import { sessionsSaga } from './sessions'
 import { parametersSaga } from './parameters'
 import { coursesSaga } from './courses'
 import { usersSaga } from './users'
+import { templatesSaga } from './templates'
 
 export function* rootSaga() {
     yield all([
@@ -16,5 +17,6 @@ export function* rootSaga() {
         parametersSaga(),
         coursesSaga(),
         usersSaga(),
+        templatesSaga(),
     ])
 }

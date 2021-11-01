@@ -1,17 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Container, Form, Button, Collapse, InputGroup, FormControl, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { Container, Button, Collapse, InputGroup, FormControl, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-    faEye,
-    faEyeSlash,
-    faArrowLeftFromLine,
-    faArrowRightToLine,
-    faChevronDown,
-    faChevronRight,
-} from '@fortawesome/pro-solid-svg-icons'
-import { faFilterCircleXmark, faEye as faEyeLight } from '@fortawesome/pro-light-svg-icons'
-import classNames from 'classnames'
+import { faArrowLeftFromLine, faArrowRightToLine } from '@fortawesome/pro-solid-svg-icons'
+import { faFilterCircleXmark } from '@fortawesome/pro-light-svg-icons'
 import { Calendar } from '../components'
 import { fetchAgendaAction } from '../actions/agenda.ts'
 import { roomsAndEventsSelector } from '../reducers'

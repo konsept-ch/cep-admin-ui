@@ -8,6 +8,7 @@ import { InscriptionsPage } from './pages/InscriptionsPage'
 import { SurveyPage } from './pages/SurveyPage'
 import { SessionsPage } from './pages/SessionsPage'
 import { CoursesPage } from './pages/CoursesPage'
+import { TemplatesPage } from './pages/TemplatesPage'
 import { AgendaPage } from './pages/AgendaPage'
 import { TypographyPage } from './pages/TypographyPage'
 import { NotificationsPage } from './pages/NotificationsPage'
@@ -19,6 +20,7 @@ import {
     PATH_AGENDA,
     PATH_NOTIFICATIONS,
     PATH_FORMATIONS,
+    PATH_TEMPLATES,
 } from './constants/constants'
 import { fetchParametersAction } from './actions/parameters'
 import { ErrorBoundary } from './pages/ErrorBoundaryPage'
@@ -52,6 +54,9 @@ export function App() {
                         </Route>
                         <Route exact path={PATH_FORMATIONS}>
                             <CoursesPage />
+                        </Route>
+                        <Route exact path={PATH_TEMPLATES}>
+                            <TemplatesPage />
                         </Route>
                         <Route exact path={PATH_NOTIFICATIONS}>
                             <NotificationsPage />
