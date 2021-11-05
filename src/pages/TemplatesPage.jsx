@@ -1,27 +1,26 @@
-import { useState, useEffect, memo } from 'react'
+import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { ListGroup, Row, Col, Container, Button, FloatingLabel, Form } from 'react-bootstrap'
 import classNames from 'classnames'
+import { equals } from 'ramda'
 
 import { templatesSelector } from '../reducers'
-import { fetchTemplatesAction, addTemplateAction } from '../actions/templates.ts'
+import {
+    fetchTemplatesAction,
+    addTemplateAction,
+    deleteTemplateAction,
+    updateTemplateAction,
+} from '../actions/templates.ts'
 import { getUniqueId } from '../utils'
 
-export const TemplatesPage = memo(() => {
-    const fetchedTemplates = useSelector(templatesSelector)
-    const [templates, setTemplates] = useState([])
+export function TemplatesPage() {
+    const templates = useSelector(templatesSelector)
     const [selectedTemplateData, setSelectedTemplateData] = useState(null)
-    const [isTemplateChanged, setIsTemplateChanged] = useState(false)
     const dispatch = useDispatch()
 
     useEffect(() => {
         dispatch(fetchTemplatesAction())
-    }, [dispatch])
-
-    useEffect(() => {
-        setTemplates(fetchedTemplates)
-        console.log('fetched templates')
-    }, [fetchedTemplates])
+    }, [])
 
     const generateNewTemplate = () => ({
         title: 'Nouveau modèle',
@@ -42,7 +41,13 @@ export const TemplatesPage = memo(() => {
                                 <ListGroup.Item
                                     key={templateId}
                                     onClick={() =>
-                                        setSelectedTemplateData({ title, description, body, usages, templateId })
+                                        setSelectedTemplateData({
+                                            title,
+                                            description,
+                                            body,
+                                            usages,
+                                            templateId,
+                                        })
                                     }
                                     className={classNames({
                                         'active-template': selectedTemplateData?.templateId === templateId,
@@ -56,8 +61,10 @@ export const TemplatesPage = memo(() => {
                     <Button
                         variant="success"
                         onClick={() => {
-                            dispatch(addTemplateAction(generateNewTemplate()))
-                            setTemplates([...templates, generateNewTemplate()])
+                            const newTemplateData = generateNewTemplate()
+
+                            dispatch(addTemplateAction({ templateData: newTemplateData }))
+                            setSelectedTemplateData(newTemplateData)
                         }}
                         className="mt-3"
                     >
@@ -72,7 +79,9 @@ export const TemplatesPage = memo(() => {
                                     type="text"
                                     placeholder="Titre de la séance"
                                     value={selectedTemplateData.title}
-                                    onChange={() => setIsTemplateChanged(true)}
+                                    onChange={({ target: { value } }) =>
+                                        setSelectedTemplateData({ ...selectedTemplateData, title: value })
+                                    }
                                 />
                             </FloatingLabel>
                             <FloatingLabel controlId="description" label="Description" className="mb-2">
@@ -81,7 +90,9 @@ export const TemplatesPage = memo(() => {
                                     placeholder="Description de la séance"
                                     style={{ height: '100px' }}
                                     value={selectedTemplateData.description}
-                                    onChange={() => setIsTemplateChanged(true)}
+                                    onChange={({ target: { value } }) =>
+                                        setSelectedTemplateData({ ...selectedTemplateData, description: value })
+                                    }
                                 />
                             </FloatingLabel>
                             <FloatingLabel controlId="content" label="Contenu de l'e-mail" className="mb-2">
@@ -90,7 +101,9 @@ export const TemplatesPage = memo(() => {
                                     placeholder="Contenu de l'e-mail"
                                     style={{ height: '200px' }}
                                     value={selectedTemplateData.body}
-                                    onChange={() => setIsTemplateChanged(true)}
+                                    onChange={({ target: { value } }) =>
+                                        setSelectedTemplateData({ ...selectedTemplateData, body: value })
+                                    }
                                 />
                             </FloatingLabel>
                             <FloatingLabel controlId="usages" label="Utilisation" className="mb-2">
@@ -98,19 +111,33 @@ export const TemplatesPage = memo(() => {
                                     as="textarea"
                                     placeholder="Utilisation"
                                     value={selectedTemplateData.usages}
-                                    onChange={() => setIsTemplateChanged(true)}
+                                    onChange={({ target: { value } }) =>
+                                        setSelectedTemplateData({ ...selectedTemplateData, usages: value })
+                                    }
                                 />
                             </FloatingLabel>
                             <Button
-                                variant="success"
+                                variant="primary"
                                 onClick={() => {
-                                    dispatch(addTemplateAction(generateNewTemplate()))
-                                    setTemplates([...templates, generateNewTemplate()])
+                                    dispatch(updateTemplateAction({ templateData: selectedTemplateData }))
                                 }}
-                                className="mt-3"
-                                disabled={!isTemplateChanged}
+                                className="mt-2 me-3"
+                                disabled={equals(
+                                    templates.find(({ templateId }) => templateId === selectedTemplateData.templateId),
+                                    selectedTemplateData
+                                )}
                             >
-                                Sauvegarder
+                                Appliquer
+                            </Button>
+                            <Button
+                                variant="danger"
+                                onClick={() => {
+                                    dispatch(deleteTemplateAction({ templateId: selectedTemplateData.templateId }))
+                                    setSelectedTemplateData(null)
+                                }}
+                                className="mt-2"
+                            >
+                                Supprimer
                             </Button>
                         </>
                     )}
@@ -118,4 +145,4 @@ export const TemplatesPage = memo(() => {
             </Row>
         </Container>
     )
-})
+}
