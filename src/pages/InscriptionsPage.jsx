@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-
 import { Grid, StatusChangeModal } from '../components'
 import { fetchInscriptionsAction, updateInscriptionStatusAction } from '../actions/inscriptions.ts'
 import { inscriptionsSelector } from '../reducers'
+import { inscriptionStatuses } from '../utils'
 
 export function InscriptionsPage() {
     const dispatch = useDispatch()
@@ -37,17 +37,7 @@ export function InscriptionsPage() {
             editable: true,
             cellEditor: 'agRichSelectCellEditor',
             cellEditorParams: {
-                values: [
-                    'En attente',
-                    'À traiter par RH',
-                    'Réfusée par RH',
-                    'Entrée Web',
-                    'Acceptée par CEP',
-                    'Invitée',
-                    'Proposée',
-                    'Annulée',
-                    'Écartée',
-                ],
+                values: inscriptionStatuses,
             },
             onCellValueChanged: ({ data: { id: currentInscriptionId }, newValue }) => {
                 setStatusChangeData({

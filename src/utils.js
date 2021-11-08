@@ -32,3 +32,15 @@ export const getUniqueId = () => {
     const randomness = Math.random().toString(36).substr(2)
     return dateString + randomness
 }
+
+export const inscriptionStatuses = [
+    'En attente',
+    'À traiter par RH',
+    'Réfusée par RH',
+    'Entrée Web',
+    'Acceptée par CEP',
+    'Invitée',
+    'Proposée',
+    'Annulée',
+    'Écartée',
+]

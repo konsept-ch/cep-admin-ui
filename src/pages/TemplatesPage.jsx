@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { ListGroup, Row, Col, Container, Button, FloatingLabel, Form } from 'react-bootstrap'
+import Select from 'react-select'
+import { ListGroup, Row, Col, Container, Button, FloatingLabel, Form, Badge } from 'react-bootstrap'
 import classNames from 'classnames'
 import { equals } from 'ramda'
-
 import { templatesSelector } from '../reducers'
 import {
     fetchTemplatesAction,
@@ -11,7 +11,7 @@ import {
     deleteTemplateAction,
     updateTemplateAction,
 } from '../actions/templates.ts'
-import { getUniqueId } from '../utils'
+import { getUniqueId, inscriptionStatuses } from '../utils'
 
 export function TemplatesPage() {
     const templates = useSelector(templatesSelector)
@@ -26,8 +26,9 @@ export function TemplatesPage() {
         title: 'Nouveau modèle',
         description: '',
         body: '',
-        usages: [],
+        statuses: inscriptionStatuses.map((current) => ({ value: current, label: current })),
         templateId: getUniqueId(),
+        isUsedForSessionInvites: false,
     })
 
     return (
@@ -37,26 +38,36 @@ export function TemplatesPage() {
                 <Col>
                     <ListGroup>
                         {templates.length > 0 &&
-                            templates.map(({ title, description, body, usages, templateId }) => (
-                                <ListGroup.Item
-                                    key={templateId}
-                                    onClick={() =>
-                                        setSelectedTemplateData({
-                                            title,
-                                            description,
-                                            body,
-                                            usages,
-                                            templateId,
-                                        })
-                                    }
-                                    className={classNames({
-                                        'active-template': selectedTemplateData?.templateId === templateId,
-                                    })}
-                                >
-                                    <h4>{title}</h4>
-                                    <p>{description}</p>
-                                </ListGroup.Item>
-                            ))}
+                            templates.map(
+                                ({ title, description, body, statuses, templateId, isUsedForSessionInvites }) => (
+                                    <ListGroup.Item
+                                        key={templateId}
+                                        onClick={() =>
+                                            setSelectedTemplateData({
+                                                title,
+                                                description,
+                                                body,
+                                                statuses,
+                                                templateId,
+                                                isUsedForSessionInvites,
+                                            })
+                                        }
+                                        className={classNames({
+                                            'active-template': selectedTemplateData?.templateId === templateId,
+                                        })}
+                                    >
+                                        <div className="d-flex align-items-start justify-content-between">
+                                            <h4 className="d-inline-block me-2">{title}</h4>
+                                            {isUsedForSessionInvites && (
+                                                <Badge bg="warning" text="dark">
+                                                    Session invitèe
+                                                </Badge>
+                                            )}
+                                        </div>
+                                        {description && <p>{description}</p>}
+                                    </ListGroup.Item>
+                                )
+                            )}
                     </ListGroup>
                     <Button
                         variant="success"
@@ -106,39 +117,71 @@ export function TemplatesPage() {
                                     }
                                 />
                             </FloatingLabel>
-                            <FloatingLabel controlId="usages" label="Utilisation" className="mb-2">
-                                <Form.Control
-                                    as="textarea"
-                                    placeholder="Utilisation"
-                                    value={selectedTemplateData.usages}
-                                    onChange={({ target: { value } }) =>
-                                        setSelectedTemplateData({ ...selectedTemplateData, usages: value })
-                                    }
-                                />
-                            </FloatingLabel>
-                            <Button
-                                variant="primary"
-                                onClick={() => {
-                                    dispatch(updateTemplateAction({ templateData: selectedTemplateData }))
-                                }}
-                                className="mt-2 me-3"
-                                disabled={equals(
-                                    templates.find(({ templateId }) => templateId === selectedTemplateData.templateId),
-                                    selectedTemplateData
+                            <label>Valable pour statuts :</label>
+                            <Select
+                                onChange={(selectedStatuses) =>
+                                    setSelectedTemplateData({ ...selectedTemplateData, statuses: selectedStatuses })
+                                }
+                                value={selectedTemplateData.statuses}
+                                closeMenuOnSelect={false}
+                                isMulti
+                                options={inscriptionStatuses.map((current) => ({ value: current, label: current }))}
+                            />
+                            <div className="d-flex justify-content-between">
+                                <div>
+                                    <Button
+                                        variant="primary"
+                                        onClick={() => {
+                                            dispatch(updateTemplateAction({ templateData: selectedTemplateData }))
+                                        }}
+                                        className="mt-2 me-3"
+                                        disabled={equals(
+                                            templates.find(
+                                                ({ templateId }) => templateId === selectedTemplateData.templateId
+                                            ),
+                                            selectedTemplateData
+                                        )}
+                                    >
+                                        Appliquer
+                                    </Button>
+                                    <Button
+                                        variant="danger"
+                                        onClick={() => {
+                                            dispatch(
+                                                deleteTemplateAction({ templateId: selectedTemplateData.templateId })
+                                            )
+                                            setSelectedTemplateData(null)
+                                        }}
+                                        className="mt-2"
+                                    >
+                                        Supprimer
+                                    </Button>
+                                </div>
+                                {selectedTemplateData.isUsedForSessionInvites ? (
+                                    <p className="mt-3">Utiliser pour sessions invitèes</p>
+                                ) : (
+                                    <Button
+                                        variant="secondary"
+                                        onClick={() => {
+                                            dispatch(
+                                                updateTemplateAction({
+                                                    templateData: {
+                                                        ...selectedTemplateData,
+                                                        isUsedForSessionInvites: true,
+                                                    },
+                                                })
+                                            )
+                                            setSelectedTemplateData({
+                                                ...selectedTemplateData,
+                                                isUsedForSessionInvites: true,
+                                            })
+                                        }}
+                                        className="mt-2"
+                                    >
+                                        Utiliser pour sessions invitèes
+                                    </Button>
                                 )}
-                            >
-                                Appliquer
-                            </Button>
-                            <Button
-                                variant="danger"
-                                onClick={() => {
-                                    dispatch(deleteTemplateAction({ templateId: selectedTemplateData.templateId }))
-                                    setSelectedTemplateData(null)
-                                }}
-                                className="mt-2"
-                            >
-                                Supprimer
-                            </Button>
+                            </div>
                         </>
                     )}
                 </Col>
