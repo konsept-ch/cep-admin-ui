@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Select from 'react-select'
-import { ListGroup, Row, Col, Container, Button, FloatingLabel, Form, Badge } from 'react-bootstrap'
+import { ListGroup, Row, Col, Container, Button, FloatingLabel, Form, Badge, Modal } from 'react-bootstrap'
 import classNames from 'classnames'
 import { equals } from 'ramda'
-import { templatesSelector } from '../reducers'
+import { templatesSelector, templateForInvitesSelector } from '../reducers'
 import {
     fetchTemplatesAction,
     addTemplateAction,
@@ -15,7 +15,9 @@ import { getUniqueId, inscriptionStatuses } from '../utils'
 
 export function TemplatesPage() {
     const templates = useSelector(templatesSelector)
+    const templateForInvites = useSelector(templateForInvitesSelector)
     const [selectedTemplateData, setSelectedTemplateData] = useState(null)
+    const [isModalVisible, setIsModalVisible] = useState(false)
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -163,24 +165,58 @@ export function TemplatesPage() {
                                     <Button
                                         variant="secondary"
                                         onClick={() => {
-                                            dispatch(
-                                                updateTemplateAction({
-                                                    templateData: {
-                                                        ...selectedTemplateData,
-                                                        isUsedForSessionInvites: true,
-                                                    },
+                                            if (templateForInvites) {
+                                                setIsModalVisible(true)
+                                            } else {
+                                                dispatch(
+                                                    updateTemplateAction({
+                                                        templateData: {
+                                                            ...selectedTemplateData,
+                                                            isUsedForSessionInvites: true,
+                                                        },
+                                                    })
+                                                )
+                                                setSelectedTemplateData({
+                                                    ...selectedTemplateData,
+                                                    isUsedForSessionInvites: true,
                                                 })
-                                            )
-                                            setSelectedTemplateData({
-                                                ...selectedTemplateData,
-                                                isUsedForSessionInvites: true,
-                                            })
+                                            }
                                         }}
                                         className="mt-2"
                                     >
                                         Utiliser pour sessions invitèes
                                     </Button>
                                 )}
+                                <Modal show={isModalVisible} onHide={() => setIsModalVisible(false)}>
+                                    <Modal.Header closeButton>
+                                        <Modal.Title>Modal title</Modal.Title>
+                                    </Modal.Header>
+                                    <Modal.Body>
+                                        <p>Modal body text goes here.</p>
+                                    </Modal.Body>
+                                    <Modal.Footer>
+                                        <Button
+                                            variant="primary"
+                                            onClick={() => {
+                                                dispatch(
+                                                    updateTemplateAction({
+                                                        templateData: {
+                                                            ...selectedTemplateData,
+                                                            isUsedForSessionInvites: true,
+                                                        },
+                                                    })
+                                                )
+                                                setSelectedTemplateData({
+                                                    ...selectedTemplateData,
+                                                    isUsedForSessionInvites: true,
+                                                })
+                                                setIsModalVisible(false)
+                                            }}
+                                        >
+                                            Appliquer
+                                        </Button>
+                                    </Modal.Footer>
+                                </Modal>
                             </div>
                         </>
                     )}

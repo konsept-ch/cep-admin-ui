@@ -17,4 +17,5 @@ export const templatesReducer = (state = initialState, action) => {
 
 export const templatesSelectors = {
     templatesSelector: (state) => state.templates,
+    templateForInvitesSelector: (state) => state.templates.find((template) => template.isUsedForSessionInvites),
 }

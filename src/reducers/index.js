@@ -30,3 +30,4 @@ export const gridLoadingSelector = (state) => loadingSelectors.gridLoadingSelect
 export const coursesSelector = (state) => coursesSelectors.coursesSelector(state.courses)
 export const adminsSelector = (state) => usersSelectors.adminsSelector(state.users)
 export const templatesSelector = (state) => templatesSelectors.templatesSelector(state.templates)
+export const templateForInvitesSelector = (state) => templatesSelectors.templateForInvitesSelector(state.templates)
