@@ -23,6 +23,7 @@ import {
     PATH_NOTIFICATIONS,
     PATH_FORMATIONS,
     PATH_TEMPLATES,
+    PATH_ORGANIZATIONS,
 } from '../constants/constants'
 
 export const Navigation = () => {
@@ -58,7 +59,10 @@ export const Navigation = () => {
                         <Nav.Link href={PATH_TEMPLATES} onClick={goTo(PATH_TEMPLATES)}>
                             <FontAwesomeIcon icon={faEnvelopeOpenText} /> Modèles
                         </Nav.Link>
-                        <NavDropdown
+                        <Nav.Link href={PATH_ORGANIZATIONS} onClick={goTo(PATH_ORGANIZATIONS)}>
+                            <FontAwesomeIcon icon={faSitemap} /> Organisations
+                        </Nav.Link>
+                        {/* <NavDropdown
                             title={
                                 <>
                                     <FontAwesomeIcon icon={faDollar} /> Finances
@@ -72,16 +76,13 @@ export const Navigation = () => {
                             <NavDropdown.Item>
                                 <FontAwesomeIcon icon={faFileInvoiceDollar} /> Factures
                             </NavDropdown.Item>
-                            <NavDropdown.Item>
-                                <FontAwesomeIcon icon={faSitemap} /> Clients
-                            </NavDropdown.Item>
                         </NavDropdown>
                         <Nav.Link>
                             <FontAwesomeIcon icon={faChartLineUp} /> Statistiques
                         </Nav.Link>
                         <Nav.Link>
                             <FontAwesomeIcon icon={faGear} /> Paramètres
-                        </Nav.Link>
+                        </Nav.Link> */}
                         <Nav.Link>
                             <FontAwesomeIcon icon={faMemo} /> Logs
                         </Nav.Link>

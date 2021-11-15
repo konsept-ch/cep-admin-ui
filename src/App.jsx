@@ -21,9 +21,11 @@ import {
     PATH_NOTIFICATIONS,
     PATH_FORMATIONS,
     PATH_TEMPLATES,
+    PATH_ORGANIZATIONS,
 } from './constants/constants'
 import { fetchParametersAction } from './actions/parameters'
 import { ErrorBoundary } from './pages/ErrorBoundaryPage'
+import { OrganizationsPage } from './pages/OrganizationsPage'
 
 export function App() {
     const dispatch = useDispatch()
@@ -57,6 +59,9 @@ export function App() {
                         </Route>
                         <Route exact path={PATH_TEMPLATES}>
                             <TemplatesPage />
+                        </Route>
+                        <Route exact path={PATH_ORGANIZATIONS}>
+                            <OrganizationsPage />
                         </Route>
                         <Route exact path={PATH_NOTIFICATIONS}>
                             <NotificationsPage />
