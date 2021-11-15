@@ -176,10 +176,6 @@ export function TemplatesPage() {
                                                         },
                                                     })
                                                 )
-                                                setSelectedTemplateData({
-                                                    ...selectedTemplateData,
-                                                    isUsedForSessionInvites: true,
-                                                })
                                             }
                                         }}
                                         className="mt-2"
@@ -189,10 +185,13 @@ export function TemplatesPage() {
                                 )}
                                 <Modal show={isModalVisible} onHide={() => setIsModalVisible(false)}>
                                     <Modal.Header closeButton>
-                                        <Modal.Title>Modal title</Modal.Title>
+                                        <Modal.Title>Utiliser autre modèle pour sessions invitées</Modal.Title>
                                     </Modal.Header>
                                     <Modal.Body>
-                                        <p>Modal body text goes here.</p>
+                                        <>
+                                            <p>Il existe déjà un modèle pour les invitations à une session.</p>
+                                            <p>Êtes-vous sûr de vouloir mettre à jour le modèle ?</p>
+                                        </>
                                     </Modal.Body>
                                     <Modal.Footer>
                                         <Button
@@ -201,15 +200,19 @@ export function TemplatesPage() {
                                                 dispatch(
                                                     updateTemplateAction({
                                                         templateData: {
+                                                            ...templateForInvites,
+                                                            isUsedForSessionInvites: false,
+                                                        },
+                                                    })
+                                                )
+                                                dispatch(
+                                                    updateTemplateAction({
+                                                        templateData: {
                                                             ...selectedTemplateData,
                                                             isUsedForSessionInvites: true,
                                                         },
                                                     })
                                                 )
-                                                setSelectedTemplateData({
-                                                    ...selectedTemplateData,
-                                                    isUsedForSessionInvites: true,
-                                                })
                                                 setIsModalVisible(false)
                                             }}
                                         >
