@@ -12,6 +12,7 @@ import {
     updateTemplateAction,
 } from '../actions/templates.ts'
 import { getUniqueId, inscriptionStatuses } from '../utils'
+import { EmailTemplateBodyInput } from '../components/EmailTemplateBodyInput'
 
 export function TemplatesPage() {
     const templates = useSelector(templatesSelector)
@@ -62,7 +63,7 @@ export function TemplatesPage() {
                                             <h4 className="d-inline-block me-2">{title}</h4>
                                             {isUsedForSessionInvites && (
                                                 <Badge bg="warning" text="dark">
-                                                    Session invitèe
+                                                    Sessions invitèes
                                                 </Badge>
                                             )}
                                         </div>
@@ -108,17 +109,12 @@ export function TemplatesPage() {
                                     }
                                 />
                             </FloatingLabel>
-                            <FloatingLabel controlId="content" label="Contenu de l'e-mail" className="mb-2">
-                                <Form.Control
-                                    as="textarea"
-                                    placeholder="Contenu de l'e-mail"
-                                    style={{ height: '200px' }}
-                                    value={selectedTemplateData.body}
-                                    onChange={({ target: { value } }) =>
-                                        setSelectedTemplateData({ ...selectedTemplateData, body: value })
-                                    }
-                                />
-                            </FloatingLabel>
+                            <label>Contenu de l'e-mail :</label>
+                            <EmailTemplateBodyInput
+                                onChange={(value) => setSelectedTemplateData({ ...selectedTemplateData, body: value })}
+                                value={selectedTemplateData.body}
+                                style={{ height: '200px' }}
+                            />
                             <label>Valable pour statuts :</label>
                             <Select
                                 onChange={(selectedStatuses) =>
@@ -160,7 +156,7 @@ export function TemplatesPage() {
                                     </Button>
                                 </div>
                                 {selectedTemplateData.isUsedForSessionInvites ? (
-                                    <p className="mt-3">Utiliser pour sessions invitèes</p>
+                                    <p className="mt-3">Utilisè pour sessions invitèes</p>
                                 ) : (
                                     <Button
                                         variant="secondary"

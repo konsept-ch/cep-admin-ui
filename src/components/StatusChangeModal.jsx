@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Modal, Button, ListGroup, Alert, Spinner, Tooltip, OverlayTrigger } from 'react-bootstrap'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import classNames from 'classnames'
+import { fetchParametersAction } from '../actions/parameters.ts'
 import { parametersSelector, loadingSelector } from '../reducers'
 import { statusWarnings } from '../utils'
 
@@ -9,8 +10,15 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
     const [selectedTemplateData, setSelectedTemplateData] = useState(null)
     const parameters = useSelector(parametersSelector)
     const isSagaLoading = useSelector(loadingSelector)
+    const dispatch = useDispatch()
 
-    const emailTemplates = parameters.emailTemplates[statusChangeData.newStatus]
+    useEffect(() => {
+        dispatch(fetchParametersAction())
+    }, [])
+
+    const emailTemplates = parameters.emailTemplates.filter((template) =>
+        template.statuses.find((status) => status.value === statusChangeData.newStatus)
+    )
 
     return (
         <Modal
@@ -72,26 +80,27 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                         <ListGroup.Item
                             onClick={() =>
                                 setSelectedTemplateData({
-                                    name: 'no-email',
-                                    template: 'Aucun e-mail ne sera envoyé',
+                                    title: 'no-email',
+                                    body: 'Aucun e-mail ne sera envoyé',
                                 })
                             }
                             className={classNames({
-                                'active-template': selectedTemplateData?.name === 'no-email',
+                                'active-template': selectedTemplateData?.title === 'no-email',
                             })}
                         >
                             <h4>Aucun e-mail</h4>
                             <p>Aucun e-mail ne sera envoyé</p>
                         </ListGroup.Item>
                         {emailTemplates.length > 0 &&
-                            emailTemplates.map(({ name, description, template }) => (
+                            emailTemplates.map(({ title, description, body }) => (
                                 <ListGroup.Item
-                                    onClick={() => setSelectedTemplateData({ template, name })}
+                                    key={title}
+                                    onClick={() => setSelectedTemplateData({ body, title })}
                                     className={classNames({
-                                        'active-template': selectedTemplateData?.name === name,
+                                        'active-template': selectedTemplateData?.title === title,
                                     })}
                                 >
-                                    <h4>{name}</h4>
+                                    <h4>{title}</h4>
                                     <p>{description}</p>
                                 </ListGroup.Item>
                             ))}
@@ -99,7 +108,7 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                 </div>
                 <div className="col template-preview">
                     <h6>Aperçu de l'e-mail</h6>
-                    {selectedTemplateData !== null ? selectedTemplateData.template : 'Sélectionnez un modèle'}
+                    {selectedTemplateData !== null ? selectedTemplateData.body : 'Sélectionnez un modèle'}
                 </div>
             </Modal.Body>
             <Modal.Footer>
@@ -119,7 +128,7 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                             variant="primary"
                             onClick={() => {
                                 const templateName =
-                                    selectedTemplateData?.name === 'no-email' ? null : selectedTemplateData.name
+                                    selectedTemplateData?.title === 'no-email' ? null : selectedTemplateData.title
 
                                 updateStatus({ emailTemplateName: templateName })
                             }}
