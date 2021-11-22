@@ -5,6 +5,7 @@ import { Editor, EditorState, Modifier, CompositeDecorator, ContentState } from 
 const entities = {
     participantName: '[NOM_DU_PARTICIPANT]',
     sessionName: '[NOM_DE_LA_SESSION]',
+    startingDate: '[DATE_DE_DÉBUT]',
 }
 
 const ParticipantNameStrategy = (contentBlock, callback, contentState) => {
@@ -33,6 +34,19 @@ const SessionNameWrapper = () => (
     </span>
 )
 
+const StartingDateStrategy = (contentBlock, callback, contentState) => {
+    contentBlock.findEntityRanges((character) => {
+        const entityKey = character.getEntity()
+        return entityKey !== null && contentState.getEntity(entityKey).getType() === entities.startingDate
+    }, callback)
+}
+
+const StartingDateWrapper = () => (
+    <span className="styled-span" contentEditable={false}>
+        [DATE_DE_DÉBUT]
+    </span>
+)
+
 const decorator = new CompositeDecorator([
     {
         strategy: ParticipantNameStrategy,
@@ -42,21 +56,26 @@ const decorator = new CompositeDecorator([
         strategy: SessionNameStrategy,
         component: SessionNameWrapper,
     },
+    {
+        strategy: StartingDateStrategy,
+        component: StartingDateWrapper,
+    },
 ])
 
-export const EmailTemplateBodyInput = ({ onChange, value }) => {
+export const EmailTemplateBodyInput = ({ onChange, value: { value, templateId: templateIdProp } }) => {
     const [state, setState] = useState({
         editorState: EditorState.createWithContent(ContentState.createFromText(value), decorator),
     })
 
+    const [templateId, setTemplateId] = useState(templateIdProp)
+
     useEffect(() => {
-        const currentSelection = state.editorState.getSelection()
-        const editorState = EditorState.createWithContent(ContentState.createFromText(value), decorator)
-        const stateWithContentAndSelection = EditorState.forceSelection(editorState, currentSelection)
-        // const stateWithContentAndSelection = EditorState.forceSelection(
-        //     EditorState.createWithContent(ContentState.createFromText(value), decorator), currentSelection)
-        // )
-        setState({ editorState: stateWithContentAndSelection })
+        if (templateId !== templateIdProp) {
+            setState({
+                editorState: EditorState.createWithContent(ContentState.createFromText(value), decorator),
+            })
+            setTemplateId(templateIdProp)
+        }
     }, [value])
 
     const handleChange = (editorState) => {
@@ -79,10 +98,9 @@ export const EmailTemplateBodyInput = ({ onChange, value }) => {
         if (!newState.getCurrentContent().equals(editorState.getCurrentContent())) {
             const sel = newState.getSelection()
             const updatedSelection = sel.merge({
-                anchorOffset: sel.getAnchorOffset() + 1,
+                anchorOffset: sel.getAnchorOffset(),
                 focusOffset: sel.getAnchorOffset() + 1,
             })
-            // Forcing the current selection ensures that it will be at it's right place.
             newState = EditorState.forceSelection(newState, updatedSelection)
         }
         setState({ editorState: newState })
@@ -93,6 +111,9 @@ export const EmailTemplateBodyInput = ({ onChange, value }) => {
             <div className="container-root">
                 <Editor placeholder="" editorState={state.editorState} onChange={handleChange} />
             </div>
+            <Button variant="outline-dark" onClick={() => insert(entities.startingDate)} className="me-2">
+                [DATE_DE_DÉBUT]
+            </Button>
             <Button variant="outline-dark" onClick={() => insert(entities.participantName)} className="me-2">
                 [NOM_DU_PARTICIPANT]
             </Button>

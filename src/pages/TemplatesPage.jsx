@@ -63,7 +63,7 @@ export function TemplatesPage() {
                                             <h4 className="d-inline-block me-2">{title}</h4>
                                             {isUsedForSessionInvites && (
                                                 <Badge bg="warning" text="dark">
-                                                    Sessions invitèes
+                                                    Sessions invitées
                                                 </Badge>
                                             )}
                                         </div>
@@ -112,8 +112,10 @@ export function TemplatesPage() {
                             <label>Contenu de l'e-mail :</label>
                             <EmailTemplateBodyInput
                                 onChange={(value) => setSelectedTemplateData({ ...selectedTemplateData, body: value })}
-                                value={selectedTemplateData.body}
-                                style={{ height: '200px' }}
+                                value={{
+                                    value: selectedTemplateData.body,
+                                    templateId: selectedTemplateData.templateId,
+                                }}
                             />
                             <label>Valable pour statuts :</label>
                             <Select
@@ -156,7 +158,7 @@ export function TemplatesPage() {
                                     </Button>
                                 </div>
                                 {selectedTemplateData.isUsedForSessionInvites ? (
-                                    <p className="mt-3">Utilisè pour sessions invitèes</p>
+                                    <p className="mt-3">Utilisé pour sessions invitées</p>
                                 ) : (
                                     <Button
                                         variant="secondary"
@@ -176,12 +178,12 @@ export function TemplatesPage() {
                                         }}
                                         className="mt-2"
                                     >
-                                        Utiliser pour sessions invitèes
+                                        Utiliser pour sessions invitées
                                     </Button>
                                 )}
                                 <Modal show={isModalVisible} onHide={() => setIsModalVisible(false)}>
                                     <Modal.Header closeButton>
-                                        <Modal.Title>Utiliser autre modèle pour sessions invitées</Modal.Title>
+                                        <Modal.Title>User autre modèle pour sessions invitées</Modal.Title>
                                     </Modal.Header>
                                     <Modal.Body>
                                         <>
