@@ -3,12 +3,6 @@ import { Button } from 'react-bootstrap'
 import classNames from 'classnames'
 import { Editor, EditorState, Modifier, CompositeDecorator, ContentState } from 'draft-js'
 
-const entities = {
-    participantName: '[NOM_DU_PARTICIPANT]',
-    sessionName: '[NOM_DE_LA_SESSION]',
-    startingDate: '[DATE_DE_DÉBUT]',
-}
-
 const DecoratorStrategy = (entity) => (contentBlock, callback, contentState) => {
     contentBlock.findEntityRanges((character) => {
         const entityKey = character.getEntity()
@@ -16,12 +10,13 @@ const DecoratorStrategy = (entity) => (contentBlock, callback, contentState) => 
     }, callback)
 }
 
-const DecoratorWrapper = (entity) => () =>
-    (
-        <span className="styled-span" contentEditable={false}>
-            {entity}
-        </span>
-    )
+const DecoratorWrapper = (entity) => () => entity
+
+const entities = {
+    participantName: '[NOM_DU_PARTICIPANT]',
+    sessionName: '[NOM_DE_LA_SESSION]',
+    startingDate: '[DATE_DE_DÉBUT]',
+}
 
 const decorator = new CompositeDecorator([
     {
@@ -65,9 +60,13 @@ export const EmailTemplateBodyInput = ({ className, onChange, value: { value, te
         const selectionState = editorState.getSelection()
         const contentStateWithEntity = contentState.createEntity(entity, 'IMMUTABLE')
         const entityKey = contentStateWithEntity.getLastCreatedEntityKey()
-        contentState = Modifier.insertText(contentState, selectionState, ' ')
-        contentState = Modifier.insertText(contentState, selectionState, entity, null, entityKey)
-        contentState = Modifier.insertText(contentState, selectionState, ' ')
+        if (selectionState.getAnchorOffset() !== selectionState.getFocusOffset()) {
+            contentState = Modifier.replaceText(contentState, selectionState, entity, null, entityKey)
+        } else {
+            contentState = Modifier.insertText(contentState, selectionState, ' ')
+            contentState = Modifier.insertText(contentState, selectionState, entity, null, entityKey)
+            contentState = Modifier.insertText(contentState, selectionState, ' ')
+        }
 
         let newState = EditorState.push(editorState, contentState, 'insert-characters')
 
@@ -87,15 +86,11 @@ export const EmailTemplateBodyInput = ({ className, onChange, value: { value, te
             <div className="container-root">
                 <Editor placeholder="" editorState={state.editorState} onChange={handleChange} />
             </div>
-            <Button variant="outline-dark" onClick={() => insert(entities.startingDate)} className="me-2">
-                [DATE_DE_DÉBUT]
-            </Button>
-            <Button variant="outline-dark" onClick={() => insert(entities.participantName)} className="me-2">
-                [NOM_DU_PARTICIPANT]
-            </Button>
-            <Button variant="outline-dark" onClick={() => insert(entities.sessionName)}>
-                [NOM_DE_LA_SESSION]
-            </Button>
+            {Object.entries(entities).map(([_name, entity]) => (
+                <Button variant="outline-dark" onClick={() => insert(entity)} className="me-2 mb-2">
+                    {entity}
+                </Button>
+            ))}
         </div>
     )
 }
