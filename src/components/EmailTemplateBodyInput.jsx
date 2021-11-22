@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Button } from 'react-bootstrap'
+import classNames from 'classnames'
 import { Editor, EditorState, Modifier, CompositeDecorator, ContentState } from 'draft-js'
 
 const entities = {
@@ -8,61 +9,36 @@ const entities = {
     startingDate: '[DATE_DE_DÉBUT]',
 }
 
-const ParticipantNameStrategy = (contentBlock, callback, contentState) => {
+const DecoratorStrategy = (entity) => (contentBlock, callback, contentState) => {
     contentBlock.findEntityRanges((character) => {
         const entityKey = character.getEntity()
-        return entityKey !== null && contentState.getEntity(entityKey).getType() === entities.participantName
+        return entityKey !== null && contentState.getEntity(entityKey).getType() === entity
     }, callback)
 }
 
-const ParticipantNameWrapper = () => (
-    <span className="styled-span" contentEditable={false}>
-        [NOM_DU_PARTICIPANT]
-    </span>
-)
-
-const SessionNameStrategy = (contentBlock, callback, contentState) => {
-    contentBlock.findEntityRanges((character) => {
-        const entityKey = character.getEntity()
-        return entityKey !== null && contentState.getEntity(entityKey).getType() === entities.sessionName
-    }, callback)
-}
-
-const SessionNameWrapper = () => (
-    <span className="styled-span" contentEditable={false}>
-        [NOM_DE_LA_SESSION]
-    </span>
-)
-
-const StartingDateStrategy = (contentBlock, callback, contentState) => {
-    contentBlock.findEntityRanges((character) => {
-        const entityKey = character.getEntity()
-        return entityKey !== null && contentState.getEntity(entityKey).getType() === entities.startingDate
-    }, callback)
-}
-
-const StartingDateWrapper = () => (
-    <span className="styled-span" contentEditable={false}>
-        [DATE_DE_DÉBUT]
-    </span>
-)
+const DecoratorWrapper = (entity) => () =>
+    (
+        <span className="styled-span" contentEditable={false}>
+            {entity}
+        </span>
+    )
 
 const decorator = new CompositeDecorator([
     {
-        strategy: ParticipantNameStrategy,
-        component: ParticipantNameWrapper,
+        strategy: DecoratorStrategy(entities.participantName),
+        component: DecoratorWrapper(entities.participantName),
     },
     {
-        strategy: SessionNameStrategy,
-        component: SessionNameWrapper,
+        strategy: DecoratorStrategy(entities.sessionName),
+        component: DecoratorWrapper(entities.sessionName),
     },
     {
-        strategy: StartingDateStrategy,
-        component: StartingDateWrapper,
+        strategy: DecoratorStrategy(entities.startingDate),
+        component: DecoratorWrapper(entities.startingDate),
     },
 ])
 
-export const EmailTemplateBodyInput = ({ onChange, value: { value, templateId: templateIdProp } }) => {
+export const EmailTemplateBodyInput = ({ className, onChange, value: { value, templateId: templateIdProp } }) => {
     const [state, setState] = useState({
         editorState: EditorState.createWithContent(ContentState.createFromText(value), decorator),
     })
@@ -98,8 +74,8 @@ export const EmailTemplateBodyInput = ({ onChange, value: { value, templateId: t
         if (!newState.getCurrentContent().equals(editorState.getCurrentContent())) {
             const sel = newState.getSelection()
             const updatedSelection = sel.merge({
-                anchorOffset: sel.getAnchorOffset(),
-                focusOffset: sel.getAnchorOffset() + 1,
+                anchorOffset: sel.getAnchorOffset() + entity.length + 1,
+                focusOffset: sel.getAnchorOffset() + entity.length + 1,
             })
             newState = EditorState.forceSelection(newState, updatedSelection)
         }
@@ -107,7 +83,7 @@ export const EmailTemplateBodyInput = ({ onChange, value: { value, templateId: t
     }
 
     return (
-        <div className="email-template-editor">
+        <div className={classNames(className)}>
             <div className="container-root">
                 <Editor placeholder="" editorState={state.editorState} onChange={handleChange} />
             </div>

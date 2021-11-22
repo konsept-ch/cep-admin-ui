@@ -29,6 +29,7 @@ export function TemplatesPage() {
         title: 'Nouveau modèle',
         description: '',
         body: '',
+        emailSubject: '',
         statuses: inscriptionStatuses.map((current) => ({ value: current, label: current })),
         templateId: getUniqueId(),
         isUsedForSessionInvites: false,
@@ -42,13 +43,22 @@ export function TemplatesPage() {
                     <ListGroup>
                         {templates.length > 0 &&
                             templates.map(
-                                ({ title, description, body, statuses, templateId, isUsedForSessionInvites }) => (
+                                ({
+                                    title,
+                                    description,
+                                    body,
+                                    statuses,
+                                    templateId,
+                                    isUsedForSessionInvites,
+                                    emailSubject,
+                                }) => (
                                     <ListGroup.Item
                                         key={templateId}
                                         onClick={() =>
                                             setSelectedTemplateData({
                                                 title,
                                                 description,
+                                                emailSubject,
                                                 body,
                                                 statuses,
                                                 templateId,
@@ -60,7 +70,7 @@ export function TemplatesPage() {
                                         })}
                                     >
                                         <div className="d-flex align-items-start justify-content-between">
-                                            <h4 className="d-inline-block me-2">{title}</h4>
+                                            <h4 className="d-inline-block">{title}</h4>
                                             {isUsedForSessionInvites && (
                                                 <Badge bg="warning" text="dark">
                                                     Sessions invitées
@@ -80,7 +90,7 @@ export function TemplatesPage() {
                             dispatch(addTemplateAction({ templateData: newTemplateData }))
                             setSelectedTemplateData(newTemplateData)
                         }}
-                        className="mt-3"
+                        className="mt-2"
                     >
                         Ajouter
                     </Button>
@@ -109,8 +119,20 @@ export function TemplatesPage() {
                                     }
                                 />
                             </FloatingLabel>
+                            <label>Sujet de l'email :</label>
+                            <EmailTemplateBodyInput
+                                className="emailSubjectInput"
+                                onChange={(value) =>
+                                    setSelectedTemplateData({ ...selectedTemplateData, emailSubject: value })
+                                }
+                                value={{
+                                    value: selectedTemplateData.emailSubject,
+                                    templateId: selectedTemplateData.templateId,
+                                }}
+                            />
                             <label>Contenu de l'e-mail :</label>
                             <EmailTemplateBodyInput
+                                className="emailBodyInput"
                                 onChange={(value) => setSelectedTemplateData({ ...selectedTemplateData, body: value })}
                                 value={{
                                     value: selectedTemplateData.body,
@@ -127,14 +149,14 @@ export function TemplatesPage() {
                                 isMulti
                                 options={inscriptionStatuses.map((current) => ({ value: current, label: current }))}
                             />
-                            <div className="d-flex justify-content-between">
+                            <div className="d-flex justify-content-between mb-2">
                                 <div>
                                     <Button
                                         variant="primary"
                                         onClick={() => {
                                             dispatch(updateTemplateAction({ templateData: selectedTemplateData }))
                                         }}
-                                        className="mt-2 me-3"
+                                        className="mt-2 me-2"
                                         disabled={equals(
                                             templates.find(
                                                 ({ templateId }) => templateId === selectedTemplateData.templateId
@@ -174,6 +196,10 @@ export function TemplatesPage() {
                                                         },
                                                     })
                                                 )
+                                                setSelectedTemplateData({
+                                                    ...selectedTemplateData,
+                                                    isUsedForSessionInvites: true,
+                                                })
                                             }
                                         }}
                                         className="mt-2"

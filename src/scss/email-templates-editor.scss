@@ -1,12 +1,25 @@
-.email-template-editor {
+.emailBodyInput,
+.emailSubjectInput {
     margin-bottom: 15px;
+
+    .DraftEditor-editorContainer {
+        margin-top: 5px;
+        margin-bottom: 15px;
+        border: 1px solid #ced4da;
+        padding: 10px 12px;
+        border-radius: 4px;
+        overflow: auto;
+    }
 }
 
-.email-template-editor .DraftEditor-editorContainer {
-    height: 200px;
-    margin-top: 5px;
-    margin-bottom: 15px;
-    border: 1px solid #ced4da;
-    padding: 10px 12px;
-    border-radius: 4px;
+.emailBodyInput {
+    .DraftEditor-editorContainer {
+        height: 200px;
+    }
+}
+
+.emailSubjectInput {
+    .DraftEditor-editorContainer {
+        height: 100px;
+    }
 }
