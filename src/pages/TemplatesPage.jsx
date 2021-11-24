@@ -18,7 +18,8 @@ export function TemplatesPage() {
     const templates = useSelector(templatesSelector)
     const templateForInvites = useSelector(templateForInvitesSelector)
     const [selectedTemplateData, setSelectedTemplateData] = useState(null)
-    const [isModalVisible, setIsModalVisible] = useState(false)
+    const [isSessionInvitesModalVisible, setIsSessionInvitesModalVisible] = useState(false)
+    const [isDeleteWarningVisible, setIsDeleteWarningVisible] = useState(false)
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -168,12 +169,7 @@ export function TemplatesPage() {
                                     </Button>
                                     <Button
                                         variant="danger"
-                                        onClick={() => {
-                                            dispatch(
-                                                deleteTemplateAction({ templateId: selectedTemplateData.templateId })
-                                            )
-                                            setSelectedTemplateData(null)
-                                        }}
+                                        onClick={() => setIsDeleteWarningVisible(true)}
                                         className="mt-2"
                                     >
                                         Supprimer
@@ -186,7 +182,7 @@ export function TemplatesPage() {
                                         variant="secondary"
                                         onClick={() => {
                                             if (templateForInvites) {
-                                                setIsModalVisible(true)
+                                                setIsSessionInvitesModalVisible(true)
                                             } else {
                                                 dispatch(
                                                     updateTemplateAction({
@@ -207,7 +203,10 @@ export function TemplatesPage() {
                                         Utiliser pour sessions invitées
                                     </Button>
                                 )}
-                                <Modal show={isModalVisible} onHide={() => setIsModalVisible(false)}>
+                                <Modal
+                                    show={isSessionInvitesModalVisible}
+                                    onHide={() => setIsSessionInvitesModalVisible(false)}
+                                >
                                     <Modal.Header closeButton>
                                         <Modal.Title>User autre modèle pour sessions invitées</Modal.Title>
                                     </Modal.Header>
@@ -219,7 +218,7 @@ export function TemplatesPage() {
                                     </Modal.Body>
                                     <Modal.Footer>
                                         <Button
-                                            variant="primary"
+                                            variant="secondary"
                                             onClick={() => {
                                                 dispatch(
                                                     updateTemplateAction({
@@ -237,10 +236,38 @@ export function TemplatesPage() {
                                                         },
                                                     })
                                                 )
-                                                setIsModalVisible(false)
+                                                setSelectedTemplateData({
+                                                    ...selectedTemplateData,
+                                                    isUsedForSessionInvites: true,
+                                                })
+                                                setIsSessionInvitesModalVisible(false)
                                             }}
                                         >
-                                            Appliquer
+                                            Valider
+                                        </Button>
+                                    </Modal.Footer>
+                                </Modal>
+                                <Modal show={isDeleteWarningVisible} onHide={() => setIsDeleteWarningVisible(false)}>
+                                    <Modal.Header closeButton>
+                                        <Modal.Title>Avertissement</Modal.Title>
+                                    </Modal.Header>
+                                    <Modal.Body>
+                                        <p>Êtes-vous sûr de vouloir supprimer ce modèle?</p>
+                                    </Modal.Body>
+                                    <Modal.Footer>
+                                        <Button
+                                            variant="danger"
+                                            onClick={() => {
+                                                dispatch(
+                                                    deleteTemplateAction({
+                                                        templateId: selectedTemplateData.templateId,
+                                                    })
+                                                )
+                                                setSelectedTemplateData(null)
+                                                setIsDeleteWarningVisible(false)
+                                            }}
+                                        >
+                                            Valider
                                         </Button>
                                     </Modal.Footer>
                                 </Modal>

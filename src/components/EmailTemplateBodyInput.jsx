@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Button } from 'react-bootstrap'
 import classNames from 'classnames'
-import { Editor, EditorState, Modifier, CompositeDecorator, ContentState } from 'draft-js'
+import { Editor, EditorState, Modifier, CompositeDecorator, ContentState, RichUtils } from 'draft-js'
+import { stateToHTML } from 'draft-js-export-html'
+import { htmlToDraft } from 'html-to-draftjs'
 
 const DecoratorStrategy = (entity) => (contentBlock, callback, contentState) => {
     contentBlock.findEntityRanges((character) => {
@@ -34,7 +36,14 @@ const decorator = new CompositeDecorator([
 ])
 
 export const EmailTemplateBodyInput = ({ className, onChange, value: { value, templateId: templateIdProp } }) => {
+    // const convertStateFromHTML = (state) => {
+    //     console.log(state)
+    //     const blocksFromHTML = htmlToDraft(state)
+    //     return ContentState.createFromBlockArray(blocksFromHTML.contentBlocks, blocksFromHTML.entityMap)
+    // }
+
     const [state, setState] = useState({
+        // editorState: EditorState.createWithContent(convertStateFromHTML(value), decorator),
         editorState: EditorState.createWithContent(ContentState.createFromText(value), decorator),
     })
 
@@ -50,6 +59,8 @@ export const EmailTemplateBodyInput = ({ className, onChange, value: { value, te
     }, [value])
 
     const handleChange = (editorState) => {
+        // const htmlState = stateToHTML(editorState.getCurrentContent())
+        // onChange(htmlState)
         setState({ editorState })
         onChange(editorState.getCurrentContent().getPlainText('\u0001'))
     }
@@ -63,9 +74,7 @@ export const EmailTemplateBodyInput = ({ className, onChange, value: { value, te
         if (selectionState.getAnchorOffset() !== selectionState.getFocusOffset()) {
             contentState = Modifier.replaceText(contentState, selectionState, entity, null, entityKey)
         } else {
-            contentState = Modifier.insertText(contentState, selectionState, ' ')
             contentState = Modifier.insertText(contentState, selectionState, entity, null, entityKey)
-            contentState = Modifier.insertText(contentState, selectionState, ' ')
         }
 
         let newState = EditorState.push(editorState, contentState, 'insert-characters')
@@ -81,10 +90,26 @@ export const EmailTemplateBodyInput = ({ className, onChange, value: { value, te
         setState({ editorState: newState })
     }
 
+    const handleKeyCommand = (command, editorState) => {
+        const newState = RichUtils.handleKeyCommand(editorState, command)
+
+        if (newState) {
+            handleChange(newState)
+            return 'handled'
+        }
+
+        return 'not-handled'
+    }
+
     return (
         <div className={classNames(className)}>
             <div className="container-root">
-                <Editor placeholder="" editorState={state.editorState} onChange={handleChange} />
+                <Editor
+                    placeholder=""
+                    editorState={state.editorState}
+                    onChange={handleChange}
+                    handleKeyCommand={handleKeyCommand}
+                />
             </div>
             {Object.entries(entities).map(([_name, entity]) => (
                 <Button variant="outline-dark" onClick={() => insert(entity)} className="me-2 mb-2">
