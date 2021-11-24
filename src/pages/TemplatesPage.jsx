@@ -131,7 +131,7 @@ export function TemplatesPage() {
                                     templateId: selectedTemplateData.templateId,
                                 }}
                             />
-                            <label>Contenu de l'e-mail :</label>
+                            <label>Corps de l'e-mail :</label>
                             <EmailTemplateBodyInput
                                 className="emailBodyInput"
                                 onChange={(value) => setSelectedTemplateData({ ...selectedTemplateData, body: value })}

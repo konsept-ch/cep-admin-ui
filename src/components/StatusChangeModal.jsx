@@ -4,10 +4,11 @@ import { useSelector, useDispatch } from 'react-redux'
 import classNames from 'classnames'
 import { fetchParametersAction } from '../actions/parameters.ts'
 import { parametersSelector, loadingSelector } from '../reducers'
-import { statusWarnings } from '../utils'
+import { statusWarnings, replacePlaceholders, formatDate } from '../utils'
 
 export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }) => {
     const [selectedTemplateData, setSelectedTemplateData] = useState(null)
+    const [emailPreview, setEmailPreview] = useState({ emailContent: '', emailSubject: '' })
     const parameters = useSelector(parametersSelector)
     const isSagaLoading = useSelector(loadingSelector)
     const dispatch = useDispatch()
@@ -15,6 +16,21 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
     useEffect(() => {
         dispatch(fetchParametersAction())
     }, [])
+
+    const isEmailTemplateSelected = selectedTemplateData !== null && selectedTemplateData.templateId !== 'no-email'
+
+    useEffect(() => {
+        if (isEmailTemplateSelected) {
+            const { emailContent, emailSubject } = replacePlaceholders({
+                userFullName: statusChangeData.user.name,
+                sessionName: statusChangeData.session.name,
+                startDate: formatDate(statusChangeData.session.restrictions.dates[0]),
+                template: selectedTemplateData,
+            })
+
+            setEmailPreview({ emailContent, emailSubject })
+        }
+    }, [selectedTemplateData])
 
     const emailTemplates = parameters.emailTemplates.filter((template) =>
         template.statuses.find((status) => status.value === statusChangeData.newStatus)
@@ -43,7 +59,7 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                     <h6>Détails de l'inscription</h6>
                     <dl>
                         <dt>Date d'inscription</dt>
-                        <dd>{statusChangeData.date}</dd>
+                        <dd>{formatDate(statusChangeData.date, true)}</dd>
                         <dt>Statut actuel de l'inscription</dt>
                         <dd>{statusChangeData.status}</dd>
                     </dl>
@@ -63,7 +79,7 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                         <dt>Nom de la session</dt>
                         <dd>{statusChangeData.session.name}</dd>
                         <dt>Date de début</dt>
-                        <dd>{statusChangeData.session.restrictions.dates}</dd>
+                        <dd>{formatDate(statusChangeData.session.restrictions.dates[0])}</dd>
                         <dt>Statut de la session</dt>
                         <dd>(à faire)</dd>
                     </dl>
@@ -82,6 +98,7 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                                 setSelectedTemplateData({
                                     templateId: 'no-email',
                                     body: 'Aucun e-mail ne sera envoyé',
+                                    emailSubject: null,
                                 })
                             }
                             className={classNames({
@@ -92,10 +109,10 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                             <p>Aucun e-mail ne sera envoyé</p>
                         </ListGroup.Item>
                         {emailTemplates.length > 0 &&
-                            emailTemplates.map(({ title, description, body, templateId }) => (
+                            emailTemplates.map(({ title, description, body, templateId, emailSubject }) => (
                                 <ListGroup.Item
                                     key={templateId}
-                                    onClick={() => setSelectedTemplateData({ body, templateId })}
+                                    onClick={() => setSelectedTemplateData({ body, templateId, emailSubject })}
                                     className={classNames({
                                         'active-template': selectedTemplateData?.templateId === templateId,
                                     })}
@@ -108,7 +125,18 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                 </div>
                 <div className="col template-preview">
                     <h6>Aperçu de l'e-mail</h6>
-                    {selectedTemplateData !== null ? selectedTemplateData.body : 'Sélectionnez un modèle'}
+                    {isEmailTemplateSelected ? (
+                        <dl>
+                            <dt>Sujet de l'email</dt>
+                            <dd>{emailPreview.emailSubject}</dd>
+                            <dt>Corps de l'e-mail</dt>
+                            <dd>{emailPreview.emailContent}</dd>
+                        </dl>
+                    ) : selectedTemplateData?.templateId === 'no-email' ? (
+                        'Aucun e-mail ne sera envoyé'
+                    ) : (
+                        'Sélectionnez un modèle'
+                    )}
                 </div>
             </Modal.Body>
             <Modal.Footer>

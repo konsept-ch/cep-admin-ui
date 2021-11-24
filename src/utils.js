@@ -44,3 +44,34 @@ export const inscriptionStatuses = [
     'Annulée',
     'Écartée',
 ]
+
+export const replacePlaceholders = ({ userFullName, sessionName, startDate, template: { body, emailSubject } }) => {
+    const placeholdersMapper = {
+        '[NOM_DU_PARTICIPANT]': userFullName,
+        '[NOM_DE_LA_SESSION]': sessionName,
+        '[DATE_DE_DÉBUT]': startDate,
+    }
+
+    let enrichedEmailContent = body
+
+    let enrichedEmailSubject = emailSubject
+
+    Object.entries(placeholdersMapper).forEach(([placeholder, value]) => {
+        if (body.includes(placeholder)) {
+            enrichedEmailContent = enrichedEmailContent.replace(placeholder, value)
+        }
+
+        if (emailSubject.includes(placeholder)) {
+            enrichedEmailSubject = enrichedEmailSubject.replace(placeholder, value)
+        }
+    })
+
+    return { emailContent: enrichedEmailContent, emailSubject: enrichedEmailSubject }
+}
+
+export const formatDate = (dateString, isTimeVisible) => {
+    const date = new Date(dateString)
+    const getTime = () => (isTimeVisible === true ? `, ${date.getHours()}h${date.getMinutes()}` : '')
+
+    return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}${getTime()}`
+}
