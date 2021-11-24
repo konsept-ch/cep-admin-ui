@@ -15,7 +15,7 @@ function* fetchInscriptionsSaga() {
     yield put(setGridLoadingAction({ loading: false }))
 }
 
-function* updateInscriptionsSaga({ payload: { inscriptionId, newStatus, emailTemplateName, successCallback } }) {
+function* updateInscriptionsSaga({ payload: { inscriptionId, newStatus, emailTemplateId, successCallback } }) {
     yield put(setLoadingAction({ loading: true }))
 
     yield call(callService, {
@@ -25,7 +25,7 @@ function* updateInscriptionsSaga({ payload: { inscriptionId, newStatus, emailTem
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ status: newStatus, emailTemplateName }),
+            body: JSON.stringify({ status: newStatus, emailTemplateId }),
         },
     })
 

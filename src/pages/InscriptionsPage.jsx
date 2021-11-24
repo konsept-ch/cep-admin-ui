@@ -76,12 +76,12 @@ export function InscriptionsPage() {
                         dispatch(fetchInscriptionsAction())
                     }}
                     statusChangeData={statusChangeData}
-                    updateStatus={({ emailTemplateName }) =>
+                    updateStatus={({ emailTemplateId }) =>
                         dispatch(
                             updateInscriptionStatusAction({
                                 inscriptionId: statusChangeData.id,
                                 newStatus: statusChangeData.newStatus,
-                                emailTemplateName,
+                                emailTemplateId,
                                 successCallback: () => {
                                     setStatusChangeData(null)
                                     dispatch(fetchInscriptionsAction())

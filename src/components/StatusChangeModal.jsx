@@ -80,24 +80,24 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                         <ListGroup.Item
                             onClick={() =>
                                 setSelectedTemplateData({
-                                    title: 'no-email',
+                                    templateId: 'no-email',
                                     body: 'Aucun e-mail ne sera envoyé',
                                 })
                             }
                             className={classNames({
-                                'active-template': selectedTemplateData?.title === 'no-email',
+                                'active-template': selectedTemplateData?.templateId === 'no-email',
                             })}
                         >
                             <h4>Aucun e-mail</h4>
                             <p>Aucun e-mail ne sera envoyé</p>
                         </ListGroup.Item>
                         {emailTemplates.length > 0 &&
-                            emailTemplates.map(({ title, description, body }) => (
+                            emailTemplates.map(({ title, description, body, templateId }) => (
                                 <ListGroup.Item
-                                    key={title}
-                                    onClick={() => setSelectedTemplateData({ body, title })}
+                                    key={templateId}
+                                    onClick={() => setSelectedTemplateData({ body, templateId })}
                                     className={classNames({
-                                        'active-template': selectedTemplateData?.title === title,
+                                        'active-template': selectedTemplateData?.templateId === templateId,
                                     })}
                                 >
                                     <h4>{title}</h4>
@@ -127,10 +127,12 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                             disabled={selectedTemplateData === null}
                             variant="primary"
                             onClick={() => {
-                                const templateName =
-                                    selectedTemplateData?.title === 'no-email' ? null : selectedTemplateData.title
+                                const templateId =
+                                    selectedTemplateData?.templateId === 'no-email'
+                                        ? null
+                                        : selectedTemplateData.templateId
 
-                                updateStatus({ emailTemplateName: templateName })
+                                updateStatus({ emailTemplateId: templateId })
                             }}
                         >
                             {isSagaLoading ? (

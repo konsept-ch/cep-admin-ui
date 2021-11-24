@@ -111,7 +111,7 @@ export const EmailTemplateBodyInput = ({ className, onChange, value: { value, te
                     handleKeyCommand={handleKeyCommand}
                 />
             </div>
-            {Object.entries(entities).map(([_name, entity]) => (
+            {Object.values(entities).map((entity) => (
                 <Button variant="outline-dark" onClick={() => insert(entity)} className="me-2 mb-2">
                     {entity}
                 </Button>
