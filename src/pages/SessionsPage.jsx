@@ -67,7 +67,14 @@ export function SessionsPage() {
             valueGetter: ({ data: { invited } }) => (invited ? 'Oui' : 'Non'),
             cellEditorParams: { values: ['Oui', 'Non'] },
             onCellValueChanged: (data) =>
-                dispatch(updateSessionAction({ sessionId: data.data.id, areInvitesSent: data.newValue })),
+                dispatch(
+                    updateSessionAction({
+                        sessionId: data.data.id,
+                        areInvitesSent: data.newValue,
+                        sessionName: data.data.name,
+                        startDate: data.data.startDate,
+                    })
+                ),
         },
     ]
 
@@ -76,7 +83,7 @@ export function SessionsPage() {
             id,
             name,
             code,
-            restrictions: { hidden },
+            restrictions: { hidden, dates },
             pricing: { price },
             meta: { created, updated, duration },
             areInvitesSent,
@@ -90,6 +97,7 @@ export function SessionsPage() {
             lastModifiedDate: updated,
             hidden,
             invited: areInvitesSent,
+            startDate: dates[0],
         })
     )
 

@@ -13,7 +13,7 @@ function* fetchSessionsSaga() {
     yield put(setGridLoadingAction({ loading: false }))
 }
 
-function* updateSessionSaga({ payload: { sessionId, areInvitesSent } }) {
+function* updateSessionSaga({ payload: { sessionId, areInvitesSent, sessionName, startDate } }) {
     yield put(setGridLoadingAction({ loading: true }))
 
     yield call(callService, {
@@ -23,7 +23,7 @@ function* updateSessionSaga({ payload: { sessionId, areInvitesSent } }) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ areInvitesSent }),
+            body: JSON.stringify({ areInvitesSent, sessionName, startDate }),
         },
     })
 

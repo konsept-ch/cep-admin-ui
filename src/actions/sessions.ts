@@ -5,9 +5,19 @@ export const fetchSessionsAction = () => ({
     payload: {},
 })
 
-export const updateSessionAction = ({ sessionId, areInvitesSent }: { sessionId: string; areInvitesSent: string }) => ({
+export const updateSessionAction = ({
+    sessionId,
+    areInvitesSent,
+    sessionName,
+    startDate,
+}: {
+    sessionId: string
+    areInvitesSent: string
+    sessionName: string
+    startDate: string
+}) => ({
     type: UPDATE_SESSION,
-    payload: { sessionId, areInvitesSent },
+    payload: { sessionId, areInvitesSent, sessionName, startDate },
 })
 
 export const setSessionsAction = ({ sessions }: { sessions: any }) => ({
