@@ -160,7 +160,7 @@ export function TemplatesPage() {
                             </FloatingLabel>
                             <label>Sujet de l'email :</label>
                             <EmailTemplateBodyInput
-                                className="emailSubjectInput"
+                                className="email-subject-input"
                                 onChange={(value) =>
                                     setSelectedTemplateData({ ...selectedTemplateData, emailSubject: value })
                                 }
@@ -168,15 +168,18 @@ export function TemplatesPage() {
                                     value: selectedTemplateData.emailSubject,
                                     templateId: selectedTemplateData.templateId,
                                 }}
+                                shouldHaveVariables
                             />
                             <label>Corps de l'e-mail :</label>
                             <EmailTemplateBodyInput
-                                className="emailBodyInput"
+                                className="email-body-input"
                                 onChange={(value) => setSelectedTemplateData({ ...selectedTemplateData, body: value })}
                                 value={{
                                     value: selectedTemplateData.body,
                                     templateId: selectedTemplateData.templateId,
                                 }}
+                                shouldHandleKeyCommand
+                                shouldHaveVariables
                             />
                             <label>Valable pour statuts :</label>
                             <Select

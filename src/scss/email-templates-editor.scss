@@ -1,5 +1,5 @@
-.emailBodyInput,
-.emailSubjectInput {
+.email-body-input,
+.email-subject-input {
     margin-bottom: 15px;
 
     .DraftEditor-editorContainer {
@@ -12,13 +12,13 @@
     }
 }
 
-.emailBodyInput {
+.email-body-input {
     .DraftEditor-editorContainer {
         height: 200px;
     }
 }
 
-.emailSubjectInput {
+.email-subject-input {
     .DraftEditor-editorContainer {
         height: 100px;
     }

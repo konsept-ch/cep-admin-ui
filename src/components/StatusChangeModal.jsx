@@ -5,6 +5,7 @@ import classNames from 'classnames'
 import { fetchParametersAction } from '../actions/parameters.ts'
 import { parametersSelector, loadingSelector } from '../reducers'
 import { statusWarnings, replacePlaceholders, formatDate } from '../utils'
+import { EmailTemplateBodyInput } from './EmailTemplateBodyInput'
 
 export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }) => {
     const [selectedTemplateData, setSelectedTemplateData] = useState(null)
@@ -128,9 +129,29 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                     {isEmailTemplateSelected ? (
                         <dl>
                             <dt>Sujet de l'email</dt>
-                            <dd>{emailPreview.emailSubject}</dd>
+                            <dd>
+                                <EmailTemplateBodyInput
+                                    className="email-preview"
+                                    onChange={() => {}}
+                                    value={{
+                                        value: emailPreview.emailSubject,
+                                        templateId: selectedTemplateData.templateId,
+                                    }}
+                                    readOnly
+                                />
+                            </dd>
                             <dt>Corps de l'e-mail</dt>
-                            <dd>{emailPreview.emailContent}</dd>
+                            <dd>
+                                <EmailTemplateBodyInput
+                                    className="email-preview"
+                                    onChange={() => {}}
+                                    value={{
+                                        value: emailPreview.emailContent,
+                                        templateId: selectedTemplateData.templateId,
+                                    }}
+                                    readOnly
+                                />
+                            </dd>
                         </dl>
                     ) : selectedTemplateData?.templateId === 'no-email' ? (
                         'Aucun e-mail ne sera envoyé'

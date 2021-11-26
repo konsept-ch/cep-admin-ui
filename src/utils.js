@@ -58,11 +58,11 @@ export const replacePlaceholders = ({ userFullName, sessionName, startDate, temp
 
     Object.entries(placeholdersMapper).forEach(([placeholder, value]) => {
         if (body.includes(placeholder)) {
-            enrichedEmailContent = enrichedEmailContent.replace(placeholder, value)
+            enrichedEmailContent = enrichedEmailContent.replaceAll(placeholder, value)
         }
 
         if (emailSubject.includes(placeholder)) {
-            enrichedEmailSubject = enrichedEmailSubject.replace(placeholder, value)
+            enrichedEmailSubject = enrichedEmailSubject.replaceAll(placeholder, value)
         }
     })
 
