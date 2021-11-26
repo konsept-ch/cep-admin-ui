@@ -5,6 +5,7 @@ import { ListGroup, Row, Col, Container, Button, FloatingLabel, Form, Badge, Mod
 import classNames from 'classnames'
 import { equals } from 'ramda'
 import { templatesSelector, templateForInvitesSelector } from '../reducers'
+import { CommonModal } from '../components'
 import {
     fetchTemplatesAction,
     addTemplateAction,
@@ -15,11 +16,12 @@ import { getUniqueId, inscriptionStatuses } from '../utils'
 import { EmailTemplateBodyInput } from '../components/EmailTemplateBodyInput'
 
 export function TemplatesPage() {
-    const templates = useSelector(templatesSelector)
-    const templateForInvites = useSelector(templateForInvitesSelector)
     const [selectedTemplateData, setSelectedTemplateData] = useState(null)
     const [isSessionInvitesModalVisible, setIsSessionInvitesModalVisible] = useState(false)
     const [isDeleteWarningVisible, setIsDeleteWarningVisible] = useState(false)
+    const [discardWarningData, setDiscardWarningData] = useState({ isVisible: false })
+    const templates = useSelector(templatesSelector)
+    const templateForInvites = useSelector(templateForInvitesSelector)
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -35,6 +37,16 @@ export function TemplatesPage() {
         templateId: getUniqueId(),
         isUsedForSessionInvites: false,
     })
+
+    const checkIsTemplateChanged = () => {
+        return (
+            selectedTemplateData !== null &&
+            !equals(
+                templates.find(({ templateId }) => templateId === selectedTemplateData.templateId),
+                selectedTemplateData
+            )
+        )
+    }
 
     return (
         <Container fluid className="templatesPage">
@@ -55,17 +67,31 @@ export function TemplatesPage() {
                                 }) => (
                                     <ListGroup.Item
                                         key={templateId}
-                                        onClick={() =>
-                                            setSelectedTemplateData({
-                                                title,
-                                                description,
-                                                emailSubject,
-                                                body,
-                                                statuses,
-                                                templateId,
-                                                isUsedForSessionInvites,
-                                            })
-                                        }
+                                        onClick={() => {
+                                            checkIsTemplateChanged()
+                                                ? setDiscardWarningData({
+                                                      isVisible: true,
+                                                      selectNewTemplate: () =>
+                                                          setSelectedTemplateData({
+                                                              title,
+                                                              description,
+                                                              emailSubject,
+                                                              body,
+                                                              statuses,
+                                                              templateId,
+                                                              isUsedForSessionInvites,
+                                                          }),
+                                                  })
+                                                : setSelectedTemplateData({
+                                                      title,
+                                                      description,
+                                                      emailSubject,
+                                                      body,
+                                                      statuses,
+                                                      templateId,
+                                                      isUsedForSessionInvites,
+                                                  })
+                                        }}
                                         className={classNames({
                                             'active-template': selectedTemplateData?.templateId === templateId,
                                         })}
@@ -158,12 +184,7 @@ export function TemplatesPage() {
                                             dispatch(updateTemplateAction({ templateData: selectedTemplateData }))
                                         }}
                                         className="mt-2 me-2"
-                                        disabled={equals(
-                                            templates.find(
-                                                ({ templateId }) => templateId === selectedTemplateData.templateId
-                                            ),
-                                            selectedTemplateData
-                                        )}
+                                        disabled={!checkIsTemplateChanged()}
                                     >
                                         Appliquer
                                     </Button>
@@ -203,20 +224,15 @@ export function TemplatesPage() {
                                         Utiliser pour sessions invitées
                                     </Button>
                                 )}
-                                <Modal
-                                    show={isSessionInvitesModalVisible}
-                                    onHide={() => setIsSessionInvitesModalVisible(false)}
-                                >
-                                    <Modal.Header closeButton>
-                                        <Modal.Title>User autre modèle pour sessions invitées</Modal.Title>
-                                    </Modal.Header>
-                                    <Modal.Body>
+                                <CommonModal
+                                    title="User autre modèle pour sessions invitées"
+                                    content={
                                         <>
                                             <p>Il existe déjà un modèle pour les invitations à une session.</p>
                                             <p>Êtes-vous sûr de vouloir mettre à jour le modèle ?</p>
                                         </>
-                                    </Modal.Body>
-                                    <Modal.Footer>
+                                    }
+                                    footer={
                                         <Button
                                             variant="secondary"
                                             onClick={() => {
@@ -243,18 +259,16 @@ export function TemplatesPage() {
                                                 setIsSessionInvitesModalVisible(false)
                                             }}
                                         >
-                                            Valider
+                                            Utiliser
                                         </Button>
-                                    </Modal.Footer>
-                                </Modal>
-                                <Modal show={isDeleteWarningVisible} onHide={() => setIsDeleteWarningVisible(false)}>
-                                    <Modal.Header closeButton>
-                                        <Modal.Title>Avertissement</Modal.Title>
-                                    </Modal.Header>
-                                    <Modal.Body>
-                                        <p>Êtes-vous sûr de vouloir supprimer ce modèle?</p>
-                                    </Modal.Body>
-                                    <Modal.Footer>
+                                    }
+                                    isVisible={isSessionInvitesModalVisible}
+                                    onHide={() => setIsSessionInvitesModalVisible(false)}
+                                />
+                                <CommonModal
+                                    title="Avertissement"
+                                    content={<p>Êtes-vous sûr de vouloir supprimer ce modèle?</p>}
+                                    footer={
                                         <Button
                                             variant="danger"
                                             onClick={() => {
@@ -267,10 +281,44 @@ export function TemplatesPage() {
                                                 setIsDeleteWarningVisible(false)
                                             }}
                                         >
-                                            Valider
+                                            Supprimer
                                         </Button>
-                                    </Modal.Footer>
-                                </Modal>
+                                    }
+                                    isVisible={isDeleteWarningVisible}
+                                    onHide={() => setIsDeleteWarningVisible(false)}
+                                />
+                                <CommonModal
+                                    title="Avertissement"
+                                    content={<p>Êtes-vous sûr de vouloir écarter vos modifications ?</p>}
+                                    footer={
+                                        <>
+                                            <Button
+                                                variant="primary"
+                                                onClick={() => {
+                                                    dispatch(
+                                                        updateTemplateAction({ templateData: selectedTemplateData })
+                                                    )
+                                                    discardWarningData.selectNewTemplate()
+                                                    setDiscardWarningData({ isVisible: false })
+                                                }}
+                                                className="me-2"
+                                            >
+                                                Appliquer
+                                            </Button>
+                                            <Button
+                                                variant="danger"
+                                                onClick={() => {
+                                                    discardWarningData.selectNewTemplate()
+                                                    setDiscardWarningData({ isVisible: false })
+                                                }}
+                                            >
+                                                Écarter modifications
+                                            </Button>
+                                        </>
+                                    }
+                                    isVisible={discardWarningData.isVisible}
+                                    onHide={() => setDiscardWarningData({ isVisible: false })}
+                                />
                             </div>
                         </>
                     )}

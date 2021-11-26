@@ -87,7 +87,7 @@ export const EmailTemplateBodyInput = ({ className, onChange, value: { value, te
             })
             newState = EditorState.forceSelection(newState, updatedSelection)
         }
-        setState({ editorState: newState })
+        handleChange(newState)
     }
 
     const handleKeyCommand = (command, editorState) => {
