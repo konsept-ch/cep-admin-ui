@@ -112,10 +112,22 @@ export function TemplatesPage() {
                     <Button
                         variant="success"
                         onClick={() => {
-                            const newTemplateData = generateNewTemplate()
+                            if (checkIsTemplateChanged()) {
+                                setDiscardWarningData({
+                                    isVisible: true,
+                                    selectNewTemplate: () => {
+                                        const newTemplateData = generateNewTemplate()
 
-                            dispatch(addTemplateAction({ templateData: newTemplateData }))
-                            setSelectedTemplateData(newTemplateData)
+                                        dispatch(addTemplateAction({ templateData: newTemplateData }))
+                                        setSelectedTemplateData(newTemplateData)
+                                    },
+                                })
+                            } else {
+                                const newTemplateData = generateNewTemplate()
+
+                                dispatch(addTemplateAction({ templateData: newTemplateData }))
+                                setSelectedTemplateData(newTemplateData)
+                            }
                         }}
                         className="mt-2"
                     >
