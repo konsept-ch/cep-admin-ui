@@ -5,6 +5,7 @@ import { Grid, CourseDetailsModal } from '../components'
 import { fetchCoursesAction, updateCourseAction } from '../actions/courses.ts'
 import { fetchAdminsAction } from '../actions/users.ts'
 import { coursesSelector, adminsSelector } from '../reducers'
+import { formatDate } from '../utils'
 
 export function CoursesPage() {
     const dispatch = useDispatch()
@@ -131,12 +132,16 @@ export function CoursesPage() {
             headerName: 'Date de création',
             filter: 'agDateColumnFilter',
             headerTooltip: 'La date de création de la formation',
+            valueFormatter: ({ value }) => formatDate(value),
+            type: 'rightAligned',
         },
         {
             field: 'lastModifiedDate',
             headerName: 'Dernière modification',
             filter: 'agDateColumnFilter',
             headerTooltip: 'La date de la dernière modification',
+            valueFormatter: ({ value }) => formatDate(value),
+            type: 'rightAligned',
         },
     ]
 

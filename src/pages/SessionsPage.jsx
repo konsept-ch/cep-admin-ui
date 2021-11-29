@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { fetchSessionsAction, updateSessionAction } from '../actions/sessions.ts'
 import { sessionsSelector } from '../reducers'
 import { Grid } from '../components'
+import { formatDate } from '../utils'
 
 export function SessionsPage() {
     const dispatch = useDispatch()
@@ -43,12 +44,16 @@ export function SessionsPage() {
             headerName: 'Date de création',
             filter: 'agDateColumnFilter',
             headerTooltip: 'La date de création de la formation',
+            valueFormatter: ({ value }) => formatDate(value),
+            type: 'rightAligned',
         },
         {
             field: 'lastModifiedDate',
             headerName: 'Dernière modification',
             filter: 'agDateColumnFilter',
             headerTooltip: 'La date de la dernière modification',
+            valueFormatter: ({ value }) => formatDate(value),
+            type: 'rightAligned',
         },
         {
             field: 'hidden',

@@ -76,7 +76,10 @@ export const formatDate = (dateString, isTimeVisible) => {
         const month = date.getMonth() + 1
         return month < 10 ? `0${month}` : month
     }
-    const getTime = () => (isTimeVisible === true ? `, ${date.getHours()}h${date.getMinutes()}` : '')
+    const getMinutes = () => {
+        return date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()
+    }
+    const getTime = () => (isTimeVisible === true ? `, ${date.getHours()}h${getMinutes()}` : '')
 
     return `${getDay()}.${getMonth()}.${date.getFullYear()}${getTime()}`
 }

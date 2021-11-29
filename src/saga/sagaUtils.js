@@ -1,5 +1,6 @@
 import { toast } from 'react-toastify'
 import { MIDDLEWARE_URL } from '../constants/config'
+import { formatDate } from '../utils'
 
 export function* callService({ endpoint, options = {} }) {
     try {
@@ -19,7 +20,7 @@ export function* callService({ endpoint, options = {} }) {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ date: new Date(), errorDescription: resultText }),
+                body: JSON.stringify({ date: formatDate(new Date()), errorDescription: resultText }),
             })
 
             return
