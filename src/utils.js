@@ -71,7 +71,12 @@ export const replacePlaceholders = ({ userFullName, sessionName, startDate, temp
 
 export const formatDate = (dateString, isTimeVisible) => {
     const date = new Date(dateString)
+    const getDay = () => (date.getDate() < 10 ? `0${date.getDate()}` : date.getDate())
+    const getMonth = () => {
+        const month = date.getMonth() + 1
+        return month < 10 ? `0${month}` : month
+    }
     const getTime = () => (isTimeVisible === true ? `, ${date.getHours()}h${date.getMinutes()}` : '')
 
-    return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}${getTime()}`
+    return `${getDay()}.${getMonth()}.${date.getFullYear()}${getTime()}`
 }
