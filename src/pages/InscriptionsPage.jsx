@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Grid, StatusChangeModal } from '../components'
 import { fetchInscriptionsAction, updateInscriptionStatusAction } from '../actions/inscriptions.ts'
 import { inscriptionsSelector } from '../reducers'
-import { inscriptionStatuses } from '../utils'
+import { inscriptionStatuses, formatDate } from '../utils'
 
 export function InscriptionsPage() {
     const dispatch = useDispatch()
@@ -51,6 +51,8 @@ export function InscriptionsPage() {
             headerName: 'Date de début',
             filter: 'agDateColumnFilter',
             headerTooltip: 'La date de début de la session',
+            sort: 'asc',
+            valueFormatter: ({ value }) => formatDate(value),
         },
     ]
 
@@ -62,12 +64,24 @@ export function InscriptionsPage() {
             profession: '(à faire)',
             session: session.name,
             status,
-            startDate: date,
+            startDate: session.restrictions.dates[0],
+            inscriptionDate: date,
         }))
 
     return (
         <>
-            <Grid name="Inscriptions" columnDefs={columnDefs} rowData={rowData} />
+            <Grid
+                name="Inscriptions"
+                columnDefs={columnDefs}
+                rowData={rowData}
+                rowClassRules={{
+                    'inscription-row-highlight': ({ data: { inscriptionDate, startDate } }) => {
+                        const milisecondsIn5days = 1000 * 60 * 60 * 24 * 5
+
+                        return new Date(startDate).getTime() - new Date(inscriptionDate).getTime() <= milisecondsIn5days
+                    },
+                }}
+            />
 
             {statusChangeData ? (
                 <StatusChangeModal
