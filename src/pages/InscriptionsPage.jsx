@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Grid, StatusChangeModal } from '../components'
 import { fetchInscriptionsAction, updateInscriptionStatusAction } from '../actions/inscriptions.ts'
 import { inscriptionsSelector } from '../reducers'
-import { inscriptionStatuses, formatDate } from '../utils'
+import { inscriptionStatuses, formatDate, statuses } from '../utils'
 
 export function InscriptionsPage() {
     const dispatch = useDispatch()
@@ -76,10 +76,15 @@ export function InscriptionsPage() {
                 columnDefs={columnDefs}
                 rowData={rowData}
                 rowClassRules={{
-                    'inscription-row-highlight': ({ data: { inscriptionDate, startDate } }) => {
+                    'inscription-row-highlight': ({ data: { inscriptionDate, startDate, status } }) => {
                         const milisecondsIn5days = 1000 * 60 * 60 * 24 * 5
+                        const isSession5daysAfterInscription =
+                            new Date(startDate).getTime() - new Date(inscriptionDate).getTime() <= milisecondsIn5days
 
-                        return new Date(startDate).getTime() - new Date(inscriptionDate).getTime() <= milisecondsIn5days
+                        const isInscriptionIncoming =
+                            status === statuses.ENTREE_WEB || status === statuses.A_TRAITER_PAR_RH
+
+                        return isSession5daysAfterInscription && isInscriptionIncoming
                     },
                 }}
             />

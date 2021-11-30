@@ -20,9 +20,21 @@ export const mapClassNameToEventType = ({ className }) =>
         'online-async': 'async',
     }[className])
 
+export const statuses = {
+    EN_ATTENTE: 'En attente',
+    A_TRAITER_PAR_RH: 'À traiter par RH',
+    REFUSEE_PAR_RH: 'Réfusée par RH',
+    ENTREE_WEB: 'Entrée Web',
+    ACCEPTEE_PAR_CEP: 'Acceptée par CEP',
+    INVITEE: 'Invitée',
+    PROPOSEE: 'Proposée',
+    ANNULEE: 'Annulée',
+    ECARTEE: 'Écartée',
+}
+
 export const statusWarnings = {
-    Écartée: {
-        'Acceptée par CEP':
+    [statuses.ECARTEE]: {
+        [statuses.ACCEPTEE_PAR_CEP]:
             "Vous êtes en train de changer le de 'Écartée' à 'Acceptée', mais c'est probablement mieux de créer une nouvelle inscription",
     },
 }
@@ -33,17 +45,7 @@ export const getUniqueId = () => {
     return dateString + randomness
 }
 
-export const inscriptionStatuses = [
-    'En attente',
-    'À traiter par RH',
-    'Réfusée par RH',
-    'Entrée Web',
-    'Acceptée par CEP',
-    'Invitée',
-    'Proposée',
-    'Annulée',
-    'Écartée',
-]
+export const inscriptionStatuses = Object.values(statuses)
 
 export const replacePlaceholders = ({ userFullName, sessionName, startDate, template: { body, emailSubject } }) => {
     const placeholdersMapper = {
