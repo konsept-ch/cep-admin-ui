@@ -12,12 +12,13 @@ import { DATE_FORMAT_SWISS_FRENCH } from '../constants/constants'
 
 import { Event } from './Event'
 
-export const Calendar = ({ resources, events }) => {
+export const Calendar = ({ resources, events, calendarRef }) => {
     const [selectedEvent, setSelectedEvent] = useState(null)
 
     return (
         <>
             <FullCalendar
+                ref={calendarRef}
                 nowIndicator
                 editable
                 navLinks

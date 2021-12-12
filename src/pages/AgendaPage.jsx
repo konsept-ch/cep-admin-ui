@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Container, Button, Collapse, InputGroup, FormControl, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -21,6 +21,7 @@ export const AgendaPage = () => {
     const [isRoomsExpanded, setRoomsExpanded] = useState(true)
     const [isInternalRoomsExpanded, setInternalRoomsExpanded] = useState(true)
     const [searchTerm, setSearchTerm] = useState('')
+    const calendarRef = useRef(null)
 
     useEffect(() => {
         dispatch(fetchAgendaAction())
@@ -59,6 +60,7 @@ export const AgendaPage = () => {
                         ({ room: { id } }) =>
                             selectedRoomIds[id] && searchedRooms.some((searchedRoom) => searchedRoom.id === id)
                     )}
+                    calendarRef={calendarRef}
                 />
             </Container>
             <div className="d-flex">
@@ -173,6 +175,8 @@ export const AgendaPage = () => {
                     type="button"
                     onClick={() => {
                         setRoomSelectionExpanded(!isRoomSelectionExpanded)
+
+                        setTimeout(() => calendarRef.current.getApi().updateSize(), 350)
                     }}
                     aria-expanded="false"
                     aria-controls="collapseExample"
