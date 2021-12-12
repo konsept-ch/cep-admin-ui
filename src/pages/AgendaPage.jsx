@@ -17,7 +17,6 @@ export const AgendaPage = () => {
     const [selectedRoomIds, setSelectedRoomIds] = useState({})
     const dispatch = useDispatch()
     const [isRoomSelectionExpanded, setRoomSelectionExpanded] = useState(true)
-    console.log(rooms) // to be deleted
     const [isRoomsExpanded, setRoomsExpanded] = useState(true)
     const [isInternalRoomsExpanded, setInternalRoomsExpanded] = useState(true)
     const [searchTerm, setSearchTerm] = useState('')

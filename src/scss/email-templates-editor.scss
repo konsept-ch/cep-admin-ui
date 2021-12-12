@@ -2,6 +2,7 @@
 .email-subject-input {
     margin-bottom: 15px;
 
+    /* stylelint-disable-next-line selector-class-pattern -- vendor draft.js */
     .DraftEditor-editorContainer {
         margin-top: 5px;
         margin-bottom: 15px;
@@ -13,12 +14,14 @@
 }
 
 .email-body-input {
+    /* stylelint-disable-next-line selector-class-pattern -- vendor draft.js */
     .DraftEditor-editorContainer {
         height: 200px;
     }
 }
 
 .email-subject-input {
+    /* stylelint-disable-next-line selector-class-pattern -- vendor draft.js */
     .DraftEditor-editorContainer {
         height: 100px;
     }

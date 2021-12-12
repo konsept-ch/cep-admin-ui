@@ -17,8 +17,8 @@
     "markdownlint:fix": "markdownlint README.md --fix",
     "stylelint:check": "stylelint \"**/*.scss\"",
     "stylelint:fix": "stylelint \"**/*.scss\" --fix",
-    "eslint:check": "eslint \"src/**/*.js\" --report-unused-disable-directives",
-    "eslint:fix": "eslint \"src/**/*.js\" --fix",
+    "eslint:check": "eslint --ext .js,.jsx src --report-unused-disable-directives",
+    "eslint:fix": "eslint --ext .js,.jsx src --fix",
     "prettier:check": "prettier \"src/**/*\" --ignore-unknown --check",
     "prettier:fix": "prettier \"src/**/*\" --ignore-unknown --write",
     "ci:check": "npm run prettier:check && npm run eslint:check && npm run stylelint:check && npm run markdownlint:check && npm run test"
