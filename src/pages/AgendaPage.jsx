@@ -4,13 +4,14 @@ import { Container, Button, Collapse, InputGroup, FormControl, OverlayTrigger, T
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeftFromLine, faArrowRightToLine } from '@fortawesome/pro-solid-svg-icons'
 import { faFilterCircleXmark } from '@fortawesome/pro-light-svg-icons'
+
 import { Calendar } from '../components'
 import { fetchAgendaAction } from '../actions/agenda.ts'
 import { roomsAndEventsSelector } from '../reducers'
-
 import { RoomSelection } from '../components/RoomSelection'
 import { BulkSelect } from '../components/BulkSelect'
 import { ExpandController } from '../components/ExpandController'
+import { ROOM_TYPE_VIRTUAL } from '../constants/agenda'
 
 export const AgendaPage = () => {
     const { rooms, events } = useSelector(roomsAndEventsSelector)
@@ -56,8 +57,9 @@ export const AgendaPage = () => {
                 <Calendar
                     resources={searchedRooms.filter(({ id }) => selectedRoomIds[id])}
                     events={events.filter(
-                        ({ room: { id } }) =>
-                            selectedRoomIds[id] && searchedRooms.some((searchedRoom) => searchedRoom.id === id)
+                        ({ room }) =>
+                            selectedRoomIds[room?.id] &&
+                            searchedRooms.some((searchedRoom) => searchedRoom.id === room?.id)
                     )}
                     calendarRef={calendarRef}
                 />
@@ -118,7 +120,7 @@ export const AgendaPage = () => {
                                                             rooms: searchedRooms,
                                                             roomsFilter: ({ location }) =>
                                                                 location?.name === 'CEP' ||
-                                                                location?.name === 'CEP ZOOM',
+                                                                location?.name === ROOM_TYPE_VIRTUAL,
                                                             selectedRoomIds,
                                                             setSelectedRoomIds,
                                                         }}
@@ -143,7 +145,7 @@ export const AgendaPage = () => {
                                                                         selectedRoomIds,
                                                                         setSelectedRoomIds,
                                                                         roomsFilter: ({ location }) =>
-                                                                            location?.name === 'CEP ZOOM',
+                                                                            location?.name === ROOM_TYPE_VIRTUAL,
                                                                         groupName: 'Virtuelles',
                                                                     }}
                                                                 />
@@ -157,7 +159,8 @@ export const AgendaPage = () => {
                                                         selectedRoomIds,
                                                         setSelectedRoomIds,
                                                         roomsFilter: ({ location }) =>
-                                                            location?.name !== 'CEP' && location?.name !== 'CEP ZOOM',
+                                                            location?.name !== 'CEP' &&
+                                                            location?.name !== ROOM_TYPE_VIRTUAL,
                                                         groupName: 'Externes',
                                                     }}
                                                 />
