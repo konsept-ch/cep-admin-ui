@@ -49,7 +49,6 @@ export const Calendar = ({ resources, events, calendarRef, refreshCallback }) =>
                                     icon={faRefresh}
                                 />
                             </div>
-                            // {classNames('room-item', { 'is-visible': selectedRoomIds[id] === true })}
                         ),
                         click: refreshCallback,
                         hint: 'Rafraîchir',
