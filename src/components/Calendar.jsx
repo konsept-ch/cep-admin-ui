@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { useSelector } from 'react-redux'
+import { loadingSelector } from '../reducers'
 import { Offcanvas } from 'react-bootstrap'
 import FullCalendar from '@fullcalendar/react'
 import listPlugin from '@fullcalendar/list'
@@ -13,9 +15,12 @@ import { faRefresh } from '@fortawesome/pro-solid-svg-icons'
 
 import { DATE_FORMAT_SWISS_FRENCH } from '../constants/constants'
 import { Event } from './Event'
+import classNames from 'classnames'
 
 export const Calendar = ({ resources, events, calendarRef, refreshCallback }) => {
     const [selectedEvent, setSelectedEvent] = useState(null)
+    const isSagaLoading = useSelector(loadingSelector)
+    console.log(isSagaLoading)
 
     return (
         <>
@@ -37,7 +42,15 @@ export const Calendar = ({ resources, events, calendarRef, refreshCallback }) =>
                 initialView="dayGridWeek" // TODO order by salle ?
                 customButtons={{
                     myCustomButton: {
-                        text: <FontAwesomeIcon icon={faRefresh} />,
+                        text: (
+                            <div>
+                                <FontAwesomeIcon
+                                    className={classNames('refresh-agenda', { 'is-loader': isSagaLoading })}
+                                    icon={faRefresh}
+                                />
+                            </div>
+                            // {classNames('room-item', { 'is-visible': selectedRoomIds[id] === true })}
+                        ),
                         click: refreshCallback,
                         hint: 'Rafraîchir',
                     },
