@@ -20,7 +20,6 @@ import classNames from 'classnames'
 export const Calendar = ({ resources, events, calendarRef, refreshCallback }) => {
     const [selectedEvent, setSelectedEvent] = useState(null)
     const isSagaLoading = useSelector(loadingSelector)
-    console.log(isSagaLoading)
 
     return (
         <>
