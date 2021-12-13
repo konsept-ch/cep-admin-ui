@@ -28,12 +28,14 @@ export const AgendaPage = () => {
     }, [dispatch])
 
     useEffect(() => {
-        const initialSelectedRoomIds = rooms.reduce(
-            (acc, { id, location }) => ({ ...acc, [id]: location?.name === 'CEP' }),
-            {}
-        )
+        if (Object.keys(selectedRoomIds).length === 0) {
+            const initialSelectedRoomIds = rooms.reduce(
+                (acc, { id, location }) => ({ ...acc, [id]: location?.name === 'CEP' }),
+                {}
+            )
 
-        setSelectedRoomIds(initialSelectedRoomIds)
+            setSelectedRoomIds(initialSelectedRoomIds)
+        }
     }, [rooms]) // called when rooms are fetched
 
     const handleSearch = (e) => setSearchTerm(e.target.value)
@@ -62,6 +64,7 @@ export const AgendaPage = () => {
                             searchedRooms.some((searchedRoom) => searchedRoom.id === room?.id)
                     )}
                     calendarRef={calendarRef}
+                    refreshCallback={() => dispatch(fetchAgendaAction())}
                 />
             </Container>
             <div className="d-flex">

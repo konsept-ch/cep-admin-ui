@@ -8,11 +8,13 @@ import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid'
 import momentTimezonePlugin from '@fullcalendar/moment-timezone'
 import frLocale from '@fullcalendar/core/locales/fr'
 import adaptivePlugin from '@fullcalendar/adaptive'
-import { DATE_FORMAT_SWISS_FRENCH } from '../constants/constants'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faRefresh } from '@fortawesome/pro-solid-svg-icons'
 
+import { DATE_FORMAT_SWISS_FRENCH } from '../constants/constants'
 import { Event } from './Event'
 
-export const Calendar = ({ resources, events, calendarRef }) => {
+export const Calendar = ({ resources, events, calendarRef, refreshCallback }) => {
     const [selectedEvent, setSelectedEvent] = useState(null)
 
     return (
@@ -33,8 +35,15 @@ export const Calendar = ({ resources, events, calendarRef }) => {
                 height="100%"
                 schedulerLicenseKey="CC-Attribution-NonCommercial-NoDerivatives"
                 initialView="dayGridWeek" // TODO order by salle ?
+                customButtons={{
+                    myCustomButton: {
+                        text: <FontAwesomeIcon icon={faRefresh} />,
+                        click: refreshCallback,
+                        hint: 'Rafraîchir',
+                    },
+                }}
                 headerToolbar={{
-                    left: 'today prev,next',
+                    left: 'today prev,next myCustomButton',
                     center: 'title',
                     right: 'dayGridDay,dayGridWeek,dayGridMonth listWeek,listMonth resourceTimeGridDay,resourceTimeGridWeek resourceTimeline,resourceTimelineWorkWeek',
                 }}
