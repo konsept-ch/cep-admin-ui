@@ -4,7 +4,7 @@
 FROM node:16.13 as build-deps
 WORKDIR /usr/src/app
 COPY ["package.json", "package-lock.json*", "./"]
-RUN npm ci
+RUN npm install
 COPY . .
 RUN npm run build
 
