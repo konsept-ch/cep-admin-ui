@@ -3,8 +3,8 @@
 # Stage 1 - the build process
 FROM node:16.13 as build-deps
 WORKDIR /usr/src/app
-COPY ["package.json", "package-lock.json*", "./"]
-RUN npm install
+COPY ["package.json", "package-lock.json*", ".npmrc", "./"]
+RUN npm ci
 COPY . .
 RUN npm run build
 
