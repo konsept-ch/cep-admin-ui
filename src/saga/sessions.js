@@ -1,7 +1,7 @@
 import { call, takeEvery, put } from 'redux-saga/effects'
 
-import { FETCH_SESSIONS, UPDATE_SESSION } from '../constants/sessions'
-import { setSessionsAction } from '../actions/sessions.ts'
+import { FETCH_SESSIONS, UPDATE_SESSION, FETCH_SESSIONS_LESSONS } from '../constants/sessions'
+import { setSessionsAction, setSessionsLessonsAction } from '../actions/sessions.ts'
 import { callService } from './sagaUtils'
 import { setGridLoadingAction } from '../actions/loading'
 
@@ -11,6 +11,12 @@ function* fetchSessionsSaga() {
 
     yield put(setSessionsAction({ sessions }))
     yield put(setGridLoadingAction({ loading: false }))
+}
+
+function* fetchSessionsLessonsSaga() {
+    const sessionsLessons = yield call(callService, { endpoint: 'sessions/lessons' })
+
+    yield put(setSessionsLessonsAction({ sessionsLessons }))
 }
 
 function* updateSessionSaga({ payload: { sessionId, areInvitesSent, sessionName, startDate } }) {
@@ -32,5 +38,6 @@ function* updateSessionSaga({ payload: { sessionId, areInvitesSent, sessionName,
 
 export function* sessionsSaga() {
     yield takeEvery(FETCH_SESSIONS, fetchSessionsSaga)
+    yield takeEvery(FETCH_SESSIONS_LESSONS, fetchSessionsLessonsSaga)
     yield takeEvery(UPDATE_SESSION, updateSessionSaga)
 }

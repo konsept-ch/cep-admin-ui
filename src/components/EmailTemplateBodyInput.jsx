@@ -4,6 +4,7 @@ import classNames from 'classnames'
 import { Editor, EditorState, Modifier, CompositeDecorator, ContentState, RichUtils } from 'draft-js'
 import { stateToHTML } from 'draft-js-export-html'
 import htmlToDraft from 'html-to-draftjs'
+import { draftVariables } from '../utils'
 
 const DecoratorStrategy = (entity) => (contentBlock, callback, contentState) => {
     contentBlock.findEntityRanges((character) => {
@@ -15,9 +16,11 @@ const DecoratorStrategy = (entity) => (contentBlock, callback, contentState) => 
 const DecoratorWrapper = (entity) => () => entity
 
 const entities = {
-    participantName: '[NOM_DU_PARTICIPANT]',
-    sessionName: '[NOM_DE_LA_SESSION]',
-    startingDate: '[DATE_DE_DÉBUT]',
+    participantName: draftVariables.PARTICIPANT_NOM,
+    sessionName: draftVariables.SESSION_NOM,
+    startingDate: draftVariables.SESSION_DATE_DÉBUT,
+    location: draftVariables.LIEU,
+    lessons: draftVariables.SESSION_RÉSUMÉ_DATES,
 }
 
 const decorator = new CompositeDecorator([
@@ -32,6 +35,14 @@ const decorator = new CompositeDecorator([
     {
         strategy: DecoratorStrategy(entities.startingDate),
         component: DecoratorWrapper(entities.startingDate),
+    },
+    {
+        strategy: DecoratorStrategy(entities.location),
+        component: DecoratorWrapper(entities.location),
+    },
+    {
+        strategy: DecoratorStrategy(entities.lessons),
+        component: DecoratorWrapper(entities.lessons),
     },
 ])
 

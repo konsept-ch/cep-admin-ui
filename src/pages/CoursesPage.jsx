@@ -133,7 +133,7 @@ export function CoursesPage() {
             headerName: 'Date de création',
             filter: 'agDateColumnFilter',
             headerTooltip: 'La date de création de la formation',
-            valueFormatter: ({ value }) => formatDate(value),
+            valueFormatter: ({ value }) => formatDate({ dateString: value }),
             type: 'rightAligned',
         },
         {
@@ -141,7 +141,7 @@ export function CoursesPage() {
             headerName: 'Dernière modification',
             filter: 'agDateColumnFilter',
             headerTooltip: 'La date de la dernière modification',
-            valueFormatter: ({ value }) => formatDate(value),
+            valueFormatter: ({ value }) => formatDate({ dateString: value }),
             type: 'rightAligned',
         },
     ]
@@ -152,7 +152,7 @@ export function CoursesPage() {
             name,
             code,
             restrictions: { hidden },
-            pricing: { price },
+            price,
             meta: { created, updated, duration },
             coordinator,
             responsible,
