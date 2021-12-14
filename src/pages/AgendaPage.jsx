@@ -54,7 +54,7 @@ export const AgendaPage = () => {
                     .replace(/\p{Diacritic}/gu, '')
             )
     )
-    console.log(events.filter(({ room }) => room == null))
+
     return (
         <>
             <Helmet>
@@ -66,9 +66,9 @@ export const AgendaPage = () => {
                         resources={searchedRooms.filter(({ id }) => selectedRoomIds[id])}
                         events={events.filter(
                             ({ room }) =>
-                                // (selectedRoomIds[room?.id] &&
-                                //     searchedRooms.some((searchedRoom) => searchedRoom.id === room?.id)) ||
-                                selectedRoomIds['no-room'] && room == null
+                                (selectedRoomIds[room?.id] &&
+                                    searchedRooms.some((searchedRoom) => searchedRoom.id === room?.id)) ||
+                                (selectedRoomIds['no-room'] && room == null)
                         )}
                         calendarRef={calendarRef}
                         refreshCallback={() => dispatch(fetchAgendaAction())}

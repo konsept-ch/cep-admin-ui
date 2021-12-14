@@ -31,10 +31,12 @@ export const Calendar = ({ resources, events, calendarRef, refreshCallback }) =>
                 aspectRatio={3}
                 allDaySlot={false}
                 locale={frLocale}
+                eventOrder={(eventA, eventB) =>
+                    eventA.room?.name < eventB.room?.name ? -1 : eventA.room?.name > eventB.room?.name ? 1 : 0
+                }
                 resources={resources.map((resource) => ({ ...resource, title: resource.name }))}
                 events={events.map((event) => ({ ...event, title: event.name, resourceId: event.room?.id }))}
                 timeZone="America/New_York"
-                resourceOrder="title"
                 resourceAreaHeaderContent="Salles"
                 height="100%"
                 schedulerLicenseKey="CC-Attribution-NonCommercial-NoDerivatives"
