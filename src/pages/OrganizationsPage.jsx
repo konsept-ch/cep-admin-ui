@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { fetchOrganizationsAction } from '../actions/organizations'
 import { organizationsSelector } from '../reducers'
 import { Grid } from '../components'
+import { Helmet } from 'react-helmet-async'
 
 export function OrganizationsPage() {
     const dispatch = useDispatch()
@@ -34,5 +35,12 @@ export function OrganizationsPage() {
         code,
     }))
 
-    return <Grid name="Organisations" columnDefs={columnDefs} rowData={rowData} />
+    return (
+        <>
+            <Helmet>
+                <title>Organisations - Former22</title>
+            </Helmet>
+            <Grid name="Organisations" columnDefs={columnDefs} rowData={rowData} />
+        </>
+    )
 }

@@ -6,6 +6,7 @@ import { fetchCoursesAction, updateCourseAction } from '../actions/courses.ts'
 import { fetchAdminsAction } from '../actions/users.ts'
 import { coursesSelector, adminsSelector } from '../reducers'
 import { formatDate } from '../utils'
+import { Helmet } from 'react-helmet-async'
 
 export function CoursesPage() {
     const dispatch = useDispatch()
@@ -179,6 +180,9 @@ export function CoursesPage() {
 
     return (
         <>
+            <Helmet>
+                <title>Formations - Former22</title>
+            </Helmet>
             <Grid
                 {...{
                     name: 'Formations',

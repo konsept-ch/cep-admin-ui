@@ -5,6 +5,7 @@ import { fetchSessionsAction, updateSessionAction } from '../actions/sessions.ts
 import { sessionsSelector } from '../reducers'
 import { Grid } from '../components'
 import { formatDate } from '../utils'
+import { Helmet } from 'react-helmet-async'
 
 export function SessionsPage() {
     const dispatch = useDispatch()
@@ -106,5 +107,12 @@ export function SessionsPage() {
         })
     )
 
-    return <Grid name="Sessions" columnDefs={columnDefs} rowData={rowData} />
+    return (
+        <>
+            <Helmet>
+                <title>Sessions - Former22</title>
+            </Helmet>
+            <Grid name="Sessions" columnDefs={columnDefs} rowData={rowData} />
+        </>
+    )
 }
