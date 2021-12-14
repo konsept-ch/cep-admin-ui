@@ -1,7 +1,6 @@
 .git
 .github
 .idea
-.npmrc
 .vscode
 node_modules
 build
