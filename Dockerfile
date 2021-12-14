@@ -1,9 +1,11 @@
+# syntax=docker/dockerfile:1
+
 # Stage 1 - the build process
-FROM node:16 as build-deps
+FROM node:16.13 as build-deps
 WORKDIR /usr/src/app
-COPY package.json package-lock.json ./
+COPY ["package.json", "package-lock.json*", "./"]
 RUN npm ci
-COPY . ./
+COPY . .
 RUN npm run build
 
 FROM nginx:1.21-alpine
