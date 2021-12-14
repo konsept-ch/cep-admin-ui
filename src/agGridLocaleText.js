@@ -12,7 +12,7 @@ export const localeText = {
 
     // for set filter
     selectAll: 'Sélectionner tous',
-    searchOoo: 'Rechercher ...',
+    searchOoo: 'Rechercher...',
     blanks: 'Vide',
 
     // for number filter and text filter

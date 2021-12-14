@@ -133,7 +133,7 @@ export const Grid = ({ name, ...gridProps }) => {
                             'chartRange',
                         ],
                         getRowNodeId: (data) => data.id,
-                        // localeText,
+                        localeText,
                         onGridReady: ({ api }) => setGridApi(api),
                         ...gridProps,
                     }}
