@@ -7,13 +7,13 @@ export const Event = ({ selectedEvent }) => (
         <dd>{selectedEvent.extendedProps.description}</dd>
 
         <dt>Salle :</dt>
-        <dd>{selectedEvent.extendedProps.room.name}</dd>
+        <dd>{selectedEvent.extendedProps.room?.name}</dd>
 
         <dt>Étage :</dt>
-        <dd>{selectedEvent.extendedProps.room.description}</dd>
+        <dd>{selectedEvent.extendedProps.room?.description}</dd>
 
         <dt>Capacité :</dt>
-        <dd>{selectedEvent.extendedProps.room.capacity}</dd>
+        <dd>{selectedEvent.extendedProps.room?.capacity}</dd>
 
         <dt>Temps</dt>
         <dd className="pl-3">

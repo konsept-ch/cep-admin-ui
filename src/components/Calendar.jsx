@@ -32,7 +32,7 @@ export const Calendar = ({ resources, events, calendarRef, refreshCallback }) =>
                 allDaySlot={false}
                 locale={frLocale}
                 resources={resources.map((resource) => ({ ...resource, title: resource.name }))}
-                events={events.map((event) => ({ ...event, title: event.name, resourceId: event.room.id }))}
+                events={events.map((event) => ({ ...event, title: event.name, resourceId: event.room?.id }))}
                 timeZone="America/New_York"
                 resourceOrder="title"
                 resourceAreaHeaderContent="Salles"
@@ -97,7 +97,7 @@ export const Calendar = ({ resources, events, calendarRef, refreshCallback }) =>
                 eventContent={(eventInfo) => (
                     <>
                         <b>
-                            <span className="event-content-room">{eventInfo.event._def.extendedProps.room.name}</span>|
+                            <span className="event-content-room">{eventInfo.event._def.extendedProps.room?.name}</span>|
                             {Intl.DateTimeFormat(DATE_FORMAT_SWISS_FRENCH, {
                                 hour: 'numeric',
                                 minute: 'numeric',

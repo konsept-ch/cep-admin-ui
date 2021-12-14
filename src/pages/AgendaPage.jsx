@@ -13,6 +13,7 @@ import { BulkSelect } from '../components/BulkSelect'
 import { ExpandController } from '../components/ExpandController'
 import { ROOM_TYPE_VIRTUAL } from '../constants/agenda'
 import { Helmet } from 'react-helmet-async'
+import { RoomCheckbox } from '../components/RoomCheckbox'
 
 export const AgendaPage = () => {
     const { rooms, events } = useSelector(roomsAndEventsSelector)
@@ -29,10 +30,10 @@ export const AgendaPage = () => {
     }, [dispatch])
 
     useEffect(() => {
-        if (Object.keys(selectedRoomIds).length === 0) {
+        if (Object.keys(selectedRoomIds).length <= 1) {
             const initialSelectedRoomIds = rooms.reduce(
                 (acc, { id, location }) => ({ ...acc, [id]: location?.name === 'CEP' }),
-                {}
+                { 'no-room': false }
             )
 
             setSelectedRoomIds(initialSelectedRoomIds)
@@ -53,7 +54,7 @@ export const AgendaPage = () => {
                     .replace(/\p{Diacritic}/gu, '')
             )
     )
-
+    console.log(events.filter(({ room }) => room == null))
     return (
         <>
             <Helmet>
@@ -65,8 +66,9 @@ export const AgendaPage = () => {
                         resources={searchedRooms.filter(({ id }) => selectedRoomIds[id])}
                         events={events.filter(
                             ({ room }) =>
-                                selectedRoomIds[room?.id] &&
-                                searchedRooms.some((searchedRoom) => searchedRoom.id === room?.id)
+                                // (selectedRoomIds[room?.id] &&
+                                //     searchedRooms.some((searchedRoom) => searchedRoom.id === room?.id)) ||
+                                selectedRoomIds['no-room'] && room == null
                         )}
                         calendarRef={calendarRef}
                         refreshCallback={() => dispatch(fetchAgendaAction())}
@@ -172,6 +174,13 @@ export const AgendaPage = () => {
                                                             groupName: 'Externes',
                                                         }}
                                                     />
+                                                    <RoomCheckbox
+                                                        roomName="Aucune salle"
+                                                        roomId="no-room"
+                                                        selectedRoomIds={selectedRoomIds}
+                                                        setSelectedRoomIds={setSelectedRoomIds}
+                                                    />
+
                                                     {/* <ul>
                                                     <li className="room-item">
                                                         <div className="room-name">No room</div>
