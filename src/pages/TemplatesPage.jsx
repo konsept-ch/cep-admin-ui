@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Select from 'react-select'
-import { ListGroup, Row, Col, Container, Button, FloatingLabel, Form, Badge, Modal } from 'react-bootstrap'
+import { ListGroup, Row, Col, Container, Button, FloatingLabel, Form, Badge } from 'react-bootstrap'
 import classNames from 'classnames'
 import { equals } from 'ramda'
 import { templatesSelector, templateForInvitesSelector } from '../reducers'

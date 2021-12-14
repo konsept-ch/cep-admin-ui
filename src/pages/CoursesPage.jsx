@@ -151,7 +151,7 @@ export function CoursesPage() {
             name,
             code,
             restrictions: { hidden },
-            pricing: { price },
+            price,
             meta: { created, updated, duration },
             cordinator,
             responsible,

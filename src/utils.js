@@ -47,11 +47,25 @@ export const getUniqueId = () => {
 
 export const inscriptionStatuses = Object.values(statuses)
 
-export const replacePlaceholders = ({ userFullName, sessionName, startDate, template: { body, emailSubject } }) => {
+export const draftVariables = {
+    NOM_DU_PARTICIPANT: '[NOM_DU_PARTICIPANT]',
+    NOM_DE_LA_SESSION: '[NOM_DE_LA_SESSION]',
+    DATE_DE_DÉBUT: '[DATE_DE_DÉBUT]',
+    LIEU: '[LIEU]',
+}
+
+export const replacePlaceholders = ({
+    userFullName,
+    sessionName,
+    startDate,
+    location,
+    template: { body, emailSubject },
+}) => {
     const placeholdersMapper = {
-        '[NOM_DU_PARTICIPANT]': userFullName,
-        '[NOM_DE_LA_SESSION]': sessionName,
-        '[DATE_DE_DÉBUT]': startDate,
+        [draftVariables.NOM_DU_PARTICIPANT]: userFullName,
+        [draftVariables.NOM_DE_LA_SESSION]: sessionName,
+        [draftVariables.DATE_DE_DÉBUT]: startDate,
+        [draftVariables.LIEU]: location,
     }
 
     let enrichedEmailContent = body

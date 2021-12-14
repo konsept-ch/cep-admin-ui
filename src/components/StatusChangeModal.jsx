@@ -3,7 +3,7 @@ import { Modal, Button, ListGroup, Alert, Spinner, Tooltip, OverlayTrigger } fro
 import { useSelector, useDispatch } from 'react-redux'
 import classNames from 'classnames'
 import { fetchParametersAction } from '../actions/parameters.ts'
-import { parametersSelector, loadingSelector } from '../reducers'
+import { parametersSelector, loadingSelector, sessionsSelector } from '../reducers'
 import { statusWarnings, replacePlaceholders, formatDate } from '../utils'
 import { EmailTemplateBodyInput } from './EmailTemplateBodyInput'
 
@@ -11,6 +11,7 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
     const [selectedTemplateData, setSelectedTemplateData] = useState(null)
     const [emailPreview, setEmailPreview] = useState({ emailContent: '', emailSubject: '' })
     const parameters = useSelector(parametersSelector)
+    const sessions = useSelector(sessionsSelector)
     const isSagaLoading = useSelector(loadingSelector)
     const dispatch = useDispatch()
 
@@ -21,12 +22,31 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
     const isEmailTemplateSelected = selectedTemplateData !== null && selectedTemplateData.templateId !== 'no-email'
 
     useEffect(() => {
+        const getSessionAddress = () => {
+            const currentSessionData = sessions.find(({ id }) => statusChangeData.session.id === id)
+            const sessionLocation = currentSessionData.location
+            const sessionAddress = sessionLocation?.address
+
+            const sessionAddressArray = [
+                sessionLocation?.name,
+                sessionAddress?.street1,
+                sessionAddress?.street2,
+                [sessionAddress?.postalCode, sessionAddress?.state].filter(Boolean).join(' '),
+                [sessionAddress?.city, sessionAddress?.country].filter(Boolean).join(', '),
+            ]
+
+            const location = sessionAddressArray.filter(Boolean).join('\n')
+
+            return location
+        }
+
         if (isEmailTemplateSelected) {
             const { emailContent, emailSubject } = replacePlaceholders({
                 userFullName: statusChangeData.user.name,
                 sessionName: statusChangeData.session.name,
                 startDate: formatDate(statusChangeData.session.restrictions.dates[0]),
                 template: selectedTemplateData,
+                location: getSessionAddress(),
             })
 
             setEmailPreview({ emailContent, emailSubject })
