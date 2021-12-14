@@ -1,38 +1,41 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Container, Button, Collapse, InputGroup, FormControl, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeftFromLine, faArrowRightToLine } from '@fortawesome/pro-solid-svg-icons'
 import { faFilterCircleXmark } from '@fortawesome/pro-light-svg-icons'
+
 import { Calendar } from '../components'
 import { fetchAgendaAction } from '../actions/agenda.ts'
 import { roomsAndEventsSelector } from '../reducers'
-
 import { RoomSelection } from '../components/RoomSelection'
 import { BulkSelect } from '../components/BulkSelect'
 import { ExpandController } from '../components/ExpandController'
+import { ROOM_TYPE_VIRTUAL } from '../constants/agenda'
 
 export const AgendaPage = () => {
     const { rooms, events } = useSelector(roomsAndEventsSelector)
     const [selectedRoomIds, setSelectedRoomIds] = useState({})
     const dispatch = useDispatch()
     const [isRoomSelectionExpanded, setRoomSelectionExpanded] = useState(true)
-    console.log(rooms) // to be deleted
     const [isRoomsExpanded, setRoomsExpanded] = useState(true)
     const [isInternalRoomsExpanded, setInternalRoomsExpanded] = useState(true)
     const [searchTerm, setSearchTerm] = useState('')
+    const calendarRef = useRef(null)
 
     useEffect(() => {
         dispatch(fetchAgendaAction())
     }, [dispatch])
 
     useEffect(() => {
-        const initialSelectedRoomIds = rooms.reduce(
-            (acc, { id, location }) => ({ ...acc, [id]: location?.name === 'CEP' }),
-            {}
-        )
+        if (Object.keys(selectedRoomIds).length === 0) {
+            const initialSelectedRoomIds = rooms.reduce(
+                (acc, { id, location }) => ({ ...acc, [id]: location?.name === 'CEP' }),
+                {}
+            )
 
-        setSelectedRoomIds(initialSelectedRoomIds)
+            setSelectedRoomIds(initialSelectedRoomIds)
+        }
     }, [rooms]) // called when rooms are fetched
 
     const handleSearch = (e) => setSearchTerm(e.target.value)
@@ -56,9 +59,12 @@ export const AgendaPage = () => {
                 <Calendar
                     resources={searchedRooms.filter(({ id }) => selectedRoomIds[id])}
                     events={events.filter(
-                        ({ room: { id } }) =>
-                            selectedRoomIds[id] && searchedRooms.some((searchedRoom) => searchedRoom.id === id)
+                        ({ room }) =>
+                            selectedRoomIds[room?.id] &&
+                            searchedRooms.some((searchedRoom) => searchedRoom.id === room?.id)
                     )}
+                    calendarRef={calendarRef}
+                    refreshCallback={() => dispatch(fetchAgendaAction())}
                 />
             </Container>
             <div className="d-flex">
@@ -117,7 +123,7 @@ export const AgendaPage = () => {
                                                             rooms: searchedRooms,
                                                             roomsFilter: ({ location }) =>
                                                                 location?.name === 'CEP' ||
-                                                                location?.name === 'CEP ZOOM',
+                                                                location?.name === ROOM_TYPE_VIRTUAL,
                                                             selectedRoomIds,
                                                             setSelectedRoomIds,
                                                         }}
@@ -142,7 +148,7 @@ export const AgendaPage = () => {
                                                                         selectedRoomIds,
                                                                         setSelectedRoomIds,
                                                                         roomsFilter: ({ location }) =>
-                                                                            location?.name === 'CEP ZOOM',
+                                                                            location?.name === ROOM_TYPE_VIRTUAL,
                                                                         groupName: 'Virtuelles',
                                                                     }}
                                                                 />
@@ -156,7 +162,8 @@ export const AgendaPage = () => {
                                                         selectedRoomIds,
                                                         setSelectedRoomIds,
                                                         roomsFilter: ({ location }) =>
-                                                            location?.name !== 'CEP' && location?.name !== 'CEP ZOOM',
+                                                            location?.name !== 'CEP' &&
+                                                            location?.name !== ROOM_TYPE_VIRTUAL,
                                                         groupName: 'Externes',
                                                     }}
                                                 />
@@ -173,6 +180,8 @@ export const AgendaPage = () => {
                     type="button"
                     onClick={() => {
                         setRoomSelectionExpanded(!isRoomSelectionExpanded)
+
+                        setTimeout(() => calendarRef.current.getApi().updateSize(), 350)
                     }}
                     aria-expanded="false"
                     aria-controls="collapseExample"

@@ -49,7 +49,7 @@ export function TemplatesPage() {
     }
 
     return (
-        <Container fluid className="templatesPage">
+        <Container fluid className="templates-page">
             <h1>Modèles</h1>
             <Row>
                 <Col>

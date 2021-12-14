@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { useSelector } from 'react-redux'
+import { loadingSelector } from '../reducers'
 import { Offcanvas } from 'react-bootstrap'
 import FullCalendar from '@fullcalendar/react'
 import listPlugin from '@fullcalendar/list'
@@ -8,16 +10,21 @@ import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid'
 import momentTimezonePlugin from '@fullcalendar/moment-timezone'
 import frLocale from '@fullcalendar/core/locales/fr'
 import adaptivePlugin from '@fullcalendar/adaptive'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faRefresh } from '@fortawesome/pro-solid-svg-icons'
+
 import { DATE_FORMAT_SWISS_FRENCH } from '../constants/constants'
-
 import { Event } from './Event'
+import classNames from 'classnames'
 
-export const Calendar = ({ resources, events }) => {
+export const Calendar = ({ resources, events, calendarRef, refreshCallback }) => {
     const [selectedEvent, setSelectedEvent] = useState(null)
+    const isSagaLoading = useSelector(loadingSelector)
 
     return (
         <>
             <FullCalendar
+                ref={calendarRef}
                 nowIndicator
                 editable
                 navLinks
@@ -32,8 +39,22 @@ export const Calendar = ({ resources, events }) => {
                 height="100%"
                 schedulerLicenseKey="CC-Attribution-NonCommercial-NoDerivatives"
                 initialView="dayGridWeek" // TODO order by salle ?
+                customButtons={{
+                    myCustomButton: {
+                        text: (
+                            <div>
+                                <FontAwesomeIcon
+                                    className={classNames('refresh-agenda', { 'is-loader': isSagaLoading })}
+                                    icon={faRefresh}
+                                />
+                            </div>
+                        ),
+                        click: refreshCallback,
+                        hint: 'Rafraîchir',
+                    },
+                }}
                 headerToolbar={{
-                    left: 'today prev,next',
+                    left: 'today prev,next myCustomButton',
                     center: 'title',
                     right: 'dayGridDay,dayGridWeek,dayGridMonth listWeek,listMonth resourceTimeGridDay,resourceTimeGridWeek resourceTimeline,resourceTimelineWorkWeek',
                 }}

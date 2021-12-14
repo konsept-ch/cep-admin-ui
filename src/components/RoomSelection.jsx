@@ -25,6 +25,7 @@ export const RoomSelection = ({ rooms, selectedRoomIds, setSelectedRoomIds, room
                     <ul>
                         {rooms.filter(roomsFilter).map(({ name, id }) => (
                             <RoomCheckbox
+                                key={id}
                                 name={name}
                                 id={id}
                                 selectedRoomIds={selectedRoomIds}

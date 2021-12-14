@@ -59,7 +59,7 @@ export function CoursesPage() {
             // TODO format "CHF 1234"
         },
         {
-            field: 'cordinator',
+            field: 'coordinator',
             headerName: 'CF (coordinateur)',
             filter: 'agTextColumnFilter',
             headerTooltip: 'Le coordinateur de la formation',
@@ -153,7 +153,7 @@ export function CoursesPage() {
             restrictions: { hidden },
             price,
             meta: { created, updated, duration },
-            cordinator,
+            coordinator,
             responsible,
             typeStage,
             teachingMethod,
@@ -164,7 +164,7 @@ export function CoursesPage() {
             code,
             duration,
             price,
-            cordinator,
+            coordinator,
             responsible,
             creationDate: created,
             lastModifiedDate: updated,
