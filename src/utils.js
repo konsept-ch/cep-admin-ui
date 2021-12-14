@@ -48,10 +48,11 @@ export const getUniqueId = () => {
 export const inscriptionStatuses = Object.values(statuses)
 
 export const draftVariables = {
-    NOM_DU_PARTICIPANT: '[NOM_DU_PARTICIPANT]',
-    NOM_DE_LA_SESSION: '[NOM_DE_LA_SESSION]',
-    DATE_DE_DÉBUT: '[DATE_DE_DÉBUT]',
+    PARTICIPANT_NOM: '[PARTICIPANT_NOM]',
+    SESSION_NOM: '[SESSION_NOM]',
+    SESSION_DATE_DÉBUT: '[SESSION_DATE_DÉBUT]',
     LIEU: '[LIEU]',
+    SESSION_RÉSUMÉ_DATES: '[SESSION_RÉSUMÉ_DATES]',
 }
 
 export const replacePlaceholders = ({
@@ -59,13 +60,15 @@ export const replacePlaceholders = ({
     sessionName,
     startDate,
     location,
+    lessons,
     template: { body, emailSubject },
 }) => {
     const placeholdersMapper = {
-        [draftVariables.NOM_DU_PARTICIPANT]: userFullName,
-        [draftVariables.NOM_DE_LA_SESSION]: sessionName,
-        [draftVariables.DATE_DE_DÉBUT]: startDate,
+        [draftVariables.PARTICIPANT_NOM]: userFullName,
+        [draftVariables.SESSION_NOM]: sessionName,
+        [draftVariables.SESSION_DATE_DÉBUT]: startDate,
         [draftVariables.LIEU]: location,
+        [draftVariables.SESSION_RÉSUMÉ_DATES]: lessons,
     }
 
     let enrichedEmailContent = body
@@ -85,7 +88,7 @@ export const replacePlaceholders = ({
     return { emailContent: enrichedEmailContent, emailSubject: enrichedEmailSubject }
 }
 
-export const formatDate = (dateString, isTimeVisible) => {
+export const formatDate = ({ dateString, isTimeVisible, isDateVisible }) => {
     const date = new Date(dateString)
     const getDay = () => (date.getDate() < 10 ? `0${date.getDate()}` : date.getDate())
     const getMonth = () => {
@@ -95,7 +98,8 @@ export const formatDate = (dateString, isTimeVisible) => {
     const getMinutes = () => {
         return date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()
     }
-    const getTime = () => (isTimeVisible === true ? `, ${date.getHours()}h${getMinutes()}` : '')
+    const getDate = () => (isDateVisible === true ? `${getDay()}.${getMonth()}.${date.getFullYear()}` : null)
+    const getTime = () => (isTimeVisible === true ? `${date.getHours()}h${getMinutes()}` : null)
 
-    return `${getDay()}.${getMonth()}.${date.getFullYear()}${getTime()}`
+    return [getDate(), getTime()].filter(Boolean).join(', ')
 }

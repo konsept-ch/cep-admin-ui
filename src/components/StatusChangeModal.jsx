@@ -3,7 +3,7 @@ import { Modal, Button, ListGroup, Alert, Spinner, Tooltip, OverlayTrigger } fro
 import { useSelector, useDispatch } from 'react-redux'
 import classNames from 'classnames'
 import { fetchParametersAction } from '../actions/parameters.ts'
-import { parametersSelector, loadingSelector, sessionsSelector } from '../reducers'
+import { parametersSelector, loadingSelector, sessionsSelector, sessionLessonsSelector } from '../reducers'
 import { statusWarnings, replacePlaceholders, formatDate } from '../utils'
 import { EmailTemplateBodyInput } from './EmailTemplateBodyInput'
 
@@ -12,6 +12,7 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
     const [emailPreview, setEmailPreview] = useState({ emailContent: '', emailSubject: '' })
     const parameters = useSelector(parametersSelector)
     const sessions = useSelector(sessionsSelector)
+    const sessionLessons = useSelector(sessionLessonsSelector)({ sessionId: statusChangeData.session.id })
     const isSagaLoading = useSelector(loadingSelector)
     const dispatch = useDispatch()
 
@@ -40,13 +41,32 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
             return location
         }
 
+        const getSessionLessons = () => {
+            // TODO add another format for multiday lessons :
+            // 15.12.2022 13h30 - 16.12.2022 15h30
+            const lessonsResume = sessionLessons.map(({ start, end }) =>
+                [
+                    formatDate({ dateString: start, isDateVisible: true }),
+                    [
+                        formatDate({ dateString: start, isTimeVisible: true }),
+                        formatDate({ dateString: end, isTimeVisible: true }),
+                    ].join('-'),
+                ].join(', ')
+            )
+
+            const lessons = `<code>${lessonsResume.join('\n')}</code>`
+
+            return lessons
+        }
+
         if (isEmailTemplateSelected) {
             const { emailContent, emailSubject } = replacePlaceholders({
                 userFullName: statusChangeData.user.name,
                 sessionName: statusChangeData.session.name,
-                startDate: formatDate(statusChangeData.session.restrictions.dates[0]),
-                template: selectedTemplateData,
+                startDate: formatDate({ dateString: statusChangeData.session.restrictions.dates[0] }),
                 location: getSessionAddress(),
+                lessons: getSessionLessons(),
+                template: selectedTemplateData,
             })
 
             setEmailPreview({ emailContent, emailSubject })
@@ -80,7 +100,7 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                     <h6>Détails de l'inscription</h6>
                     <dl>
                         <dt>Date d'inscription</dt>
-                        <dd>{formatDate(statusChangeData.date, true)}</dd>
+                        <dd>{formatDate({ dateString: statusChangeData.date, isTimeVisible: true })}</dd>
                         <dt>Statut actuel de l'inscription</dt>
                         <dd>{statusChangeData.status}</dd>
                     </dl>
@@ -100,7 +120,7 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                         <dt>Nom de la session</dt>
                         <dd>{statusChangeData.session.name}</dd>
                         <dt>Date de début</dt>
-                        <dd>{formatDate(statusChangeData.session.restrictions.dates[0])}</dd>
+                        <dd>{formatDate({ dateString: statusChangeData.session.restrictions.dates[0] })}</dd>
                         <dt>Statut de la session</dt>
                         <dd>(à faire)</dd>
                     </dl>

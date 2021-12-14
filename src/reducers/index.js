@@ -26,6 +26,8 @@ export const rootReducer = combineReducers({
 export const roomsAndEventsSelector = (state) => agendaSelectors.roomsAndEventsSelector(state.agenda)
 export const inscriptionsSelector = (state) => inscriptionsSelectors.inscriptionsSelector(state.inscriptions)
 export const sessionsSelector = (state) => sessionsSelectors.sessionsSelector(state.sessions)
+export const sessionsLessonsSelector = (state) => sessionsSelectors.sessionsLessonsSelector(state.sessions)
+export const sessionLessonsSelector = (state) => sessionsSelectors.sessionLessonsSelector(state.sessions)
 export const parametersSelector = (state) => parametersSelectors.parametersSelector(state.parameters)
 export const loadingSelector = (state) => loadingSelectors.loadingSelector(state.loading)
 export const gridLoadingSelector = (state) => loadingSelectors.gridLoadingSelector(state.loading)

@@ -52,7 +52,7 @@ export function InscriptionsPage() {
             filter: 'agDateColumnFilter',
             headerTooltip: 'La date de début de la session',
             sort: 'asc',
-            valueFormatter: ({ value }) => formatDate(value),
+            valueFormatter: ({ value }) => formatDate({ dateString: value }),
             type: 'rightAligned',
         },
     ]

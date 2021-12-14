@@ -20,7 +20,7 @@ export function* callService({ endpoint, options = {} }) {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ date: formatDate(new Date()), errorDescription: resultText }),
+                body: JSON.stringify({ date: formatDate({ dateString: new Date() }), errorDescription: resultText }),
             })
 
             return
