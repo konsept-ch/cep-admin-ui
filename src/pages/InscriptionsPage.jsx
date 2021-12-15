@@ -4,6 +4,7 @@ import { Grid, StatusChangeModal } from '../components'
 import { fetchInscriptionsAction, updateInscriptionStatusAction } from '../actions/inscriptions.ts'
 import { inscriptionsSelector } from '../reducers'
 import { inscriptionStatuses, formatDate, statuses } from '../utils'
+import { Helmet } from 'react-helmet-async'
 
 export function InscriptionsPage() {
     const dispatch = useDispatch()
@@ -71,6 +72,9 @@ export function InscriptionsPage() {
 
     return (
         <>
+            <Helmet>
+                <title>Inscriptions - Former22</title>
+            </Helmet>
             <Grid
                 name="Inscriptions"
                 columnDefs={columnDefs}

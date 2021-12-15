@@ -8,23 +8,23 @@ const onRoomCheckboxClick =
     ({ target }) =>
         setSelectedRoomIds({ ...currentlySelectedRooms, [id]: target.checked })
 
-export const RoomCheckbox = ({ name, id, selectedRoomIds, setSelectedRoomIds }) => (
-    <li key={id} className={classNames('room-item', { 'is-visible': selectedRoomIds[id] === true })}>
+export const RoomCheckbox = ({ roomName, roomId, selectedRoomIds, setSelectedRoomIds }) => (
+    <li key={roomId} className={classNames('room-item', { 'is-visible': selectedRoomIds[roomId] === true })}>
         <Form.Check
             type="checkbox"
-            checked={selectedRoomIds[id] === true}
-            id={id}
+            checked={selectedRoomIds[roomId] === true}
+            id={roomId}
             label={
                 <>
-                    {selectedRoomIds[id] === true ? (
+                    {selectedRoomIds[roomId] === true ? (
                         <FontAwesomeIcon icon={faEye} />
                     ) : (
                         <FontAwesomeIcon icon={faEyeSlash} />
                     )}{' '}
-                    <div className="room-name">{name}</div>
+                    <div className="room-name">{roomName}</div>
                 </>
             }
-            onChange={onRoomCheckboxClick({ currentlySelectedRooms: selectedRoomIds, id, setSelectedRoomIds })}
+            onChange={onRoomCheckboxClick({ currentlySelectedRooms: selectedRoomIds, id: roomId, setSelectedRoomIds })}
         />
     </li>
 )
