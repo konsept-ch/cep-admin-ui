@@ -53,6 +53,8 @@ export const draftVariables = {
     SESSION_DATE_DÉBUT: '[SESSION_DATE_DÉBUT]',
     LIEU: '[LIEU]',
     SESSION_RÉSUMÉ_DATES: '[SESSION_RÉSUMÉ_DATES]',
+    PARTICIPANT_CIVILITÉ: '[PARTICIPANT_CIVILITÉ]',
+    INSCRIPTION_DATE: '[INSCRIPTION_DATE]',
 }
 
 export const replacePlaceholders = ({

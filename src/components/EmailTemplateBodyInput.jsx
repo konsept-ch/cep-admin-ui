@@ -21,6 +21,8 @@ const entities = {
     startingDate: draftVariables.SESSION_DATE_DÉBUT,
     location: draftVariables.LIEU,
     lessons: draftVariables.SESSION_RÉSUMÉ_DATES,
+    civility: draftVariables.PARTICIPANT_CIVILITÉ,
+    inscriptionDate: draftVariables.INSCRIPTION_DATE,
 }
 
 const decorator = new CompositeDecorator([
@@ -43,6 +45,14 @@ const decorator = new CompositeDecorator([
     {
         strategy: DecoratorStrategy(entities.lessons),
         component: DecoratorWrapper(entities.lessons),
+    },
+    {
+        strategy: DecoratorStrategy(entities.civility),
+        component: DecoratorWrapper(entities.civility),
+    },
+    {
+        strategy: DecoratorStrategy(entities.inscriptionDate),
+        component: DecoratorWrapper(entities.inscriptionDate),
     },
 ])
 
