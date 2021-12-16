@@ -26,25 +26,38 @@ export function SessionsPage() {
             field: 'code',
             headerName: 'Code',
             filter: 'agTextColumnFilter',
-            headerTooltip: 'Le code de la formation',
+            headerTooltip: 'Le code de la session',
         },
         {
             field: 'duration',
             headerName: 'Durée',
             filter: 'agNumberColumnFilter',
-            headerTooltip: 'La durée de la formation',
+            headerTooltip: 'La durée de la session',
         },
         {
             field: 'price',
             headerName: 'Coût',
             filter: 'agNumberColumnFilter',
-            headerTooltip: 'Le prix de la formation',
+            headerTooltip: 'Le prix de la session',
+        },
+        {
+            field: 'quotaDays',
+            headerName: 'Jours de quota',
+            filter: 'agNumberColumnFilter',
+            headerTooltip: 'Les jours de quota de la session',
+        },
+        {
+            field: 'isUsedForQuota',
+            headerName: 'Utilisé pour quotas',
+            filter: 'agSetColumnFilter',
+            headerTooltip: 'Les quotas de la session',
+            valueGetter: ({ data: { isUsedForQuota } }) => (isUsedForQuota ? 'Utilisé' : 'Non-utilisé'),
         },
         {
             field: 'creationDate',
             headerName: 'Date de création',
             filter: 'agDateColumnFilter',
-            headerTooltip: 'La date de création de la formation',
+            headerTooltip: 'La date de création de la session',
             valueFormatter: ({ value }) => formatDate({ dateString: value }),
             type: 'rightAligned',
         },
@@ -60,7 +73,7 @@ export function SessionsPage() {
             field: 'hidden',
             headerName: 'Visibilité',
             filter: 'agSetColumnFilter',
-            headerTooltip: 'Est-ce que la formation est cachée',
+            headerTooltip: 'Est-ce que la session est cachée',
             valueGetter: ({ data: { hidden } }) => (hidden ? 'Cachée' : 'Visible'),
         },
         {
@@ -93,6 +106,7 @@ export function SessionsPage() {
             pricing: { price },
             meta: { created, updated, duration },
             areInvitesSent,
+            quotas: { days: quotaDays, used: isUsedForQuota },
         }) => ({
             id,
             name,
@@ -104,6 +118,8 @@ export function SessionsPage() {
             hidden,
             invited: areInvitesSent,
             startDate: dates[0],
+            quotaDays,
+            isUsedForQuota,
         })
     )
 
