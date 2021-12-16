@@ -50,6 +50,7 @@ export function CoursesPage() {
             filter: 'agNumberColumnFilter',
             headerTooltip: 'La durée de la formation',
             width: 100,
+            type: 'numericColumn',
         },
         {
             field: 'price',
@@ -57,6 +58,7 @@ export function CoursesPage() {
             filter: 'agNumberColumnFilter',
             headerTooltip: 'Le prix de la formation',
             width: 100,
+            type: 'numericColumn',
             // TODO format "CHF 1234"
         },
         {
@@ -134,7 +136,7 @@ export function CoursesPage() {
             filter: 'agDateColumnFilter',
             headerTooltip: 'La date de création de la formation',
             valueFormatter: ({ value }) => formatDate({ dateString: value }),
-            type: 'rightAligned',
+            type: 'numericColumn',
         },
         {
             field: 'lastModifiedDate',
@@ -142,7 +144,7 @@ export function CoursesPage() {
             filter: 'agDateColumnFilter',
             headerTooltip: 'La date de la dernière modification',
             valueFormatter: ({ value }) => formatDate({ dateString: value }),
-            type: 'rightAligned',
+            type: 'numericColumn',
         },
     ]
 

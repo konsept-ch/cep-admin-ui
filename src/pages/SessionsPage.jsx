@@ -33,18 +33,21 @@ export function SessionsPage() {
             headerName: 'Durée',
             filter: 'agNumberColumnFilter',
             headerTooltip: 'La durée de la session',
+            type: 'numericColumn',
         },
         {
             field: 'price',
             headerName: 'Coût',
             filter: 'agNumberColumnFilter',
             headerTooltip: 'Le prix de la session',
+            type: 'numericColumn',
         },
         {
             field: 'quotaDays',
             headerName: 'Jours de quota',
             filter: 'agNumberColumnFilter',
             headerTooltip: 'Les jours de quota de la session',
+            type: 'numericColumn',
         },
         {
             field: 'isUsedForQuota',
@@ -59,7 +62,7 @@ export function SessionsPage() {
             filter: 'agDateColumnFilter',
             headerTooltip: 'La date de création de la session',
             valueFormatter: ({ value }) => formatDate({ dateString: value }),
-            type: 'rightAligned',
+            type: 'numericColumn',
         },
         {
             field: 'lastModifiedDate',
@@ -67,7 +70,7 @@ export function SessionsPage() {
             filter: 'agDateColumnFilter',
             headerTooltip: 'La date de la dernière modification',
             valueFormatter: ({ value }) => formatDate({ dateString: value }),
-            type: 'rightAligned',
+            type: 'numericColumn',
         },
         {
             field: 'hidden',

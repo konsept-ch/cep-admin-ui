@@ -54,7 +54,7 @@ export function InscriptionsPage() {
             headerTooltip: 'La date de début de la session',
             sort: 'asc',
             valueFormatter: ({ value }) => formatDate({ dateString: value }),
-            type: 'rightAligned',
+            type: 'numericColumn',
         },
     ]
 
