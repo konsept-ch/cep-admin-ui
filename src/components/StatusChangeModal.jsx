@@ -66,6 +66,7 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                 startDate: formatDate({ dateString: statusChangeData.session.restrictions.dates[0] }),
                 location: getSessionAddress(),
                 lessons: getSessionLessons(),
+                inscriptionDate: formatDate({ dateString: statusChangeData.date, isDateVisible: true }),
                 template: selectedTemplateData,
             })
 
@@ -100,7 +101,7 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                     <h6>Détails de l'inscription</h6>
                     <dl>
                         <dt>Date d'inscription</dt>
-                        <dd>{formatDate({ dateString: statusChangeData.date, isTimeVisible: true })}</dd>
+                        <dd>{formatDate({ dateString: statusChangeData.date, isDateVisible: true })}</dd>
                         <dt>Statut actuel de l'inscription</dt>
                         <dd>{statusChangeData.status}</dd>
                     </dl>

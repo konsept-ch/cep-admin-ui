@@ -63,6 +63,7 @@ export const replacePlaceholders = ({
     startDate,
     location,
     lessons,
+    inscriptionDate,
     template: { body, emailSubject },
 }) => {
     const placeholdersMapper = {
@@ -71,6 +72,7 @@ export const replacePlaceholders = ({
         [draftVariables.SESSION_DATE_DÉBUT]: startDate,
         [draftVariables.LIEU]: location,
         [draftVariables.SESSION_RÉSUMÉ_DATES]: lessons,
+        [draftVariables.INSCRIPTION_DATE]: inscriptionDate,
     }
 
     let enrichedEmailContent = body
