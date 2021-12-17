@@ -4,7 +4,12 @@ import { formatDate } from '../utils'
 
 export function* callService({ endpoint, options = {} }) {
     try {
-        const result = yield fetch(`${MIDDLEWARE_URL}/${endpoint}`, options)
+        const result = yield fetch(`${MIDDLEWARE_URL}/${endpoint}`, {
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+            },
+            ...options,
+        })
 
         if (result.status !== 200) {
             const resultText = yield result.text()
@@ -19,6 +24,7 @@ export function* callService({ endpoint, options = {} }) {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
                 },
                 body: JSON.stringify({ date: formatDate({ dateString: new Date() }), errorDescription: resultText }),
             })
