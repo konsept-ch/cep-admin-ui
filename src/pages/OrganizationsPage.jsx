@@ -27,20 +27,63 @@ export function OrganizationsPage() {
             filter: 'agTextColumnFilter',
             headerTooltip: 'Le code de la organisation',
         },
+        {
+            field: 'type',
+            headerName: 'Type',
+            filter: 'agSetColumnFilter',
+            headerTooltip: 'Le type de la organisation',
+        },
     ]
 
-    const rowData = organizations?.map(({ id, name, code }) => ({
-        id,
-        name,
-        code,
-    }))
+    const flattenOrganizations = ({ id, name, code, type, children }, parentName) =>
+        [
+            {
+                id,
+                name,
+                code,
+                type,
+                orgHierarchy: parentName ? [...parentName, name] : [name],
+            },
+            ...(children?.length > 0
+                ? children.flatMap((childOrg) =>
+                      flattenOrganizations(childOrg, parentName ? [...parentName, name] : [name])
+                  )
+                : [false]),
+            ,
+        ].filter(Boolean)
+
+    const rowData = organizations.flatMap((organization) => flattenOrganizations(organization))
 
     return (
         <>
             <Helmet>
                 <title>Organisations - Former22</title>
             </Helmet>
-            <Grid name="Organisations" columnDefs={columnDefs} rowData={rowData} />
+            <Grid
+                name="Organisations"
+                columnDefs={columnDefs}
+                rowData={rowData}
+                treeData
+                getDataPath={({ orgHierarchy }) => orgHierarchy}
+                groupSelectsChildren={false} // groupSelectsChildren does not work with tree data
+                groupDisplayType="singleColumn" //you cannot mix groupMultiAutoColumn with treeData, only one column can be used to display groups when doing tree data
+                defaultColDef={{
+                    enableValue: true,
+                    enablePivot: true,
+                    enableRowGroup: true,
+                    resizable: true,
+                    sortable: true,
+                    filter: true,
+                    aggFunc: false,
+                }}
+                autoGroupColumnDef={{
+                    headerName: 'Hiérarchie des organisations',
+                    minWidth: 650,
+                    cellRendererParams: {
+                        suppressCount: true,
+                    },
+                }}
+            />
         </>
     )
 }
