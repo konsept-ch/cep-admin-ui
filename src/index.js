@@ -1,7 +1,7 @@
 import { StrictMode } from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
-import { BrowserRouter, Switch, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import 'ag-grid-enterprise'
 
 import { store } from './store'
@@ -14,11 +14,9 @@ render(
     <StrictMode>
         <Provider store={store}>
             <BrowserRouter basename={process.env.PUBLIC_URL}>
-                <Switch>
-                    <Route path="*">
-                        <App />
-                    </Route>
-                </Switch>
+                <Routes>
+                    <Route path="*" element={<App />} />
+                </Routes>
             </BrowserRouter>
         </Provider>
     </StrictMode>,

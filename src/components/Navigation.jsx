@@ -1,4 +1,4 @@
-import { useHistory, useLocation } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { Nav, Navbar, Container, NavDropdown } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -27,12 +27,12 @@ import {
 } from '../constants/constants'
 
 export const Navigation = () => {
-    const history = useHistory()
+    const navigate = useNavigate()
     const location = useLocation()
 
     const goTo = (to) => (event) => {
         event.preventDefault()
-        history.push(to)
+        navigate(to)
     }
 
     return (
