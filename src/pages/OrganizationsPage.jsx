@@ -20,6 +20,7 @@ export function OrganizationsPage() {
             headerName: 'Titre de la organisation',
             filter: 'agTextColumnFilter',
             headerTooltip: 'Le nom de la organisation',
+            hide: true,
         },
         {
             field: 'code',
@@ -83,6 +84,8 @@ export function OrganizationsPage() {
                         suppressCount: true,
                     },
                 }}
+                groupDefaultExpanded={1}
+                groupIncludeFooter={false}
             />
         </>
     )
