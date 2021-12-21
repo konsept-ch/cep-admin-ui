@@ -55,7 +55,6 @@ export function OrganizationsPage() {
                       flattenOrganizations(childOrg, parentName ? [...parentName, name] : [name])
                   )
                 : [false]),
-            ,
         ].filter(Boolean)
 
     const rowData = organizations.flatMap((organization) => flattenOrganizations(organization))
