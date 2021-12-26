@@ -34,6 +34,7 @@ export function TemplatesPage() {
         description: '',
         body: '',
         emailSubject: '',
+        smsBody: '',
         statuses: inscriptionStatuses.map((current) => ({ value: current, label: current })),
         templateId: getUniqueId(),
         isUsedForSessionInvites: false,
@@ -69,6 +70,7 @@ export function TemplatesPage() {
                                         templateId,
                                         isUsedForSessionInvites,
                                         emailSubject,
+                                        smsBody,
                                     }) => (
                                         <ListGroup.Item
                                             key={templateId}
@@ -81,6 +83,7 @@ export function TemplatesPage() {
                                                                   title,
                                                                   description,
                                                                   emailSubject,
+                                                                  smsBody,
                                                                   body,
                                                                   statuses,
                                                                   templateId,
@@ -91,6 +94,7 @@ export function TemplatesPage() {
                                                           title,
                                                           description,
                                                           emailSubject,
+                                                          smsBody,
                                                           body,
                                                           statuses,
                                                           templateId,
@@ -173,6 +177,19 @@ export function TemplatesPage() {
                                         value: selectedTemplateData.emailSubject,
                                         templateId: selectedTemplateData.templateId,
                                     }}
+                                    shouldHaveVariables
+                                />
+                                <label>Corps de le SMS :</label>
+                                <EmailTemplateBodyInput
+                                    className="email-body-input"
+                                    onChange={(value) =>
+                                        setSelectedTemplateData({ ...selectedTemplateData, smsBody: value })
+                                    }
+                                    value={{
+                                        value: selectedTemplateData.smsBody,
+                                        templateId: selectedTemplateData.templateId,
+                                    }}
+                                    shouldHandleKeyCommand
                                     shouldHaveVariables
                                 />
                                 <label>Corps de l'e-mail :</label>
