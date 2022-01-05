@@ -91,6 +91,27 @@ export function InscriptionsPage() {
                         return isSession5daysAfterInscription && isInscriptionIncoming
                     },
                 }}
+                getContextMenuItems={({ node: { data } }) => [
+                    {
+                        name: 'Envoyer e-mail',
+                        action: () => {
+                            setStatusChangeData({
+                                ...inscriptions.find(({ id }) => id === data.id),
+                                newStatus: data.status,
+                            })
+                        },
+                    },
+                    'separator',
+                    'autoSizeAll',
+                    'expandAll',
+                    'contractAll',
+                    'copy',
+                    'copyWithHeaders',
+                    'paste',
+                    'resetColumns',
+                    'export',
+                    'chartRange',
+                ]}
             />
 
             {statusChangeData ? (
