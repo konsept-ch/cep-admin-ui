@@ -35,4 +35,5 @@ export const coursesSelector = (state) => coursesSelectors.coursesSelector(state
 export const adminsSelector = (state) => usersSelectors.adminsSelector(state.users)
 export const templatesSelector = (state) => templatesSelectors.templatesSelector(state.templates)
 export const templateForInvitesSelector = (state) => templatesSelectors.templateForInvitesSelector(state.templates)
+export const templatePreviewsSelector = (state) => templatesSelectors.templatePreviewsSelector(state.templates)
 export const organizationsSelector = (state) => organizationsSelectors.organizationsSelector(state.organizations)

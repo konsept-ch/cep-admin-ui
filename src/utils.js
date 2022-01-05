@@ -64,6 +64,7 @@ export const replacePlaceholders = ({
     location,
     lessons,
     inscriptionDate,
+    civility,
     template: { body, emailSubject },
 }) => {
     const placeholdersMapper = {
@@ -72,6 +73,7 @@ export const replacePlaceholders = ({
         [draftVariables.SESSION_DATE_DÉBUT]: startDate,
         [draftVariables.LIEU]: location,
         [draftVariables.SESSION_RÉSUMÉ_DATES]: lessons,
+        [draftVariables.PARTICIPANT_CIVILITÉ]: civility,
         [draftVariables.INSCRIPTION_DATE]: inscriptionDate,
     }
 

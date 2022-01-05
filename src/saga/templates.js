@@ -1,7 +1,13 @@
 import { call, takeEvery, put } from 'redux-saga/effects'
 
-import { FETCH_TEMPLATES, UPDATE_TEMPLATE, ADD_TEMPLATE, DELETE_TEMPLATE } from '../constants/templates'
-import { setTemplatesAction, fetchTemplatesAction } from '../actions/templates.ts'
+import {
+    FETCH_TEMPLATES,
+    UPDATE_TEMPLATE,
+    ADD_TEMPLATE,
+    DELETE_TEMPLATE,
+    FETCH_TEMPLATE_PREVIEWS,
+} from '../constants/templates'
+import { setTemplatesAction, fetchTemplatesAction, setTemplatePreviewsAction } from '../actions/templates.ts'
 import { callService } from './sagaUtils'
 import { setLoadingAction } from '../actions/loading'
 
@@ -10,6 +16,23 @@ function* fetchTemplatesSaga() {
     const templates = yield call(callService, { endpoint: 'templates' })
 
     yield put(setTemplatesAction({ templates }))
+    yield put(setLoadingAction({ loading: false }))
+}
+
+function* fetchTemplatePreviewsSaga({ payload: { templateId, sessionId, inscriptionId } }) {
+    yield put(setLoadingAction({ loading: true }))
+    const previews = yield call(callService, {
+        endpoint: 'template/previews',
+        options: {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ templateId, sessionId, inscriptionId }),
+        },
+    })
+
+    yield put(setTemplatePreviewsAction({ previews }))
     yield put(setLoadingAction({ loading: false }))
 }
 
@@ -75,6 +98,7 @@ function* deleteTemplateSaga({ payload: { templateId } }) {
 
 export function* templatesSaga() {
     yield takeEvery(FETCH_TEMPLATES, fetchTemplatesSaga)
+    yield takeEvery(FETCH_TEMPLATE_PREVIEWS, fetchTemplatePreviewsSaga)
     yield takeEvery(UPDATE_TEMPLATE, updateTemplateSaga)
     yield takeEvery(ADD_TEMPLATE, addTemplateSaga)
     yield takeEvery(DELETE_TEMPLATE, deleteTemplateSaga)
