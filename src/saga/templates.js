@@ -8,6 +8,7 @@ import {
     FETCH_TEMPLATE_PREVIEWS,
 } from '../constants/templates'
 import { setTemplatesAction, fetchTemplatesAction, setTemplatePreviewsAction } from '../actions/templates.ts'
+import { setTemplatesLoadingAction } from '../actions/loading.ts'
 import { callService } from './sagaUtils'
 import { setLoadingAction } from '../actions/loading'
 
@@ -20,20 +21,19 @@ function* fetchTemplatesSaga() {
 }
 
 function* fetchTemplatePreviewsSaga({ payload: { templateId, sessionId, inscriptionId } }) {
-    yield put(setLoadingAction({ loading: true }))
+    yield put(setTemplatesLoadingAction({ loading: true }))
     const previews = yield call(callService, {
-        endpoint: 'template/previews',
+        endpoint: `template/previews?templateId=${templateId}&sessionId=${sessionId}&inscriptionId=${inscriptionId}`,
         options: {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ templateId, sessionId, inscriptionId }),
         },
     })
 
     yield put(setTemplatePreviewsAction({ previews }))
-    yield put(setLoadingAction({ loading: false }))
+    yield put(setTemplatesLoadingAction({ loading: false }))
 }
 
 function* updateTemplateSaga({

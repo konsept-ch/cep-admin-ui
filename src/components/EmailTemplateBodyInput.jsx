@@ -64,8 +64,6 @@ export const EmailTemplateBodyInput = ({
     shouldHaveVariables,
     ...rest
 }) => {
-    console.log(value, templateIdProp)
-
     const convertStateFromHTML = (state) => {
         const blocksFromHTML = htmlToDraft(state)
         return ContentState.createFromBlockArray(blocksFromHTML.contentBlocks, blocksFromHTML.entityMap)

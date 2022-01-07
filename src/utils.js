@@ -109,3 +109,5 @@ export const formatDate = ({ dateString, isTimeVisible, isDateVisible }) => {
 
     return [getDate(), getTime()].filter(Boolean).join(', ')
 }
+
+export const isObjEmpty = (obj) => Object.keys(obj).length === 0

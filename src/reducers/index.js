@@ -31,6 +31,7 @@ export const sessionLessonsSelector = (state) => sessionsSelectors.sessionLesson
 export const parametersSelector = (state) => parametersSelectors.parametersSelector(state.parameters)
 export const loadingSelector = (state) => loadingSelectors.loadingSelector(state.loading)
 export const gridLoadingSelector = (state) => loadingSelectors.gridLoadingSelector(state.loading)
+export const templatesLoadingSelector = (state) => loadingSelectors.templatesLoadingSelector(state.loading)
 export const coursesSelector = (state) => coursesSelectors.coursesSelector(state.courses)
 export const adminsSelector = (state) => usersSelectors.adminsSelector(state.users)
 export const templatesSelector = (state) => templatesSelectors.templatesSelector(state.templates)
