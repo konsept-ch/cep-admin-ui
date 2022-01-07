@@ -61,12 +61,12 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
 
         if (isEmailTemplateSelected) {
             const { emailContent, emailSubject } = replacePlaceholders({
-                userFullName: statusChangeData.user.name,
+                userFullName: `${statusChangeData.user.firstName} ${statusChangeData.user.lastName}`,
                 sessionName: statusChangeData.session.name,
-                startDate: formatDate({ dateString: statusChangeData.session.restrictions.dates[0] }),
+                startDate: formatDate({ dateString: statusChangeData.session.startDate }),
                 location: getSessionAddress(),
                 lessons: getSessionLessons(),
-                inscriptionDate: formatDate({ dateString: statusChangeData.date, isDateVisible: true }),
+                inscriptionDate: formatDate({ dateString: statusChangeData.inscriptionDate, isDateVisible: true }),
                 template: selectedTemplateData,
             })
 
