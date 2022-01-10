@@ -178,6 +178,7 @@ export function TemplatesPage() {
                                         templateId: selectedTemplateData.templateId,
                                     }}
                                     shouldHaveVariables
+                                    isEmailSubjectInput
                                 />
                                 <label>Corps de le SMS :</label>
                                 <EmailTemplateBodyInput
