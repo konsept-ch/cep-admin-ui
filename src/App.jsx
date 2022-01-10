@@ -25,7 +25,6 @@ import {
     PATH_ORGANIZATIONS,
 } from './constants/constants'
 import { fetchParametersAction } from './actions/parameters'
-import { fetchSessionsAction, fetchSessionsLessonsAction } from './actions/sessions'
 import { ErrorBoundary } from './pages/ErrorBoundaryPage'
 import { OrganizationsPage } from './pages/OrganizationsPage'
 
@@ -34,8 +33,6 @@ export function App() {
 
     useEffect(() => {
         dispatch(fetchParametersAction())
-        dispatch(fetchSessionsAction())
-        dispatch(fetchSessionsLessonsAction())
     }, [])
 
     return (

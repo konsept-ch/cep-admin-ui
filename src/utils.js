@@ -57,43 +57,6 @@ export const draftVariables = {
     INSCRIPTION_DATE: '[INSCRIPTION_DATE]',
 }
 
-export const replacePlaceholders = ({
-    userFullName,
-    sessionName,
-    startDate,
-    location,
-    lessons,
-    inscriptionDate,
-    civility,
-    template: { body, emailSubject },
-}) => {
-    const placeholdersMapper = {
-        [draftVariables.PARTICIPANT_NOM]: userFullName,
-        [draftVariables.SESSION_NOM]: sessionName,
-        [draftVariables.SESSION_DATE_DÉBUT]: startDate,
-        [draftVariables.LIEU]: location,
-        [draftVariables.SESSION_RÉSUMÉ_DATES]: lessons,
-        [draftVariables.PARTICIPANT_CIVILITÉ]: civility,
-        [draftVariables.INSCRIPTION_DATE]: inscriptionDate,
-    }
-
-    let enrichedEmailContent = body
-
-    let enrichedEmailSubject = emailSubject
-
-    Object.entries(placeholdersMapper).forEach(([placeholder, value]) => {
-        if (body.includes(placeholder)) {
-            enrichedEmailContent = enrichedEmailContent.replaceAll(placeholder, value)
-        }
-
-        if (emailSubject.includes(placeholder)) {
-            enrichedEmailSubject = enrichedEmailSubject.replaceAll(placeholder, value)
-        }
-    })
-
-    return { emailContent: enrichedEmailContent, emailSubject: enrichedEmailSubject }
-}
-
 export const formatDate = ({ dateString, isTimeVisible, isDateVisible }) => {
     const date = new Date(dateString)
     const getDay = () => (date.getDate() < 10 ? `0${date.getDate()}` : date.getDate())
