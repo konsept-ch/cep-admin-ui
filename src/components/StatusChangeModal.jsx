@@ -162,6 +162,22 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                                     <Spinner animation="grow" size="sm" />
                                 )}
                             </dd>
+                            <dt>Corps de l'SMS</dt>
+                            <dd>
+                                {!areTemplatesLoading ? (
+                                    <EmailTemplateBodyInput
+                                        className="email-preview"
+                                        onChange={() => {}}
+                                        value={{
+                                            value: templatePreviews.smsContent,
+                                            templateId: selectedTemplateData.templateId,
+                                        }}
+                                        readOnly
+                                    />
+                                ) : (
+                                    <Spinner animation="grow" size="sm" />
+                                )}
+                            </dd>
                         </dl>
                     ) : selectedTemplateData?.templateId === 'no-email' ? (
                         'Aucun e-mail ne sera envoyé'
