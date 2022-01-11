@@ -146,6 +146,7 @@ export const EmailTemplateBodyInput = ({
                     placeholder=""
                     editorState={state.editorState}
                     onChange={handleChange}
+                    {...(isEmailSubjectInput ? { handleReturn: () => 'handled' } : {})}
                     {...(shouldHandleKeyCommand ? { handleKeyCommand } : {})}
                     {...rest}
                 />
