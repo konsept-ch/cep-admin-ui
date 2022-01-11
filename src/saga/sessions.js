@@ -5,9 +5,9 @@ import { setSessionsAction } from '../actions/sessions.ts'
 import { callService } from './sagaUtils'
 import { setGridLoadingAction } from '../actions/loading'
 
-function* fetchSessionsSaga() {
+function* fetchSessionsSaga(action) {
     yield put(setGridLoadingAction({ loading: true }))
-    const sessions = yield call(callService, { endpoint: 'sessions' })
+    const sessions = yield call(callService, { endpoint: 'sessions', action })
 
     yield put(setSessionsAction({ sessions }))
     yield put(setGridLoadingAction({ loading: false }))
