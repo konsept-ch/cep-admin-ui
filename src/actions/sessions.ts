@@ -1,18 +1,7 @@
-import {
-    FETCH_SESSIONS,
-    SET_SESSIONS,
-    UPDATE_SESSION,
-    FETCH_SESSIONS_LESSONS,
-    SET_SESSIONS_LESSONS,
-} from '../constants/sessions'
+import { FETCH_SESSIONS, SET_SESSIONS, UPDATE_SESSION } from '../constants/sessions'
 
 export const fetchSessionsAction = () => ({
     type: FETCH_SESSIONS,
-    payload: {},
-})
-
-export const fetchSessionsLessonsAction = () => ({
-    type: FETCH_SESSIONS_LESSONS,
     payload: {},
 })
 
@@ -34,9 +23,4 @@ export const updateSessionAction = ({
 export const setSessionsAction = ({ sessions }: { sessions: any }) => ({
     type: SET_SESSIONS,
     payload: { sessions },
-})
-
-export const setSessionsLessonsAction = ({ sessionsLessons }: { sessionsLessons: any }) => ({
-    type: SET_SESSIONS_LESSONS,
-    payload: { sessionsLessons },
 })

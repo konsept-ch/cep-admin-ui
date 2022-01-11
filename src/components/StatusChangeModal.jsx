@@ -3,17 +3,17 @@ import { Modal, Button, ListGroup, Alert, Spinner, Tooltip, OverlayTrigger } fro
 import { useSelector, useDispatch } from 'react-redux'
 import classNames from 'classnames'
 import { fetchParametersAction } from '../actions/parameters.ts'
-import { parametersSelector, loadingSelector, sessionsSelector, sessionLessonsSelector } from '../reducers'
-import { statusWarnings, replacePlaceholders, formatDate } from '../utils'
+import { fetchTemplatePreviewsAction } from '../actions/templates.ts'
+import { parametersSelector, loadingSelector, templatePreviewsSelector, templatesLoadingSelector } from '../reducers'
+import { statusWarnings, formatDate } from '../utils'
 import { EmailTemplateBodyInput } from './EmailTemplateBodyInput'
 
 export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }) => {
     const [selectedTemplateData, setSelectedTemplateData] = useState(null)
-    const [emailPreview, setEmailPreview] = useState({ emailContent: '', emailSubject: '' })
     const parameters = useSelector(parametersSelector)
-    const sessions = useSelector(sessionsSelector)
-    const sessionLessons = useSelector(sessionLessonsSelector)({ sessionId: statusChangeData.session.id })
     const isSagaLoading = useSelector(loadingSelector)
+    const areTemplatesLoading = useSelector(templatesLoadingSelector)
+    const templatePreviews = useSelector(templatePreviewsSelector)
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -22,57 +22,15 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
 
     const isEmailTemplateSelected = selectedTemplateData !== null && selectedTemplateData.templateId !== 'no-email'
 
-    useEffect(() => {
-        const getSessionAddress = () => {
-            const currentSessionData = sessions.find(({ id }) => statusChangeData.session.id === id)
-            const sessionLocation = currentSessionData.location
-            const sessionAddress = sessionLocation?.address
-
-            const sessionAddressArray = [
-                sessionLocation?.name,
-                sessionAddress?.street1,
-                sessionAddress?.street2,
-                [sessionAddress?.postalCode, sessionAddress?.state].filter(Boolean).join(' '),
-                [sessionAddress?.city, sessionAddress?.country].filter(Boolean).join(', '),
-            ]
-
-            const location = sessionAddressArray.filter(Boolean).join('\n')
-
-            return location
-        }
-
-        const getSessionLessons = () => {
-            // TODO add another format for multiday lessons :
-            // 15.12.2022 13h30 - 16.12.2022 15h30
-            const lessonsResume = sessionLessons.map(({ start, end }) =>
-                [
-                    formatDate({ dateString: start, isDateVisible: true }),
-                    [
-                        formatDate({ dateString: start, isTimeVisible: true }),
-                        formatDate({ dateString: end, isTimeVisible: true }),
-                    ].join('-'),
-                ].join(', ')
-            )
-
-            const lessons = `<code>${lessonsResume.join('\n')}</code>`
-
-            return lessons
-        }
-
-        if (isEmailTemplateSelected) {
-            const { emailContent, emailSubject } = replacePlaceholders({
-                userFullName: statusChangeData.user.name,
-                sessionName: statusChangeData.session.name,
-                startDate: formatDate({ dateString: statusChangeData.session.restrictions.dates[0] }),
-                location: getSessionAddress(),
-                lessons: getSessionLessons(),
-                inscriptionDate: formatDate({ dateString: statusChangeData.date, isDateVisible: true }),
-                template: selectedTemplateData,
+    const fetchTemplatePreviews = ({ templateId }) => {
+        dispatch(
+            fetchTemplatePreviewsAction({
+                templateId,
+                sessionId: statusChangeData.session.id,
+                inscriptionId: statusChangeData.id,
             })
-
-            setEmailPreview({ emailContent, emailSubject })
-        }
-    }, [selectedTemplateData])
+        )
+    }
 
     const emailTemplates = parameters.emailTemplates.filter((template) =>
         template.statuses.find((status) => status.value === statusChangeData.newStatus)
@@ -154,7 +112,10 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                             emailTemplates.map(({ title, description, body, templateId, emailSubject }) => (
                                 <ListGroup.Item
                                     key={templateId}
-                                    onClick={() => setSelectedTemplateData({ body, templateId, emailSubject })}
+                                    onClick={() => {
+                                        setSelectedTemplateData({ body, templateId, emailSubject })
+                                        fetchTemplatePreviews({ templateId })
+                                    }}
                                     className={classNames({
                                         'active-template': selectedTemplateData?.templateId === templateId,
                                     })}
@@ -171,27 +132,51 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                         <dl>
                             <dt>Sujet de l'email</dt>
                             <dd>
-                                <EmailTemplateBodyInput
-                                    className="email-preview"
-                                    onChange={() => {}}
-                                    value={{
-                                        value: emailPreview.emailSubject,
-                                        templateId: selectedTemplateData.templateId,
-                                    }}
-                                    readOnly
-                                />
+                                {!areTemplatesLoading ? (
+                                    <EmailTemplateBodyInput
+                                        className="email-preview"
+                                        onChange={() => {}}
+                                        value={{
+                                            value: templatePreviews.emailSubject,
+                                            templateId: selectedTemplateData.templateId,
+                                        }}
+                                        readOnly
+                                    />
+                                ) : (
+                                    <Spinner animation="grow" size="sm" />
+                                )}
                             </dd>
                             <dt>Corps de l'e-mail</dt>
                             <dd>
-                                <EmailTemplateBodyInput
-                                    className="email-preview"
-                                    onChange={() => {}}
-                                    value={{
-                                        value: emailPreview.emailContent,
-                                        templateId: selectedTemplateData.templateId,
-                                    }}
-                                    readOnly
-                                />
+                                {!areTemplatesLoading ? (
+                                    <EmailTemplateBodyInput
+                                        className="email-preview"
+                                        onChange={() => {}}
+                                        value={{
+                                            value: templatePreviews.emailContent,
+                                            templateId: selectedTemplateData.templateId,
+                                        }}
+                                        readOnly
+                                    />
+                                ) : (
+                                    <Spinner animation="grow" size="sm" />
+                                )}
+                            </dd>
+                            <dt>Corps de l'SMS</dt>
+                            <dd>
+                                {!areTemplatesLoading ? (
+                                    <EmailTemplateBodyInput
+                                        className="email-preview"
+                                        onChange={() => {}}
+                                        value={{
+                                            value: templatePreviews.smsContent,
+                                            templateId: selectedTemplateData.templateId,
+                                        }}
+                                        readOnly
+                                    />
+                                ) : (
+                                    <Spinner animation="grow" size="sm" />
+                                )}
                             </dd>
                         </dl>
                     ) : selectedTemplateData?.templateId === 'no-email' ? (

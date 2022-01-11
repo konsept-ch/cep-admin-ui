@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import { Routes, Route, Redirect } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import { HelmetProvider, Helmet } from 'react-helmet-async'
 import { ToastContainer } from 'react-toastify'
 import { Container } from 'react-bootstrap'
@@ -25,7 +25,6 @@ import {
     PATH_ORGANIZATIONS,
 } from './constants/constants'
 import { fetchParametersAction } from './actions/parameters'
-import { fetchSessionsAction, fetchSessionsLessonsAction } from './actions/sessions'
 import { ErrorBoundary } from './pages/ErrorBoundaryPage'
 import { OrganizationsPage } from './pages/OrganizationsPage'
 
@@ -34,8 +33,6 @@ export function App() {
 
     useEffect(() => {
         dispatch(fetchParametersAction())
-        dispatch(fetchSessionsAction())
-        dispatch(fetchSessionsLessonsAction())
     }, [])
 
     return (

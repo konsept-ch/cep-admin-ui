@@ -62,6 +62,7 @@ export const EmailTemplateBodyInput = ({
     value: { value, templateId: templateIdProp },
     shouldHandleKeyCommand,
     shouldHaveVariables,
+    isEmailSubjectInput,
     ...rest
 }) => {
     const convertStateFromHTML = (state) => {
@@ -71,7 +72,6 @@ export const EmailTemplateBodyInput = ({
 
     const [state, setState] = useState({
         editorState: EditorState.createWithContent(convertStateFromHTML(value), decorator),
-        // editorState: EditorState.createWithContent(ContentState.createFromText(value), decorator),
     })
 
     const [templateId, setTemplateId] = useState(templateIdProp)
@@ -80,17 +80,18 @@ export const EmailTemplateBodyInput = ({
         if (templateId !== templateIdProp) {
             setState({
                 editorState: EditorState.createWithContent(convertStateFromHTML(value), decorator),
-                // editorState: EditorState.createWithContent(ContentState.createFromText(value), decorator),
             })
             setTemplateId(templateIdProp)
         }
     }, [value])
 
     const handleChange = (editorState) => {
-        const htmlState = stateToHTML(editorState.getCurrentContent())
+        const htmlState = stateToHTML(editorState.getCurrentContent(), {
+            defaultBlockTag: isEmailSubjectInput ? null : 'p',
+        })
+
         onChange(htmlState)
         setState({ editorState })
-        // onChange(editorState.getCurrentContent().getPlainText('\u0001'))
     }
 
     const insert = (entity) => {
@@ -145,6 +146,7 @@ export const EmailTemplateBodyInput = ({
                     placeholder=""
                     editorState={state.editorState}
                     onChange={handleChange}
+                    {...(isEmailSubjectInput ? { handleReturn: () => 'handled' } : {})}
                     {...(shouldHandleKeyCommand ? { handleKeyCommand } : {})}
                     {...rest}
                 />
