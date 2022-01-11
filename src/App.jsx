@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import { Routes, Route, Redirect } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import { HelmetProvider, Helmet } from 'react-helmet-async'
 import { ToastContainer } from 'react-toastify'
 import { Container } from 'react-bootstrap'

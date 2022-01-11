@@ -1,13 +1,8 @@
 import { useNavigate, useLocation } from 'react-router-dom'
-import { Nav, Navbar, Container, NavDropdown } from 'react-bootstrap'
+import { Nav, Navbar, Container } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-    faDollar,
-    faFileSignature,
-    faChartLineUp,
-    faGear,
     faSitemap,
-    faFileInvoiceDollar,
     faPresentationScreen,
     faGraduationCap,
     faCalendarDays,
