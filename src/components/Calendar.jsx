@@ -36,7 +36,6 @@ export const Calendar = ({ resources, events, calendarRef, refreshCallback }) =>
                 }
                 resources={resources.map((resource) => ({ ...resource, title: resource.name }))}
                 events={events.map((event) => ({ ...event, title: event.name, resourceId: event.room?.id }))}
-                timeZone="America/New_York"
                 resourceAreaHeaderContent="Salles"
                 height="100%"
                 schedulerLicenseKey="CC-Attribution-NonCommercial-NoDerivatives"
