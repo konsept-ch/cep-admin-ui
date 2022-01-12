@@ -9,7 +9,7 @@ import { splitComment } from '../constants/constants'
 // import { RichEditor } from './RichEditor'
 import { toast } from 'react-toastify'
 
-export const CourseDetailsModal = ({ closeModal, courseDetailsData, onAfterSave }) => {
+export const CourseDetailsModal = ({ closeModal, courseDetailsData = {}, onAfterSave }) => {
     const generateDefaultEvent = () => ({ id: uuidv4(), type: 'f2f', title: '', description: '' })
     const parser = new DOMParser()
     const doc = parser.parseFromString(courseDetailsData.description, 'text/html')

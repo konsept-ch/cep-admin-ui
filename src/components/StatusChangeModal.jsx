@@ -32,9 +32,11 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
         )
     }
 
-    const emailTemplates = parameters.emailTemplates.filter((template) =>
-        template.statuses.find((status) => status.value === statusChangeData.newStatus)
-    )
+    const emailTemplates = parameters?.emailTemplates
+        ? parameters.emailTemplates.filter((template) =>
+              template.statuses.find((status) => status.value === statusChangeData.newStatus)
+          )
+        : []
 
     return (
         <Modal

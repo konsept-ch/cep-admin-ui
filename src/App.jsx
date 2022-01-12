@@ -1,5 +1,3 @@
-import { useEffect } from 'react'
-import { useDispatch } from 'react-redux'
 import { Routes, Route } from 'react-router-dom'
 import { HelmetProvider, Helmet } from 'react-helmet-async'
 import { ToastContainer } from 'react-toastify'
@@ -24,17 +22,10 @@ import {
     PATH_TEMPLATES,
     PATH_ORGANIZATIONS,
 } from './constants/constants'
-import { fetchParametersAction } from './actions/parameters'
 import { ErrorBoundary } from './pages/ErrorBoundaryPage'
 import { OrganizationsPage } from './pages/OrganizationsPage'
 
 export function App() {
-    const dispatch = useDispatch()
-
-    useEffect(() => {
-        dispatch(fetchParametersAction())
-    }, [])
-
     return (
         <>
             <ToastContainer />
