@@ -4,8 +4,8 @@ import { FETCH_PARAMETERS } from '../constants/parameters'
 import { setParametersAction } from '../actions/parameters'
 import { callService } from './sagaUtils'
 
-function* fetchParametersSaga() {
-    const parameters = yield call(callService, { endpoint: 'parameters' })
+function* fetchParametersSaga(action) {
+    const parameters = yield call(callService, { endpoint: 'parameters', action })
 
     yield put(setParametersAction({ parameters }))
 }

@@ -5,17 +5,21 @@ import { setInscriptionsAction } from '../actions/inscriptions'
 import { setLoadingAction, setGridLoadingAction } from '../actions/loading'
 import { callService } from './sagaUtils'
 
-function* fetchInscriptionsSaga() {
+function* fetchInscriptionsSaga(action) {
     yield put(setGridLoadingAction({ loading: true }))
 
-    const inscriptions = yield call(callService, { endpoint: 'inscriptions' })
+    const inscriptions = yield call(callService, { endpoint: 'inscriptions', action })
 
     yield put(setInscriptionsAction({ inscriptions }))
 
     yield put(setGridLoadingAction({ loading: false }))
 }
 
-function* updateInscriptionsSaga({ payload: { inscriptionId, newStatus, emailTemplateId, successCallback } }) {
+function* updateInscriptionsSaga(action) {
+    const {
+        payload: { inscriptionId, newStatus, emailTemplateId, successCallback },
+    } = action
+
     yield put(setLoadingAction({ loading: true }))
 
     yield call(callService, {
@@ -27,6 +31,7 @@ function* updateInscriptionsSaga({ payload: { inscriptionId, newStatus, emailTem
             },
             body: JSON.stringify({ status: newStatus, emailTemplateId }),
         },
+        action,
     })
 
     yield put(setLoadingAction({ loading: false }))

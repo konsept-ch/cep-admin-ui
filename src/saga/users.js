@@ -4,8 +4,8 @@ import { FETCH_ADMINS } from '../constants/users'
 import { setAdminsAction } from '../actions/users'
 import { callService } from './sagaUtils'
 
-function* fetchUsersSaga() {
-    const admins = yield call(callService, { endpoint: 'admins' })
+function* fetchUsersSaga(action) {
+    const admins = yield call(callService, { endpoint: 'admins', action })
 
     yield put(setAdminsAction({ admins }))
 }

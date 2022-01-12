@@ -16,11 +16,15 @@ export function* callService({ endpoint, action, options = {} }) {
         })
 
         if (result.status !== 200) {
-            const resultText = yield result.text()
+            const { message, stack } = yield result.json()
+
+            /* eslint-disable-next-line no-console */
+            console.error(stack)
+
             toast.error(
                 <>
                     <p>{`${result.status} - ${result.statusText}`}</p>
-                    <p>{`${resultText}`}</p>
+                    <p>{message}</p>
                 </>,
                 { autoClose: false }
             )
@@ -30,7 +34,7 @@ export function* callService({ endpoint, action, options = {} }) {
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*',
                 },
-                body: JSON.stringify({ date: formatDate({ dateString: new Date() }), errorDescription: resultText }),
+                body: JSON.stringify({ date: formatDate({ dateString: new Date() }), errorDescription: message }),
             })
 
             return
@@ -40,6 +44,9 @@ export function* callService({ endpoint, action, options = {} }) {
 
         return resultJson
     } catch (error) {
+        /* eslint-disable-next-line no-console */
+        console.error(error.message)
+
         toast.error(
             <>
                 <p>Middleware is down or being redeployed. Please, retry in a minute.</p>

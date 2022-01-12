@@ -10,15 +10,19 @@ import { setCoursesAction } from '../actions/courses'
 import { callService } from './sagaUtils'
 import { setLoadingAction, setGridLoadingAction } from '../actions/loading'
 
-function* fetchCoursesSaga() {
+function* fetchCoursesSaga(action) {
     yield put(setGridLoadingAction({ loading: true }))
-    const courses = yield call(callService, { endpoint: 'courses' })
+    const courses = yield call(callService, { endpoint: 'courses', action })
 
     yield put(setCoursesAction({ courses }))
     yield put(setGridLoadingAction({ loading: false }))
 }
 
-function* updateCourseSaga({ payload: { courseId, field, newValue } }) {
+function* updateCourseSaga(action) {
+    const {
+        payload: { courseId, field, newValue },
+    } = action
+
     yield put(setLoadingAction({ loading: true }))
 
     yield call(callService, {
@@ -30,28 +34,31 @@ function* updateCourseSaga({ payload: { courseId, field, newValue } }) {
             },
             body: JSON.stringify({ field, newValue }),
         },
+        action,
     })
 
     yield put(setLoadingAction({ loading: false }))
 }
 
-function* addOrganisationsToCoursesSaga() {
+function* addOrganisationsToCoursesSaga(action) {
     yield put(setLoadingAction({ loading: true }))
 
     yield call(callService, {
         endpoint: 'courses/addOrganisations',
         options: { method: 'PUT' },
+        action,
     })
 
     yield put(setLoadingAction({ loading: false }))
 }
 
-function* removeOrganisationsFromCoursesSaga() {
+function* removeOrganisationsFromCoursesSaga(action) {
     yield put(setLoadingAction({ loading: true }))
 
     yield call(callService, {
         endpoint: 'courses/removeOrganisations',
         options: { method: 'PUT' },
+        action,
     })
 
     yield put(setLoadingAction({ loading: false }))

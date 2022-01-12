@@ -13,7 +13,11 @@ function* fetchSessionsSaga(action) {
     yield put(setGridLoadingAction({ loading: false }))
 }
 
-function* updateSessionSaga({ payload: { sessionId, areInvitesSent, sessionName, startDate } }) {
+function* updateSessionSaga(action) {
+    const {
+        payload: { sessionId, areInvitesSent, sessionName, startDate },
+    } = action
+
     yield put(setGridLoadingAction({ loading: true }))
 
     yield call(callService, {
@@ -25,6 +29,7 @@ function* updateSessionSaga({ payload: { sessionId, areInvitesSent, sessionName,
             },
             body: JSON.stringify({ areInvitesSent, sessionName, startDate }),
         },
+        action,
     })
 
     yield put(setGridLoadingAction({ loading: false }))
