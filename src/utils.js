@@ -2,7 +2,7 @@ import { Button } from 'react-bootstrap'
 import { toast } from 'react-toastify'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRotateRight } from '@fortawesome/pro-regular-svg-icons'
-import { MIDDLEWARE_URL } from '../constants/config'
+import { MIDDLEWARE_URL } from './constants/config'
 
 export const dateOptions = {
     year: 'numeric',
@@ -81,21 +81,21 @@ export const formatDate = ({ dateString, isTimeVisible, isDateVisible }) => {
 
 export const isObjEmpty = (obj) => Object.keys(obj).length === 0
 
-export const callApi = async ({ path = '', method = 'GET', headers, body }) => {
+export const callApi = async ({ path = '', method = 'GET', headers, body, successCallback = () => {} }) => {
     try {
         const url = `${new URL(path, MIDDLEWARE_URL)}`
 
-        const response = await await fetch(url, {
+        const response = await fetch(url, {
             headers: {
                 'Access-Control-Allow-Origin': '*',
                 ...headers,
             },
             method,
-            body: JSON.stringify(body),
+            body,
         })
 
         if (response.status !== 200) {
-            const { message, stack } = response.json()
+            const { message, stack } = await response.json()
 
             /* eslint-disable-next-line no-console */
             console.error(stack)
@@ -121,6 +121,8 @@ export const callApi = async ({ path = '', method = 'GET', headers, body }) => {
 
         const resultJson = response.json()
 
+        successCallback()
+
         return resultJson
     } catch (error) {
         /* eslint-disable-next-line no-console */
@@ -137,12 +139,12 @@ export const callApi = async ({ path = '', method = 'GET', headers, body }) => {
         const RetryToast = ({ closeToast }) => {
             return (
                 <div>
-                    Retry
+                    Retry the action
                     <Button
                         className="d-block mb-1"
                         variant="primary"
                         onClick={() => {
-                            callApi()
+                            callApi({ path, method, headers, body, successCallback })
                             closeToast()
                         }}
                     >
@@ -152,6 +154,9 @@ export const callApi = async ({ path = '', method = 'GET', headers, body }) => {
             )
         }
 
-        toast(({ closeToast }) => <RetryToast closeToast={closeToast} />, { autoClose: false })
+        toast(({ closeToast }) => <RetryToast closeToast={closeToast} />, {
+            autoClose: false,
+            toastId: `retry-${path}`,
+        })
     }
 }
