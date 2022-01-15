@@ -11,7 +11,7 @@ import { Helmet } from 'react-helmet-async'
 export function CoursesPage() {
     const dispatch = useDispatch()
     const courses = useSelector(coursesSelector)
-    const admins = useSelector(adminsSelector).map((admin) => admin.name)
+    const admins = useSelector(adminsSelector)?.map((admin) => admin.name)
     const fetchCourses = useCallback(() => dispatch(fetchCoursesAction()), [dispatch])
     const fetchAdmins = useCallback(() => dispatch(fetchAdminsAction()), [dispatch])
     const updateCourse = useCallback(

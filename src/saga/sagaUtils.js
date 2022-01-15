@@ -6,7 +6,7 @@ import { faRotateRight } from '@fortawesome/pro-regular-svg-icons'
 import { MIDDLEWARE_URL } from '../constants/config'
 import { cookies, formatDate } from '../utils'
 
-export function* callService({ endpoint, action, options = {} }) {
+export function* callService({ endpoint, action, successCallback = () => {}, options = {} }) {
     try {
         const result = yield fetch(`${MIDDLEWARE_URL}/${endpoint}`, {
             headers: {
@@ -44,6 +44,8 @@ export function* callService({ endpoint, action, options = {} }) {
         }
 
         const resultJson = yield result.json()
+
+        successCallback()
 
         return resultJson
     } catch (error) {

@@ -32,11 +32,10 @@ function* updateInscriptionsSaga(action) {
             body: JSON.stringify({ status: newStatus, emailTemplateId }),
         },
         action,
+        successCallback,
     })
 
     yield put(setLoadingAction({ loading: false }))
-
-    successCallback()
 }
 
 export function* inscriptionsSaga() {
