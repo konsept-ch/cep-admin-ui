@@ -4,13 +4,16 @@ import { toast } from 'react-toastify'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRotateRight } from '@fortawesome/pro-regular-svg-icons'
 import { MIDDLEWARE_URL } from '../constants/config'
-import { formatDate } from '../utils'
+import { cookies, formatDate } from '../utils'
 
 export function* callService({ endpoint, action, successCallback = () => {}, options = {} }) {
     try {
         const result = yield fetch(`${MIDDLEWARE_URL}/${endpoint}`, {
             headers: {
                 'Access-Control-Allow-Origin': '*',
+                'x-login-email-address': cookies.get('email'),
+                'x-login-email-code': cookies.get('code'),
+                'x-login-token': cookies.get('token'),
             },
             ...options,
         })

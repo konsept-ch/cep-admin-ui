@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { HelmetProvider, Helmet } from 'react-helmet-async'
 import { ToastContainer } from 'react-toastify'
@@ -24,38 +25,44 @@ import {
 } from './constants/constants'
 import { ErrorBoundary } from './pages/ErrorBoundaryPage'
 import { OrganizationsPage } from './pages/OrganizationsPage'
+import { AuthWrapper } from './AuthWrapper'
+import { cookies } from './utils'
 
 export function App() {
+    const [isLoggedIn, setLoggedIn] = useState(cookies.get('isLoggedIn') === 'true')
+
     return (
         <>
             <ToastContainer />
-            <Navigation />
+            <Navigation {...{ isLoggedIn, setLoggedIn }} />
             <HelmetProvider>
                 <Helmet>
                     <title>CEP - Former22</title>
                 </Helmet>
                 <ErrorBoundary>
-                    <Routes>
-                        <Route
-                            exact
-                            path="/"
-                            element={
-                                <Container fluid>
-                                    <h1>Dashboard (en construction)</h1>
-                                    <p>Notifications et alertes à venir</p>
-                                </Container>
-                            }
-                        />
-                        <Route exact path={PATH_AGENDA} element={<AgendaPage />} />
-                        <Route exact path={PATH_INSCRIPTIONS} element={<InscriptionsPage />} />
-                        <Route exact path={PATH_SESSIONS} element={<SessionsPage />} />
-                        <Route exact path={PATH_FORMATIONS} element={<CoursesPage />} />
-                        <Route exact path={PATH_TEMPLATES} element={<TemplatesPage />} />
-                        <Route exact path={PATH_ORGANIZATIONS} element={<OrganizationsPage />} />
-                        <Route exact path={PATH_NOTIFICATIONS} element={<NotificationsPage />} />
-                        <Route path="/survey/" element={<SurveyPage />} />
-                        <Route path="/typography" element={<TypographyPage />} />
-                    </Routes>
+                    <AuthWrapper {...{ isLoggedIn, setLoggedIn }}>
+                        <Routes>
+                            <Route
+                                exact
+                                path="/"
+                                element={
+                                    <Container fluid>
+                                        <h1>Dashboard (en construction)</h1>
+                                        <p>Notifications et alertes à venir</p>
+                                    </Container>
+                                }
+                            />
+                            <Route exact path={PATH_AGENDA} element={<AgendaPage />} />
+                            <Route exact path={PATH_INSCRIPTIONS} element={<InscriptionsPage />} />
+                            <Route exact path={PATH_SESSIONS} element={<SessionsPage />} />
+                            <Route exact path={PATH_FORMATIONS} element={<CoursesPage />} />
+                            <Route exact path={PATH_TEMPLATES} element={<TemplatesPage />} />
+                            <Route exact path={PATH_ORGANIZATIONS} element={<OrganizationsPage />} />
+                            <Route exact path={PATH_NOTIFICATIONS} element={<NotificationsPage />} />
+                            <Route path="/survey/" element={<SurveyPage />} />
+                            <Route path="/typography" element={<TypographyPage />} />
+                        </Routes>
+                    </AuthWrapper>
                 </ErrorBoundary>
             </HelmetProvider>
             <Footer />
