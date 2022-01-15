@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { HelmetProvider, Helmet } from 'react-helmet-async'
 import { ToastContainer } from 'react-toastify'
@@ -25,18 +26,21 @@ import {
 import { ErrorBoundary } from './pages/ErrorBoundaryPage'
 import { OrganizationsPage } from './pages/OrganizationsPage'
 import { AuthWrapper } from './AuthWrapper'
+import { cookies } from './utils'
 
 export function App() {
+    const [isLoggedIn, setLoggedIn] = useState(cookies.get('isLoggedIn') === 'true')
+
     return (
         <>
             <ToastContainer />
-            <Navigation />
+            <Navigation {...{ isLoggedIn, setLoggedIn }} />
             <HelmetProvider>
                 <Helmet>
                     <title>CEP - Former22</title>
                 </Helmet>
                 <ErrorBoundary>
-                    <AuthWrapper>
+                    <AuthWrapper {...{ isLoggedIn, setLoggedIn }}>
                         <Routes>
                             <Route
                                 exact

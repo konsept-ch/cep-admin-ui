@@ -1,3 +1,23 @@
+import Cookies from 'universal-cookie'
+
+export const cookies = new Cookies()
+
+export const clearAllAuthCookies = () => {
+    cookies.remove('rememberMe')
+    cookies.remove('isLoggedIn')
+    cookies.remove('email')
+    cookies.remove('code')
+    cookies.remove('token')
+}
+
+export const keepAuthAlive = ({ path, maxAge }) => {
+    cookies.set('rememberMe', cookies.get('rememberMe'), { path, maxAge })
+    cookies.set('isLoggedIn', cookies.get('isLoggedIn'), { path, maxAge })
+    cookies.set('email', cookies.get('email'), { path, maxAge })
+    cookies.set('code', cookies.get('code'), { path, maxAge })
+    cookies.set('token', cookies.get('token'), { path, maxAge })
+}
+
 export const dateOptions = {
     year: 'numeric',
     month: 'long',
