@@ -121,6 +121,8 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
         })()
     }
 
+    const fieldUnderConstructionText = " (en construction, pas fonctionnel, merci d'ignorer pour l'instant)"
+
     return isLoggedIn ? (
         children
     ) : (
@@ -134,7 +136,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                         <Form className="mb-4">
                             <h4 className="mt-4">1/2 - Votre courriel :</h4>
                             <Form.Group className="mb-3" controlId="formBasicEmail">
-                                <Form.Label>Courriel</Form.Label>
+                                <Form.Label>Courriel{fieldUnderConstructionText}</Form.Label>
                                 <InputGroup>
                                     <InputGroup.Text>
                                         <FontAwesomeIcon icon={faAt} />
@@ -159,7 +161,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                         <Form>
                             <h4 className="mt-4">2/2 - Votre code et token :</h4>
                             <Form.Group className="mb-3" controlId="formBasicCode">
-                                <Form.Label>Code reçu</Form.Label>
+                                <Form.Label>Code reçu{fieldUnderConstructionText}</Form.Label>
                                 <InputGroup>
                                     <InputGroup.Text>
                                         <FontAwesomeIcon icon={faInputNumeric} />
