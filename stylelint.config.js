@@ -11,4 +11,5 @@ module.exports = {
         'color-hex-length': 'long',
         'selector-no-qualifying-type': null,
     },
+    ignoreFiles: ['./node_modules/**/*'],
 }
