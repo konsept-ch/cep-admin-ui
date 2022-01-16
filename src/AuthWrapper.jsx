@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { Button, Col, Container, Form, InputGroup, Row, Spinner } from 'react-bootstrap'
 import { toast } from 'react-toastify'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPersonToPortal } from '@fortawesome/pro-light-svg-icons'
 import {
     faAt,
     faInputNumeric,
@@ -11,6 +10,7 @@ import {
     faArrowRightToBracket,
 } from '@fortawesome/pro-regular-svg-icons'
 import { cookies, clearAllAuthCookies, keepAuthAlive } from './utils'
+import { authCookiesMaxAgeSeconds } from './constants/config'
 
 let keepAliveInterval
 
@@ -23,17 +23,17 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
     const [isLoginLoading, setLoginLoading] = useState(false)
     const [shouldRememberMe, setShouldRememberMe] = useState(cookies.get('rememberMe') === 'true')
 
-    const maxAge = shouldRememberMe ? '1800' : ''
+    const maxAge = authCookiesMaxAgeSeconds[shouldRememberMe]
     const path = '/'
     console.log(shouldRememberMe)
 
     useEffect(() => {
-        if (shouldRememberMe && isLoggedIn) {
+        if (isLoggedIn) {
             console.log('keepAlive')
             keepAuthAlive({ path, maxAge })
             keepAliveInterval = setInterval(() => {
                 keepAuthAlive({ path, maxAge })
-            }, 30000)
+            }, (maxAge / 2) * 1000)
         } else {
             console.log('clear')
             clearAllAuthCookies()
@@ -43,7 +43,9 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
     useEffect(() => {
         cookies.addChangeListener(({ name, value }) => {
             // clear when logout event is triggered
+            console.log('change')
             if (name === 'isLoggedIn' && typeof value === 'undefined') {
+                console.log('logout')
                 setEmail('')
                 setCode('')
                 setToken('')
@@ -51,6 +53,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                 setShouldRememberMe(false)
                 setLoggedIn(false)
                 clearInterval(keepAliveInterval)
+                toast.success('Déconnexion OK')
             }
         })
     }, [])
@@ -113,7 +116,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
 
                 keepAliveInterval = setInterval(() => {
                     keepAuthAlive({ path, maxAge })
-                }, 30000)
+                }, (maxAge / 2) * 1000)
             } else {
                 toast.error("Votre token n'est pas trouvé dans Claroline, merci de contacter votre administrateur")
             }
@@ -121,7 +124,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
         })()
     }
 
-    const fieldUnderConstructionText = " (en construction, pas fonctionnel, merci d'ignorer pour l'instant)"
+    const fieldUnderConstructionText = ' (en construction, pas encore fonctionnel, laissez vide)'
 
     return isLoggedIn ? (
         children
@@ -129,9 +132,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
         <Container>
             <Row className="justify-content-md-center">
                 <Col md="auto">
-                    <h1 className="mt-4">
-                        <FontAwesomeIcon icon={faPersonToPortal} /> Connexion
-                    </h1>
+                    <h1 className="mt-4">Connexion</h1>
                     {!isCodeSent ? (
                         <Form className="mb-4">
                             <h4 className="mt-4">1/2 - Votre courriel :</h4>
@@ -200,7 +201,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                                     onChange={({ target: { checked } }) => setShouldRememberMe(checked)}
                                 />
                                 <Form.Text className="text-muted">
-                                    Rester identifié.e même après fermeture de navigateur
+                                    Rester identifié.e même après fermeture de navigateur (max. 30 minutes)
                                 </Form.Text>
                             </Form.Group>
                             <Button variant="primary" type="submit" onClick={onLoginButtonClick}>
