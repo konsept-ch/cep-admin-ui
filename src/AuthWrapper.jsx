@@ -8,6 +8,7 @@ import {
     faKeySkeleton,
     faPaperPlaneTop,
     faArrowRightToBracket,
+    // faGlobe,
 } from '@fortawesome/pro-regular-svg-icons'
 import { cookies, clearAllAuthCookies, keepAuthAlive } from './utils'
 import { authCookiesMaxAgeSeconds, MIDDLEWARE_URL } from './constants/config'
@@ -148,6 +149,23 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                                     Vous allez recevoir un e-mail avec un code temporaire
                                 </Form.Text>
                             </Form.Group>
+                            {/* <Form.Group className="mb-3">
+                                <Form.Label>Environnement de travail</Form.Label>
+                                <InputGroup>
+                                    <InputGroup.Text>
+                                        <FontAwesomeIcon icon={faGlobe} />
+                                    </InputGroup.Text>
+                                    <Form.Select
+                                        aria-label="Environnement"
+                                        // value={type}
+                                        // onChange={onChangeEventField({ fieldName: 'type', id })}
+                                    >
+                                        <option value="dev">DEV (cep-dev.ch)</option>
+                                        <option value="val">VAL (cep-val.ch)</option>
+                                        <option value="prod">PROD (cep.swiss)</option>
+                                    </Form.Select>
+                                </InputGroup>
+                            </Form.Group> */}
                             <Button variant="primary" type="submit" onClick={onSendCodeButtonClick}>
                                 <FontAwesomeIcon icon={faPaperPlaneTop} /> Envoyer code
                             </Button>
