@@ -25,17 +25,14 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
 
     const maxAge = authCookiesMaxAgeSeconds[shouldRememberMe]
     const path = '/'
-    console.log(shouldRememberMe)
 
     useEffect(() => {
         if (isLoggedIn) {
-            console.log('keepAlive')
             keepAuthAlive({ path, maxAge })
             keepAliveInterval = setInterval(() => {
                 keepAuthAlive({ path, maxAge })
             }, (maxAge / 2) * 1000)
         } else {
-            console.log('clear')
             clearAllAuthCookies()
         }
     }, [])
@@ -43,9 +40,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
     useEffect(() => {
         cookies.addChangeListener(({ name, value }) => {
             // clear when logout event is triggered
-            console.log('change')
             if (name === 'isLoggedIn' && typeof value === 'undefined') {
-                console.log('logout')
                 setEmail('')
                 setCode('')
                 setToken('')
