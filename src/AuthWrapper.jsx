@@ -10,7 +10,7 @@ import {
     faArrowRightToBracket,
 } from '@fortawesome/pro-regular-svg-icons'
 import { cookies, clearAllAuthCookies, keepAuthAlive } from './utils'
-import { authCookiesMaxAgeSeconds } from './constants/config'
+import { authCookiesMaxAgeSeconds, MIDDLEWARE_URL } from './constants/config'
 
 let keepAliveInterval
 
@@ -59,7 +59,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
         setCodeSent(false)
         ;(async () => {
             const response = await (
-                await fetch('http://localhost:4000/auth/sendCode', {
+                await fetch(`${MIDDLEWARE_URL}/auth/sendCode`, {
                     method: 'post',
                     headers: {
                         'Content-Type': 'application/json',
@@ -85,7 +85,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
         setLoginLoading(true)
         ;(async () => {
             const response = await (
-                await fetch('http://localhost:4000/auth/checkCodeAndToken', {
+                await fetch(`${MIDDLEWARE_URL}/auth/checkCodeAndToken`, {
                     method: 'post',
                     headers: {
                         'Content-Type': 'application/json',
