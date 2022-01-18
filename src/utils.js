@@ -1,3 +1,28 @@
+import Cookies from 'universal-cookie'
+import { Button } from 'react-bootstrap'
+import { toast } from 'react-toastify'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faRotateRight } from '@fortawesome/pro-regular-svg-icons'
+import { MIDDLEWARE_URL } from './constants/config'
+
+export const cookies = new Cookies()
+
+export const clearAllAuthCookies = () => {
+    cookies.remove('rememberMe')
+    cookies.remove('isLoggedIn')
+    cookies.remove('email')
+    cookies.remove('code')
+    cookies.remove('token')
+}
+
+export const keepAuthAlive = ({ path, maxAge }) => {
+    cookies.set('rememberMe', cookies.get('rememberMe'), { path, maxAge })
+    cookies.set('isLoggedIn', cookies.get('isLoggedIn'), { path, maxAge })
+    cookies.set('email', cookies.get('email'), { path, maxAge })
+    cookies.set('code', cookies.get('code'), { path, maxAge })
+    cookies.set('token', cookies.get('token'), { path, maxAge })
+}
+
 export const dateOptions = {
     year: 'numeric',
     month: 'long',
@@ -57,41 +82,6 @@ export const draftVariables = {
     INSCRIPTION_DATE: '[INSCRIPTION_DATE]',
 }
 
-export const replacePlaceholders = ({
-    userFullName,
-    sessionName,
-    startDate,
-    location,
-    lessons,
-    inscriptionDate,
-    template: { body, emailSubject },
-}) => {
-    const placeholdersMapper = {
-        [draftVariables.PARTICIPANT_NOM]: userFullName,
-        [draftVariables.SESSION_NOM]: sessionName,
-        [draftVariables.SESSION_DATE_DÉBUT]: startDate,
-        [draftVariables.LIEU]: location,
-        [draftVariables.SESSION_RÉSUMÉ_DATES]: lessons,
-        [draftVariables.INSCRIPTION_DATE]: inscriptionDate,
-    }
-
-    let enrichedEmailContent = body
-
-    let enrichedEmailSubject = emailSubject
-
-    Object.entries(placeholdersMapper).forEach(([placeholder, value]) => {
-        if (body.includes(placeholder)) {
-            enrichedEmailContent = enrichedEmailContent.replaceAll(placeholder, value)
-        }
-
-        if (emailSubject.includes(placeholder)) {
-            enrichedEmailSubject = enrichedEmailSubject.replaceAll(placeholder, value)
-        }
-    })
-
-    return { emailContent: enrichedEmailContent, emailSubject: enrichedEmailSubject }
-}
-
 export const formatDate = ({ dateString, isTimeVisible, isDateVisible }) => {
     const date = new Date(dateString)
     const getDay = () => (date.getDate() < 10 ? `0${date.getDate()}` : date.getDate())
@@ -106,4 +96,86 @@ export const formatDate = ({ dateString, isTimeVisible, isDateVisible }) => {
     const getTime = () => (isTimeVisible === true ? `${date.getHours()}h${getMinutes()}` : null)
 
     return [getDate(), getTime()].filter(Boolean).join(', ')
+}
+
+export const isObjEmpty = (obj) => Object.keys(obj).length === 0
+
+export const callApi = async ({ path = '', method = 'GET', headers, body, successCallback = () => {} }) => {
+    try {
+        const url = `${new URL(path, MIDDLEWARE_URL)}`
+
+        const response = await fetch(url, {
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                ...headers,
+            },
+            method,
+            body,
+        })
+
+        if (response.status !== 200) {
+            const { message, stack } = await response.json()
+
+            /* eslint-disable-next-line no-console */
+            console.error(stack)
+
+            toast.error(
+                <>
+                    <p>{`${response.status} - ${response.statusText}`}</p>
+                    <p>{message}</p>
+                </>,
+                { autoClose: false }
+            )
+            fetch(`${MIDDLEWARE_URL}/reportError`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                },
+                body: JSON.stringify({ date: formatDate({ dateString: new Date() }), errorDescription: message }),
+            })
+
+            return
+        }
+
+        const resultJson = response.json()
+
+        successCallback()
+
+        return resultJson
+    } catch (error) {
+        /* eslint-disable-next-line no-console */
+        console.error(error.message)
+
+        toast.error(
+            <>
+                <p>Middleware is down or being redeployed. Please, retry in a minute.</p>
+                <p>Message: {error.message}</p>
+            </>,
+            { autoClose: false, toastId: 'middleware-is-down' }
+        )
+
+        const RetryToast = ({ closeToast }) => {
+            return (
+                <div>
+                    Retry the action
+                    <Button
+                        className="d-block mb-1"
+                        variant="primary"
+                        onClick={() => {
+                            callApi({ path, method, headers, body, successCallback })
+                            closeToast()
+                        }}
+                    >
+                        <FontAwesomeIcon icon={faRotateRight} /> Retry
+                    </Button>
+                </div>
+            )
+        }
+
+        toast(({ closeToast }) => <RetryToast closeToast={closeToast} />, {
+            autoClose: false,
+            toastId: `retry-${path}`,
+        })
+    }
 }

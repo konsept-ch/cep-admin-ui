@@ -1,32 +1,26 @@
 import { useNavigate, useLocation } from 'react-router-dom'
-import { Nav, Navbar, Container, NavDropdown } from 'react-bootstrap'
+import { Nav, Navbar, Container } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-    faDollar,
-    faFileSignature,
-    faChartLineUp,
-    faGear,
     faSitemap,
-    faFileInvoiceDollar,
     faPresentationScreen,
     faGraduationCap,
     faCalendarDays,
     faCalendarStar,
-    faMemo,
-    faMessage,
+    faArrowRightFromBracket,
     faEnvelopeOpenText,
 } from '@fortawesome/pro-light-svg-icons'
 import {
     PATH_INSCRIPTIONS,
     PATH_SESSIONS,
     PATH_AGENDA,
-    PATH_NOTIFICATIONS,
     PATH_FORMATIONS,
     PATH_TEMPLATES,
     PATH_ORGANIZATIONS,
 } from '../constants/constants'
+import { clearAllAuthCookies } from '../utils'
 
-export const Navigation = () => {
+export const Navigation = ({ isLoggedIn }) => {
     const navigate = useNavigate()
     const location = useLocation()
 
@@ -83,15 +77,19 @@ export const Navigation = () => {
                         <Nav.Link>
                             <FontAwesomeIcon icon={faGear} /> Paramètres
                         </Nav.Link> */}
-                        <Nav.Link>
-                            <FontAwesomeIcon icon={faMemo} /> Logs
-                        </Nav.Link>
                     </Nav>
-                    <Nav activeKey={location.pathname}>
-                        <Nav.Link href={PATH_NOTIFICATIONS} onClick={goTo(PATH_NOTIFICATIONS)}>
-                            <FontAwesomeIcon icon={faMessage} /> Notifications
-                        </Nav.Link>
-                    </Nav>
+
+                    {isLoggedIn && (
+                        <Nav>
+                            <Nav.Link
+                                onClick={() => {
+                                    clearAllAuthCookies()
+                                }}
+                            >
+                                <FontAwesomeIcon icon={faArrowRightFromBracket} style={{ color: 'red' }} /> Déconnexion
+                            </Nav.Link>
+                        </Nav>
+                    )}
                 </Navbar.Collapse>
             </Container>
         </Navbar>

@@ -4,12 +4,12 @@ import { v4 as uuidv4 } from 'uuid'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUp, faDown } from '@fortawesome/pro-solid-svg-icons'
 import { MIDDLEWARE_URL } from '../constants/config'
-import { mapClassNameToEventType, mapEventTypeToClassName } from '../utils'
+import { mapClassNameToEventType, mapEventTypeToClassName, callApi } from '../utils'
 import { splitComment } from '../constants/constants'
 // import { RichEditor } from './RichEditor'
 import { toast } from 'react-toastify'
 
-export const CourseDetailsModal = ({ closeModal, courseDetailsData, onAfterSave }) => {
+export const CourseDetailsModal = ({ closeModal, courseDetailsData = {}, onAfterSave }) => {
     const generateDefaultEvent = () => ({ id: uuidv4(), type: 'f2f', title: '', description: '' })
     const parser = new DOMParser()
     const doc = parser.parseFromString(courseDetailsData.description, 'text/html')
@@ -220,12 +220,11 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData, onAfterSave 
                 <Button
                     variant="primary"
                     onClick={async () => {
-                        const courseData = await fetch(`${MIDDLEWARE_URL}/courseBySlug/${courseDetailsData.slug}`)
-                        const courseJson = await courseData.json()
+                        const courseData = await callApi({ path: `courseBySlug/${courseDetailsData.slug}` })
 
-                        console.log('compare', courseJson.description, courseDetailsData.description)
+                        console.log('compare', courseData.description, courseDetailsData.description)
 
-                        if (courseJson.description !== courseDetailsData.description) {
+                        if (courseData.description !== courseDetailsData.description) {
                             toast.error(
                                 'Erreur ! Des modifications sur la même formation ont été faites directement dans Claroline, vous devriez refaire vos modifications, veuillez rafraîchir la page (bouton F5) avant de continuer.',
                                 { position: 'top-right', autoClose: false }
@@ -288,19 +287,18 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData, onAfterSave 
                                     .join('')}
                             </div>`
 
-                            const savedCourseResponse = await fetch(
-                                `${MIDDLEWARE_URL}/saveCourseById/${courseDetailsData.id}`,
-                                {
-                                    method: 'put',
-                                    headers: { 'content-type': 'application/json' },
-                                    body: JSON.stringify({
-                                        ...courseJson,
-                                        description: `${courseJson.description.split(splitComment)[0]}${programText}`,
-                                    }),
-                                }
-                            )
+                            const savedCourseResponse = callApi({
+                                path: `saveCourseById/${courseDetailsData.id}`,
+                                method: 'put',
+                                headers: { 'content-type': 'application/json' },
+                                body: JSON.stringify({
+                                    ...courseData,
+                                    description: `${courseData.description.split(splitComment)[0]}${programText}`,
+                                }),
+                                successCallback: () => toast.success('Succès !'),
+                            })
+
                             console.log(savedCourseResponse)
-                            toast.success('Succès !')
                         }
 
                         onAfterSave()

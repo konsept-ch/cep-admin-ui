@@ -1,25 +1,23 @@
 import { call, takeEvery, put } from 'redux-saga/effects'
 
-import { FETCH_SESSIONS, UPDATE_SESSION, FETCH_SESSIONS_LESSONS } from '../constants/sessions'
-import { setSessionsAction, setSessionsLessonsAction } from '../actions/sessions.ts'
+import { FETCH_SESSIONS, UPDATE_SESSION } from '../constants/sessions'
+import { setSessionsAction } from '../actions/sessions.ts'
 import { callService } from './sagaUtils'
 import { setGridLoadingAction } from '../actions/loading'
 
-function* fetchSessionsSaga() {
+function* fetchSessionsSaga(action) {
     yield put(setGridLoadingAction({ loading: true }))
-    const sessions = yield call(callService, { endpoint: 'sessions' })
+    const sessions = yield call(callService, { endpoint: 'sessions', action })
 
     yield put(setSessionsAction({ sessions }))
     yield put(setGridLoadingAction({ loading: false }))
 }
 
-function* fetchSessionsLessonsSaga() {
-    const sessionsLessons = yield call(callService, { endpoint: 'sessions/lessons' })
+function* updateSessionSaga(action) {
+    const {
+        payload: { sessionId, areInvitesSent, sessionName, startDate },
+    } = action
 
-    yield put(setSessionsLessonsAction({ sessionsLessons }))
-}
-
-function* updateSessionSaga({ payload: { sessionId, areInvitesSent, sessionName, startDate } }) {
     yield put(setGridLoadingAction({ loading: true }))
 
     yield call(callService, {
@@ -31,6 +29,7 @@ function* updateSessionSaga({ payload: { sessionId, areInvitesSent, sessionName,
             },
             body: JSON.stringify({ areInvitesSent, sessionName, startDate }),
         },
+        action,
     })
 
     yield put(setGridLoadingAction({ loading: false }))
@@ -38,6 +37,5 @@ function* updateSessionSaga({ payload: { sessionId, areInvitesSent, sessionName,
 
 export function* sessionsSaga() {
     yield takeEvery(FETCH_SESSIONS, fetchSessionsSaga)
-    yield takeEvery(FETCH_SESSIONS_LESSONS, fetchSessionsLessonsSaga)
     yield takeEvery(UPDATE_SESSION, updateSessionSaga)
 }

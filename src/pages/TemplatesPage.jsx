@@ -178,20 +178,9 @@ export function TemplatesPage() {
                                         templateId: selectedTemplateData.templateId,
                                     }}
                                     shouldHaveVariables
+                                    isEmailSubjectInput
                                 />
-                                <label>Corps de le SMS :</label>
-                                <EmailTemplateBodyInput
-                                    className="email-body-input"
-                                    onChange={(value) =>
-                                        setSelectedTemplateData({ ...selectedTemplateData, smsBody: value })
-                                    }
-                                    value={{
-                                        value: selectedTemplateData.smsBody,
-                                        templateId: selectedTemplateData.templateId,
-                                    }}
-                                    shouldHandleKeyCommand
-                                    shouldHaveVariables
-                                />
+
                                 <label>Corps de l'e-mail :</label>
                                 <EmailTemplateBodyInput
                                     className="email-body-input"
@@ -205,6 +194,20 @@ export function TemplatesPage() {
                                     shouldHandleKeyCommand
                                     shouldHaveVariables
                                 />
+
+                                <label>Texte de l'SMS :</label>
+                                <EmailTemplateBodyInput
+                                    className="email-body-input"
+                                    onChange={(value) =>
+                                        setSelectedTemplateData({ ...selectedTemplateData, smsBody: value })
+                                    }
+                                    value={{
+                                        value: selectedTemplateData.smsBody,
+                                        templateId: selectedTemplateData.templateId,
+                                    }}
+                                    shouldHaveVariables
+                                />
+
                                 <label>Valable pour statuts :</label>
                                 <Select
                                     onChange={(selectedStatuses) =>
