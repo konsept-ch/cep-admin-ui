@@ -9,13 +9,14 @@ import { cookies, formatDate } from '../utils'
 export function* callService({ endpoint, action, successCallback = () => {}, options = {} }) {
     try {
         const result = yield fetch(`${MIDDLEWARE_URL}/${endpoint}`, {
+            ...options,
             headers: {
                 'Access-Control-Allow-Origin': '*',
                 'x-login-email-address': cookies.get('email'),
                 'x-login-email-code': cookies.get('code'),
                 'x-login-token': cookies.get('token'),
+                ...options.headers,
             },
-            ...options,
         })
 
         if (result.status !== 200) {
