@@ -36,9 +36,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
         } else {
             clearAllAuthCookies()
         }
-    }, [])
 
-    useEffect(() => {
         cookies.addChangeListener(({ name, value }) => {
             // clear when logout event is triggered
             if (name === 'isLoggedIn' && typeof value === 'undefined') {
@@ -53,72 +51,6 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
             }
         })
     }, [])
-
-    const onSendCodeButtonClick = (event) => {
-        event.preventDefault()
-        setCodeLoading(true)
-        setCodeSent(false)
-        ;(async () => {
-            const response = await (
-                await fetch(`${MIDDLEWARE_URL}/auth/sendCode`, {
-                    method: 'post',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*',
-                    },
-                    body: JSON.stringify({ email }),
-                })
-            ).json()
-
-            const { isCodeSendingSuccessful } = response
-
-            if (isCodeSendingSuccessful) {
-                setCodeSent(true)
-            } else {
-                toast.error("Votre token n'est pas trouvé dans Claroline, merci de contacter votre administrateur")
-            }
-            setCodeLoading(false)
-        })()
-    }
-
-    const onLoginButtonClick = (event) => {
-        event.preventDefault()
-        setLoginLoading(true)
-        ;(async () => {
-            const response = await (
-                await fetch(`${MIDDLEWARE_URL}/auth/checkCodeAndToken`, {
-                    method: 'post',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*',
-                        'x-login-email-address': email,
-                        'x-login-email-code': code,
-                        'x-login-token': token,
-                    },
-                    body: JSON.stringify({ email, code, token }),
-                })
-            ).json()
-
-            const { areCodeAndTokenCorrect } = response
-
-            if (areCodeAndTokenCorrect) {
-                cookies.set('rememberMe', shouldRememberMe, { path, maxAge })
-                cookies.set('isLoggedIn', true, { path, maxAge })
-                cookies.set('email', email, { path, maxAge })
-                cookies.set('code', code, { path, maxAge })
-                cookies.set('token', token, { path, maxAge })
-
-                setLoggedIn(true)
-
-                keepAliveInterval = setInterval(() => {
-                    keepAuthAlive({ path, maxAge })
-                }, (maxAge / 2) * 1000)
-            } else {
-                toast.error("Votre token n'est pas trouvé dans Claroline, merci de contacter votre administrateur")
-            }
-            setLoginLoading(false)
-        })()
-    }
 
     const fieldUnderConstructionText = ' (en construction, pas encore fonctionnel, laissez vide)'
 
@@ -149,24 +81,38 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                                     Vous allez recevoir un e-mail avec un code temporaire
                                 </Form.Text>
                             </Form.Group>
-                            {/* <Form.Group className="mb-3">
-                                <Form.Label>Environnement de travail</Form.Label>
-                                <InputGroup>
-                                    <InputGroup.Text>
-                                        <FontAwesomeIcon icon={faGlobe} />
-                                    </InputGroup.Text>
-                                    <Form.Select
-                                        aria-label="Environnement"
-                                        // value={type}
-                                        // onChange={onChangeEventField({ fieldName: 'type', id })}
-                                    >
-                                        <option value="dev">DEV (cep-dev.ch)</option>
-                                        <option value="val">VAL (cep-val.ch)</option>
-                                        <option value="prod">PROD (cep.swiss)</option>
-                                    </Form.Select>
-                                </InputGroup>
-                            </Form.Group> */}
-                            <Button variant="primary" type="submit" onClick={onSendCodeButtonClick}>
+                            <Button
+                                variant="primary"
+                                type="submit"
+                                onClick={(event) => {
+                                    event.preventDefault()
+                                    setCodeLoading(true)
+                                    setCodeSent(false)
+                                    ;(async () => {
+                                        const response = await (
+                                            await fetch(`${MIDDLEWARE_URL}/auth/sendCode`, {
+                                                method: 'post',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                    'Access-Control-Allow-Origin': '*',
+                                                },
+                                                body: JSON.stringify({ email }),
+                                            })
+                                        ).json()
+
+                                        const { isCodeSendingSuccessful } = response
+
+                                        if (isCodeSendingSuccessful) {
+                                            setCodeSent(true)
+                                        } else {
+                                            toast.error(
+                                                "Votre token n'est pas trouvé dans Claroline, merci de contacter votre administrateur"
+                                            )
+                                        }
+                                        setCodeLoading(false)
+                                    })()
+                                }}
+                            >
                                 <FontAwesomeIcon icon={faPaperPlaneTop} /> Envoyer code
                             </Button>
                             {isCodeLoading && <Spinner animation="grow" size="sm" />}
@@ -217,7 +163,50 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                                     Rester identifié.e même après fermeture de navigateur (max. 30 minutes)
                                 </Form.Text>
                             </Form.Group>
-                            <Button variant="primary" type="submit" onClick={onLoginButtonClick}>
+                            <Button
+                                variant="primary"
+                                type="submit"
+                                onClick={(event) => {
+                                    event.preventDefault()
+                                    setLoginLoading(true)
+                                    ;(async () => {
+                                        const response = await (
+                                            await fetch(`${MIDDLEWARE_URL}/auth/checkCodeAndToken`, {
+                                                method: 'post',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                    'Access-Control-Allow-Origin': '*',
+                                                    'x-login-email-address': email,
+                                                    'x-login-email-code': code,
+                                                    'x-login-token': token,
+                                                },
+                                                body: JSON.stringify({ email, code, token }),
+                                            })
+                                        ).json()
+
+                                        const { areCodeAndTokenCorrect } = response
+
+                                        if (areCodeAndTokenCorrect) {
+                                            cookies.set('rememberMe', shouldRememberMe, { path, maxAge })
+                                            cookies.set('isLoggedIn', true, { path, maxAge })
+                                            cookies.set('email', email, { path, maxAge })
+                                            cookies.set('code', code, { path, maxAge })
+                                            cookies.set('token', token, { path, maxAge })
+
+                                            setLoggedIn(true)
+
+                                            keepAliveInterval = setInterval(() => {
+                                                keepAuthAlive({ path, maxAge })
+                                            }, (maxAge / 2) * 1000)
+                                        } else {
+                                            toast.error(
+                                                "Votre token n'est pas trouvé dans Claroline, merci de contacter votre administrateur"
+                                            )
+                                        }
+                                        setLoginLoading(false)
+                                    })()
+                                }}
+                            >
                                 <FontAwesomeIcon icon={faArrowRightToBracket} /> Connexion
                             </Button>
                             {isLoginLoading && <Spinner animation="grow" size="sm" />}
