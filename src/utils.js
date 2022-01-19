@@ -107,6 +107,9 @@ export const callApi = async ({ path = '', method = 'GET', headers, body, succes
         const response = await fetch(url, {
             headers: {
                 'Access-Control-Allow-Origin': '*',
+                'x-login-email-address': cookies.get('email'),
+                'x-login-email-code': cookies.get('code'),
+                'x-login-token': cookies.get('token'),
                 ...headers,
             },
             method,
