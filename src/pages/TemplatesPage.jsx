@@ -43,6 +43,7 @@ export function TemplatesPage() {
     const checkIsTemplateChanged = () => {
         return (
             selectedTemplateData !== null &&
+            templates != null &&
             !equals(
                 templates.find(({ templateId }) => templateId === selectedTemplateData.templateId),
                 selectedTemplateData

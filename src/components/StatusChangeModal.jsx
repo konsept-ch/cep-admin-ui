@@ -61,14 +61,14 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                     <h6>Détails de l'inscription</h6>
                     <dl>
                         <dt>Date d'inscription</dt>
-                        <dd>{formatDate({ dateString: statusChangeData.date, isDateVisible: true })}</dd>
+                        <dd>{formatDate({ dateString: statusChangeData.inscriptionDate, isDateVisible: true })}</dd>
                         <dt>Statut actuel de l'inscription</dt>
                         <dd>{statusChangeData.status}</dd>
                     </dl>
                     <hr />
                     <dl>
                         <dt>Nom du participant</dt>
-                        <dd>{statusChangeData.user.name}</dd>
+                        <dd>{`${statusChangeData.user.firstName} ${statusChangeData.user.lastName}`}</dd>
                         <dt>E-mail du participant</dt>
                         <dd>
                             <a href={`mailto:${statusChangeData.user.email}`}>{statusChangeData.user.email}</a>
@@ -81,7 +81,7 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                         <dt>Nom de la session</dt>
                         <dd>{statusChangeData.session.name}</dd>
                         <dt>Date de début</dt>
-                        <dd>{formatDate({ dateString: statusChangeData.session.restrictions.dates[0] })}</dd>
+                        <dd>{formatDate({ dateString: statusChangeData.session.startDate })}</dd>
                         <dt>Statut de la session</dt>
                         <dd>(à faire)</dd>
                     </dl>
