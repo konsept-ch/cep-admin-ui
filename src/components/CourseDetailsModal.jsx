@@ -287,7 +287,7 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData = {}, onAfter
                                     .join('')}
                             </div>`
 
-                            const savedCourseResponse = callApi({
+                            const savedCourseResponse = await callApi({
                                 path: `saveCourseById/${courseDetailsData.id}`,
                                 method: 'put',
                                 headers: { 'content-type': 'application/json' },

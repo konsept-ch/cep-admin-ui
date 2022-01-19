@@ -10,7 +10,7 @@ import {
     faArrowRightToBracket,
     // faGlobe,
 } from '@fortawesome/pro-regular-svg-icons'
-import { cookies, clearAllAuthCookies, keepAuthAlive } from './utils'
+import { cookies, clearAllAuthCookies, keepAuthAlive, callApi } from './utils'
 import { authCookiesMaxAgeSeconds, MIDDLEWARE_URL } from './constants/config'
 
 let keepAliveInterval
@@ -85,19 +85,14 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
         event.preventDefault()
         setLoginLoading(true)
         ;(async () => {
-            const response = await (
-                await fetch(`${MIDDLEWARE_URL}/auth/checkCodeAndToken`, {
-                    method: 'post',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*',
-                        'x-login-email-address': email,
-                        'x-login-email-code': code,
-                        'x-login-token': token,
-                    },
-                    body: JSON.stringify({ email, code, token }),
-                })
-            ).json()
+            const response = await callApi({
+                path: 'auth/checkCodeAndToken',
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                successCallback: () => toast.success('Login OK !'),
+            })
 
             const { areCodeAndTokenCorrect } = response
 
