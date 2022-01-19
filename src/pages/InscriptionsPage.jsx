@@ -53,21 +53,21 @@ export function InscriptionsPage() {
             filter: 'agDateColumnFilter',
             headerTooltip: 'La date de début de la session',
             sort: 'asc',
-            valueFormatter: ({ value }) => formatDate({ dateString: value }),
+            // valueFormatter: ({ value }) => formatDate({ dateString: value }),
             type: 'numericColumn',
         },
     ]
 
     const rowData = inscriptions
         .filter((current) => current != null)
-        .map(({ id, user, session, status, date }) => ({
+        .map(({ id, user, session, status, inscriptionDate }) => ({
             id,
-            participant: user.name,
+            participant: `${user.firstName} ${user.lastName}`,
             profession: '(à faire)',
             session: session.name,
             status,
-            startDate: session.restrictions.dates[0],
-            inscriptionDate: date,
+            startDate: session.startDate,
+            inscriptionDate,
         }))
 
     return (
