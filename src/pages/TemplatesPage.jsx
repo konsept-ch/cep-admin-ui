@@ -31,8 +31,8 @@ export function TemplatesPage() {
 
     const generateNewTemplate = () => ({
         title: 'Nouveau modèle',
-        description: '',
-        body: '',
+        descriptionText: '',
+        emailBody: '',
         emailSubject: '',
         smsBody: '',
         statuses: inscriptionStatuses.map((current) => ({ value: current, label: current })),
@@ -64,8 +64,8 @@ export function TemplatesPage() {
                                 templates.map(
                                     ({
                                         title,
-                                        description,
-                                        body,
+                                        descriptionText,
+                                        emailBody,
                                         statuses,
                                         templateId,
                                         isUsedForSessionInvites,
@@ -81,10 +81,10 @@ export function TemplatesPage() {
                                                           selectNewTemplate: () =>
                                                               setSelectedTemplateData({
                                                                   title,
-                                                                  description,
+                                                                  descriptionText,
                                                                   emailSubject,
                                                                   smsBody,
-                                                                  body,
+                                                                  emailBody,
                                                                   statuses,
                                                                   templateId,
                                                                   isUsedForSessionInvites,
@@ -92,10 +92,10 @@ export function TemplatesPage() {
                                                       })
                                                     : setSelectedTemplateData({
                                                           title,
-                                                          description,
+                                                          descriptionText,
                                                           emailSubject,
                                                           smsBody,
-                                                          body,
+                                                          emailBody,
                                                           statuses,
                                                           templateId,
                                                           isUsedForSessionInvites,
@@ -113,7 +113,7 @@ export function TemplatesPage() {
                                                     </Badge>
                                                 )}
                                             </div>
-                                            {description && <p>{description}</p>}
+                                            {descriptionText && <p>{descriptionText}</p>}
                                         </ListGroup.Item>
                                     )
                                 )}
@@ -161,9 +161,9 @@ export function TemplatesPage() {
                                         as="textarea"
                                         placeholder="Description de la séance"
                                         style={{ height: '100px' }}
-                                        value={selectedTemplateData.description}
+                                        value={selectedTemplateData.descriptionText}
                                         onChange={({ target: { value } }) =>
-                                            setSelectedTemplateData({ ...selectedTemplateData, description: value })
+                                            setSelectedTemplateData({ ...selectedTemplateData, descriptionText: value })
                                         }
                                     />
                                 </FloatingLabel>
@@ -185,10 +185,10 @@ export function TemplatesPage() {
                                 <EmailTemplateBodyInput
                                     className="email-body-input"
                                     onChange={(value) =>
-                                        setSelectedTemplateData({ ...selectedTemplateData, body: value })
+                                        setSelectedTemplateData({ ...selectedTemplateData, emailBody: value })
                                     }
                                     value={{
-                                        value: selectedTemplateData.body,
+                                        value: selectedTemplateData.emailBody,
                                         templateId: selectedTemplateData.templateId,
                                     }}
                                     shouldHandleKeyCommand

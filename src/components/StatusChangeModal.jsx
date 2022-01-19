@@ -99,7 +99,7 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                             onClick={() =>
                                 setSelectedTemplateData({
                                     templateId: 'no-email',
-                                    body: 'Aucun e-mail ne sera envoyé',
+                                    emailBody: 'Aucun e-mail ne sera envoyé',
                                     emailSubject: null,
                                 })
                             }
@@ -111,11 +111,11 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                             <p>Aucun e-mail ne sera envoyé</p>
                         </ListGroup.Item>
                         {emailTemplates.length > 0 &&
-                            emailTemplates.map(({ title, description, body, templateId, emailSubject }) => (
+                            emailTemplates.map(({ title, descriptionText, emailBody, templateId, emailSubject }) => (
                                 <ListGroup.Item
                                     key={templateId}
                                     onClick={() => {
-                                        setSelectedTemplateData({ body, templateId, emailSubject })
+                                        setSelectedTemplateData({ emailBody, templateId, emailSubject })
                                         fetchTemplatePreviews({ templateId })
                                     }}
                                     className={classNames({
@@ -123,7 +123,7 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                                     })}
                                 >
                                     <h4>{title}</h4>
-                                    <p>{description}</p>
+                                    <p>{descriptionText}</p>
                                 </ListGroup.Item>
                             ))}
                     </ListGroup>
