@@ -66,7 +66,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                         'Content-Type': 'application/json',
                         'Access-Control-Allow-Origin': '*',
                     },
-                    body: JSON.stringify({ email }),
+                    body: JSON.stringify({ email, code }),
                 })
             ).json()
 
@@ -91,6 +91,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                body: JSON.stringify({ email, code, token }),
                 successCallback: () => toast.success('Login OK !'),
             })
 
@@ -115,8 +116,6 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
         })()
     }
 
-    const fieldUnderConstructionText = ' (en construction, pas encore fonctionnel, laissez vide)'
-
     return isLoggedIn ? (
         children
     ) : (
@@ -128,7 +127,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                         <Form className="mb-4">
                             <h4 className="mt-4">1/2 - Votre courriel :</h4>
                             <Form.Group className="mb-3" controlId="formBasicEmail">
-                                <Form.Label>Courriel{fieldUnderConstructionText}</Form.Label>
+                                <Form.Label>Courriel</Form.Label>
                                 <InputGroup>
                                     <InputGroup.Text>
                                         <FontAwesomeIcon icon={faAt} />
@@ -170,7 +169,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                         <Form>
                             <h4 className="mt-4">2/2 - Votre code et token :</h4>
                             <Form.Group className="mb-3" controlId="formBasicCode">
-                                <Form.Label>Code reçu{fieldUnderConstructionText}</Form.Label>
+                                <Form.Label>Code reçu</Form.Label>
                                 <InputGroup>
                                     <InputGroup.Text>
                                         <FontAwesomeIcon icon={faInputNumeric} />
