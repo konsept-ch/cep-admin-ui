@@ -188,7 +188,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                                 </Form.Text>
                             </Form.Group>
                             <Form.Group className="mb-3" controlId="formBasicPassword">
-                                <Form.Label>Token secret</Form.Label>
+                                <Form.Label>Jeton d'authentification</Form.Label>
                                 <InputGroup>
                                     <InputGroup.Text>
                                         <FontAwesomeIcon icon={faKeySkeleton} />
@@ -201,7 +201,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                                     />
                                 </InputGroup>
                                 <Form.Text className="text-muted">
-                                    Votre token secret personnel associé à votre compte
+                                    Votre token secret personnel associé à votre compte Claroline
                                 </Form.Text>
                             </Form.Group>
                             <Form.Group className="mb-3" controlId="formBasicRememberMe">
