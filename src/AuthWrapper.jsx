@@ -92,7 +92,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ email, code, token }),
-                successCallback: () => toast.success('Login OK !'),
+                // successCallback: () => toast.success('Login OK !'),
             })
 
             const { areCodeAndTokenCorrect } = response
@@ -110,7 +110,9 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                     keepAuthAlive({ path, maxAge })
                 }, (maxAge / 2) * 1000)
             } else {
-                toast.error("Votre token n'est pas trouvé dans Claroline, merci de contacter votre administrateur")
+                toast.error(
+                    "Votre token n'est pas trouvé dans Claroline ou n'est pas associé à votre compte, ou votre code e-mail n'est pas correct"
+                )
             }
             setLoginLoading(false)
         })()
@@ -198,7 +200,9 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                                         onChange={({ target: { value } }) => setToken(value)}
                                     />
                                 </InputGroup>
-                                <Form.Text className="text-muted">Votre token secret personnel</Form.Text>
+                                <Form.Text className="text-muted">
+                                    Votre token secret personnel associé à votre compte
+                                </Form.Text>
                             </Form.Group>
                             <Form.Group className="mb-3" controlId="formBasicRememberMe">
                                 <Form.Check
