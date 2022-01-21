@@ -79,25 +79,25 @@ export function SessionsPage() {
             headerTooltip: 'Est-ce que la session est cachée',
             valueGetter: ({ data: { hidden } }) => (hidden ? 'Cachée' : 'Visible'),
         },
-        {
-            field: 'invited',
-            headerName: 'Invitée',
-            filter: 'agTextColumnFilter',
-            cellEditor: 'agRichSelectCellEditor',
-            headerTooltip: 'Est-ce que la session est invitée',
-            editable: true,
-            valueGetter: ({ data: { invited } }) => (invited ? 'Oui' : 'Non'),
-            cellEditorParams: { values: ['Oui', 'Non'] },
-            onCellValueChanged: (data) =>
-                dispatch(
-                    updateSessionAction({
-                        sessionId: data.data.id,
-                        areInvitesSent: data.newValue,
-                        sessionName: data.data.name,
-                        startDate: data.data.startDate,
-                    })
-                ),
-        },
+        // {
+        //     field: 'invited',
+        //     headerName: 'Invitée',
+        //     filter: 'agTextColumnFilter',
+        //     cellEditor: 'agRichSelectCellEditor',
+        //     headerTooltip: 'Est-ce que la session est invitée',
+        //     editable: true,
+        //     valueGetter: ({ data: { invited } }) => (invited ? 'Oui' : 'Non'),
+        //     cellEditorParams: { values: ['Oui', 'Non'] },
+        //     onCellValueChanged: (data) =>
+        //         dispatch(
+        //             updateSessionAction({
+        //                 sessionId: data.data.id,
+        //                 areInvitesSent: data.newValue,
+        //                 sessionName: data.data.name,
+        //                 startDate: data.data.startDate,
+        //             })
+        //         ),
+        // },
     ]
 
     const rowData = sessions?.map(
