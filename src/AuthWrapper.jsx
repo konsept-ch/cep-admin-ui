@@ -10,7 +10,7 @@ import {
     faArrowRightToBracket,
     // faGlobe,
 } from '@fortawesome/pro-regular-svg-icons'
-import { cookies, clearAllAuthCookies, keepAuthAlive } from './utils'
+import { cookies, clearAllAuthCookies, keepAuthAlive, callApi } from './utils'
 import { authCookiesMaxAgeSeconds, MIDDLEWARE_URL } from './constants/config'
 
 let keepAliveInterval
@@ -66,7 +66,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                         'Content-Type': 'application/json',
                         'Access-Control-Allow-Origin': '*',
                     },
-                    body: JSON.stringify({ email }),
+                    body: JSON.stringify({ email, code }),
                 })
             ).json()
 
@@ -85,19 +85,15 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
         event.preventDefault()
         setLoginLoading(true)
         ;(async () => {
-            const response = await (
-                await fetch(`${MIDDLEWARE_URL}/auth/checkCodeAndToken`, {
-                    method: 'post',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*',
-                        'x-login-email-address': email,
-                        'x-login-email-code': code,
-                        'x-login-token': token,
-                    },
-                    body: JSON.stringify({ email, code, token }),
-                })
-            ).json()
+            const response = await callApi({
+                path: 'auth/checkCodeAndToken',
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, code, token }),
+                // successCallback: () => toast.success('Login OK !'),
+            })
 
             const { areCodeAndTokenCorrect } = response
 
@@ -114,13 +110,13 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                     keepAuthAlive({ path, maxAge })
                 }, (maxAge / 2) * 1000)
             } else {
-                toast.error("Votre token n'est pas trouvé dans Claroline, merci de contacter votre administrateur")
+                toast.error(
+                    "Votre token n'est pas trouvé dans Claroline ou n'est pas associé à votre compte, ou votre code e-mail n'est pas correct"
+                )
             }
             setLoginLoading(false)
         })()
     }
-
-    const fieldUnderConstructionText = ' (en construction, pas encore fonctionnel, laissez vide)'
 
     return isLoggedIn ? (
         children
@@ -133,7 +129,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                         <Form className="mb-4">
                             <h4 className="mt-4">1/2 - Votre courriel :</h4>
                             <Form.Group className="mb-3" controlId="formBasicEmail">
-                                <Form.Label>Courriel{fieldUnderConstructionText}</Form.Label>
+                                <Form.Label>Courriel</Form.Label>
                                 <InputGroup>
                                     <InputGroup.Text>
                                         <FontAwesomeIcon icon={faAt} />
@@ -175,7 +171,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                         <Form>
                             <h4 className="mt-4">2/2 - Votre code et token :</h4>
                             <Form.Group className="mb-3" controlId="formBasicCode">
-                                <Form.Label>Code reçu{fieldUnderConstructionText}</Form.Label>
+                                <Form.Label>Code reçu</Form.Label>
                                 <InputGroup>
                                     <InputGroup.Text>
                                         <FontAwesomeIcon icon={faInputNumeric} />
@@ -192,7 +188,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                                 </Form.Text>
                             </Form.Group>
                             <Form.Group className="mb-3" controlId="formBasicPassword">
-                                <Form.Label>Token secret</Form.Label>
+                                <Form.Label>Jeton d'authentification</Form.Label>
                                 <InputGroup>
                                     <InputGroup.Text>
                                         <FontAwesomeIcon icon={faKeySkeleton} />
@@ -204,7 +200,9 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                                         onChange={({ target: { value } }) => setToken(value)}
                                     />
                                 </InputGroup>
-                                <Form.Text className="text-muted">Votre token secret personnel</Form.Text>
+                                <Form.Text className="text-muted">
+                                    Votre token secret personnel associé à votre compte Claroline
+                                </Form.Text>
                             </Form.Group>
                             <Form.Group className="mb-3" controlId="formBasicRememberMe">
                                 <Form.Check
