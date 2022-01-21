@@ -61,7 +61,7 @@ export function SessionsPage() {
             headerName: 'Date de création',
             filter: 'agDateColumnFilter',
             headerTooltip: 'La date de création de la session',
-            valueFormatter: ({ value }) => formatDate({ dateString: value }),
+            valueFormatter: ({ value }) => formatDate({ dateString: value, isDateVisible: true }),
             type: 'numericColumn',
         },
         {
@@ -69,7 +69,7 @@ export function SessionsPage() {
             headerName: 'Dernière modification',
             filter: 'agDateColumnFilter',
             headerTooltip: 'La date de la dernière modification',
-            valueFormatter: ({ value }) => formatDate({ dateString: value }),
+            valueFormatter: ({ value }) => formatDate({ dateString: value, isDateVisible: true }),
             type: 'numericColumn',
         },
         {

@@ -81,7 +81,7 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                         <dt>Nom de la session</dt>
                         <dd>{statusChangeData.session.name}</dd>
                         <dt>Date de début</dt>
-                        <dd>{formatDate({ dateString: statusChangeData.session.startDate })}</dd>
+                        <dd>{formatDate({ dateString: statusChangeData.session.startDate, isDateVisible: true })}</dd>
                         <dt>Statut de la session</dt>
                         <dd>(à faire)</dd>
                     </dl>
