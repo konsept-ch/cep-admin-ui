@@ -61,7 +61,7 @@ export function SessionsPage() {
             headerName: 'Date de création',
             filter: 'agDateColumnFilter',
             headerTooltip: 'La date de création de la session',
-            valueFormatter: ({ value }) => formatDate({ dateString: value }),
+            valueFormatter: ({ value }) => formatDate({ dateString: value, isDateVisible: true }),
             type: 'numericColumn',
         },
         {
@@ -69,7 +69,7 @@ export function SessionsPage() {
             headerName: 'Dernière modification',
             filter: 'agDateColumnFilter',
             headerTooltip: 'La date de la dernière modification',
-            valueFormatter: ({ value }) => formatDate({ dateString: value }),
+            valueFormatter: ({ value }) => formatDate({ dateString: value, isDateVisible: true }),
             type: 'numericColumn',
         },
         {
@@ -79,25 +79,31 @@ export function SessionsPage() {
             headerTooltip: 'Est-ce que la session est cachée',
             valueGetter: ({ data: { hidden } }) => (hidden ? 'Cachée' : 'Visible'),
         },
-        {
-            field: 'invited',
-            headerName: 'Invitée',
-            filter: 'agTextColumnFilter',
-            cellEditor: 'agRichSelectCellEditor',
-            headerTooltip: 'Est-ce que la session est invitée',
-            editable: true,
-            valueGetter: ({ data: { invited } }) => (invited ? 'Oui' : 'Non'),
-            cellEditorParams: { values: ['Oui', 'Non'] },
-            onCellValueChanged: (data) =>
-                dispatch(
-                    updateSessionAction({
-                        sessionId: data.data.id,
-                        areInvitesSent: data.newValue,
-                        sessionName: data.data.name,
-                        startDate: data.data.startDate,
-                    })
-                ),
-        },
+        // {
+        //     field: 'invited',
+        //     headerName: 'Invitée',
+        //     filter: 'agTextColumnFilter',
+        //     cellEditor: 'agRichSelectCellEditor',
+        //     headerTooltip: 'Est-ce que la session est invitée',
+        //     editable: true,
+        //     valueGetter: ({ data: { invited } }) => (invited ? 'Oui' : 'Non'),
+        //     cellEditorParams: { values: ['Oui', 'Non'] },
+        //     onCellValueChanged: (data) => {
+        //         const areInvitesSentMapper = {
+        //             Oui: true,
+        //             Non: false,
+        //         }
+
+        //         return dispatch(
+        //             updateSessionAction({
+        //                 sessionId: data.data.id,
+        //                 areInvitesSent: areInvitesSentMapper[data.newValue],
+        //                 sessionName: data.data.name,
+        //                 startDate: data.data.startDate,
+        //             })
+        //         )
+        //     },
+        // },
     ]
 
     const rowData = sessions?.map(
