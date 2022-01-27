@@ -138,7 +138,7 @@ export function OrganizationsPage() {
                         suppressCount: true,
                     },
                 }}
-                groupDefaultExpanded={0}
+                groupDefaultExpanded={1}
                 groupIncludeFooter={false}
             />
         </>
