@@ -88,15 +88,21 @@ export function SessionsPage() {
         //     editable: true,
         //     valueGetter: ({ data: { invited } }) => (invited ? 'Oui' : 'Non'),
         //     cellEditorParams: { values: ['Oui', 'Non'] },
-        //     onCellValueChanged: (data) =>
-        //         dispatch(
+        //     onCellValueChanged: (data) => {
+        //         const areInvitesSentMapper = {
+        //             Oui: true,
+        //             Non: false,
+        //         }
+
+        //         return dispatch(
         //             updateSessionAction({
         //                 sessionId: data.data.id,
-        //                 areInvitesSent: data.newValue,
+        //                 areInvitesSent: areInvitesSentMapper[data.newValue],
         //                 sessionName: data.data.name,
         //                 startDate: data.data.startDate,
         //             })
-        //         ),
+        //         )
+        //     },
         // },
     ]
 
