@@ -135,7 +135,7 @@ export const callApi = async ({ path = '', method = 'GET', headers, body, succes
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*',
                 },
-                body: JSON.stringify({ date: formatDate({ dateString: new Date() }), errorDescription: message }),
+                body: JSON.stringify({ errorDescription: message }),
             })
 
             return
