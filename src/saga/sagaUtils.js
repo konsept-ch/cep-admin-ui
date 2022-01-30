@@ -38,7 +38,7 @@ export function* callService({ endpoint, action, successCallback = () => {}, opt
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*',
                 },
-                body: JSON.stringify({ date: formatDate({ dateString: new Date() }), errorDescription: message }),
+                body: JSON.stringify({ errorDescription: message }),
             })
 
             return
