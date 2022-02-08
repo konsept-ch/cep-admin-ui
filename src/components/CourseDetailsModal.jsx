@@ -163,7 +163,7 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData = {}, onAfter
                     </Col>
                     <Col sm={8}>
                         <h4>Prévisualisation de la description</h4>
-                        <h3>Déroulement</h3>
+                        <h5>Déroulement</h5>
                         <div className="course-resume">
                             <div className="info-holder">
                                 <h4>durée totale</h4>
@@ -234,7 +234,7 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData = {}, onAfter
                         } else {
                             const programText = `${splitComment}
                             <!-- START Resume section-->
-                            <h3>Déroulement</h3>
+                            <h5>Déroulement</h5>
                             <div class="course-resume">
                               <div class="info-holder">
                                 <h4>durée totale</h4>
