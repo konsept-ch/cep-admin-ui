@@ -80,7 +80,7 @@ export function InscriptionsPage() {
                 columnDefs={columnDefs}
                 rowData={rowData}
                 rowClassRules={{
-                    'inscription-row-highlight': ({ data: { inscriptionDate, startDate, status } }) => {
+                    'inscription-row-highlight': ({ data: { inscriptionDate, startDate, status } = {} }) => {
                         const milisecondsIn5days = 1000 * 60 * 60 * 24 * 5
                         const isSession5daysAfterInscription =
                             new Date(startDate).getTime() - new Date(inscriptionDate).getTime() <= milisecondsIn5days

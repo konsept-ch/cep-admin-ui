@@ -84,7 +84,7 @@ export const Grid = ({ name, ...gridProps }) => {
                             defaultToolPanel: false,
                             hiddenByDefault: false,
                         },
-                        reactUi: false, // TODO fix crash when grouping, then make this true
+                        // suppressReactUi: true,
                         immutableData: true,
                         enableCharts: true,
                         enableRangeSelection: true,
