@@ -12,5 +12,4 @@ module.exports = {
         'selector-no-qualifying-type': null,
         'function-no-unknown': null, // fixes color.adjust false positives, remove when fixed
     },
-    ignoreFiles: ['./node_modules/**/*'],
 }
