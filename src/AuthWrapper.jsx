@@ -126,7 +126,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                 <Col md="auto">
                     <h1 className="mt-4">Connexion</h1>
                     {!isCodeSent ? (
-                        <Form className="mb-4">
+                        <Form className="mb-4" onSubmit={onSendCodeButtonClick}>
                             <h4 className="mt-4">1/2 - Votre courriel :</h4>
                             <Form.Group className="mb-3" controlId="formBasicEmail">
                                 <Form.Label>Courriel</Form.Label>
@@ -135,6 +135,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                                         <FontAwesomeIcon icon={faAt} />
                                     </InputGroup.Text>
                                     <Form.Control
+                                        required
                                         type="email"
                                         placeholder="mail@example.com"
                                         value={email}
@@ -162,7 +163,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                                     </Form.Select>
                                 </InputGroup>
                             </Form.Group> */}
-                            <Button variant="primary" type="submit" onClick={onSendCodeButtonClick}>
+                            <Button variant="primary" type="submit">
                                 <FontAwesomeIcon icon={faPaperPlaneTop} /> Envoyer code
                             </Button>
                             {isCodeLoading && <Spinner animation="grow" size="sm" />}
