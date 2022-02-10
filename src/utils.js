@@ -51,6 +51,7 @@ export const statuses = {
     REFUSEE_PAR_RH: 'Réfusée par RH',
     ENTREE_WEB: 'Entrée Web',
     ACCEPTEE_PAR_CEP: 'Acceptée par CEP',
+    REFUSEE_PAR_CEP: 'Refusée par CEP',
     INVITEE: 'Invitée',
     PROPOSEE: 'Proposée',
     ANNULEE: 'Annulée',
