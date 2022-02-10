@@ -32,7 +32,7 @@ export const Grid = ({ name, ...gridProps }) => {
 
     useEffect(() => {
         gridProps.getGridApi?.(gridApi)
-    }, [gridApi])
+    }, [gridApi, gridProps])
 
     useEffect(() => {
         // this setTimeout fixes a race condition

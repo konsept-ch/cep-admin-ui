@@ -17,7 +17,7 @@ export function OrganizationsPage() {
 
     useEffect(() => {
         dispatch(fetchOrganizationsAction())
-    }, [])
+    }, [dispatch])
 
     const columnDefs = [
         {
@@ -66,7 +66,7 @@ export function OrganizationsPage() {
             </Helmet>
             <CommonModal
                 title="Ajouter organisations"
-                content={<p>Ajouter toutes les organisations (sauf NREF) dans chaque formation ?</p>}
+                content={<p>Ajouter toutes les organisations dans chaque formation ?</p>}
                 footer={
                     <Button
                         variant="success"

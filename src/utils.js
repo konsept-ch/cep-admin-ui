@@ -29,6 +29,7 @@ export const dateOptions = {
     weekday: 'long',
     hour: 'numeric',
     minute: 'numeric',
+    timeZone: 'UTC',
 }
 
 export const mapEventTypeToClassName = ({ type }) =>
