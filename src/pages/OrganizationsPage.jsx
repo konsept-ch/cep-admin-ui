@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Button, Spinner } from 'react-bootstrap'
 
 import { fetchOrganizationsAction } from '../actions/organizations'
-import { addOrganisationsToCoursesAction, removeOrganisationsFromCoursesAction } from '../actions/courses'
+import { addOrganizationsToCoursesAction, removeOrganizationsFromCoursesAction } from '../actions/courses'
 import { organizationsSelector, loadingSelector } from '../reducers'
 import { Grid, CommonModal } from '../components'
 import { Helmet } from 'react-helmet-async'
@@ -71,7 +71,7 @@ export function OrganizationsPage() {
                     <Button
                         variant="success"
                         onClick={() => {
-                            dispatch(addOrganisationsToCoursesAction())
+                            dispatch(addOrganizationsToCoursesAction())
                         }}
                     >
                         {isSagaLoading ? (
@@ -93,7 +93,7 @@ export function OrganizationsPage() {
                     <Button
                         variant="danger"
                         onClick={() => {
-                            dispatch(removeOrganisationsFromCoursesAction())
+                            dispatch(removeOrganizationsFromCoursesAction())
                         }}
                     >
                         {isSagaLoading ? (

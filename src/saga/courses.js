@@ -3,8 +3,8 @@ import { call, takeEvery, put } from 'redux-saga/effects'
 import {
     FETCH_COURSES,
     UPDATE_COURSE,
-    ADD_ORGANISATIONS_TO_COURSES,
-    REMOVE_ORGANISATIONS_FROM_COURSES,
+    ADD_ORGANIZATIONS_TO_COURSES,
+    REMOVE_ORGANIZATIONS_FROM_COURSES,
 } from '../constants/courses'
 import { setCoursesAction } from '../actions/courses'
 import { callService } from './sagaUtils'
@@ -40,11 +40,11 @@ function* updateCourseSaga(action) {
     yield put(setLoadingAction({ loading: false }))
 }
 
-function* addOrganisationsToCoursesSaga(action) {
+function* addOrganizationsToCoursesSaga(action) {
     yield put(setLoadingAction({ loading: true }))
 
     yield call(callService, {
-        endpoint: 'courses/addOrganisations',
+        endpoint: 'courses/addOrganizations',
         options: { method: 'PUT' },
         action,
     })
@@ -52,11 +52,11 @@ function* addOrganisationsToCoursesSaga(action) {
     yield put(setLoadingAction({ loading: false }))
 }
 
-function* removeOrganisationsFromCoursesSaga(action) {
+function* removeOrganizationsFromCoursesSaga(action) {
     yield put(setLoadingAction({ loading: true }))
 
     yield call(callService, {
-        endpoint: 'courses/removeOrganisations',
+        endpoint: 'courses/removeOrganizations',
         options: { method: 'PUT' },
         action,
     })
@@ -67,6 +67,6 @@ function* removeOrganisationsFromCoursesSaga(action) {
 export function* coursesSaga() {
     yield takeEvery(FETCH_COURSES, fetchCoursesSaga)
     yield takeEvery(UPDATE_COURSE, updateCourseSaga)
-    yield takeEvery(ADD_ORGANISATIONS_TO_COURSES, addOrganisationsToCoursesSaga)
-    yield takeEvery(REMOVE_ORGANISATIONS_FROM_COURSES, removeOrganisationsFromCoursesSaga)
+    yield takeEvery(ADD_ORGANIZATIONS_TO_COURSES, addOrganizationsToCoursesSaga)
+    yield takeEvery(REMOVE_ORGANIZATIONS_FROM_COURSES, removeOrganizationsFromCoursesSaga)
 }
