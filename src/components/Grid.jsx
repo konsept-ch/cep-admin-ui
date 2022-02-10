@@ -84,7 +84,7 @@ export const Grid = ({ name, ...gridProps }) => {
                             defaultToolPanel: false,
                             hiddenByDefault: false,
                         },
-                        // suppressReactUi: true,
+                        suppressReactUi: true, // TODO report cell editor dropdown issue to ag-Grid
                         immutableData: true,
                         enableCharts: true,
                         enableRangeSelection: true,
