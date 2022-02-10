@@ -32,7 +32,7 @@ export const Grid = ({ name, ...gridProps }) => {
 
     useEffect(() => {
         gridProps.getGridApi?.(gridApi)
-    }, [gridApi])
+    }, [gridApi, gridProps])
 
     useEffect(() => {
         // this setTimeout fixes a race condition
@@ -84,7 +84,7 @@ export const Grid = ({ name, ...gridProps }) => {
                             defaultToolPanel: false,
                             hiddenByDefault: false,
                         },
-                        reactUi: false, // TODO fix crash when grouping, then make this true
+                        suppressReactUi: true, // TODO report cell editor dropdown issue to ag-Grid
                         immutableData: true,
                         enableCharts: true,
                         enableRangeSelection: true,

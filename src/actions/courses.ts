@@ -2,8 +2,8 @@ import {
     FETCH_COURSES,
     SET_COURSES,
     UPDATE_COURSE,
-    ADD_ORGANISATIONS_TO_COURSES,
-    REMOVE_ORGANISATIONS_FROM_COURSES,
+    ADD_ORGANIZATIONS_TO_COURSES,
+    REMOVE_ORGANIZATIONS_FROM_COURSES,
 } from '../constants/courses'
 
 export const fetchCoursesAction = () => ({
@@ -21,12 +21,12 @@ export const updateCourseAction = ({ courseId, field, newValue }: { courseId: an
     payload: { courseId, field, newValue },
 })
 
-export const addOrganisationsToCoursesAction = () => ({
-    type: ADD_ORGANISATIONS_TO_COURSES,
+export const addOrganizationsToCoursesAction = () => ({
+    type: ADD_ORGANIZATIONS_TO_COURSES,
     payload: {},
 })
 
-export const removeOrganisationsFromCoursesAction = () => ({
-    type: REMOVE_ORGANISATIONS_FROM_COURSES,
+export const removeOrganizationsFromCoursesAction = () => ({
+    type: REMOVE_ORGANIZATIONS_FROM_COURSES,
     payload: {},
 })
