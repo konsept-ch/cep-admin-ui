@@ -12,6 +12,7 @@ import { TemplatesPage } from './pages/TemplatesPage'
 import { AgendaPage } from './pages/AgendaPage'
 import { TypographyPage } from './pages/TypographyPage'
 import { NotificationsPage } from './pages/NotificationsPage'
+import { LogsPage } from './pages/LogsPage'
 import { Navigation } from './components'
 import { Footer } from './components/Footer'
 import {
@@ -22,6 +23,7 @@ import {
     PATH_FORMATIONS,
     PATH_TEMPLATES,
     PATH_ORGANIZATIONS,
+    PATH_LOGS,
 } from './constants/constants'
 import { ErrorBoundary } from './pages/ErrorBoundaryPage'
 import { OrganizationsPage } from './pages/OrganizationsPage'
@@ -59,6 +61,7 @@ export function App() {
                             <Route exact path={PATH_TEMPLATES} element={<TemplatesPage />} />
                             <Route exact path={PATH_ORGANIZATIONS} element={<OrganizationsPage />} />
                             <Route exact path={PATH_NOTIFICATIONS} element={<NotificationsPage />} />
+                            <Route exact path={PATH_LOGS} element={<LogsPage />} />
                             <Route path="/survey/" element={<SurveyPage />} />
                             <Route path="/typography" element={<TypographyPage />} />
                         </Routes>
