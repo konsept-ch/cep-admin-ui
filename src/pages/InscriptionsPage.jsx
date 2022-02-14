@@ -34,6 +34,9 @@ export function InscriptionsPage() {
                 ({
                     cancellation: 'Annulation',
                     learner: 'Participant',
+                    tutor: 'Formateur',
+                    pending: 'En attente', // ?
+                    group: 'Groupe', // ?
                 }[type] ?? type),
         },
         {
