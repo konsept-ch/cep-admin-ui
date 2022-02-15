@@ -15,7 +15,7 @@ export function CoursesPage() {
     const fetchCourses = useCallback(() => dispatch(fetchCoursesAction()), [dispatch])
     const fetchAdmins = useCallback(() => dispatch(fetchAdminsAction()), [dispatch])
     const updateCourse = useCallback(
-        ({ courseId, field, newValue }) => dispatch(updateCourseAction({ courseId, field, newValue })),
+        ({ courseId, field, newValue, header }) => dispatch(updateCourseAction({ courseId, field, newValue, header })),
         [dispatch]
     )
 
@@ -70,7 +70,12 @@ export function CoursesPage() {
             cellEditor: 'agRichSelectCellEditor',
             cellEditorParams: { values: admins },
             onCellValueChanged: (data) =>
-                updateCourse({ courseId: data.data.id, field: data.colDef.field, newValue: data.newValue }),
+                updateCourse({
+                    courseId: data.data.id,
+                    field: data.colDef.field,
+                    header: data.colDef.headerName,
+                    newValue: data.newValue,
+                }),
             width: 170,
         },
         {
@@ -82,7 +87,12 @@ export function CoursesPage() {
             cellEditor: 'agRichSelectCellEditor',
             cellEditorParams: { values: admins },
             onCellValueChanged: (data) =>
-                updateCourse({ courseId: data.data.id, field: data.colDef.field, newValue: data.newValue }),
+                updateCourse({
+                    courseId: data.data.id,
+                    field: data.colDef.field,
+                    header: data.colDef.headerName,
+                    newValue: data.newValue,
+                }),
             width: 170,
         },
 
@@ -95,7 +105,12 @@ export function CoursesPage() {
             cellEditor: 'agRichSelectCellEditor',
             cellEditorParams: { values: typeStageValues },
             onCellValueChanged: (data) =>
-                updateCourse({ courseId: data.data.id, field: data.colDef.field, newValue: data.newValue }),
+                updateCourse({
+                    courseId: data.data.id,
+                    field: data.colDef.field,
+                    header: data.colDef.headerName,
+                    newValue: data.newValue,
+                }),
             width: 120,
         },
         {
@@ -107,7 +122,12 @@ export function CoursesPage() {
             cellEditor: 'agRichSelectCellEditor',
             cellEditorParams: { values: teachingMethodValues },
             onCellValueChanged: (data) =>
-                updateCourse({ courseId: data.data.id, field: data.colDef.field, newValue: data.newValue }),
+                updateCourse({
+                    courseId: data.data.id,
+                    field: data.colDef.field,
+                    header: data.colDef.headerName,
+                    newValue: data.newValue,
+                }),
             width: 210,
         },
         {
@@ -119,7 +139,12 @@ export function CoursesPage() {
             cellEditor: 'agRichSelectCellEditor',
             cellEditorParams: { values: codeCategoryValues },
             onCellValueChanged: (data) =>
-                updateCourse({ courseId: data.data.id, field: data.colDef.field, newValue: data.newValue }),
+                updateCourse({
+                    courseId: data.data.id,
+                    field: data.colDef.field,
+                    header: data.colDef.headerName,
+                    newValue: data.newValue,
+                }),
             width: 150,
         },
         {

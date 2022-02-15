@@ -16,9 +16,19 @@ export const setCoursesAction = ({ courses }: { courses: any }) => ({
     payload: { courses },
 })
 
-export const updateCourseAction = ({ courseId, field, newValue }: { courseId: any; field: any; newValue: any }) => ({
+export const updateCourseAction = ({
+    courseId,
+    field,
+    newValue,
+    header,
+}: {
+    courseId: any
+    field: any
+    newValue: any
+    header: any
+}) => ({
     type: UPDATE_COURSE,
-    payload: { courseId, field, newValue },
+    payload: { courseId, field, newValue, header },
 })
 
 export const addOrganizationsToCoursesAction = () => ({

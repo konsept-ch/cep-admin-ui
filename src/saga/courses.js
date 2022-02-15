@@ -20,7 +20,7 @@ function* fetchCoursesSaga(action) {
 
 function* updateCourseSaga(action) {
     const {
-        payload: { courseId, field, newValue },
+        payload: { courseId, field, newValue, header },
     } = action
 
     yield put(setLoadingAction({ loading: true }))
@@ -32,7 +32,7 @@ function* updateCourseSaga(action) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ field, newValue }),
+            body: JSON.stringify({ field, newValue, header }),
         },
         action,
     })
