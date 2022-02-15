@@ -10,6 +10,6 @@ module.exports = {
         'max-nesting-depth': null,
         'color-hex-length': 'long',
         'selector-no-qualifying-type': null,
-        'function-no-unknown': null, // fixes color.adjust false positives, remove when fixed
+        'function-no-unknown': [true, { ignoreFunctions: ['color.adjust'] }], // fixes color.adjust false positives, remove when fixed by stylelint-scss
     },
 }

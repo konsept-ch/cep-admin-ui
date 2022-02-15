@@ -27,6 +27,19 @@ export function InscriptionsPage() {
         },
         { field: 'profession', headerName: 'Fonction/Profession' },
         {
+            field: 'type',
+            headerName: "Type d'inscription",
+            filter: 'agSetColumnFilter',
+            valueGetter: ({ data: { type } }) =>
+                ({
+                    cancellation: 'Annulation',
+                    learner: 'Participant',
+                    tutor: 'Formateur',
+                    pending: 'En attente', // ?
+                    group: 'Groupe', // ?
+                }[type] ?? type),
+        },
+        {
             field: 'session',
             headerName: 'Session',
             filter: 'agTextColumnFilter',
@@ -60,10 +73,11 @@ export function InscriptionsPage() {
 
     const rowData = inscriptions
         .filter((current) => current != null)
-        .map(({ id, user, session, status, inscriptionDate }) => ({
+        .map(({ id, user, session, status, inscriptionDate, type }) => ({
             id,
             participant: `${user.firstName} ${user.lastName}`,
             profession: '(à faire)',
+            type,
             session: session.name,
             status,
             startDate: session.startDate,
