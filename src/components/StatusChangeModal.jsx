@@ -74,7 +74,7 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                             <a href={`mailto:${statusChangeData.user.email}`}>{statusChangeData.user.email}</a>
                         </dd>
                         <dt>Profession du participant</dt>
-                        <dd>(à faire)</dd>
+                        <dd>{statusChangeData.user.profession}</dd>
                     </dl>
                     <hr />
                     <dl>
@@ -83,7 +83,7 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                         <dt>Date de début</dt>
                         <dd>{formatDate({ dateString: statusChangeData.session.startDate, isDateVisible: true })}</dd>
                         <dt>Statut de la session</dt>
-                        <dd>(à faire)</dd>
+                        <dd>(à faire - invitée)</dd>
                     </dl>
                 </div>
                 <div className="col">

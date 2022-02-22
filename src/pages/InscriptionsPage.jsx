@@ -69,6 +69,18 @@ export function InscriptionsPage() {
             // valueFormatter: ({ value }) => formatDate({ dateString: value }),
             type: 'numericColumn',
         },
+        {
+            field: 'organization',
+            headerName: 'Entité/Entreprise',
+            filter: 'agTextColumnFilter',
+            headerTooltip: "L'organisation de l'utilisateur",
+        },
+        {
+            field: 'email',
+            headerName: 'E-mail',
+            filter: 'agTextColumnFilter',
+            headerTooltip: "L'e-mail de l'utilisateur",
+        },
     ]
 
     const rowData = inscriptions
@@ -76,12 +88,14 @@ export function InscriptionsPage() {
         .map(({ id, user, session, status, inscriptionDate, type }) => ({
             id,
             participant: `${user.firstName} ${user.lastName}`,
-            profession: '(à faire)',
+            profession: user.profession,
             type,
             session: session.name,
             status,
             startDate: session.startDate,
             inscriptionDate,
+            organization: user.organization,
+            email: user.email,
         }))
 
     return (
