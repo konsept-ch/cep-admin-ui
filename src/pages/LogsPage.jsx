@@ -1,7 +1,18 @@
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
 import { Grid } from '../components'
+import { logsSelector } from '../reducers'
+import { fetchLogsAction } from '../actions/logs.ts'
 
-export const LogsPage = () => {
+export function LogsPage() {
+    const dispatch = useDispatch()
+    const logs = useSelector(logsSelector)
+
+    useEffect(() => {
+        dispatch(fetchLogsAction())
+    }, [dispatch])
+
     const columnDefs = [
         {
             field: 'actor',
@@ -41,6 +52,10 @@ export const LogsPage = () => {
         },
     ]
 
+    const rowData = logs
+
+    console.log(rowData)
+
     return (
         <>
             <Helmet>
@@ -50,7 +65,7 @@ export const LogsPage = () => {
                 {...{
                     name: 'Logs',
                     columnDefs,
-                    rowData: [],
+                    rowData,
                 }}
             />
         </>
