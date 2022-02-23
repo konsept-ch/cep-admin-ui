@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { Grid, CourseDetailsModal } from '../components'
@@ -148,34 +148,38 @@ export function CoursesPage() {
         },
     ]
 
-    const rowData = courses?.map(
-        ({
-            id,
-            name,
-            code,
-            restrictions: { hidden },
-            price,
-            meta: { created, updated, duration },
-            coordinator,
-            responsible,
-            typeStage,
-            teachingMethod,
-            codeCategory,
-        }) => ({
-            id,
-            name,
-            code,
-            duration,
-            price,
-            coordinator,
-            responsible,
-            creationDate: created,
-            lastModifiedDate: updated,
-            hidden,
-            typeStage,
-            teachingMethod,
-            codeCategory,
-        })
+    const rowData = useMemo(
+        () =>
+            courses?.map(
+                ({
+                    id,
+                    name,
+                    code,
+                    restrictions: { hidden },
+                    price,
+                    meta: { created, updated, duration },
+                    coordinator,
+                    responsible,
+                    typeStage,
+                    teachingMethod,
+                    codeCategory,
+                }) => ({
+                    id,
+                    name,
+                    code,
+                    duration,
+                    price,
+                    coordinator,
+                    responsible,
+                    creationDate: created,
+                    lastModifiedDate: updated,
+                    hidden,
+                    typeStage,
+                    teachingMethod,
+                    codeCategory,
+                })
+            ),
+        [courses]
     )
 
     const [selectedCourseId, setSelectedCourseId] = useState()
