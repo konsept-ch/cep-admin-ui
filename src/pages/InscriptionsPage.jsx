@@ -66,7 +66,7 @@ export function InscriptionsPage() {
             filter: 'agDateColumnFilter',
             headerTooltip: 'La date de début de la session',
             sort: 'asc',
-            // valueFormatter: ({ value }) => formatDate({ dateString: value }),
+            valueFormatter: ({ value }) => formatDate({ dateString: value, isDateVisible: true }),
             type: 'numericColumn',
         },
         {
