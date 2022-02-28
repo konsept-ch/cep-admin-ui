@@ -9,6 +9,7 @@ import {
     faCalendarStar,
     faArrowRightFromBracket,
     faEnvelopeOpenText,
+    faChalkboardTeacher,
 } from '@fortawesome/pro-light-svg-icons'
 import {
     PATH_INSCRIPTIONS,
@@ -17,6 +18,7 @@ import {
     PATH_FORMATIONS,
     PATH_TEMPLATES,
     PATH_ORGANIZATIONS,
+    PATH_FORMATEURS,
 } from '../constants/constants'
 import { clearAllAuthCookies } from '../utils'
 
@@ -43,6 +45,9 @@ export const Navigation = ({ isLoggedIn }) => {
                         </Nav.Link>
                         <Nav.Link href={PATH_INSCRIPTIONS} onClick={goTo(PATH_INSCRIPTIONS)}>
                             <FontAwesomeIcon icon={faCalendarStar} /> Inscriptions
+                        </Nav.Link>
+                        <Nav.Link href={PATH_FORMATEURS} onClick={goTo(PATH_FORMATEURS)}>
+                            <FontAwesomeIcon icon={faChalkboardTeacher} /> Formateurs
                         </Nav.Link>
                         <Nav.Link href={PATH_SESSIONS} onClick={goTo(PATH_SESSIONS)}>
                             <FontAwesomeIcon icon={faPresentationScreen} /> Sessions
