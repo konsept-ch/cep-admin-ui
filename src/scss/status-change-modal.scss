@@ -4,7 +4,24 @@
     max-width: 1500px;
 }
 
+.mass-status-change-modal {
+    max-width: calc(100vw - 200px);
+
+    .mass-status-change-modal-content {
+        max-height: calc(100vh - 50px);
+
+        .modal-body {
+            flex-direction: column;
+            .list-group {
+                overflow-y: scroll;
+    max-height: calc(100% - 160px);
+            }
+        }
+    }
+}
+
 .status-change-modal,
+.mass-status-change-modal,
 .templates-page {
     .list-group-item:hover {
         background-color: color.adjust($color-brown-10, $lightness: 3%);

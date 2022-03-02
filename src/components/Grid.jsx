@@ -18,6 +18,7 @@ import PuffLoader from 'react-spinners/PuffLoader'
 
 import { localeText } from '../agGridLocaleText'
 import { gridLoadingSelector } from '../reducers'
+import { gridContextMenu } from '../utils'
 
 const Loader = () => <PuffLoader color="#e8ca01" loading size={100} />
 
@@ -122,17 +123,7 @@ export const Grid = ({ name, ...gridProps }) => {
                             customLoadingOverlay: Loader,
                         },
                         loadingOverlayComponent: 'customLoadingOverlay',
-                        getContextMenuItems: () => [
-                            'autoSizeAll',
-                            'expandAll',
-                            'contractAll',
-                            'copy',
-                            'copyWithHeaders',
-                            'paste',
-                            'resetColumns',
-                            'export',
-                            'chartRange',
-                        ],
+                        getContextMenuItems: () => gridContextMenu,
                         getRowNodeId: (data) => data.id,
                         localeText,
                         onGridReady: ({ api }) => setGridApi(api),

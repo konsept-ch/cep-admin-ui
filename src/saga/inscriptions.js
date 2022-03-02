@@ -1,6 +1,6 @@
 import { call, takeEvery, put } from 'redux-saga/effects'
 
-import { FETCH_INSCRIPTIONS, UPDATE_INSCRIPTIONS } from '../constants/inscriptions'
+import { FETCH_INSCRIPTIONS, UPDATE_INSCRIPTIONS, MASS_UPDATE_INSCRIPTIONS } from '../constants/inscriptions'
 import { setInscriptionsAction } from '../actions/inscriptions'
 import { setLoadingAction, setGridLoadingAction } from '../actions/loading'
 import { callService } from './sagaUtils'
@@ -38,7 +38,31 @@ function* updateInscriptionsSaga(action) {
     yield put(setLoadingAction({ loading: false }))
 }
 
+function* massUpdateInscriptionsSaga(action) {
+    const {
+        payload: { inscriptionsIds, newStatus, emailTemplateId, successCallback },
+    } = action
+
+    yield put(setLoadingAction({ loading: true }))
+
+    yield call(callService, {
+        endpoint: 'inscriptions/mass/update',
+        options: {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ status: newStatus, emailTemplateId, inscriptionsIds }),
+        },
+        action,
+        successCallback,
+    })
+
+    yield put(setLoadingAction({ loading: false }))
+}
+
 export function* inscriptionsSaga() {
     yield takeEvery(FETCH_INSCRIPTIONS, fetchInscriptionsSaga)
     yield takeEvery(UPDATE_INSCRIPTIONS, updateInscriptionsSaga)
+    yield takeEvery(MASS_UPDATE_INSCRIPTIONS, massUpdateInscriptionsSaga)
 }
