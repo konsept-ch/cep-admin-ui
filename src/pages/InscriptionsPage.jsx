@@ -27,19 +27,6 @@ export function InscriptionsPage() {
         },
         { field: 'profession', headerName: 'Fonction/Profession' },
         {
-            field: 'type',
-            headerName: "Type d'inscription",
-            filter: 'agSetColumnFilter',
-            valueGetter: ({ data: { type } }) =>
-                ({
-                    cancellation: 'Annulation',
-                    learner: 'Participant',
-                    tutor: 'Formateur',
-                    pending: 'En attente', // ?
-                    group: 'Groupe', // ?
-                }[type] ?? type),
-        },
-        {
             field: 'session',
             headerName: 'Session',
             filter: 'agTextColumnFilter',
@@ -61,12 +48,44 @@ export function InscriptionsPage() {
             },
         },
         {
+            field: 'organization',
+            headerName: 'Organisation',
+            filter: 'agTextColumnFilter',
+            headerTooltip: "L'organisation de l'utilisateur",
+        },
+        {
+            field: 'hierarchy',
+            headerName: "Hiérarchie de l'entité/entreprise",
+            filter: 'agTextColumnFilter',
+            headerTooltip: "L'organisation de l'utilisateur",
+            initialHide: true,
+        },
+        {
+            field: 'email',
+            headerName: 'E-mail',
+            filter: 'agTextColumnFilter',
+            headerTooltip: "L'e-mail de l'utilisateur",
+        },
+        {
+            field: 'type',
+            headerName: "Type d'inscription",
+            filter: 'agSetColumnFilter',
+            valueGetter: ({ data: { type } }) =>
+                ({
+                    cancellation: 'Annulation',
+                    learner: 'Participant',
+                    tutor: 'Formateur',
+                    pending: 'En attente', // ?
+                    group: 'Groupe', // ?
+                }[type] ?? type),
+        },
+        {
             field: 'startDate',
             headerName: 'Date de début',
             filter: 'agDateColumnFilter',
             headerTooltip: 'La date de début de la session',
             sort: 'asc',
-            // valueFormatter: ({ value }) => formatDate({ dateString: value }),
+            valueFormatter: ({ value }) => formatDate({ dateString: value, isDateVisible: true }),
             type: 'numericColumn',
         },
     ]
@@ -76,12 +95,15 @@ export function InscriptionsPage() {
         .map(({ id, user, session, status, inscriptionDate, type }) => ({
             id,
             participant: `${user.firstName} ${user.lastName}`,
-            profession: '(à faire)',
+            profession: user.profession,
             type,
             session: session.name,
             status,
             startDate: session.startDate,
             inscriptionDate,
+            hierarchy: user.hierarchy,
+            organization: user.organization,
+            email: user.email,
         }))
 
     return (

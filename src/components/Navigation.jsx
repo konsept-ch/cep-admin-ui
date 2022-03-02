@@ -9,6 +9,7 @@ import {
     faCalendarStar,
     faArrowRightFromBracket,
     faEnvelopeOpenText,
+    faChalkboardTeacher,
 } from '@fortawesome/pro-light-svg-icons'
 import {
     PATH_INSCRIPTIONS,
@@ -17,6 +18,7 @@ import {
     PATH_FORMATIONS,
     PATH_TEMPLATES,
     PATH_ORGANIZATIONS,
+    PATH_FORMATEURS,
 } from '../constants/constants'
 import { clearAllAuthCookies } from '../utils'
 
@@ -38,22 +40,25 @@ export const Navigation = ({ isLoggedIn }) => {
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto" activeKey={location.pathname}>
-                        <Nav.Link href={PATH_AGENDA} onClick={goTo(PATH_AGENDA)}>
+                        <Nav.Link href={`/${PATH_AGENDA}`} onClick={goTo(PATH_AGENDA)}>
                             <FontAwesomeIcon icon={faCalendarDays} /> Agenda
                         </Nav.Link>
-                        <Nav.Link href={PATH_INSCRIPTIONS} onClick={goTo(PATH_INSCRIPTIONS)}>
+                        <Nav.Link href={`/${PATH_INSCRIPTIONS}`} onClick={goTo(PATH_INSCRIPTIONS)}>
                             <FontAwesomeIcon icon={faCalendarStar} /> Inscriptions
                         </Nav.Link>
-                        <Nav.Link href={PATH_SESSIONS} onClick={goTo(PATH_SESSIONS)}>
+                        <Nav.Link href={`/${PATH_FORMATEURS}`} onClick={goTo(PATH_FORMATEURS)}>
+                            <FontAwesomeIcon icon={faChalkboardTeacher} /> Formateurs
+                        </Nav.Link>
+                        <Nav.Link href={`/${PATH_SESSIONS}`} onClick={goTo(PATH_SESSIONS)}>
                             <FontAwesomeIcon icon={faPresentationScreen} /> Sessions
                         </Nav.Link>
-                        <Nav.Link href={PATH_FORMATIONS} onClick={goTo(PATH_FORMATIONS)}>
+                        <Nav.Link href={`/${PATH_FORMATIONS}`} onClick={goTo(PATH_FORMATIONS)}>
                             <FontAwesomeIcon icon={faGraduationCap} /> Formations
                         </Nav.Link>
-                        <Nav.Link href={PATH_TEMPLATES} onClick={goTo(PATH_TEMPLATES)}>
+                        <Nav.Link href={`/${PATH_TEMPLATES}`} onClick={goTo(PATH_TEMPLATES)}>
                             <FontAwesomeIcon icon={faEnvelopeOpenText} /> Modèles
                         </Nav.Link>
-                        <Nav.Link href={PATH_ORGANIZATIONS} onClick={goTo(PATH_ORGANIZATIONS)}>
+                        <Nav.Link href={`/${PATH_ORGANIZATIONS}`} onClick={goTo(PATH_ORGANIZATIONS)}>
                             <FontAwesomeIcon icon={faSitemap} /> Organisations
                         </Nav.Link>
                         {/* <NavDropdown

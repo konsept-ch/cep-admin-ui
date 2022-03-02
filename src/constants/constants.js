@@ -12,5 +12,6 @@ export const PATH_TEMPLATES = 'modeles'
 export const PATH_AGENDA = 'agenda'
 export const PATH_NOTIFICATIONS = 'notifications'
 export const PATH_ORGANIZATIONS = 'organisations'
+export const PATH_FORMATEURS = 'formateurs'
 
 export const splitComment = '<!-- AUTO -->'
