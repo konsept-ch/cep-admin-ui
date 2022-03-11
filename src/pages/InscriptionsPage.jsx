@@ -81,6 +81,13 @@ export function InscriptionsPage() {
                 headerTooltip: "L'organisation de l'utilisateur",
             },
             {
+                field: 'organizationCode',
+                headerName: "Code de l'organisation",
+                filter: 'agTextColumnFilter',
+                headerTooltip: "Le code d'organization de l'utilisateur",
+                initialHide: true,
+            },
+            {
                 field: 'hierarchy',
                 headerName: "Hiérarchie de l'entité/entreprise",
                 filter: 'agTextColumnFilter',
@@ -130,6 +137,7 @@ export function InscriptionsPage() {
             status,
             startDate: session.startDate,
             inscriptionDate,
+            organizationCode: user.organizationCode,
             hierarchy: user.hierarchy,
             organization: user.organization,
             email: user.email,
