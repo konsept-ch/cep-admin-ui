@@ -6,6 +6,8 @@ import {
     DELETE_TEMPLATE,
     FETCH_TEMPLATE_PREVIEWS,
     SET_TEMPLATE_PREVIEWS,
+    SET_TEMPLATE_RAW_PREVIEW,
+    FETCH_TEMPLATE_RAW_PREVIEW,
 } from '../constants/templates'
 
 export const fetchTemplatesAction = () => ({
@@ -49,4 +51,14 @@ export const fetchTemplatePreviewsAction = ({
 export const setTemplatePreviewsAction = ({ previews }: { previews: any }) => ({
     type: SET_TEMPLATE_PREVIEWS,
     payload: { previews },
+})
+
+export const setTemplateRawPreviewAction = ({ templateRaw }: { templateRaw: any }) => ({
+    type: SET_TEMPLATE_RAW_PREVIEW,
+    payload: { templateRaw },
+})
+
+export const fetchTemplateRawPreviewAction = ({ templateId }: { templateId: any }) => ({
+    type: FETCH_TEMPLATE_RAW_PREVIEW,
+    payload: { templateId },
 })

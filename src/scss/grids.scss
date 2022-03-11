@@ -2,6 +2,11 @@
     height: calc(100% - 208px); // 208px is the height of the header (149px) + footer (59px)
 }
 
+.mass-status-update-grid {
+    height: 192px;
+    margin-top: 12px;
+}
+
 .grid-search-label {
     width: calc(100% - 60px);
 }
@@ -19,6 +24,7 @@
     }
 }
 
-.general-grid .inscription-row-highlight {
+.general-grid .inscription-row-highlight,
+.mass-status-update-grid .inscription-row-highlight {
     background-color: #ffc9c9;
 }

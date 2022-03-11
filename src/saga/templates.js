@@ -6,8 +6,14 @@ import {
     ADD_TEMPLATE,
     DELETE_TEMPLATE,
     FETCH_TEMPLATE_PREVIEWS,
+    FETCH_TEMPLATE_RAW_PREVIEW,
 } from '../constants/templates'
-import { setTemplatesAction, fetchTemplatesAction, setTemplatePreviewsAction } from '../actions/templates.ts'
+import {
+    setTemplatesAction,
+    fetchTemplatesAction,
+    setTemplatePreviewsAction,
+    setTemplateRawPreviewAction,
+} from '../actions/templates.ts'
 import { setTemplatesLoadingAction } from '../actions/loading.ts'
 import { callService } from './sagaUtils'
 import { setLoadingAction } from '../actions/loading'
@@ -25,7 +31,7 @@ function* fetchTemplatePreviewsSaga(action) {
         payload: { templateId, sessionId, inscriptionId },
     } = action
 
-    yield put(setTemplatesLoadingAction({ loading: true, action }))
+    yield put(setTemplatesLoadingAction({ loading: true }))
     const previews = yield call(callService, {
         endpoint: `template/previews?templateId=${templateId}&sessionId=${sessionId}&inscriptionId=${inscriptionId}`,
         options: {
@@ -38,6 +44,27 @@ function* fetchTemplatePreviewsSaga(action) {
     })
 
     yield put(setTemplatePreviewsAction({ previews }))
+    yield put(setTemplatesLoadingAction({ loading: false }))
+}
+
+function* fetchTemplateRawPreviewSaga(action) {
+    const {
+        payload: { templateId },
+    } = action
+
+    yield put(setTemplatesLoadingAction({ loading: true }))
+    const templateRaw = yield call(callService, {
+        endpoint: `template/previews/massUpdate?templateId=${templateId}`,
+        options: {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        },
+        action,
+    })
+
+    yield put(setTemplateRawPreviewAction({ templateRaw }))
     yield put(setTemplatesLoadingAction({ loading: false }))
 }
 
@@ -117,6 +144,7 @@ function* deleteTemplateSaga(action) {
 export function* templatesSaga() {
     yield takeEvery(FETCH_TEMPLATES, fetchTemplatesSaga)
     yield takeEvery(FETCH_TEMPLATE_PREVIEWS, fetchTemplatePreviewsSaga)
+    yield takeEvery(FETCH_TEMPLATE_RAW_PREVIEW, fetchTemplateRawPreviewSaga)
     yield takeEvery(UPDATE_TEMPLATE, updateTemplateSaga)
     yield takeEvery(ADD_TEMPLATE, addTemplateSaga)
     yield takeEvery(DELETE_TEMPLATE, deleteTemplateSaga)

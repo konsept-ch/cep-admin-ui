@@ -8,7 +8,7 @@ import { parametersSelector, loadingSelector, templatePreviewsSelector, template
 import { statusWarnings, formatDate } from '../utils'
 import { EmailTemplateBodyInput } from './EmailTemplateBodyInput'
 
-export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }) => {
+export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }) => {
     const [selectedTemplateData, setSelectedTemplateData] = useState(null)
     const parameters = useSelector(parametersSelector)
     const isSagaLoading = useSelector(loadingSelector)
@@ -26,15 +26,15 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
         dispatch(
             fetchTemplatePreviewsAction({
                 templateId,
-                sessionId: statusChangeData.session.id,
-                inscriptionId: statusChangeData.id,
+                sessionId: statusUpdateData.session.id,
+                inscriptionId: statusUpdateData.id,
             })
         )
     }
 
     const emailTemplates = parameters?.emailTemplates
         ? parameters.emailTemplates.filter((template) =>
-              template.statuses.find((status) => status.value === statusChangeData.newStatus)
+              template.statuses.find((status) => status.value === statusUpdateData.newStatus)
           )
         : []
 
@@ -50,10 +50,10 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                 <Modal.Title as="h3">Changer le statut d'inscription</Modal.Title>
             </Modal.Header>
             <Modal.Body className="row">
-                {statusWarnings[statusChangeData.status]?.[statusChangeData.newStatus] && (
+                {statusWarnings[statusUpdateData.status]?.[statusUpdateData.newStatus] && (
                     <div className="col-sm-12">
                         <Alert variant="warning">
-                            {statusWarnings[statusChangeData.status][statusChangeData.newStatus]}
+                            {statusWarnings[statusUpdateData.status][statusUpdateData.newStatus]}
                         </Alert>
                     </div>
                 )}
@@ -61,27 +61,27 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                     <h6>Détails de l'inscription</h6>
                     <dl>
                         <dt>Date d'inscription</dt>
-                        <dd>{formatDate({ dateString: statusChangeData.inscriptionDate, isDateVisible: true })}</dd>
+                        <dd>{formatDate({ dateString: statusUpdateData.inscriptionDate, isDateVisible: true })}</dd>
                         <dt>Statut actuel de l'inscription</dt>
-                        <dd>{statusChangeData.status}</dd>
+                        <dd>{statusUpdateData.status}</dd>
                     </dl>
                     <hr />
                     <dl>
                         <dt>Nom du participant</dt>
-                        <dd>{`${statusChangeData.user.firstName} ${statusChangeData.user.lastName}`}</dd>
+                        <dd>{`${statusUpdateData.user.firstName} ${statusUpdateData.user.lastName}`}</dd>
                         <dt>E-mail du participant</dt>
                         <dd>
-                            <a href={`mailto:${statusChangeData.user.email}`}>{statusChangeData.user.email}</a>
+                            <a href={`mailto:${statusUpdateData.user.email}`}>{statusUpdateData.user.email}</a>
                         </dd>
                         <dt>Profession du participant</dt>
-                        <dd>{statusChangeData.user.profession}</dd>
+                        <dd>{statusUpdateData.user.profession}</dd>
                     </dl>
                     <hr />
                     <dl>
                         <dt>Nom de la session</dt>
-                        <dd>{statusChangeData.session.name}</dd>
+                        <dd>{statusUpdateData.session.name}</dd>
                         <dt>Date de début</dt>
-                        <dd>{formatDate({ dateString: statusChangeData.session.startDate, isDateVisible: true })}</dd>
+                        <dd>{formatDate({ dateString: statusUpdateData.session.startDate, isDateVisible: true })}</dd>
                         <dt>Statut de la session</dt>
                         <dd>(à faire - invitée)</dd>
                     </dl>
@@ -90,7 +90,7 @@ export const StatusChangeModal = ({ closeModal, statusChangeData, updateStatus }
                     <Alert variant="primary">
                         <h6>Nouveau statut</h6>
                         <Alert.Heading as="h3" className="mb-0">
-                            {statusChangeData.newStatus}
+                            {statusUpdateData.newStatus}
                         </Alert.Heading>
                     </Alert>
                     <h6>Choix de modèle</h6>
