@@ -33,7 +33,7 @@ function* fetchTemplatePreviewsSaga(action) {
 
     yield put(setTemplatesLoadingAction({ loading: true }))
     const previews = yield call(callService, {
-        endpoint: `template/previews?templateId=${templateId}&sessionId=${sessionId}&inscriptionId=${inscriptionId}`,
+        endpoint: `templates/previews?templateId=${templateId}&sessionId=${sessionId}&inscriptionId=${inscriptionId}`,
         options: {
             method: 'GET',
             headers: {
@@ -54,7 +54,7 @@ function* fetchTemplateRawPreviewSaga(action) {
 
     yield put(setTemplatesLoadingAction({ loading: true }))
     const templateRaw = yield call(callService, {
-        endpoint: `template/previews/massUpdate?templateId=${templateId}`,
+        endpoint: `templates/previews/massUpdate?templateId=${templateId}`,
         options: {
             method: 'GET',
             headers: {
