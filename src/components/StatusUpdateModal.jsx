@@ -76,6 +76,8 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
                         </dd>
                         <dt>Profession du participant</dt>
                         <dd>{statusUpdateData.user.profession}</dd>
+                        <dt>Numéro de téléphone du participant</dt>
+                        <dd>{statusUpdateData.user.phone}</dd>
                     </dl>
                     <hr />
                     <dl>
@@ -198,7 +200,7 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
                         const templateId =
                             selectedTemplateData?.templateId === 'no-email' ? null : selectedTemplateData.templateId
 
-                        updateStatus({ emailTemplateId: templateId })
+                        updateStatus({ emailTemplateId: templateId, shouldSendSms: false })
                     }}
                 >
                     Confirmer
@@ -211,7 +213,7 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
                         const templateId =
                             selectedTemplateData?.templateId === 'no-email' ? null : selectedTemplateData.templateId
 
-                        updateStatus({ emailTemplateId: templateId })
+                        updateStatus({ emailTemplateId: templateId, shouldSendSms: true })
                     }}
                 >
                     Confirmer avec SMS

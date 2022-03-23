@@ -209,12 +209,13 @@ export function InscriptionsPage() {
                         dispatch(fetchInscriptionsAction())
                     }}
                     statusUpdateData={statusUpdateData}
-                    updateStatus={({ emailTemplateId }) =>
+                    updateStatus={({ emailTemplateId, shouldSendSms }) =>
                         dispatch(
                             updateInscriptionStatusAction({
                                 inscriptionId: statusUpdateData.id,
                                 newStatus: statusUpdateData.newStatus,
                                 emailTemplateId,
+                                shouldSendSms,
                                 successCallback: () => {
                                     setIsUpdateModalVisible(false)
                                     setStatusUpdateData(null)

@@ -17,7 +17,7 @@ function* fetchInscriptionsSaga(action) {
 
 function* updateInscriptionsSaga(action) {
     const {
-        payload: { inscriptionId, newStatus, emailTemplateId, successCallback },
+        payload: { inscriptionId, newStatus, emailTemplateId, shouldSendSms, successCallback },
     } = action
 
     yield put(setLoadingAction({ loading: true }))
@@ -29,7 +29,7 @@ function* updateInscriptionsSaga(action) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ status: newStatus, emailTemplateId }),
+            body: JSON.stringify({ status: newStatus, emailTemplateId, shouldSendSms }),
         },
         action,
         successCallback,

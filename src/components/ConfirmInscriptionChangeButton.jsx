@@ -16,7 +16,7 @@ export const ConfirmInscriptionChangeButton = ({
         }
     >
         <div>
-            <Button disabled={isSelectedTemplateDataNull} variant={variant} onClick={onClick}>
+            <Button disabled={isSelectedTemplateDataNull || isLoading} variant={variant} onClick={onClick}>
                 {isLoading ? (
                     <>
                         <Spinner animation="grow" size="sm" /> {children}...

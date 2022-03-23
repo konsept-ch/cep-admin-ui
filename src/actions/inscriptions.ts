@@ -19,15 +19,17 @@ export const updateInscriptionStatusAction = ({
     inscriptionId,
     newStatus,
     emailTemplateId,
+    shouldSendSms,
     successCallback,
 }: {
     inscriptionId: any
     newStatus: any
     emailTemplateId: any
+    shouldSendSms: any
     successCallback: any
 }) => ({
     type: UPDATE_INSCRIPTIONS,
-    payload: { inscriptionId, newStatus, emailTemplateId, successCallback },
+    payload: { inscriptionId, newStatus, emailTemplateId, shouldSendSms, successCallback },
 })
 
 export const massUpdateInscriptionStatusesAction = ({
