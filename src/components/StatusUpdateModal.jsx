@@ -7,6 +7,7 @@ import { fetchTemplatePreviewsAction } from '../actions/templates.ts'
 import { parametersSelector, loadingSelector, templatePreviewsSelector, templatesLoadingSelector } from '../reducers'
 import { statusWarnings, formatDate } from '../utils'
 import { EmailTemplateBodyInput } from './EmailTemplateBodyInput'
+import { ConfirmInscriptionChangeButton } from '.'
 
 export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }) => {
     const [selectedTemplateData, setSelectedTemplateData] = useState(null)
@@ -189,41 +190,34 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
                 </div>
             </Modal.Body>
             <Modal.Footer>
-                <OverlayTrigger
-                    placement="top"
-                    overlay={
-                        <Tooltip>
-                            {selectedTemplateData === null
-                                ? "D'abord sélectionnez un modèle"
-                                : 'Appliquer le changement'}
-                        </Tooltip>
-                    }
-                >
-                    <div>
-                        <Button
-                            disabled={selectedTemplateData === null}
-                            variant="primary"
-                            onClick={() => {
-                                const templateId =
-                                    selectedTemplateData?.templateId === 'no-email'
-                                        ? null
-                                        : selectedTemplateData.templateId
+                <ConfirmInscriptionChangeButton
+                    isSelectedTemplateDataNull={selectedTemplateData === null}
+                    isLoading={isSagaLoading}
+                    variant="primary"
+                    onClick={() => {
+                        const templateId =
+                            selectedTemplateData?.templateId === 'no-email' ? null : selectedTemplateData.templateId
 
-                                updateStatus({ emailTemplateId: templateId })
-                            }}
-                        >
-                            {isSagaLoading ? (
-                                <>
-                                    <Spinner animation="grow" size="sm" /> Confirmer...
-                                </>
-                            ) : (
-                                'Confirmer'
-                            )}
-                        </Button>
-                    </div>
-                </OverlayTrigger>
+                        updateStatus({ emailTemplateId: templateId })
+                    }}
+                >
+                    Confirmer
+                </ConfirmInscriptionChangeButton>
+                <ConfirmInscriptionChangeButton
+                    isSelectedTemplateDataNull={selectedTemplateData === null}
+                    isLoading={isSagaLoading}
+                    variant="warning"
+                    onClick={() => {
+                        const templateId =
+                            selectedTemplateData?.templateId === 'no-email' ? null : selectedTemplateData.templateId
+
+                        updateStatus({ emailTemplateId: templateId })
+                    }}
+                >
+                    Confirmer avec SMS
+                </ConfirmInscriptionChangeButton>
                 <Button
-                    variant="secondary"
+                    variant="outline-primary"
                     onClick={() => {
                         closeModal()
                     }}

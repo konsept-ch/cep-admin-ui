@@ -1,4 +1,7 @@
+import { Button } from 'react-bootstrap'
 import { Helmet } from 'react-helmet-async'
+
+const buttonTypes = ['primary', 'secondary', 'success', 'warning', 'danger', 'info', 'light', 'none', 'dark', 'link']
 
 export const TypographyPage = () => (
     <>
@@ -6,6 +9,22 @@ export const TypographyPage = () => (
             <title>Typography</title>
         </Helmet>
         <div className="p-4">
+            <h1>Buttons</h1>
+            <div>
+                {buttonTypes.map((buttonType) => (
+                    <span>
+                        <Button variant={buttonType}>{buttonType}</Button>{' '}
+                    </span>
+                ))}
+            </div>
+            <h1>Outline Buttons</h1>
+            <div>
+                {buttonTypes.map((buttonType) => (
+                    <span>
+                        <Button variant={`outline-${buttonType}`}>{buttonType}</Button>{' '}
+                    </span>
+                ))}
+            </div>
             <h1>Heading 1</h1>
             <h2>Heading 2</h2>
             <h3>Heading 3</h3>
