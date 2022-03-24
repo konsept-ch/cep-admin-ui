@@ -80,6 +80,7 @@ export const Grid = ({ name, ...gridProps }) => {
             <div className="ag-theme-alpine general-grid">
                 <AgGridReact
                     {...{
+                        // debug: true,
                         sideBar: {
                             toolPanels: ['columns', 'filters'],
                             defaultToolPanel: false,
@@ -95,7 +96,6 @@ export const Grid = ({ name, ...gridProps }) => {
                         groupIncludeFooter: true,
                         groupSelectsChildren: true,
                         suppressAggFuncInHeader: true,
-                        debug: true,
                         rowSelection: 'multiple',
                         rowGroupPanelShow: 'always',
                         pivotPanelShow: 'always',

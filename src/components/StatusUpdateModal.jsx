@@ -77,7 +77,9 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
                         <dt>Profession du participant</dt>
                         <dd>{statusUpdateData.user.profession}</dd>
                         <dt>Numéro de téléphone du participant</dt>
-                        <dd>{statusUpdateData.user.phone}</dd>
+                        <dd>
+                            {statusUpdateData.user.phone} ({statusUpdateData.user.phoneForSms})
+                        </dd>
                     </dl>
                     <hr />
                     <dl>
