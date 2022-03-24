@@ -12,9 +12,10 @@
 
         .modal-body {
             flex-direction: column;
+
             .list-group {
                 overflow-y: scroll;
-    max-height: calc(100% - 160px);
+                max-height: calc(100% - 160px);
             }
         }
     }
