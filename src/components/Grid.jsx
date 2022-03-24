@@ -86,7 +86,6 @@ export const Grid = ({ name, ...gridProps }) => {
                             hiddenByDefault: false,
                         },
                         suppressReactUi: true, // TODO report cell editor dropdown issue to ag-Grid
-                        immutableData: true,
                         enableCharts: true,
                         enableRangeSelection: true,
                         enableCellChangeFlash: true,
@@ -119,12 +118,12 @@ export const Grid = ({ name, ...gridProps }) => {
                                 { statusPanel: 'agAggregationComponent' },
                             ],
                         },
-                        frameworkComponents: {
+                        components: {
                             customLoadingOverlay: Loader,
                         },
                         loadingOverlayComponent: 'customLoadingOverlay',
                         getContextMenuItems: () => gridContextMenu,
-                        getRowNodeId: (data) => data.id,
+                        getRowId: ({ data }) => data.id,
                         localeText,
                         onGridReady: ({ api }) => setGridApi(api),
                         ...gridProps,
