@@ -13,5 +13,6 @@ export const PATH_AGENDA = 'agenda'
 export const PATH_NOTIFICATIONS = 'notifications'
 export const PATH_ORGANIZATIONS = 'organisations'
 export const PATH_FORMATEURS = 'formateurs'
+export const PATH_USERS = 'users'
 
 export const splitComment = '<!-- AUTO -->'

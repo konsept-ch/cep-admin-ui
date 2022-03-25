@@ -19,13 +19,25 @@
     @media print {
         display: none;
     }
+
+    // .dropdown-item {
+    //     padding: 0;
+    // }
 }
 
 .nav-link {
     transition: box-shadow 0.15s linear;
     box-shadow: 0 0 0 0 #e8ca01;
 
+    .dropdown-menu & {
+        margin-left: 5px;
+    }
+
     &.active {
         box-shadow: 0 5px 0 0 #e8ca01;
+
+        .dropdown-menu & {
+            box-shadow: -5px 0 0 0 #e8ca01;
+        }
     }
 }
