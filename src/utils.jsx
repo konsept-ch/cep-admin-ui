@@ -46,7 +46,12 @@ export const mapClassNameToEventType = ({ className }) =>
         'online-async': 'async',
     }[className])
 
-export const statuses = {
+export const FINAL_STATUSES = {
+    ANNULEE: 'Annulée',
+    ECARTEE: 'Écartée',
+}
+
+export const STATUSES = {
     EN_ATTENTE: 'En attente',
     A_TRAITER_PAR_RH: 'À traiter par RH',
     REFUSEE_PAR_RH: 'Réfusée par RH',
@@ -55,13 +60,12 @@ export const statuses = {
     REFUSEE_PAR_CEP: 'Refusée par CEP',
     INVITEE: 'Invitée',
     PROPOSEE: 'Proposée',
-    ANNULEE: 'Annulée',
-    ECARTEE: 'Écartée',
+    ...FINAL_STATUSES,
 }
 
 export const statusWarnings = {
-    [statuses.ECARTEE]: {
-        [statuses.ACCEPTEE_PAR_CEP]:
+    [STATUSES.ECARTEE]: {
+        [STATUSES.ACCEPTEE_PAR_CEP]:
             "Vous êtes en train de changer le de 'Écartée' à 'Acceptée', mais c'est probablement mieux de créer une nouvelle inscription",
     },
 }
@@ -72,7 +76,7 @@ export const getUniqueId = () => {
     return dateString + randomness
 }
 
-export const inscriptionStatuses = Object.values(statuses)
+export const inscriptionStatuses = Object.values(STATUSES)
 
 export const draftVariables = {
     PARTICIPANT_NOM: '[PARTICIPANT_NOM]',
@@ -184,3 +188,38 @@ export const callApi = async ({ path = '', method = 'GET', headers, body, succes
         })
     }
 }
+export const inscriptionsGridRowClassRules = {
+    'inscription-row-highlight': ({ data: { inscriptionDate, startDate, status } = {} }) => {
+        const milisecondsIn5days = 1000 * 60 * 60 * 24 * 5
+        const isSession5daysAfterInscription =
+            new Date(startDate).getTime() - new Date(inscriptionDate).getTime() <= milisecondsIn5days
+
+        const isInscriptionIncoming = status === STATUSES.ENTREE_WEB || status === STATUSES.A_TRAITER_PAR_RH
+
+        return isSession5daysAfterInscription && isInscriptionIncoming
+    },
+}
+
+export const gridContextMenu = [
+    'autoSizeAll',
+    'expandAll',
+    'contractAll',
+    'copy',
+    'copyWithHeaders',
+    'paste',
+    'resetColumns',
+    'export',
+    'chartRange',
+]
+
+export const inscriptionsGridColumnDefs = [
+    'autoSizeAll',
+    'expandAll',
+    'contractAll',
+    'copy',
+    'copyWithHeaders',
+    'paste',
+    'resetColumns',
+    'export',
+    'chartRange',
+]

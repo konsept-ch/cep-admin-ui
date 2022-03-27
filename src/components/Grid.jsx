@@ -18,6 +18,7 @@ import PuffLoader from 'react-spinners/PuffLoader'
 
 import { localeText } from '../agGridLocaleText'
 import { gridLoadingSelector } from '../reducers'
+import { gridContextMenu } from '../utils'
 
 const Loader = () => <PuffLoader color="#e8ca01" loading size={100} />
 
@@ -79,13 +80,13 @@ export const Grid = ({ name, ...gridProps }) => {
             <div className="ag-theme-alpine general-grid">
                 <AgGridReact
                     {...{
+                        // debug: true,
                         sideBar: {
                             toolPanels: ['columns', 'filters'],
                             defaultToolPanel: false,
                             hiddenByDefault: false,
                         },
                         suppressReactUi: true, // TODO report cell editor dropdown issue to ag-Grid
-                        immutableData: true,
                         enableCharts: true,
                         enableRangeSelection: true,
                         enableCellChangeFlash: true,
@@ -95,7 +96,6 @@ export const Grid = ({ name, ...gridProps }) => {
                         groupIncludeFooter: true,
                         groupSelectsChildren: true,
                         suppressAggFuncInHeader: true,
-                        debug: true,
                         rowSelection: 'multiple',
                         rowGroupPanelShow: 'always',
                         pivotPanelShow: 'always',
@@ -118,22 +118,12 @@ export const Grid = ({ name, ...gridProps }) => {
                                 { statusPanel: 'agAggregationComponent' },
                             ],
                         },
-                        frameworkComponents: {
+                        components: {
                             customLoadingOverlay: Loader,
                         },
                         loadingOverlayComponent: 'customLoadingOverlay',
-                        getContextMenuItems: () => [
-                            'autoSizeAll',
-                            'expandAll',
-                            'contractAll',
-                            'copy',
-                            'copyWithHeaders',
-                            'paste',
-                            'resetColumns',
-                            'export',
-                            'chartRange',
-                        ],
-                        getRowNodeId: (data) => data.id,
+                        getContextMenuItems: () => gridContextMenu,
+                        getRowId: ({ data }) => data.id,
                         localeText,
                         onGridReady: ({ api }) => setGridApi(api),
                         ...gridProps,

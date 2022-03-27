@@ -5,9 +5,9 @@ import { setParametersAction } from '../actions/parameters'
 import { callService } from './sagaUtils'
 
 function* fetchParametersSaga(action) {
-    const parameters = yield call(callService, { endpoint: 'parameters', action })
+    const templates = yield call(callService, { endpoint: 'templates', action })
 
-    yield put(setParametersAction({ parameters }))
+    yield put(setParametersAction({ parameters: { emailTemplates: templates } }))
 }
 
 export function* parametersSaga() {

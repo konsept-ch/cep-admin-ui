@@ -1,19 +1,14 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Button, Container, Spinner } from 'react-bootstrap'
 
 import { fetchOrganizationsAction } from '../actions/organizations'
-import { addOrganizationsToCoursesAction, removeOrganizationsFromCoursesAction } from '../actions/courses'
-import { organizationsSelector, loadingSelector } from '../reducers'
-import { Grid, CommonModal } from '../components'
+import { organizationsSelector } from '../reducers'
+import { Grid } from '../components'
 import { Helmet } from 'react-helmet-async'
 
-export function OrganizationsPage() {
-    const [isAddModalOpen, setIsAddModalOpen] = useState(false)
-    const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false)
+export function UsersPage() {
     const dispatch = useDispatch()
     const organizations = useSelector(organizationsSelector)
-    const isSagaLoading = useSelector(loadingSelector)
 
     useEffect(() => {
         dispatch(fetchOrganizationsAction())
@@ -64,50 +59,6 @@ export function OrganizationsPage() {
             <Helmet>
                 <title>Organisations - Former22</title>
             </Helmet>
-            <CommonModal
-                title="Ajouter organisations"
-                content={<p>Ajouter toutes les organisations dans chaque formation ?</p>}
-                footer={
-                    <Button
-                        variant="success"
-                        onClick={() => {
-                            dispatch(addOrganizationsToCoursesAction())
-                        }}
-                    >
-                        {isSagaLoading ? (
-                            <>
-                                <Spinner animation="grow" size="sm" /> Ajouter...
-                            </>
-                        ) : (
-                            'Ajouter'
-                        )}
-                    </Button>
-                }
-                isVisible={isAddModalOpen}
-                onHide={() => setIsAddModalOpen(false)}
-            />
-            <CommonModal
-                title="Supprimer organisations"
-                content={<p>Supprimer toutes les organisations (sauf celle par défaut) de chaque formation ?</p>}
-                footer={
-                    <Button
-                        variant="danger"
-                        onClick={() => {
-                            dispatch(removeOrganizationsFromCoursesAction())
-                        }}
-                    >
-                        {isSagaLoading ? (
-                            <>
-                                <Spinner animation="grow" size="sm" /> Supprimer...
-                            </>
-                        ) : (
-                            'Supprimer'
-                        )}
-                    </Button>
-                }
-                isVisible={isRemoveModalOpen}
-                onHide={() => setIsRemoveModalOpen(false)}
-            />
             <Grid
                 name="Organisations"
                 columnDefs={columnDefs}
@@ -135,18 +86,6 @@ export function OrganizationsPage() {
                 groupDefaultExpanded={1}
                 groupIncludeFooter={false}
             />
-            <Container fluid className="mb-2">
-                <p>
-                    Ajouter ou supprimer toutes les organisations à/de toutes les formations, sauf l'organisation par
-                    défaut :
-                </p>
-                <Button variant="success" onClick={() => setIsAddModalOpen(true)}>
-                    Ajouter organisations
-                </Button>{' '}
-                <Button variant="danger" onClick={() => setIsRemoveModalOpen(true)}>
-                    Supprimer organisations
-                </Button>
-            </Container>
         </>
     )
 }

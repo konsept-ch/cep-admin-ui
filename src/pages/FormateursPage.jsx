@@ -47,6 +47,13 @@ export function FormateursPage() {
             headerTooltip: "L'organisation de l'utilisateur",
         },
         {
+            field: 'organizationCode',
+            headerName: "Code de l'organisation",
+            filter: 'agTextColumnFilter',
+            headerTooltip: "Le code d'organization de l'utilisateur",
+            initialHide: true,
+        },
+        {
             field: 'hierarchy',
             headerName: "Hiérarchie de l'entité/entreprise",
             filter: 'agTextColumnFilter',
@@ -79,6 +86,7 @@ export function FormateursPage() {
             session: session.name,
             status,
             organization: user.organization,
+            organizationCode: user.organizationCode,
             hierarchy: user.hierarchy,
             email: user.email,
             startDate: session.startDate,

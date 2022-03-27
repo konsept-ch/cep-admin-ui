@@ -1,8 +1,8 @@
 import { useNavigate, useLocation } from 'react-router-dom'
-import { Nav, Navbar, Container } from 'react-bootstrap'
+import { Nav, Navbar, Container, NavDropdown } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-    faSitemap,
+    faListTree,
     faPresentationScreen,
     faGraduationCap,
     faCalendarDays,
@@ -10,15 +10,20 @@ import {
     faArrowRightFromBracket,
     faEnvelopeOpenText,
     faChalkboardTeacher,
+    faUsers,
+    faBook,
 } from '@fortawesome/pro-light-svg-icons'
 import {
-    PATH_INSCRIPTIONS,
-    PATH_SESSIONS,
     PATH_AGENDA,
-    PATH_FORMATIONS,
-    PATH_TEMPLATES,
-    PATH_ORGANIZATIONS,
+    PATH_INSCRIPTIONS,
     PATH_FORMATEURS,
+    PATH_CATALOGUE,
+    PATH_FORMATIONS,
+    PATH_SESSIONS,
+    PATH_TEMPLATES,
+    PATH_COMMUNITY,
+    PATH_USERS,
+    PATH_ORGANIZATIONS,
 } from '../constants/constants'
 import { clearAllAuthCookies } from '../utils'
 
@@ -43,24 +48,74 @@ export const Navigation = ({ isLoggedIn }) => {
                         <Nav.Link href={`/${PATH_AGENDA}`} onClick={goTo(PATH_AGENDA)}>
                             <FontAwesomeIcon icon={faCalendarDays} /> Agenda
                         </Nav.Link>
-                        <Nav.Link href={`/${PATH_INSCRIPTIONS}`} onClick={goTo(PATH_INSCRIPTIONS)}>
-                            <FontAwesomeIcon icon={faCalendarStar} /> Inscriptions
-                        </Nav.Link>
-                        <Nav.Link href={`/${PATH_FORMATEURS}`} onClick={goTo(PATH_FORMATEURS)}>
-                            <FontAwesomeIcon icon={faChalkboardTeacher} /> Formateurs
-                        </Nav.Link>
-                        <Nav.Link href={`/${PATH_SESSIONS}`} onClick={goTo(PATH_SESSIONS)}>
-                            <FontAwesomeIcon icon={faPresentationScreen} /> Sessions
-                        </Nav.Link>
-                        <Nav.Link href={`/${PATH_FORMATIONS}`} onClick={goTo(PATH_FORMATIONS)}>
-                            <FontAwesomeIcon icon={faGraduationCap} /> Formations
-                        </Nav.Link>
+                        <NavDropdown
+                            active={location.pathname.startsWith(`/${PATH_INSCRIPTIONS}`)}
+                            title={
+                                <>
+                                    <FontAwesomeIcon icon={faCalendarStar} /> Inscriptions
+                                </>
+                            }
+                        >
+                            <Nav.Link
+                                href={`/${PATH_INSCRIPTIONS}/${PATH_INSCRIPTIONS}`}
+                                onClick={goTo(`${PATH_INSCRIPTIONS}/${PATH_INSCRIPTIONS}`)}
+                            >
+                                <FontAwesomeIcon icon={faCalendarStar} /> Participants
+                            </Nav.Link>
+                            <Nav.Link
+                                href={`/${PATH_INSCRIPTIONS}/${PATH_FORMATEURS}`}
+                                onClick={goTo(`${PATH_INSCRIPTIONS}/${PATH_FORMATEURS}`)}
+                            >
+                                <FontAwesomeIcon icon={faChalkboardTeacher} /> Formateurs
+                            </Nav.Link>
+                        </NavDropdown>
+                        <NavDropdown
+                            active={location.pathname.startsWith(`/${PATH_CATALOGUE}`)}
+                            title={
+                                <>
+                                    <FontAwesomeIcon icon={faBook} /> Catalogue
+                                </>
+                            }
+                        >
+                            <Nav.Link
+                                href={`/${PATH_CATALOGUE}/${PATH_FORMATIONS}`}
+                                onClick={goTo(`${PATH_CATALOGUE}/${PATH_FORMATIONS}`)}
+                            >
+                                <FontAwesomeIcon icon={faGraduationCap} /> Formations
+                            </Nav.Link>
+                            <Nav.Link
+                                href={`/${PATH_CATALOGUE}/${PATH_SESSIONS}`}
+                                onClick={goTo(`${PATH_CATALOGUE}/${PATH_SESSIONS}`)}
+                            >
+                                <FontAwesomeIcon icon={faPresentationScreen} /> Sessions
+                            </Nav.Link>
+                        </NavDropdown>
                         <Nav.Link href={`/${PATH_TEMPLATES}`} onClick={goTo(PATH_TEMPLATES)}>
                             <FontAwesomeIcon icon={faEnvelopeOpenText} /> Modèles
                         </Nav.Link>
-                        <Nav.Link href={`/${PATH_ORGANIZATIONS}`} onClick={goTo(PATH_ORGANIZATIONS)}>
-                            <FontAwesomeIcon icon={faSitemap} /> Organisations
-                        </Nav.Link>
+                        <NavDropdown
+                            active={location.pathname.startsWith(`/${PATH_COMMUNITY}`)}
+                            title={
+                                <>
+                                    <FontAwesomeIcon icon={faUsers} /> Communauté
+                                </>
+                            }
+                        >
+                            <Nav.Link
+                                href={`/${PATH_COMMUNITY}/${PATH_USERS}`}
+                                onClick={goTo(`${PATH_COMMUNITY}/${PATH_USERS}`)}
+                                disabled
+                            >
+                                <FontAwesomeIcon icon={faUsers} /> Utilisateurs
+                            </Nav.Link>
+                            <Nav.Link
+                                href={`/${PATH_COMMUNITY}/${PATH_ORGANIZATIONS}`}
+                                onClick={goTo(`${PATH_COMMUNITY}/${PATH_ORGANIZATIONS}`)}
+                            >
+                                <FontAwesomeIcon icon={faListTree} /> Organisations
+                            </Nav.Link>
+                        </NavDropdown>
+
                         {/* <NavDropdown
                             title={
                                 <>
@@ -83,7 +138,6 @@ export const Navigation = ({ isLoggedIn }) => {
                             <FontAwesomeIcon icon={faGear} /> Paramètres
                         </Nav.Link> */}
                     </Nav>
-
                     {isLoggedIn && (
                         <Nav>
                             <Nav.Link

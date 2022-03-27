@@ -7,17 +7,25 @@ import { fetchAdminsAction } from '../actions/users.ts'
 import { coursesSelector, adminsSelector } from '../reducers'
 import { formatDate } from '../utils'
 import { Helmet } from 'react-helmet-async'
+import { useGetAdminsQuery } from '../services/admins'
 
 export function CoursesPage() {
     const dispatch = useDispatch()
     const courses = useSelector(coursesSelector)
-    const admins = useSelector(adminsSelector)?.map((admin) => admin.name)
+    // const admins = useSelector(adminsSelector)?.map((admin) => admin.name)
     const fetchCourses = useCallback(() => dispatch(fetchCoursesAction()), [dispatch])
     const fetchAdmins = useCallback(() => dispatch(fetchAdminsAction()), [dispatch])
     const updateCourse = useCallback(
         ({ courseId, field, newValue }) => dispatch(updateCourseAction({ courseId, field, newValue })),
         [dispatch]
     )
+
+    // Using a query hook automatically fetches data and returns query values
+    const { data: adminsData, error, isLoading } = useGetAdminsQuery(null, { refetchOnMountOrArgChange: true })
+    // Individual hooks are also accessible under the generated endpoints:
+    // const { data, error, isLoading } = pokemonApi.endpoints.getPokemonByName.useQuery('bulbasaur')
+
+    const admins = adminsData?.map((admin) => admin.name)
 
     useEffect(() => {
         fetchCourses()
