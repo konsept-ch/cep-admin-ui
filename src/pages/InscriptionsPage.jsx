@@ -146,10 +146,10 @@ export function InscriptionsPage() {
     return (
         <>
             <Helmet>
-                <title>Inscriptions - Former22</title>
+                <title>Participants - Former22</title>
             </Helmet>
             <Grid
-                name="Inscriptions"
+                name="Participants"
                 columnDefs={columnDefs}
                 rowData={rowData}
                 rowClassRules={inscriptionsGridRowClassRules}

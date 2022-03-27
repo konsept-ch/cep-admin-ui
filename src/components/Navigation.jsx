@@ -11,18 +11,19 @@ import {
     faEnvelopeOpenText,
     faChalkboardTeacher,
     faUsers,
-    faAlbumCollection,
+    faBook,
 } from '@fortawesome/pro-light-svg-icons'
 import {
-    PATH_INSCRIPTIONS,
-    PATH_SESSIONS,
     PATH_AGENDA,
-    PATH_FORMATIONS,
-    PATH_TEMPLATES,
-    PATH_ORGANIZATIONS,
+    PATH_INSCRIPTIONS,
     PATH_FORMATEURS,
-    PATH_USERS,
     PATH_CATALOGUE,
+    PATH_FORMATIONS,
+    PATH_SESSIONS,
+    PATH_TEMPLATES,
+    PATH_COMMUNITY,
+    PATH_USERS,
+    PATH_ORGANIZATIONS,
 } from '../constants/constants'
 import { clearAllAuthCookies } from '../utils'
 
@@ -59,7 +60,7 @@ export const Navigation = ({ isLoggedIn }) => {
                                 href={`/${PATH_INSCRIPTIONS}/${PATH_INSCRIPTIONS}`}
                                 onClick={goTo(`${PATH_INSCRIPTIONS}/${PATH_INSCRIPTIONS}`)}
                             >
-                                <FontAwesomeIcon icon={faCalendarStar} /> Inscriptions
+                                <FontAwesomeIcon icon={faCalendarStar} /> Participants
                             </Nav.Link>
                             <Nav.Link
                                 href={`/${PATH_INSCRIPTIONS}/${PATH_FORMATEURS}`}
@@ -72,7 +73,7 @@ export const Navigation = ({ isLoggedIn }) => {
                             active={location.pathname.startsWith(`/${PATH_CATALOGUE}`)}
                             title={
                                 <>
-                                    <FontAwesomeIcon icon={faAlbumCollection} /> Catalogue
+                                    <FontAwesomeIcon icon={faBook} /> Catalogue
                                 </>
                             }
                         >
@@ -92,12 +93,27 @@ export const Navigation = ({ isLoggedIn }) => {
                         <Nav.Link href={`/${PATH_TEMPLATES}`} onClick={goTo(PATH_TEMPLATES)}>
                             <FontAwesomeIcon icon={faEnvelopeOpenText} /> Modèles
                         </Nav.Link>
-                        <Nav.Link href={`/${PATH_ORGANIZATIONS}`} onClick={goTo(PATH_ORGANIZATIONS)}>
-                            <FontAwesomeIcon icon={faListTree} /> Organisations
-                        </Nav.Link>
-                        <Nav.Link href={`/${PATH_USERS}`} onClick={goTo(PATH_USERS)}>
-                            <FontAwesomeIcon icon={faUsers} /> Utilisateurs
-                        </Nav.Link>
+                        <NavDropdown
+                            active={location.pathname.startsWith(`/${PATH_COMMUNITY}`)}
+                            title={
+                                <>
+                                    <FontAwesomeIcon icon={faUsers} /> Communauté
+                                </>
+                            }
+                        >
+                            <Nav.Link
+                                href={`/${PATH_COMMUNITY}/${PATH_USERS}`}
+                                onClick={goTo(`${PATH_COMMUNITY}/${PATH_USERS}`)}
+                            >
+                                <FontAwesomeIcon icon={faUsers} /> Utilisateurs
+                            </Nav.Link>
+                            <Nav.Link
+                                href={`/${PATH_COMMUNITY}/${PATH_ORGANIZATIONS}`}
+                                onClick={goTo(`${PATH_COMMUNITY}/${PATH_ORGANIZATIONS}`)}
+                            >
+                                <FontAwesomeIcon icon={faListTree} /> Organisations
+                            </Nav.Link>
+                        </NavDropdown>
 
                         {/* <NavDropdown
                             title={
