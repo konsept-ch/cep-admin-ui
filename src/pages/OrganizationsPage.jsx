@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Button, Spinner } from 'react-bootstrap'
+import { Button, Container, Spinner } from 'react-bootstrap'
 
 import { fetchOrganizationsAction } from '../actions/organizations'
 import { addOrganizationsToCoursesAction, removeOrganizationsFromCoursesAction } from '../actions/courses'
@@ -108,12 +108,6 @@ export function OrganizationsPage() {
                 isVisible={isRemoveModalOpen}
                 onHide={() => setIsRemoveModalOpen(false)}
             />
-            <Button variant="success" onClick={() => setIsAddModalOpen(true)}>
-                Ajouter organisations
-            </Button>
-            <Button variant="danger" onClick={() => setIsRemoveModalOpen(true)}>
-                Supprimer organisations
-            </Button>
             <Grid
                 name="Organisations"
                 columnDefs={columnDefs}
@@ -141,6 +135,18 @@ export function OrganizationsPage() {
                 groupDefaultExpanded={1}
                 groupIncludeFooter={false}
             />
+            <Container fluid className="mb-2">
+                <p>
+                    Ajouter ou supprimer toutes les organisations à/de toutes les formations, sauf l'organisation par
+                    défaut :
+                </p>
+                <Button variant="success" onClick={() => setIsAddModalOpen(true)}>
+                    Ajouter organisations
+                </Button>{' '}
+                <Button variant="danger" onClick={() => setIsRemoveModalOpen(true)}>
+                    Supprimer organisations
+                </Button>
+            </Container>
         </>
     )
 }
