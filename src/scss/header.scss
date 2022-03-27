@@ -40,4 +40,8 @@
             box-shadow: -5px 0 0 0 #e8ca01;
         }
     }
+
+    &.disabled {
+        opacity: 0.5;
+    }
 }

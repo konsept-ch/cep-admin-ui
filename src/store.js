@@ -1,8 +1,9 @@
-// import { createStore, applyMiddleware } from 'redux'
-// import { composeWithDevToolsLogOnlyInProduction } from '@redux-devtools/extension'
 import createSagaMiddleware from 'redux-saga'
 import { configureStore } from '@reduxjs/toolkit'
+// Or from '@reduxjs/toolkit/query/react'
+import { setupListeners } from '@reduxjs/toolkit/query'
 
+import { rootSaga } from './saga'
 import { notificationsReducer } from './reducers/notifications'
 import { agendaReducer } from './reducers/agenda'
 import { inscriptionsReducer } from './reducers/inscriptions'
@@ -14,11 +15,10 @@ import { usersReducer } from './reducers/users'
 import { templatesReducer } from './reducers/templates'
 import { organizationsReducer } from './reducers/organizations'
 import { formateursReducer } from './reducers/formateurs'
-import { rootSaga } from './saga'
+import { adminsApi } from './services/admins'
 
 const sagaMiddleware = createSagaMiddleware()
 
-// export const store = createStore(rootReducer, composeWithDevToolsLogOnlyInProduction(applyMiddleware(sagaMiddleware)))
 export const store = configureStore({
     reducer: {
         notifications: notificationsReducer,
@@ -32,8 +32,14 @@ export const store = configureStore({
         templates: templatesReducer,
         organizations: organizationsReducer,
         formateurs: formateursReducer,
+        // Add the generated reducer as a specific top-level slice
+        [adminsApi.reducerPath]: adminsApi.reducer,
     },
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(sagaMiddleware),
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(sagaMiddleware).concat(adminsApi.middleware),
 })
 
 sagaMiddleware.run(rootSaga)
+
+// optional, but required for refetchOnFocus/refetchOnReconnect behaviors
+// see `setupListeners` docs - takes an optional callback as the 2nd arg for customization
+setupListeners(store.dispatch)

@@ -1,29 +1,13 @@
-import { combineReducers } from 'redux'
-import { notificationsReducer } from './notifications'
-import { agendaReducer, agendaSelectors } from './agenda'
-import { inscriptionsReducer, inscriptionsSelectors } from './inscriptions'
-import { sessionsReducer, sessionsSelectors } from './sessions'
-import { parametersReducer, parametersSelectors } from './parameters'
-import { loadingReducer, loadingSelectors } from './loading'
-import { coursesReducer, coursesSelectors } from './courses'
-import { usersReducer, usersSelectors } from './users'
-import { templatesReducer, templatesSelectors } from './templates'
-import { organizationsReducer, organizationsSelectors } from './organizations'
-import { formateursReducer, formateursSelectors } from './formateurs'
-
-// export const rootReducer = combineReducers({
-//     notifications: notificationsReducer,
-//     agenda: agendaReducer,
-//     inscriptions: inscriptionsReducer,
-//     sessions: sessionsReducer,
-//     parameters: parametersReducer,
-//     loading: loadingReducer,
-//     courses: coursesReducer,
-//     users: usersReducer,
-//     templates: templatesReducer,
-//     organizations: organizationsReducer,
-//     formateurs: formateursReducer,
-// })
+import { agendaSelectors } from './agenda'
+import { inscriptionsSelectors } from './inscriptions'
+import { sessionsSelectors } from './sessions'
+import { parametersSelectors } from './parameters'
+import { loadingSelectors } from './loading'
+import { coursesSelectors } from './courses'
+import { usersSelectors } from './users'
+import { templatesSelectors } from './templates'
+import { organizationsSelectors } from './organizations'
+import { formateursSelectors } from './formateurs'
 
 export const roomsAndEventsSelector = (state) => agendaSelectors.roomsAndEventsSelector(state.agenda)
 export const inscriptionsSelector = (state) => inscriptionsSelectors.inscriptionsSelector(state.inscriptions)
