@@ -2,7 +2,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { Nav, Navbar, Container, NavDropdown } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-    faSitemap,
+    faListTree,
     faPresentationScreen,
     faGraduationCap,
     faCalendarDays,
@@ -11,6 +11,7 @@ import {
     faEnvelopeOpenText,
     faChalkboardTeacher,
     faUsers,
+    faAlbumCollection,
 } from '@fortawesome/pro-light-svg-icons'
 import {
     PATH_INSCRIPTIONS,
@@ -21,6 +22,7 @@ import {
     PATH_ORGANIZATIONS,
     PATH_FORMATEURS,
     PATH_USERS,
+    PATH_CATALOGUE,
 } from '../constants/constants'
 import { clearAllAuthCookies } from '../utils'
 
@@ -66,17 +68,32 @@ export const Navigation = ({ isLoggedIn }) => {
                                 <FontAwesomeIcon icon={faChalkboardTeacher} /> Formateurs
                             </Nav.Link>
                         </NavDropdown>
-                        <Nav.Link href={`/${PATH_SESSIONS}`} onClick={goTo(PATH_SESSIONS)}>
-                            <FontAwesomeIcon icon={faPresentationScreen} /> Sessions
-                        </Nav.Link>
-                        <Nav.Link href={`/${PATH_FORMATIONS}`} onClick={goTo(PATH_FORMATIONS)}>
-                            <FontAwesomeIcon icon={faGraduationCap} /> Formations
-                        </Nav.Link>
+                        <NavDropdown
+                            active={location.pathname.startsWith(`/${PATH_CATALOGUE}`)}
+                            title={
+                                <>
+                                    <FontAwesomeIcon icon={faAlbumCollection} /> Catalogue
+                                </>
+                            }
+                        >
+                            <Nav.Link
+                                href={`/${PATH_CATALOGUE}/${PATH_FORMATIONS}`}
+                                onClick={goTo(`${PATH_CATALOGUE}/${PATH_FORMATIONS}`)}
+                            >
+                                <FontAwesomeIcon icon={faGraduationCap} /> Formations
+                            </Nav.Link>
+                            <Nav.Link
+                                href={`/${PATH_CATALOGUE}/${PATH_SESSIONS}`}
+                                onClick={goTo(`${PATH_CATALOGUE}/${PATH_SESSIONS}`)}
+                            >
+                                <FontAwesomeIcon icon={faPresentationScreen} /> Sessions
+                            </Nav.Link>
+                        </NavDropdown>
                         <Nav.Link href={`/${PATH_TEMPLATES}`} onClick={goTo(PATH_TEMPLATES)}>
                             <FontAwesomeIcon icon={faEnvelopeOpenText} /> Modèles
                         </Nav.Link>
                         <Nav.Link href={`/${PATH_ORGANIZATIONS}`} onClick={goTo(PATH_ORGANIZATIONS)}>
-                            <FontAwesomeIcon icon={faSitemap} /> Organisations
+                            <FontAwesomeIcon icon={faListTree} /> Organisations
                         </Nav.Link>
                         <Nav.Link href={`/${PATH_USERS}`} onClick={goTo(PATH_USERS)}>
                             <FontAwesomeIcon icon={faUsers} /> Utilisateurs

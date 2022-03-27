@@ -28,6 +28,7 @@ import {
     PATH_ORGANIZATIONS,
     PATH_FORMATEURS,
     PATH_USERS,
+    PATH_CATALOGUE,
 } from './constants/constants'
 import { AuthWrapper } from './AuthWrapper'
 import { cookies } from './utils'
@@ -67,8 +68,8 @@ export function App() {
                                 path={`${PATH_INSCRIPTIONS}/${PATH_FORMATEURS}`}
                                 element={<FormateursPage />}
                             />
-                            <Route exact path={PATH_SESSIONS} element={<SessionsPage />} />
-                            <Route exact path={PATH_FORMATIONS} element={<CoursesPage />} />
+                            <Route exact path={`${PATH_CATALOGUE}/${PATH_FORMATIONS}`} element={<CoursesPage />} />
+                            <Route exact path={`${PATH_CATALOGUE}/${PATH_SESSIONS}`} element={<SessionsPage />} />
                             <Route exact path={PATH_TEMPLATES} element={<TemplatesPage />} />
                             <Route exact path={PATH_ORGANIZATIONS} element={<OrganizationsPage />} />
                             <Route exact path={PATH_NOTIFICATIONS} element={<NotificationsPage />} />
