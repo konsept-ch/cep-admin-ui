@@ -11,19 +11,19 @@ import { templatesReducer, templatesSelectors } from './templates'
 import { organizationsReducer, organizationsSelectors } from './organizations'
 import { formateursReducer, formateursSelectors } from './formateurs'
 
-export const rootReducer = combineReducers({
-    notifications: notificationsReducer,
-    agenda: agendaReducer,
-    inscriptions: inscriptionsReducer,
-    sessions: sessionsReducer,
-    parameters: parametersReducer,
-    loading: loadingReducer,
-    courses: coursesReducer,
-    users: usersReducer,
-    templates: templatesReducer,
-    organizations: organizationsReducer,
-    formateurs: formateursReducer,
-})
+// export const rootReducer = combineReducers({
+//     notifications: notificationsReducer,
+//     agenda: agendaReducer,
+//     inscriptions: inscriptionsReducer,
+//     sessions: sessionsReducer,
+//     parameters: parametersReducer,
+//     loading: loadingReducer,
+//     courses: coursesReducer,
+//     users: usersReducer,
+//     templates: templatesReducer,
+//     organizations: organizationsReducer,
+//     formateurs: formateursReducer,
+// })
 
 export const roomsAndEventsSelector = (state) => agendaSelectors.roomsAndEventsSelector(state.agenda)
 export const inscriptionsSelector = (state) => inscriptionsSelectors.inscriptionsSelector(state.inscriptions)
