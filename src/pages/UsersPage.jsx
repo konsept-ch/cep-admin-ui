@@ -1,91 +1,52 @@
-import { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-
-import { fetchOrganizationsAction } from '../actions/organizations'
-import { organizationsSelector } from '../reducers'
-import { Grid } from '../components'
 import { Helmet } from 'react-helmet-async'
 
-export function UsersPage() {
-    const dispatch = useDispatch()
-    const organizations = useSelector(organizationsSelector)
+import { Grid } from '../components'
+import { useGetUsersQuery } from '../services/users'
 
-    useEffect(() => {
-        dispatch(fetchOrganizationsAction())
-    }, [dispatch])
+export function UsersPage() {
+    const { data: usersData, error, isLoading } = useGetUsersQuery(null, { refetchOnMountOrArgChange: true })
 
     const columnDefs = [
         {
-            field: 'name',
-            headerName: 'Titre de la organisation',
+            field: 'firstName',
+            headerName: 'Prenom',
             filter: 'agTextColumnFilter',
-            headerTooltip: 'Le nom de la organisation',
-            hide: true,
+            headerTooltip: "Le prenom de l'utilisateur",
         },
         {
-            field: 'code',
-            headerName: 'Code',
+            field: 'lastName',
+            headerName: 'Nom',
             filter: 'agTextColumnFilter',
-            headerTooltip: 'Le code de la organisation',
+            headerTooltip: "Le nom de l'utilisateur",
         },
         {
-            field: 'type',
-            headerName: 'Type',
+            field: 'email',
+            headerName: 'E-mail',
+            filter: 'agTextColumnFilter',
+            headerTooltip: "L'e-mail de l'utilisateur",
+        },
+        {
+            field: 'mainOrganization',
+            headerName: 'Organisation',
             filter: 'agSetColumnFilter',
-            headerTooltip: 'Le type de la organisation',
+            headerTooltip: "L'organisation de l'utilisateur",
         },
     ]
 
-    const flattenOrganizations = ({ id, name, code, type, children }, parentName) =>
-        [
-            {
-                id,
-                name,
-                code,
-                type,
-                orgHierarchy: parentName ? [...parentName, name] : [name],
-            },
-            ...(children?.length > 0
-                ? children.flatMap((childOrg) =>
-                      flattenOrganizations(childOrg, parentName ? [...parentName, name] : [name])
-                  )
-                : [false]),
-        ].filter(Boolean)
-
-    const rowData = organizations.flatMap((organization) => flattenOrganizations(organization))
+    const rowData = usersData?.map((user) => ({
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        mainOrganization: user.mainOrganization?.name,
+    }))
 
     return (
         <>
             <Helmet>
-                <title>Organisations - Former22</title>
+                <title>Utilisateurs - Former22</title>
             </Helmet>
-            <Grid
-                name="Organisations"
-                columnDefs={columnDefs}
-                rowData={rowData}
-                treeData
-                getDataPath={({ orgHierarchy }) => orgHierarchy}
-                groupSelectsChildren={false} // groupSelectsChildren does not work with tree data
-                groupDisplayType="singleColumn" //you cannot mix groupMultiAutoColumn with treeData, only one column can be used to display groups when doing tree data
-                defaultColDef={{
-                    enableValue: true,
-                    enablePivot: true,
-                    enableRowGroup: true,
-                    resizable: true,
-                    sortable: true,
-                    filter: true,
-                    aggFunc: false,
-                }}
-                autoGroupColumnDef={{
-                    headerName: 'Hiérarchie des organisations',
-                    minWidth: 650,
-                    cellRendererParams: {
-                        suppressCount: true,
-                    },
-                }}
-                groupDefaultExpanded={1}
-                groupIncludeFooter={false}
-            />
+            <Grid name="Utilisateurs" columnDefs={columnDefs} rowData={rowData} />
         </>
     )
 }
