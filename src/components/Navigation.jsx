@@ -104,7 +104,6 @@ export const Navigation = ({ isLoggedIn }) => {
                             <Nav.Link
                                 href={`/${PATH_COMMUNITY}/${PATH_USERS}`}
                                 onClick={goTo(`${PATH_COMMUNITY}/${PATH_USERS}`)}
-                                disabled
                             >
                                 <FontAwesomeIcon icon={faUsers} /> Utilisateurs
                             </Nav.Link>
