@@ -81,7 +81,7 @@ export function FormateursPage() {
         .filter((current) => current != null)
         .map(({ id, user, session, status }) => ({
             id,
-            participant: `${user.firstName} ${user.lastName}`,
+            participant: `${user.lastName} ${user.firstName}`,
             profession: user.profession,
             session: session.name,
             status,

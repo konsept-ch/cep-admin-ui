@@ -69,7 +69,7 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
                     <hr />
                     <dl>
                         <dt>Nom du participant</dt>
-                        <dd>{`${statusUpdateData.user.firstName} ${statusUpdateData.user.lastName}`}</dd>
+                        <dd>{`${statusUpdateData.user.lastName} ${statusUpdateData.user.firstName}`}</dd>
                         <dt>E-mail du participant</dt>
                         <dd>
                             <a href={`mailto:${statusUpdateData.user.email}`}>{statusUpdateData.user.email}</a>

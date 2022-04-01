@@ -130,7 +130,7 @@ export function InscriptionsPage() {
         .filter((current) => current != null)
         .map(({ id, user, session, status, inscriptionDate, type }) => ({
             id,
-            participant: `${user.firstName} ${user.lastName}`,
+            participant: `${user.lastName} ${user.firstName}`,
             profession: user.profession,
             type,
             session: session.name,
