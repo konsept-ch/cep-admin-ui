@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Modal, Button, ListGroup, Alert, Spinner, Tooltip, OverlayTrigger } from 'react-bootstrap'
+import { Modal, Button, ListGroup, Alert, Spinner } from 'react-bootstrap'
 import { useSelector, useDispatch } from 'react-redux'
 import classNames from 'classnames'
 import { fetchParametersAction } from '../actions/parameters.ts'
@@ -19,7 +19,7 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
 
     useEffect(() => {
         dispatch(fetchParametersAction())
-    }, [])
+    }, [dispatch])
 
     const isEmailTemplateSelected = selectedTemplateData !== null && selectedTemplateData.templateId !== 'no-email'
 

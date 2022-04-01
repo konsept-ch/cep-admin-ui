@@ -11,6 +11,7 @@ import {
     OverlayTrigger,
     Tooltip,
     Container,
+    Form,
 } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFilterCircleXmark } from '@fortawesome/pro-light-svg-icons'
@@ -22,7 +23,13 @@ import { gridContextMenu } from '../utils'
 
 const Loader = () => <PuffLoader color="#e8ca01" loading size={100} />
 
-export const Grid = ({ name, ...gridProps }) => {
+export const Grid = ({
+    name,
+    activePredefinedFiltersById,
+    setActivePredefinedFiltersById,
+    predefinedFilters = [],
+    ...gridProps
+}) => {
     const [gridApi, setGridApi] = useState(null)
     const [filterValue, setFilterValue] = useState('')
     const isGridLoading = useSelector(gridLoadingSelector)
@@ -30,10 +37,6 @@ export const Grid = ({ name, ...gridProps }) => {
     useEffect(() => {
         gridApi?.setQuickFilter(filterValue)
     }, [filterValue, gridApi])
-
-    useEffect(() => {
-        gridProps.getGridApi?.(gridApi)
-    }, [gridApi, gridProps])
 
     useEffect(() => {
         // this setTimeout fixes a race condition
@@ -46,12 +49,59 @@ export const Grid = ({ name, ...gridProps }) => {
         }, 0)
     }, [isGridLoading, gridApi])
 
+    useEffect(() => {
+        // this setTimeout fixes a race condition
+        setTimeout(() => {
+            // TODO: move to InscriptionsPage
+            if (gridApi && name === 'Participants') {
+                // get filter instance
+                const filterInstance = gridApi.getFilterInstance('status')
+
+                // get filter model
+                // const model = filterInstance.getModel()
+
+                // console.log(model)
+
+                // set filter model and update
+                filterInstance.setModel({
+                    filterType: 'set',
+                    values: activePredefinedFiltersById['onlyWebEntries'] ? ['Entrée Web'] : null,
+                })
+
+                // refresh rows based on the filter (not automatic to allow for batching multiple filters)
+                gridApi.onFilterChanged()
+            }
+        }, 0)
+    }, [activePredefinedFiltersById, isGridLoading, gridApi])
+
     return (
         <>
             <Container fluid>
                 <Row>
                     <Col>
-                        <h1 className="mt-4">{name}</h1>
+                        <Row>
+                            <Col>
+                                <h1 className="mt-3">{name}</h1>
+                            </Col>
+                            <Col />
+                            {predefinedFilters.map(({ id, label }) => (
+                                <Col className="my-auto" key={id}>
+                                    <Form.Group controlId={id}>
+                                        <Form.Check
+                                            type="checkbox"
+                                            label={label}
+                                            checked={activePredefinedFiltersById[id]}
+                                            onChange={({ target }) =>
+                                                setActivePredefinedFiltersById({
+                                                    ...activePredefinedFiltersById,
+                                                    [id]: target.checked,
+                                                })
+                                            }
+                                        />
+                                    </Form.Group>
+                                </Col>
+                            ))}
+                        </Row>
                     </Col>
                     <Col className="d-flex align-items-center">
                         <InputGroup className="justify-content-end">

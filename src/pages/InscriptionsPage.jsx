@@ -24,6 +24,12 @@ export function InscriptionsPage() {
     const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false)
     const [isMassUpdateModalVisible, setIsMassUpdateModalVisible] = useState(false)
     const inscriptions = useSelector(inscriptionsSelector)
+    const [activePredefinedFiltersById, setActivePredefinedFiltersById] = useState({ onlyWebEntries: true })
+
+    const predefinedFilters = [
+        { id: 'onlyWebEntries', label: 'Entrées Web uniquement' },
+        { id: 'filter2', label: 'Filter 2' },
+    ]
 
     useEffect(() => {
         dispatch(fetchInscriptionsAction())
@@ -38,6 +44,7 @@ export function InscriptionsPage() {
             if (index > 0) {
                 return array[index - 1].status === current.status
             }
+            return false
         })
 
     const columnDefs = useMemo(
@@ -150,6 +157,10 @@ export function InscriptionsPage() {
             </Helmet>
             <Grid
                 name="Participants"
+                /* TODO: decouple active filters from Grid? */
+                activePredefinedFiltersById={activePredefinedFiltersById}
+                setActivePredefinedFiltersById={setActivePredefinedFiltersById}
+                predefinedFilters={predefinedFilters}
                 columnDefs={columnDefs}
                 rowData={rowData}
                 rowClassRules={inscriptionsGridRowClassRules}
