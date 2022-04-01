@@ -64,7 +64,7 @@ export const Grid = ({ name, ...gridProps }) => {
                                     <FontAwesomeIcon icon={faFilterCircleXmark} />
                                 </Button>
                             </OverlayTrigger>
-                            <FloatingLabel label="Rechercher" className="grid-search-label">
+                            <FloatingLabel label="Rechercher" className="grid-quick-search-label">
                                 <FormControl
                                     placeholder="Rechercher..."
                                     aria-label="Rechercher..."
