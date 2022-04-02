@@ -134,6 +134,7 @@ export function OrganizationsPage() {
                 }}
                 groupDefaultExpanded={1}
                 groupIncludeFooter={false}
+                rowGroupPanelShow="never"
             />
             <Container fluid className="mb-2">
                 <p>

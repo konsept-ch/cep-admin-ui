@@ -65,6 +65,7 @@ export function InscriptionsPage() {
                 filter: 'agTextColumnFilter',
                 headerTooltip: "Le nom de la session dans laquelle l'utilisateur s'est inscrit",
                 rowGroup: true,
+                hide: true,
             },
             {
                 field: 'status',
@@ -166,6 +167,12 @@ export function InscriptionsPage() {
                 columnDefs={columnDefs}
                 rowData={rowData}
                 rowClassRules={inscriptionsGridRowClassRules}
+                autoGroupColumnDef={{
+                    minWidth: 480,
+                    cellRendererParams: {
+                        suppressCount: true,
+                    },
+                }}
                 getContextMenuItems={({ node: { data } }) => [
                     {
                         name: 'Envoyer e-mail',
