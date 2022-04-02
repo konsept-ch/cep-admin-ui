@@ -16,6 +16,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFilterCircleXmark } from '@fortawesome/pro-light-svg-icons'
 import PuffLoader from 'react-spinners/PuffLoader'
+import classNames from 'classnames'
 
 import { localeText } from '../agGridLocaleText'
 import { gridLoadingSelector } from '../reducers'
@@ -79,7 +80,7 @@ export const Grid = ({
             <Container fluid>
                 <Row>
                     <Col>
-                        <Row>
+                        <Row className="predefined-filters">
                             <Col>
                                 <h1 className="mt-3">{name}</h1>
                             </Col>
@@ -90,6 +91,7 @@ export const Grid = ({
                                         <Form.Check
                                             type="checkbox"
                                             label={label}
+                                            className={classNames({ 'is-active': activePredefinedFiltersById[id] })}
                                             checked={activePredefinedFiltersById[id]}
                                             onChange={({ target }) =>
                                                 setActivePredefinedFiltersById({
