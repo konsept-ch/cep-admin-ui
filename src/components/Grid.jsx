@@ -54,15 +54,10 @@ export const Grid = ({
     useEffect(() => {
         // this setTimeout fixes a race condition
         setTimeout(() => {
-            // TODO: move to InscriptionsPage
+            // TODO: move logic to InscriptionsPage
             if (gridApi && name === 'Participants') {
                 // get filter instance
                 const filterInstance = gridApi.getFilterInstance('status')
-
-                // get filter model
-                // const model = filterInstance.getModel()
-
-                // console.log(model)
 
                 // set filter model and update
                 filterInstance.setModel({
@@ -153,6 +148,7 @@ export const Grid = ({
                         rowGroupPanelShow: 'always',
                         pivotPanelShow: 'always',
                         groupDisplayType: 'multipleColumns',
+                        groupDefaultExpanded: -1,
                         defaultColDef: {
                             enableValue: true,
                             enablePivot: true,

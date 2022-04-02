@@ -112,7 +112,8 @@ export function InscriptionsPage() {
                 field: 'type',
                 headerName: "Type d'inscription",
                 filter: 'agSetColumnFilter',
-                valueGetter: ({ data: { type } }) =>
+                // setting default value for data resolves an uncaught type error
+                valueGetter: ({ data: { type } = {} }) =>
                     ({
                         cancellation: 'Annulation',
                         learner: 'Participant',
