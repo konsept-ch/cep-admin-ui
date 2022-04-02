@@ -29,6 +29,7 @@ export const Grid = ({
     activePredefinedFiltersById,
     setActivePredefinedFiltersById,
     predefinedFilters = [],
+    rowData,
     ...gridProps
 }) => {
     const [gridApi, setGridApi] = useState(null)
@@ -73,7 +74,7 @@ export const Grid = ({
                 gridApi.onFilterChanged()
             }
         }, 0)
-    }, [activePredefinedFiltersById, isGridLoading, gridApi])
+    }, [activePredefinedFiltersById, name, rowData, gridApi])
 
     return (
         <>
@@ -178,6 +179,7 @@ export const Grid = ({
                         getRowId: ({ data }) => data.id,
                         localeText,
                         onGridReady: ({ api }) => setGridApi(api),
+                        rowData,
                         ...gridProps,
                     }}
                 />

@@ -28,7 +28,7 @@ export function InscriptionsPage() {
 
     const predefinedFilters = [
         { id: 'onlyWebEntries', label: 'Entrées Web uniquement' },
-        { id: 'filter2', label: 'Filter 2' },
+        // { id: 'filter2', label: 'Filter 2' },
     ]
 
     useEffect(() => {
@@ -64,6 +64,7 @@ export function InscriptionsPage() {
                 headerName: 'Session',
                 filter: 'agTextColumnFilter',
                 headerTooltip: "Le nom de la session dans laquelle l'utilisateur s'est inscrit",
+                rowGroup: true,
             },
             {
                 field: 'status',
