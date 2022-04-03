@@ -173,6 +173,7 @@ export function InscriptionsPage() {
                         suppressCount: true,
                     },
                 }}
+                groupIncludeFooter={false}
                 getContextMenuItems={({ node: { data } }) => [
                     {
                         name: 'Envoyer e-mail',
