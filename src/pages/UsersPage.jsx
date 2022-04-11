@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Button, Spinner, Row, Form, Col } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 
 import { Grid, CommonModal, EditBtnCellRenderer } from '../components'
 import { useGetUsersQuery, useUpdateUserMutation } from '../services/users'
@@ -117,15 +118,25 @@ export function UsersPage() {
                         <Button
                             variant="success"
                             onClick={handleSubmit(async ({ shouldReceiveSms }) => {
-                                await updateUser({
+                                const { error: mutationError } = await updateUser({
                                     id: selectedUserData.id,
                                     body: { shouldReceiveSms },
                                 })
-                                setIsModalVisible(false)
-                                setSelectedUserData(null)
-                                // TODO close and clear form only on success
-                                setValue('shouldReceiveSms', '')
-                                fetchUsers()
+                                if (typeof mutationError === 'undefined') {
+                                    setIsModalVisible(false)
+                                    setSelectedUserData(null)
+                                    // TODO check how to reset a boolean
+                                    // setValue('shouldReceiveSms', '')
+                                    fetchUsers()
+                                } else {
+                                    toast.error(
+                                        <>
+                                            <p>{mutationError.status}</p>
+                                            <p>{mutationError.error}</p>
+                                        </>,
+                                        { autoClose: false }
+                                    )
+                                }
                             })}
                         >
                             {isUserUpdating ? (
