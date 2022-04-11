@@ -18,15 +18,17 @@ export function UsersPage() {
     } = useGetUsersQuery(null, { refetchOnMountOrArgChange: true })
     const [updateUser, { isLoading: isUserUpdating }] = useUpdateUserMutation()
 
+    const openUserEditModal = ({ data }) => {
+        setSelectedUserData(data)
+        setFormData({ checkbox: data.shouldReceiveSms })
+        setIsModalVisible(true)
+    }
+
     const BtnCellRenderer = ({ data }) => {
         return (
             <Button
                 variant="primary"
-                onClick={() => {
-                    setSelectedUserData(data)
-                    setFormData({ checkbox: data.shouldReceiveSms })
-                    setIsModalVisible(true)
-                }}
+                onClick={() => openUserEditModal({ data })}
                 size="sm"
                 className="edit-button-style"
             >
@@ -98,6 +100,7 @@ export function UsersPage() {
                 rowData={rowData}
                 isDataLoading={isLoading}
                 frameworkComponents={{ btnCellRenderer: BtnCellRenderer }}
+                onRowDoubleClicked={openUserEditModal}
             />
             {isModalVisible && (
                 <CommonModal
