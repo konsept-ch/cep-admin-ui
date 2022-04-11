@@ -8,7 +8,7 @@ import { Grid, CommonModal, EditBtnCellRenderer } from '../components'
 import { useGetUsersQuery, useUpdateUserMutation } from '../services/users'
 
 export function UsersPage() {
-    const { register, handleSubmit, setValue } = useForm()
+    const { register, handleSubmit, setValue, resetField } = useForm()
 
     const [selectedUserData, setSelectedUserData] = useState(null)
     const [isModalVisible, setIsModalVisible] = useState(false)
@@ -23,6 +23,13 @@ export function UsersPage() {
         setSelectedUserData(data)
         setValue('shouldReceiveSms', data.shouldReceiveSms)
         setIsModalVisible(true)
+    }
+
+    const closeUserEditModal = () => {
+        setIsModalVisible(false)
+        setSelectedUserData(null)
+        resetField('shouldReceiveSms')
+        fetchUsers()
     }
 
     const columnDefs = [
@@ -123,11 +130,7 @@ export function UsersPage() {
                                     body: { shouldReceiveSms },
                                 })
                                 if (typeof mutationError === 'undefined') {
-                                    setIsModalVisible(false)
-                                    setSelectedUserData(null)
-                                    // TODO check how to reset a boolean
-                                    // setValue('shouldReceiveSms', '')
-                                    fetchUsers()
+                                    closeUserEditModal()
                                 } else {
                                     toast.error(
                                         <>
