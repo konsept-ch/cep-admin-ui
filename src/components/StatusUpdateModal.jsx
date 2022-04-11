@@ -80,6 +80,8 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
                         <dd>
                             {statusUpdateData.user.phone} ({statusUpdateData.user.phoneForSms})
                         </dd>
+                        <dt>Recevoir SMS ?</dt>
+                        <dd>{statusUpdateData.user.shouldReceiveSms ? 'Oui' : 'Non'}</dd>
                     </dl>
                     <hr />
                     <dl>
@@ -210,7 +212,7 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
                 <ConfirmInscriptionChangeButton
                     isSelectedTemplateDataNull={selectedTemplateData === null}
                     isLoading={isSagaLoading}
-                    variant="warning"
+                    variant={statusUpdateData.user.shouldReceiveSms ? 'success' : 'warning'}
                     onClick={() => {
                         const templateId =
                             selectedTemplateData?.templateId === 'no-email' ? null : selectedTemplateData.templateId

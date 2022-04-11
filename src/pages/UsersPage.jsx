@@ -1,12 +1,32 @@
+import { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 
-import { Grid } from '../components'
+import { Grid, EditBtnCellRenderer, EditUserModal } from '../components'
 import { useGetUsersQuery } from '../services/users'
 
 export function UsersPage() {
-    const { data: usersData, error, isLoading } = useGetUsersQuery(null, { refetchOnMountOrArgChange: true })
+    const [selectedUserData, setSelectedUserData] = useState(null)
+    const {
+        data: usersData,
+        isFetching,
+        refetch: refetchUsers,
+    } = useGetUsersQuery(null, { refetchOnMountOrArgChange: true })
+
+    const openUserEditModal = ({ data }) => {
+        setSelectedUserData(data)
+    }
 
     const columnDefs = [
+        {
+            field: 'edit',
+            headerName: '',
+            cellRenderer: 'btnCellRenderer',
+            headerTooltip: "Modifier l'utilisateur",
+            cellClass: 'edit-user-column',
+            maxWidth: 60,
+            filter: false,
+            sortable: false,
+        },
         {
             field: 'firstName',
             headerName: 'Prenom',
@@ -31,14 +51,23 @@ export function UsersPage() {
             filter: 'agSetColumnFilter',
             headerTooltip: "L'organisation de l'utilisateur",
         },
+        {
+            field: 'shouldReceiveSms',
+            headerName: 'Recevoir des SMS',
+            filter: 'agSetColumnFilter',
+            headerTooltip: 'Est-ce que cet utilisateur reçoit des SMS',
+            valueGetter: ({ data: { shouldReceiveSms } }) => (shouldReceiveSms ? 'Oui' : 'Non'),
+        },
     ]
 
     const rowData = usersData?.map((user) => ({
         id: user.id,
         firstName: user.firstName,
         lastName: user.lastName,
+        fullName: user.name,
         email: user.email,
         mainOrganization: user.mainOrganization?.name,
+        shouldReceiveSms: user.shouldReceiveSms,
     }))
 
     return (
@@ -46,7 +75,15 @@ export function UsersPage() {
             <Helmet>
                 <title>Utilisateurs - Former22</title>
             </Helmet>
-            <Grid name="Utilisateurs" columnDefs={columnDefs} rowData={rowData} />
+            <Grid
+                name="Utilisateurs"
+                columnDefs={columnDefs}
+                rowData={rowData}
+                isDataLoading={isFetching}
+                frameworkComponents={{ btnCellRenderer: EditBtnCellRenderer({ onClick: openUserEditModal }) }}
+                onRowDoubleClicked={openUserEditModal}
+            />
+            <EditUserModal {...{ refetchUsers, selectedUserData }} />
         </>
     )
 }
