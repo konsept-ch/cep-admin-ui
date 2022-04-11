@@ -202,7 +202,7 @@ export const MassStatusUpdateModal = ({ closeModal, inscriptionsData, updateStat
                                     <Spinner animation="grow" size="sm" /> Confirmer...
                                 </>
                             ) : (
-                                'Confirmer'
+                                'Confirmer sans SMS'
                             )}
                         </Button>
                     </div>
