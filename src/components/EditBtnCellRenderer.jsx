@@ -7,6 +7,6 @@ export const EditBtnCellRenderer =
     ({ data }) =>
         (
             <Button variant="primary" onClick={() => onClick({ data })} size="sm" className="edit-button-style">
-                <FontAwesomeIcon icon={faPen} /> Modifier
+                <FontAwesomeIcon icon={faPen} />
             </Button>
         )

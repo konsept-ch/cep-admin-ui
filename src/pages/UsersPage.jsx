@@ -24,6 +24,16 @@ export function UsersPage() {
 
     const columnDefs = [
         {
+            field: 'edit',
+            headerName: '',
+            cellRenderer: 'btnCellRenderer',
+            headerTooltip: "Modifier l'utilisateur",
+            cellClass: 'edit-user-column',
+            maxWidth: 60,
+            filter: false,
+            sortable: false,
+        },
+        {
             field: 'firstName',
             headerName: 'Prenom',
             filter: 'agTextColumnFilter',
@@ -53,14 +63,6 @@ export function UsersPage() {
             filter: 'agSetColumnFilter',
             headerTooltip: 'Est-ce que cet utilisateur reçoit des SMS',
             valueGetter: ({ data: { shouldReceiveSms } }) => (shouldReceiveSms ? 'Oui' : 'Non'),
-        },
-        {
-            field: 'edit',
-            headerName: 'Modifier',
-            cellRenderer: 'btnCellRenderer',
-            headerTooltip: "Modifier l'utilisateur",
-            cellClass: 'edit-user-column',
-            maxWidth: 120,
         },
     ]
 
