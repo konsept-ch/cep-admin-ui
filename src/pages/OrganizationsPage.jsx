@@ -1,23 +1,22 @@
-import { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useState } from 'react'
 import { Button, Container, Spinner } from 'react-bootstrap'
-
-import { fetchOrganizationsAction } from '../actions/organizations'
-import { addOrganizationsToCoursesAction, removeOrganizationsFromCoursesAction } from '../actions/courses'
-import { organizationsSelector, loadingSelector } from '../reducers'
-import { Grid, CommonModal } from '../components'
 import { Helmet } from 'react-helmet-async'
+import { toast } from 'react-toastify'
+
+import { Grid, CommonModal } from '../components'
+import {
+    useGetOrganizationsQuery,
+    useAddOrganizationsMutation,
+    useRemoveOrganizationsMutation,
+} from '../services/organizations'
 
 export function OrganizationsPage() {
     const [isAddModalOpen, setIsAddModalOpen] = useState(false)
     const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false)
-    const dispatch = useDispatch()
-    const organizations = useSelector(organizationsSelector)
-    const isSagaLoading = useSelector(loadingSelector)
 
-    useEffect(() => {
-        dispatch(fetchOrganizationsAction())
-    }, [dispatch])
+    const { data: organizations } = useGetOrganizationsQuery(null, { refetchOnMountOrArgChange: true })
+    const [addOrganizations, { isLoading: isAddingOrganizations }] = useAddOrganizationsMutation()
+    const [removeOrganizations, { isLoading: isRemovingOrganizations }] = useRemoveOrganizationsMutation()
 
     const columnDefs = [
         {
@@ -57,7 +56,7 @@ export function OrganizationsPage() {
                 : [false]),
         ].filter(Boolean)
 
-    const rowData = organizations.flatMap((organization) => flattenOrganizations(organization))
+    const rowData = organizations?.flatMap((organization) => flattenOrganizations(organization))
 
     return (
         <>
@@ -70,11 +69,25 @@ export function OrganizationsPage() {
                 footer={
                     <Button
                         variant="success"
-                        onClick={() => {
-                            dispatch(addOrganizationsToCoursesAction())
+                        onClick={async () => {
+                            const { error } = await addOrganizations()
+
+                            if (typeof error === 'undefined') {
+                                toast.success('Organisations ajoutées', { autoClose: false })
+
+                                setIsAddModalOpen(false)
+                            } else {
+                                toast.error(
+                                    <>
+                                        <p>{error.status}</p>
+                                        <p>{error.error}</p>
+                                    </>,
+                                    { autoClose: false }
+                                )
+                            }
                         }}
                     >
-                        {isSagaLoading ? (
+                        {isAddingOrganizations ? (
                             <>
                                 <Spinner animation="grow" size="sm" /> Ajouter...
                             </>
@@ -92,11 +105,25 @@ export function OrganizationsPage() {
                 footer={
                     <Button
                         variant="danger"
-                        onClick={() => {
-                            dispatch(removeOrganizationsFromCoursesAction())
+                        onClick={async () => {
+                            const { error } = await removeOrganizations()
+
+                            if (typeof error === 'undefined') {
+                                toast.success('Organisations supprimées', { autoClose: false })
+
+                                setIsRemoveModalOpen(false)
+                            } else {
+                                toast.error(
+                                    <>
+                                        <p>{error.status}</p>
+                                        <p>{error.error}</p>
+                                    </>,
+                                    { autoClose: false }
+                                )
+                            }
                         }}
                     >
-                        {isSagaLoading ? (
+                        {isRemovingOrganizations ? (
                             <>
                                 <Spinner animation="grow" size="sm" /> Supprimer...
                             </>

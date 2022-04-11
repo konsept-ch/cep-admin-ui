@@ -13,10 +13,10 @@ import { loadingReducer } from './reducers/loading'
 import { coursesReducer } from './reducers/courses'
 import { usersReducer } from './reducers/users'
 import { templatesReducer } from './reducers/templates'
-import { organizationsReducer } from './reducers/organizations'
 import { formateursReducer } from './reducers/formateurs'
 import { adminsApi } from './services/admins'
 import { usersApi } from './services/users'
+import { organizationsApi } from './services/organizations'
 
 const sagaMiddleware = createSagaMiddleware()
 
@@ -31,14 +31,18 @@ export const store = configureStore({
         courses: coursesReducer,
         users: usersReducer,
         templates: templatesReducer,
-        organizations: organizationsReducer,
         formateurs: formateursReducer,
         // Add the generated reducer as a specific top-level slice
         [adminsApi.reducerPath]: adminsApi.reducer,
         [usersApi.reducerPath]: usersApi.reducer,
+        [organizationsApi.reducerPath]: organizationsApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(sagaMiddleware).concat(adminsApi.middleware).concat(usersApi.middleware),
+        getDefaultMiddleware()
+            .concat(sagaMiddleware)
+            .concat(adminsApi.middleware)
+            .concat(usersApi.middleware)
+            .concat(organizationsApi.middleware),
 })
 
 sagaMiddleware.run(rootSaga)
