@@ -13,7 +13,8 @@ export function UsersPage() {
     } = useGetUsersQuery(null, { refetchOnMountOrArgChange: true })
 
     const openUserEditModal = ({ data }) => {
-        setSelectedUserData(data)
+        // workaround - passes a new object to trigger reopen when the same row is clicked
+        setSelectedUserData({ ...data })
     }
 
     const columnDefs = [

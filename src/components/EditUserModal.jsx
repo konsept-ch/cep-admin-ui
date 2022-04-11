@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Button, Spinner, Row, Form, Col } from 'react-bootstrap'
+import { Button, Spinner, Row, Form, Col, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
@@ -7,17 +7,23 @@ import { CommonModal } from '../components'
 import { useUpdateUserMutation } from '../services/users'
 
 export function EditUserModal({ refetchUsers, selectedUserData }) {
-    const { register, handleSubmit, setValue, resetField } = useForm()
+    const {
+        register,
+        handleSubmit,
+        setValue,
+        reset,
+        formState: { isDirty },
+    } = useForm()
     const [isModalVisible, setIsModalVisible] = useState(false)
 
     useEffect(() => {
         if (selectedUserData != null) {
+            reset({
+                shouldReceiveSms: Boolean(selectedUserData?.shouldReceiveSms),
+            })
             setIsModalVisible(true)
-            setValue('shouldReceiveSms', selectedUserData.shouldReceiveSms)
-        } else {
-            resetField('shouldReceiveSms')
         }
-    }, [selectedUserData, setValue, resetField])
+    }, [selectedUserData, setValue, reset])
 
     const [updateUser, { isLoading: isUserUpdating }] = useUpdateUserMutation()
 
@@ -51,34 +57,60 @@ export function EditUserModal({ refetchUsers, selectedUserData }) {
                 </Row>
             }
             footer={
-                <Button
-                    variant="success"
-                    onClick={handleSubmit(async ({ shouldReceiveSms }) => {
-                        const { error: mutationError } = await updateUser({
-                            id: selectedUserData.id,
-                            body: { shouldReceiveSms },
-                        })
-                        if (typeof mutationError === 'undefined') {
-                            closeUserEditModal()
-                        } else {
-                            toast.error(
-                                <>
-                                    <p>{mutationError.status}</p>
-                                    <p>{mutationError.error}</p>
-                                </>,
-                                { autoClose: false }
-                            )
+                <>
+                    <OverlayTrigger
+                        placement="top"
+                        overlay={
+                            <Tooltip>
+                                {isDirty ? 'Appliquer la modification' : "Vous n'avez pas fait de modification"}
+                            </Tooltip>
                         }
-                    })}
-                >
-                    {isUserUpdating ? (
-                        <>
-                            <Spinner animation="grow" size="sm" /> Appliquer...
-                        </>
-                    ) : (
-                        'Appliquer'
-                    )}
-                </Button>
+                    >
+                        <div>
+                            <Button
+                                variant="primary"
+                                disabled={!isDirty}
+                                onClick={handleSubmit(async ({ shouldReceiveSms }) => {
+                                    const { error: mutationError } = await updateUser({
+                                        id: selectedUserData.id,
+                                        body: { shouldReceiveSms },
+                                    })
+                                    if (typeof mutationError === 'undefined') {
+                                        closeUserEditModal()
+                                    } else {
+                                        toast.error(
+                                            <>
+                                                <p>{mutationError.status}</p>
+                                                <p>{mutationError.error}</p>
+                                            </>,
+                                            { autoClose: false }
+                                        )
+                                    }
+                                })}
+                            >
+                                {isUserUpdating ? (
+                                    <>
+                                        <Spinner animation="grow" size="sm" /> Confirmer...
+                                    </>
+                                ) : (
+                                    'Confirmer'
+                                )}
+                            </Button>
+                        </div>
+                    </OverlayTrigger>
+                    <OverlayTrigger placement="top" overlay={<Tooltip>Annuler votre modification</Tooltip>}>
+                        <div>
+                            <Button
+                                variant="outline-primary"
+                                onClick={() => {
+                                    closeUserEditModal()
+                                }}
+                            >
+                                Annuler
+                            </Button>
+                        </div>
+                    </OverlayTrigger>
+                </>
             }
             isVisible={isModalVisible}
             onHide={() => closeUserEditModal()}
