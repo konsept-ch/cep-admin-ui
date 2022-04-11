@@ -1,10 +1,8 @@
 import { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Button, Spinner, Row, Form, Col } from 'react-bootstrap'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPen } from '@fortawesome/pro-light-svg-icons'
 
-import { Grid, CommonModal } from '../components'
+import { Grid, CommonModal, EditBtnCellRenderer } from '../components'
 import { useGetUsersQuery, useUpdateUserMutation } from '../services/users'
 
 export function UsersPage() {
@@ -22,19 +20,6 @@ export function UsersPage() {
         setSelectedUserData(data)
         setFormData({ checkbox: data.shouldReceiveSms })
         setIsModalVisible(true)
-    }
-
-    const BtnCellRenderer = ({ data }) => {
-        return (
-            <Button
-                variant="primary"
-                onClick={() => openUserEditModal({ data })}
-                size="sm"
-                className="edit-button-style"
-            >
-                <FontAwesomeIcon icon={faPen} /> Modifier
-            </Button>
-        )
     }
 
     const columnDefs = [
@@ -99,7 +84,7 @@ export function UsersPage() {
                 columnDefs={columnDefs}
                 rowData={rowData}
                 isDataLoading={isFetching}
-                frameworkComponents={{ btnCellRenderer: BtnCellRenderer }}
+                frameworkComponents={{ btnCellRenderer: EditBtnCellRenderer({ onClick: openUserEditModal }) }}
                 onRowDoubleClicked={openUserEditModal}
             />
             {isModalVisible && (
