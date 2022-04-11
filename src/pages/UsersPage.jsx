@@ -13,7 +13,7 @@ export function UsersPage() {
     const [isModalVisible, setIsModalVisible] = useState(false)
     const {
         data: usersData,
-        isFetching: isLoading,
+        isFetching,
         refetch: fetchUsers,
     } = useGetUsersQuery(null, { refetchOnMountOrArgChange: true })
     const [updateUser, { isLoading: isUserUpdating }] = useUpdateUserMutation()
@@ -98,7 +98,7 @@ export function UsersPage() {
                 name="Utilisateurs"
                 columnDefs={columnDefs}
                 rowData={rowData}
-                isDataLoading={isLoading}
+                isDataLoading={isFetching}
                 frameworkComponents={{ btnCellRenderer: BtnCellRenderer }}
                 onRowDoubleClicked={openUserEditModal}
             />
@@ -134,8 +134,11 @@ export function UsersPage() {
                     footer={
                         <Button
                             variant="success"
-                            onClick={() => {
-                                updateUser({ id: selectedUserData.id, body: { shouldReceiveSms: formData.checkbox } })
+                            onClick={async () => {
+                                await updateUser({
+                                    id: selectedUserData.id,
+                                    body: { shouldReceiveSms: formData.checkbox },
+                                })
                                 setIsModalVisible(false)
                                 setSelectedUserData(null)
                                 setFormData(null)
