@@ -1,10 +1,39 @@
+import { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
+import { Button, Spinner, Row, Form, Col } from 'react-bootstrap'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPen } from '@fortawesome/pro-light-svg-icons'
 
-import { Grid } from '../components'
-import { useGetUsersQuery } from '../services/users'
+import { Grid, CommonModal } from '../components'
+import { useGetUsersQuery, useUpdateUserMutation } from '../services/users'
 
 export function UsersPage() {
-    const { data: usersData, error, isLoading } = useGetUsersQuery(null, { refetchOnMountOrArgChange: true })
+    const [selectedUserData, setSelectedUserData] = useState(null)
+    const [formData, setFormData] = useState(null)
+    const [isModalVisible, setIsModalVisible] = useState(false)
+    const {
+        data: usersData,
+        isFetching: isLoading,
+        refetch: fetchUsers,
+    } = useGetUsersQuery(null, { refetchOnMountOrArgChange: true })
+    const [updateUser, { isLoading: isUserUpdating }] = useUpdateUserMutation()
+
+    const BtnCellRenderer = ({ data }) => {
+        return (
+            <Button
+                variant="primary"
+                onClick={() => {
+                    setSelectedUserData(data)
+                    setFormData({ checkbox: data.shouldReceiveSms })
+                    setIsModalVisible(true)
+                }}
+                size="sm"
+                className="edit-button-style"
+            >
+                <FontAwesomeIcon icon={faPen} /> Modifier
+            </Button>
+        )
+    }
 
     const columnDefs = [
         {
@@ -31,14 +60,31 @@ export function UsersPage() {
             filter: 'agSetColumnFilter',
             headerTooltip: "L'organisation de l'utilisateur",
         },
+        {
+            field: 'shouldReceiveSms',
+            headerName: 'Recevoir des SMS',
+            filter: 'agSetColumnFilter',
+            headerTooltip: 'Est-ce que cet utilisateur reçoit des SMS',
+            valueGetter: ({ data: { shouldReceiveSms } }) => (shouldReceiveSms ? 'Oui' : 'Non'),
+        },
+        {
+            field: 'edit',
+            headerName: 'Modifier',
+            cellRenderer: 'btnCellRenderer',
+            headerTooltip: "Modifier l'utilisateur",
+            cellClass: 'edit-user-column',
+            maxWidth: 120,
+        },
     ]
 
     const rowData = usersData?.map((user) => ({
         id: user.id,
         firstName: user.firstName,
         lastName: user.lastName,
+        fullName: user.name,
         email: user.email,
         mainOrganization: user.mainOrganization?.name,
+        shouldReceiveSms: user.shouldReceiveSms,
     }))
 
     return (
@@ -46,7 +92,68 @@ export function UsersPage() {
             <Helmet>
                 <title>Utilisateurs - Former22</title>
             </Helmet>
-            <Grid name="Utilisateurs" columnDefs={columnDefs} rowData={rowData} />
+            <Grid
+                name="Utilisateurs"
+                columnDefs={columnDefs}
+                rowData={rowData}
+                isDataLoading={isLoading}
+                frameworkComponents={{ btnCellRenderer: BtnCellRenderer }}
+            />
+            {isModalVisible && (
+                <CommonModal
+                    title="Modifier l'utilisateur"
+                    content={
+                        <Row>
+                            <Col>
+                                <h6>Détails de l'utilisateur</h6>
+                                <dl>
+                                    <dt>Nom</dt>
+                                    <dd>{selectedUserData.fullName}</dd>
+                                    <dt>E-mail</dt>
+                                    <dd>{selectedUserData.email}</dd>
+                                    <dt>Organisation</dt>
+                                    <dd>{selectedUserData.mainOrganization}</dd>
+                                </dl>
+                            </Col>
+                            <Col>
+                                <h6>Modifier l'utilisateur</h6>
+                                <Form>
+                                    <Form.Switch
+                                        onChange={({ target }) => setFormData({ checkbox: target.checked })}
+                                        id="sms-switch"
+                                        label="Recevoir des SMS"
+                                        checked={formData.checkbox}
+                                    />
+                                </Form>
+                            </Col>
+                        </Row>
+                    }
+                    footer={
+                        <Button
+                            variant="success"
+                            onClick={() => {
+                                updateUser({ id: selectedUserData.id, body: { shouldReceiveSms: formData.checkbox } })
+                                setIsModalVisible(false)
+                                setSelectedUserData(null)
+                                setFormData(null)
+                                fetchUsers()
+                            }}
+                        >
+                            {isUserUpdating ? (
+                                <>
+                                    <Spinner animation="grow" size="sm" /> Appliquer...
+                                </>
+                            ) : (
+                                'Appliquer'
+                            )}
+                        </Button>
+                    }
+                    isVisible={isModalVisible}
+                    onHide={() => setIsModalVisible(false)}
+                    backdrop="static"
+                    dialogClassName="user-update-modal"
+                />
+            )}
         </>
     )
 }

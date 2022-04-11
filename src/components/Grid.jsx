@@ -30,11 +30,13 @@ export const Grid = ({
     setActivePredefinedFiltersById,
     predefinedFilters = [],
     rowData,
+    isDataLoading,
     ...gridProps
 }) => {
     const [gridApi, setGridApi] = useState(null)
     const [filterValue, setFilterValue] = useState('')
     const isGridLoading = useSelector(gridLoadingSelector)
+    const isLoading = isDataLoading ?? isGridLoading
 
     useEffect(() => {
         gridApi?.setQuickFilter(filterValue)
@@ -43,13 +45,13 @@ export const Grid = ({
     useEffect(() => {
         // this setTimeout fixes a race condition
         setTimeout(() => {
-            if (isGridLoading) {
+            if (isLoading) {
                 gridApi?.showLoadingOverlay()
             } else {
                 gridApi?.hideOverlay()
             }
         }, 0)
-    }, [isGridLoading, gridApi])
+    }, [isLoading, gridApi])
 
     useEffect(() => {
         // this setTimeout fixes a race condition
