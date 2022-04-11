@@ -1,13 +1,15 @@
 import { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Button, Spinner, Row, Form, Col } from 'react-bootstrap'
+import { useForm } from 'react-hook-form'
 
 import { Grid, CommonModal, EditBtnCellRenderer } from '../components'
 import { useGetUsersQuery, useUpdateUserMutation } from '../services/users'
 
 export function UsersPage() {
+    const { register, handleSubmit, setValue } = useForm()
+
     const [selectedUserData, setSelectedUserData] = useState(null)
-    const [formData, setFormData] = useState(null)
     const [isModalVisible, setIsModalVisible] = useState(false)
     const {
         data: usersData,
@@ -18,7 +20,7 @@ export function UsersPage() {
 
     const openUserEditModal = ({ data }) => {
         setSelectedUserData(data)
-        setFormData({ checkbox: data.shouldReceiveSms })
+        setValue('shouldReceiveSms', data.shouldReceiveSms)
         setIsModalVisible(true)
     }
 
@@ -107,30 +109,24 @@ export function UsersPage() {
                             </Col>
                             <Col>
                                 <h6>Modifier l'utilisateur</h6>
-                                <Form>
-                                    <Form.Switch
-                                        onChange={({ target }) => setFormData({ checkbox: target.checked })}
-                                        id="sms-switch"
-                                        label="Recevoir des SMS"
-                                        checked={formData.checkbox}
-                                    />
-                                </Form>
+                                <Form.Switch label="Recevoir des SMS" {...register('shouldReceiveSms')} />
                             </Col>
                         </Row>
                     }
                     footer={
                         <Button
                             variant="success"
-                            onClick={async () => {
+                            onClick={handleSubmit(async ({ shouldReceiveSms }) => {
                                 await updateUser({
                                     id: selectedUserData.id,
-                                    body: { shouldReceiveSms: formData.checkbox },
+                                    body: { shouldReceiveSms },
                                 })
                                 setIsModalVisible(false)
                                 setSelectedUserData(null)
-                                setFormData(null)
+                                // TODO close and clear form only on success
+                                setValue('shouldReceiveSms', '')
                                 fetchUsers()
-                            }}
+                            })}
                         >
                             {isUserUpdating ? (
                                 <>
