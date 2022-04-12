@@ -31,6 +31,7 @@ export const Grid = ({
     predefinedFilters = [],
     rowData,
     isDataLoading,
+    components,
     ...gridProps
 }) => {
     const [gridApi, setGridApi] = useState(null)
@@ -172,6 +173,7 @@ export const Grid = ({
                         },
                         components: {
                             customLoadingOverlay: Loader,
+                            ...components,
                         },
                         loadingOverlayComponent: 'customLoadingOverlay',
                         getContextMenuItems: () => gridContextMenu,

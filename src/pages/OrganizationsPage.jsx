@@ -3,7 +3,7 @@ import { Button, Container, Spinner } from 'react-bootstrap'
 import { Helmet } from 'react-helmet-async'
 import { toast } from 'react-toastify'
 
-import { Grid, CommonModal } from '../components'
+import { Grid, CommonModal, EditBtnCellRenderer } from '../components'
 import {
     useGetOrganizationsQuery,
     useAddOrganizationsMutation,
@@ -19,6 +19,17 @@ export function OrganizationsPage() {
     const [removeOrganizations, { isLoading: isRemovingOrganizations }] = useRemoveOrganizationsMutation()
 
     const columnDefs = [
+        {
+            field: 'edit',
+            headerName: '',
+            cellRenderer: 'btnCellRenderer',
+            headerTooltip: "Modifier l'utilisateur",
+            cellClass: 'edit-user-column',
+            pinned: 'left',
+            maxWidth: 60,
+            filter: false,
+            sortable: false,
+        },
         {
             field: 'name',
             headerName: "Titre de l'organisation",
@@ -302,6 +313,7 @@ export function OrganizationsPage() {
                 groupDefaultExpanded={1}
                 groupIncludeFooter={false}
                 rowGroupPanelShow="never"
+                components={{ btnCellRenderer: EditBtnCellRenderer({ onClick: () => console.log('haha') }) }}
             />
             <Container fluid className="mb-2">
                 <p>

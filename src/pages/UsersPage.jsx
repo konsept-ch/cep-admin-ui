@@ -24,6 +24,7 @@ export function UsersPage() {
             cellRenderer: 'btnCellRenderer',
             headerTooltip: "Modifier l'utilisateur",
             cellClass: 'edit-user-column',
+            pinned: 'left',
             maxWidth: 60,
             filter: false,
             sortable: false,
@@ -81,8 +82,7 @@ export function UsersPage() {
                 columnDefs={columnDefs}
                 rowData={rowData}
                 isDataLoading={isFetching}
-                frameworkComponents={{ btnCellRenderer: EditBtnCellRenderer({ onClick: openUserEditModal }) }}
-                onRowDoubleClicked={openUserEditModal}
+                components={{ btnCellRenderer: EditBtnCellRenderer({ onClick: openUserEditModal }) }}
             />
             <EditUserModal {...{ refetchUsers, selectedUserData }} />
         </>
