@@ -73,7 +73,12 @@ export function OrganizationsPage() {
             headerTooltip: "L'adresse de l'organisation",
             valueGetter: ({
                 data: { postalAddressCountry, postalAddressCode, postalAddressStreet, postalAddressLocality },
-            }) => `${postalAddressStreet}, ${postalAddressCode} ${postalAddressLocality}, ${postalAddressCountry}`,
+            }) =>
+                postalAddressStreet || postalAddressCode || postalAddressLocality || postalAddressCountry
+                    ? `${postalAddressStreet ?? ''}, ${postalAddressCode ?? ''} ${postalAddressLocality ?? ''}, ${
+                          postalAddressCountry ?? ''
+                      }`
+                    : '',
         },
         {
             field: 'phone',
@@ -288,7 +293,7 @@ export function OrganizationsPage() {
                 }}
                 autoGroupColumnDef={{
                     headerName: 'Hiérarchie des organisations',
-                    minWidth: 650,
+                    minWidth: 500,
                     cellRendererParams: {
                         suppressCount: true,
                     },
