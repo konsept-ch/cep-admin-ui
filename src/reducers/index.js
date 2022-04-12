@@ -4,9 +4,7 @@ import { sessionsSelectors } from './sessions'
 import { parametersSelectors } from './parameters'
 import { loadingSelectors } from './loading'
 import { coursesSelectors } from './courses'
-import { usersSelectors } from './users'
 import { templatesSelectors } from './templates'
-import { organizationsSelectors } from './organizations'
 import { formateursSelectors } from './formateurs'
 
 export const roomsAndEventsSelector = (state) => agendaSelectors.roomsAndEventsSelector(state.agenda)
@@ -17,9 +15,7 @@ export const loadingSelector = (state) => loadingSelectors.loadingSelector(state
 export const gridLoadingSelector = (state) => loadingSelectors.gridLoadingSelector(state.loading)
 export const templatesLoadingSelector = (state) => loadingSelectors.templatesLoadingSelector(state.loading)
 export const coursesSelector = (state) => coursesSelectors.coursesSelector(state.courses)
-export const adminsSelector = (state) => usersSelectors.adminsSelector(state.users)
 export const templatesSelector = (state) => templatesSelectors.templatesSelector(state.templates)
 export const templateForInvitesSelector = (state) => templatesSelectors.templateForInvitesSelector(state.templates)
 export const templatePreviewsSelector = (state) => templatesSelectors.templatePreviewsSelector(state.templates)
-export const organizationsSelector = (state) => organizationsSelectors.organizationsSelector(state.organizations)
 export const formateursSelector = (state) => formateursSelectors.formateursSelector(state.formateurs)

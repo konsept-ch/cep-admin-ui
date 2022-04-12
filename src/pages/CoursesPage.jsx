@@ -3,8 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { Grid, CourseDetailsModal } from '../components'
 import { fetchCoursesAction, updateCourseAction } from '../actions/courses.ts'
-import { fetchAdminsAction } from '../actions/users.ts'
-import { coursesSelector, adminsSelector } from '../reducers'
+import { coursesSelector } from '../reducers'
 import { formatDate } from '../utils'
 import { Helmet } from 'react-helmet-async'
 import { useGetAdminsQuery } from '../services/admins'
@@ -12,9 +11,7 @@ import { useGetAdminsQuery } from '../services/admins'
 export function CoursesPage() {
     const dispatch = useDispatch()
     const courses = useSelector(coursesSelector)
-    // const admins = useSelector(adminsSelector)?.map((admin) => admin.name)
     const fetchCourses = useCallback(() => dispatch(fetchCoursesAction()), [dispatch])
-    const fetchAdmins = useCallback(() => dispatch(fetchAdminsAction()), [dispatch])
     const updateCourse = useCallback(
         ({ courseId, field, newValue }) => dispatch(updateCourseAction({ courseId, field, newValue })),
         [dispatch]
@@ -29,8 +26,7 @@ export function CoursesPage() {
 
     useEffect(() => {
         fetchCourses()
-        fetchAdmins()
-    }, [fetchCourses, fetchAdmins])
+    }, [fetchCourses])
 
     const typeStageValues = ['Attestation', 'Certificat', 'Autre']
     const teachingMethodValues = ['Présentiel', 'Distanciel', 'E-learning', 'Mixte/Blended']
