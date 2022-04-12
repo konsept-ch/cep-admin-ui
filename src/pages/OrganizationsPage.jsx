@@ -14,7 +14,7 @@ export function OrganizationsPage() {
     const [isAddModalOpen, setIsAddModalOpen] = useState(false)
     const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false)
 
-    const { data: organizations } = useGetOrganizationsQuery(null, { refetchOnMountOrArgChange: true })
+    const { data: organizations, isFetching } = useGetOrganizationsQuery(null, { refetchOnMountOrArgChange: true })
     const [addOrganizations, { isLoading: isAddingOrganizations }] = useAddOrganizationsMutation()
     const [removeOrganizations, { isLoading: isRemovingOrganizations }] = useRemoveOrganizationsMutation()
 
@@ -278,6 +278,7 @@ export function OrganizationsPage() {
                 name="Organisations"
                 columnDefs={columnDefs}
                 rowData={rowData}
+                isDataLoading={isFetching}
                 treeData
                 getDataPath={({ orgHierarchy }) => orgHierarchy}
                 groupSelectsChildren={false} // groupSelectsChildren does not work with tree data
