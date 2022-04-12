@@ -147,6 +147,7 @@ export const Grid = ({
                         groupSelectsChildren: true,
                         suppressAggFuncInHeader: true,
                         rowSelection: 'multiple',
+                        suppressRowClickSelection: true,
                         rowGroupPanelShow: 'always',
                         pivotPanelShow: 'always',
                         groupDisplayType: 'multipleColumns',
