@@ -21,31 +21,39 @@ export function OrganizationsPage() {
     const columnDefs = [
         {
             field: 'name',
-            headerName: 'Titre de la organisation',
+            headerName: "Titre de l'organisation",
             filter: 'agTextColumnFilter',
-            headerTooltip: 'Le nom de la organisation',
+            headerTooltip: "Le nom de l'organisation",
             hide: true,
         },
         {
             field: 'code',
             headerName: 'Code',
             filter: 'agTextColumnFilter',
-            headerTooltip: 'Le code de la organisation',
+            headerTooltip: "Le code de l'organisation",
+        },
+        {
+            field: 'email',
+            headerName: 'E-mail',
+            filter: 'agTextColumnFilter',
+            headerTooltip: "L'e-mail de l'organisation",
         },
         {
             field: 'type',
             headerName: 'Type',
             filter: 'agSetColumnFilter',
-            headerTooltip: 'Le type de la organisation',
+            headerTooltip: "Le type de l'organisation",
+            hide: true,
         },
     ]
 
-    const flattenOrganizations = ({ id, name, code, type, children }, parentName) =>
+    const flattenOrganizations = ({ id, name, code, type, children, email }, parentName) =>
         [
             {
                 id,
                 name,
                 code,
+                email,
                 type,
                 orgHierarchy: parentName ? [...parentName, name] : [name],
             },
