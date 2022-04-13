@@ -33,7 +33,7 @@ export function OrganizationsPage() {
             field: 'edit',
             headerName: '',
             cellRenderer: 'btnCellRenderer',
-            headerTooltip: "Modifier l'utilisateur",
+            headerTooltip: "Modifier l'organisation",
             cellClass: 'edit-column',
             pinned: 'left',
             maxWidth: 60,

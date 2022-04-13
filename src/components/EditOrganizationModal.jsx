@@ -34,15 +34,24 @@ export function EditOrganizationModal({ refetchOrganizations, selectedOrganizati
 
     return (
         <CommonModal
-            title="Modifier l'utilisateur"
+            title={selectedOrganizationData.name}
             content={
                 <Row>
                     <Col>
-                        <h6>Détails de l'utilisateur</h6>
+                        <h6>Détails de l'organisation</h6>
                         {selectedOrganizationData != null && (
                             <dl>
                                 <dt>Hiérarchie</dt>
-                                <dd>{selectedOrganizationData.name}</dd>
+                                <dd className="organization-hierarchy">
+                                    {selectedOrganizationData.orgHierarchy.map((current, index) => {
+                                        return (
+                                            <p>
+                                                {[...Array(index).keys()].map(() => '-')}
+                                                {current}
+                                            </p>
+                                        )
+                                    })}
+                                </dd>
                                 <dt>Code</dt>
                                 <dd>{selectedOrganizationData.code}</dd>
                                 <dt>E-mail</dt>
@@ -68,7 +77,7 @@ export function EditOrganizationModal({ refetchOrganizations, selectedOrganizati
                         )}
                     </Col>
                     <Col>
-                        <h6>Modifier l'utilisateur</h6>
+                        <h6>Modifier l'organisation</h6>
                         <Form.Switch label="Recevoir des SMS" {...register('shouldReceiveSms')} />
                     </Col>
                 </Row>
