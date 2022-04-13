@@ -34,7 +34,7 @@ export function EditUserModal({ refetchUsers, selectedUserData }) {
 
     return (
         <CommonModal
-            title={selectedUserData.fullName}
+            title={selectedUserData?.fullName}
             content={
                 <Row>
                     <Col>

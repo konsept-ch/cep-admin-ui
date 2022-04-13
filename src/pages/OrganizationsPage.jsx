@@ -41,7 +41,7 @@ export function OrganizationsPage() {
             sortable: false,
         },
         {
-            field: 'name', // include (hierarchy)
+            field: 'name',
             headerName: "Titre de l'organisation",
             filter: 'agTextColumnFilter',
             headerTooltip: "Le nom de l'organisation",
