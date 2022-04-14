@@ -1,3 +1,8 @@
 .organization-address {
     white-space: pre-line;
 }
+
+.organization-update-modal {
+    min-width: 1000px;
+    max-width: calc(100vw - 200px);
+}

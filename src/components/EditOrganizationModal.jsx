@@ -59,7 +59,7 @@ export function EditOrganizationModal({ refetchOrganizations, selectedOrganizati
                                         <dt>Hiérarchie</dt>
                                         <dd className="organization-hierarchy">
                                             {selectedOrganizationData.orgHierarchy.slice(1).map((current, index) => (
-                                                <p>
+                                                <p key={index}>
                                                     {[...Array(index).keys()].map(() => '-')}
                                                     {current}
                                                 </p>
@@ -152,7 +152,10 @@ export function EditOrganizationModal({ refetchOrganizations, selectedOrganizati
                                     <Form.Label>Tarif journalier</Form.Label>
                                     <InputGroup className="mb-3">
                                         <InputGroup.Text>CHF</InputGroup.Text>
-                                        <Form.Control type="number" {...register('dailyRate')} />
+                                        <Form.Control
+                                            type="number"
+                                            {...register('dailyRate', { valueAsNumber: true })}
+                                        />
                                     </InputGroup>
                                     <Form.Text>Si tarif journalier négocié pour l'ensemble des cours</Form.Text>
                                 </Form.Group>
@@ -167,7 +170,7 @@ export function EditOrganizationModal({ refetchOrganizations, selectedOrganizati
 
                             <Col>
                                 <Form.Label>Nb flyers</Form.Label>
-                                <Form.Control type="number" {...register('flyersCount')} />
+                                <Form.Control type="number" {...register('flyersCount', { valueAsNumber: true })} />
                             </Col>
                         </Row>
 
@@ -233,10 +236,10 @@ export function EditOrganizationModal({ refetchOrganizations, selectedOrganizati
                             <Button
                                 variant="primary"
                                 disabled={!isDirty}
-                                onClick={handleSubmit(async ({ shouldReceiveSms }) => {
+                                onClick={handleSubmit(async (newData) => {
                                     const { error: mutationError } = await updateOrganization({
                                         id: selectedOrganizationData.id,
-                                        body: { field: 'Field', newValue: 'New value' },
+                                        body: { newData, organizationName: selectedOrganizationData.name },
                                     })
                                     if (typeof mutationError === 'undefined') {
                                         closeOrganizationEditModal()
@@ -278,7 +281,7 @@ export function EditOrganizationModal({ refetchOrganizations, selectedOrganizati
             isVisible={isModalVisible}
             onHide={() => closeOrganizationEditModal()}
             backdrop="static"
-            dialogClassName="user-update-modal"
+            dialogClassName="organization-update-modal"
         />
     )
 }
