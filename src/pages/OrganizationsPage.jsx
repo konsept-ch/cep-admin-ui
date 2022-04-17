@@ -3,7 +3,7 @@ import { Button, Container, Spinner } from 'react-bootstrap'
 import { Helmet } from 'react-helmet-async'
 import { toast } from 'react-toastify'
 
-import { Grid, CommonModal, EditBtnCellRenderer } from '../components'
+import { Grid, CommonModal, EditBtnCellRenderer, EditOrganizationModal } from '../components'
 import {
     useGetOrganizationsQuery,
     useAddOrganizationsMutation,
@@ -11,20 +11,30 @@ import {
 } from '../services/organizations'
 
 export function OrganizationsPage() {
+    const [selectedOrganizationData, setSelectedOrganizationData] = useState(null)
     const [isAddModalOpen, setIsAddModalOpen] = useState(false)
     const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false)
 
-    const { data: organizations, isFetching } = useGetOrganizationsQuery(null, { refetchOnMountOrArgChange: true })
+    const {
+        data: organizations,
+        isFetching,
+        refetch: refetchOrganizations,
+    } = useGetOrganizationsQuery(null, { refetchOnMountOrArgChange: true })
     const [addOrganizations, { isLoading: isAddingOrganizations }] = useAddOrganizationsMutation()
     const [removeOrganizations, { isLoading: isRemovingOrganizations }] = useRemoveOrganizationsMutation()
+
+    const openOrganizationEditModal = ({ data }) => {
+        // workaround - passes a new object to trigger reopen when the same row is clicked
+        setSelectedOrganizationData({ ...data })
+    }
 
     const columnDefs = [
         {
             field: 'edit',
             headerName: '',
             cellRenderer: 'btnCellRenderer',
-            headerTooltip: "Modifier l'utilisateur",
-            cellClass: 'edit-user-column',
+            headerTooltip: "Modifier l'organisation",
+            cellClass: 'edit-column',
             pinned: 'left',
             maxWidth: 60,
             filter: false,
@@ -285,6 +295,7 @@ export function OrganizationsPage() {
                 isVisible={isRemoveModalOpen}
                 onHide={() => setIsRemoveModalOpen(false)}
             />
+            <EditOrganizationModal {...{ refetchOrganizations, selectedOrganizationData }} />
             <Grid
                 name="Organisations"
                 columnDefs={columnDefs}
@@ -313,7 +324,7 @@ export function OrganizationsPage() {
                 groupDefaultExpanded={1}
                 groupIncludeFooter={false}
                 rowGroupPanelShow="never"
-                components={{ btnCellRenderer: EditBtnCellRenderer({ onClick: () => console.log('haha') }) }}
+                components={{ btnCellRenderer: EditBtnCellRenderer({ onClick: openOrganizationEditModal }) }}
             />
             <Container fluid className="mb-2">
                 <p>

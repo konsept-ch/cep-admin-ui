@@ -37,10 +37,23 @@ export const organizationsApi = createApi({
                 }
             },
         }),
+        updateOrganization: builder.mutation({
+            query: ({ id, body }) => {
+                return {
+                    url: `organization/${id}`,
+                    method: 'PUT',
+                    body,
+                }
+            },
+        }),
     }),
 })
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useAddOrganizationsMutation, useGetOrganizationsQuery, useRemoveOrganizationsMutation } =
-    organizationsApi
+export const {
+    useAddOrganizationsMutation,
+    useGetOrganizationsQuery,
+    useRemoveOrganizationsMutation,
+    useUpdateOrganizationMutation,
+} = organizationsApi

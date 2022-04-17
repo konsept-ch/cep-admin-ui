@@ -23,7 +23,7 @@ export function UsersPage() {
             headerName: '',
             cellRenderer: 'btnCellRenderer',
             headerTooltip: "Modifier l'utilisateur",
-            cellClass: 'edit-user-column',
+            cellClass: 'edit-column',
             pinned: 'left',
             maxWidth: 60,
             filter: false,
