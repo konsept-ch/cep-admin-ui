@@ -12,7 +12,7 @@ export function EditOrganizationModal({ refetchOrganizations, selectedOrganizati
         handleSubmit,
         setValue,
         reset,
-        formState: { isDirty },
+        formState: { isDirty, errors },
     } = useForm()
     const [isModalVisible, setIsModalVisible] = useState(false)
 
@@ -98,30 +98,21 @@ export function EditOrganizationModal({ refetchOrganizations, selectedOrganizati
                             <Form.Label>Mode de facturation</Form.Label>
                             <Col>
                                 <Form.Check
-                                    inline
                                     {...register('billingMode')}
                                     type="radio"
                                     label="Pas de facturation"
                                     value="Pas de facturation"
                                 />
-                                <Form.Check
-                                    inline
-                                    {...register('billingMode')}
-                                    type="radio"
-                                    label="Directe"
-                                    value="Directe"
-                                />
+                                <Form.Check {...register('billingMode')} type="radio" label="Directe" value="Directe" />
                             </Col>
                             <Col>
                                 <Form.Check
-                                    inline
                                     {...register('billingMode')}
                                     type="radio"
                                     label="Groupée - Semestrielle"
                                     value="Groupée - Semestrielle"
                                 />
                                 <Form.Check
-                                    inline
                                     {...register('billingMode')}
                                     type="radio"
                                     label="Groupée - Annuelle"
@@ -130,14 +121,12 @@ export function EditOrganizationModal({ refetchOrganizations, selectedOrganizati
                             </Col>
                             <Col>
                                 <Form.Check
-                                    inline
                                     {...register('billingMode')}
                                     type="radio"
                                     label="Frais effectifs"
                                     value="Frais effectifs"
                                 />
                                 <Form.Check
-                                    inline
                                     {...register('billingMode')}
                                     type="radio"
                                     label="Idem niveau supérieur"
@@ -150,12 +139,21 @@ export function EditOrganizationModal({ refetchOrganizations, selectedOrganizati
                             <Col sm={4} className="pe-0">
                                 <Form.Group className="mb-3" controlId="dailyRate">
                                     <Form.Label>Tarif journalier</Form.Label>
-                                    <InputGroup className="mb-3">
-                                        <InputGroup.Text>CHF</InputGroup.Text>
+                                    <InputGroup className="mb-3" hasValidation>
+                                        <InputGroup.Text id="dailyRatePrepend">CHF</InputGroup.Text>
                                         <Form.Control
                                             type="number"
-                                            {...register('dailyRate', { valueAsNumber: true })}
+                                            isInvalid={errors?.dailyRate}
+                                            min={0}
+                                            aria-describedby="dailyRatePrepend"
+                                            {...register('dailyRate', {
+                                                valueAsNumber: true,
+                                                min: { value: 0, message: 'Un nombre positif est nécessaire' },
+                                            })}
                                         />
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors?.dailyRate?.message}
+                                        </Form.Control.Feedback>
                                     </InputGroup>
                                     <Form.Text>Si tarif journalier négocié pour l'ensemble des cours</Form.Text>
                                 </Form.Group>
@@ -170,7 +168,22 @@ export function EditOrganizationModal({ refetchOrganizations, selectedOrganizati
 
                             <Col>
                                 <Form.Label>Nb flyers</Form.Label>
-                                <Form.Control type="number" {...register('flyersCount', { valueAsNumber: true })} />
+                                <InputGroup hasValidation>
+                                    <Form.Control
+                                        type="number"
+                                        isInvalid={errors?.flyersCount}
+                                        min={0}
+                                        {...register('flyersCount', {
+                                            valueAsNumber: true,
+                                            min: { value: 0, message: 'Un nombre positif est nécessaire' },
+                                            validate: (value) =>
+                                                value !== parseInt(value) ? 'Le nombre doit être entier' : true,
+                                        })}
+                                    />
+                                    <Form.Control.Feedback type="invalid">
+                                        {errors?.flyersCount?.message}
+                                    </Form.Control.Feedback>
+                                </InputGroup>
                             </Col>
                         </Row>
 
