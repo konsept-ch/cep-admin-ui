@@ -54,6 +54,25 @@ export function UsersPage() {
             headerTooltip: "L'organisation de l'utilisateur",
         },
         {
+            field: 'telephone',
+            headerName: 'Téléphone',
+            filter: 'agTextColumnFilter',
+            headerTooltip: "Le téléphone de l'utilisateur",
+        },
+        {
+            field: 'roles',
+            headerName: 'Rôles',
+            filter: 'agTextColumnFilter',
+            headerTooltip: "Les rôles de l'utilisateur",
+            valueGetter: ({ data: { roles } }) => roles.map(({ translationKey }) => translationKey).join(', '),
+        },
+        {
+            field: 'profession',
+            headerName: 'Fonction/Profession',
+            filter: 'agTextColumnFilter',
+            headerTooltip: "La fonction/profession de l'utilisateur",
+        },
+        {
             field: 'shouldReceiveSms',
             headerName: 'Recevoir des SMS',
             filter: 'agSetColumnFilter',
@@ -70,6 +89,9 @@ export function UsersPage() {
         email: user.email,
         mainOrganization: user.mainOrganization?.name,
         shouldReceiveSms: user.shouldReceiveSms,
+        telephone: user.phone,
+        roles: user.roles,
+        profession: user.profession,
     }))
 
     return (
