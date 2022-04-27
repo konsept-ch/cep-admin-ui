@@ -177,7 +177,9 @@ export function EditOrganizationModal({ refetchOrganizations, selectedOrganizati
                                             valueAsNumber: true,
                                             min: { value: 0, message: 'Un nombre positif est nécessaire' },
                                             validate: (value) =>
-                                                value !== parseInt(value) ? 'Le nombre doit être entier' : true,
+                                                value && value !== parseInt(value)
+                                                    ? 'Le nombre doit être entier'
+                                                    : true,
                                         })}
                                     />
                                     <Form.Control.Feedback type="invalid">
