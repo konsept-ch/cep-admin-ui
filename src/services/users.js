@@ -22,13 +22,11 @@ export const usersApi = createApi({
             query: () => `allUsers`,
         }),
         updateUser: builder.mutation({
-            query: ({ id, body }) => {
-                return {
-                    url: `user/${id}`,
-                    method: 'PUT',
-                    body,
-                }
-            },
+            query: ({ id, body }) => ({
+                url: `user/${id}`,
+                method: 'PUT',
+                body,
+            }),
         }),
     }),
 })

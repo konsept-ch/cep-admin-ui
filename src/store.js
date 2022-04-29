@@ -36,11 +36,12 @@ export const store = configureStore({
         [organizationsApi.reducerPath]: organizationsApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware()
-            .concat(sagaMiddleware)
-            .concat(adminsApi.middleware)
-            .concat(usersApi.middleware)
-            .concat(organizationsApi.middleware),
+        getDefaultMiddleware().concat([
+            sagaMiddleware,
+            usersApi.middleware,
+            adminsApi.middleware,
+            organizationsApi.middleware,
+        ]),
 })
 
 sagaMiddleware.run(rootSaga)
