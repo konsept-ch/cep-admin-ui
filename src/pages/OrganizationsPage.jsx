@@ -78,6 +78,7 @@ export function OrganizationsPage() {
             headerName: 'Tarif journalier',
             filter: 'agNumberColumnFilter',
             headerTooltip: "Si tarif journalier négocié pour l'ensemble des cours",
+            type: 'numericColumn',
             hide: true,
         },
         {
@@ -85,6 +86,7 @@ export function OrganizationsPage() {
             headerName: 'Nb flyers',
             filter: 'agNumberColumnFilter',
             headerTooltip: "Le nombre de flyers de l'organisation",
+            type: 'numericColumn',
             hide: true,
         },
         {

@@ -16,6 +16,7 @@ import { formateursReducer } from './reducers/formateurs'
 import { adminsApi } from './services/admins'
 import { usersApi } from './services/users'
 import { organizationsApi } from './services/organizations'
+import { coursesApi } from './services/courses'
 
 const sagaMiddleware = createSagaMiddleware()
 
@@ -34,6 +35,7 @@ export const store = configureStore({
         [adminsApi.reducerPath]: adminsApi.reducer,
         [usersApi.reducerPath]: usersApi.reducer,
         [organizationsApi.reducerPath]: organizationsApi.reducer,
+        [coursesApi.reducerPath]: coursesApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat([
@@ -41,6 +43,7 @@ export const store = configureStore({
             usersApi.middleware,
             adminsApi.middleware,
             organizationsApi.middleware,
+            coursesApi.middleware,
         ]),
 })
 
