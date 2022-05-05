@@ -98,7 +98,15 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, adminsData
                                 <Controller
                                     name="coordinator"
                                     control={control}
-                                    render={({ field }) => <CreatableSelect {...field} options={adminsData} />}
+                                    render={({ field }) => (
+                                        <CreatableSelect
+                                            {...field}
+                                            options={adminsData}
+                                            value={adminsData.find(
+                                                (current) => current.label === selectedCourseData.coordinator
+                                            )}
+                                        />
+                                    )}
                                 />
                             </Col>
                             <Col>
@@ -106,7 +114,15 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, adminsData
                                 <Controller
                                     name="responsible"
                                     control={control}
-                                    render={({ field }) => <CreatableSelect {...field} options={adminsData} />}
+                                    render={({ field }) => (
+                                        <CreatableSelect
+                                            {...field}
+                                            options={adminsData}
+                                            value={adminsData.find(
+                                                (current) => current.label === selectedCourseData.responsible
+                                            )}
+                                        />
+                                    )}
                                 />
                             </Col>
                         </Row>
@@ -117,7 +133,15 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, adminsData
                                 <Controller
                                     name="typeStage"
                                     control={control}
-                                    render={({ field }) => <Select {...field} options={typeStageValues} />}
+                                    render={({ field }) => (
+                                        <Select
+                                            {...field}
+                                            options={typeStageValues}
+                                            value={typeStageValues.find(
+                                                (current) => current.label === selectedCourseData.typeStage
+                                            )}
+                                        />
+                                    )}
                                 />
                             </Col>
                             <Col>
@@ -125,7 +149,15 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, adminsData
                                 <Controller
                                     name="teachingMethod"
                                     control={control}
-                                    render={({ field }) => <Select {...field} options={teachingMethodValues} />}
+                                    render={({ field }) => (
+                                        <Select
+                                            {...field}
+                                            options={teachingMethodValues}
+                                            value={teachingMethodValues.find(
+                                                (current) => current.label === selectedCourseData.teachingMethod
+                                            )}
+                                        />
+                                    )}
                                 />
                             </Col>
                         </Row>
@@ -136,7 +168,15 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, adminsData
                                 <Controller
                                     name="codeCategory"
                                     control={control}
-                                    render={({ field }) => <Select {...field} options={codeCategoryValues} />}
+                                    render={({ field }) => (
+                                        <Select
+                                            {...field}
+                                            options={codeCategoryValues}
+                                            value={codeCategoryValues.find(
+                                                (current) => current.label === selectedCourseData.codeCategory
+                                            )}
+                                        />
+                                    )}
                                 />
                             </Col>
                             <Col>
