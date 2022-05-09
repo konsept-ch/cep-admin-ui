@@ -3,7 +3,6 @@ import { inscriptionsSelectors } from './inscriptions'
 import { sessionsSelectors } from './sessions'
 import { parametersSelectors } from './parameters'
 import { loadingSelectors } from './loading'
-import { coursesSelectors } from './courses'
 import { templatesSelectors } from './templates'
 import { formateursSelectors } from './formateurs'
 
@@ -14,7 +13,6 @@ export const parametersSelector = (state) => parametersSelectors.parametersSelec
 export const loadingSelector = (state) => loadingSelectors.loadingSelector(state.loading)
 export const gridLoadingSelector = (state) => loadingSelectors.gridLoadingSelector(state.loading)
 export const templatesLoadingSelector = (state) => loadingSelectors.templatesLoadingSelector(state.loading)
-export const coursesSelector = (state) => coursesSelectors.coursesSelector(state.courses)
 export const templatesSelector = (state) => templatesSelectors.templatesSelector(state.templates)
 export const templateForInvitesSelector = (state) => templatesSelectors.templateForInvitesSelector(state.templates)
 export const templatePreviewsSelector = (state) => templatesSelectors.templatePreviewsSelector(state.templates)

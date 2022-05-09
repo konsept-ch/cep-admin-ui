@@ -4,7 +4,6 @@ import { agendaSaga } from './agenda'
 import { inscriptionsSaga } from './inscriptions'
 import { sessionsSaga } from './sessions'
 import { parametersSaga } from './parameters'
-import { coursesSaga } from './courses'
 import { templatesSaga } from './templates'
 import { formateursSaga } from './formateurs'
 
@@ -15,7 +14,6 @@ export function* rootSaga() {
         inscriptionsSaga(),
         sessionsSaga(),
         parametersSaga(),
-        coursesSaga(),
         templatesSaga(),
         formateursSaga(),
     ])

@@ -10,7 +10,6 @@ import { inscriptionsReducer } from './reducers/inscriptions'
 import { sessionsReducer } from './reducers/sessions'
 import { parametersReducer } from './reducers/parameters'
 import { loadingReducer } from './reducers/loading'
-import { coursesReducer } from './reducers/courses'
 import { templatesReducer } from './reducers/templates'
 import { formateursReducer } from './reducers/formateurs'
 import { adminsApi } from './services/admins'
@@ -28,7 +27,6 @@ export const store = configureStore({
         sessions: sessionsReducer,
         parameters: parametersReducer,
         loading: loadingReducer,
-        courses: coursesReducer,
         templates: templatesReducer,
         formateurs: formateursReducer,
         // Add the generated reducer as a specific top-level slice
