@@ -100,6 +100,12 @@ export function SessionsPage() {
             filter: 'agSetColumnFilter',
             headerTooltip: 'Le format de la session',
         },
+        {
+            field: 'sessionLocation',
+            headerName: 'Lieu de la session',
+            filter: 'agSetColumnFilter',
+            headerTooltip: 'Le lieu de la session',
+        },
         // {
         //     field: 'invited',
         //     headerName: 'Invitée',
@@ -133,6 +139,7 @@ export function SessionsPage() {
             name,
             code,
             sessionFormat,
+            sessionLocation,
             restrictions: { hidden, dates },
             pricing: { price },
             meta: { created, updated, days },
@@ -152,6 +159,7 @@ export function SessionsPage() {
             quotaDays,
             isUsedForQuota,
             sessionFormat,
+            sessionLocation,
         })
     )
 

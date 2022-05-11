@@ -22,6 +22,7 @@ export function EditSessionModal({ refetchSessions, selectedSessionData }) {
         if (selectedSessionData != null) {
             reset({
                 sessionFormat: selectedSessionData?.sessionFormat,
+                sessionLocation: selectedSessionData?.sessionLocation,
             })
             setIsModalVisible(true)
         }
@@ -39,6 +40,11 @@ export function EditSessionModal({ refetchSessions, selectedSessionData }) {
         { value: 'visioconférence', label: 'Visioconférence' },
         { value: 'mixte', label: 'Mixte' },
         { value: 'e-learning', label: 'E-learning' },
+    ]
+
+    const sessionLocationValues = [
+        { value: 'lausanne', label: 'Lausanne' },
+        { value: 'hors-Lausanne', label: 'Hors-Lausanne' },
     ]
 
     return (
@@ -71,23 +77,40 @@ export function EditSessionModal({ refetchSessions, selectedSessionData }) {
                     </Col>
                     <Col sm={8}>
                         <h6>Modifier la session</h6>
-
-                        <Col>
-                            <Form.Label>Format de la session</Form.Label>
-                            <Controller
-                                name="sessionFormat"
-                                control={control}
-                                render={({ field }) => (
-                                    <Select
-                                        {...field}
-                                        options={sessionFormatValues}
-                                        value={sessionFormatValues.find(
-                                            (current) => current.label === selectedSessionData.sessionFormat
-                                        )}
-                                    />
-                                )}
-                            />
-                        </Col>
+                        <Row>
+                            <Col>
+                                <Form.Label>Format de la session</Form.Label>
+                                <Controller
+                                    name="sessionFormat"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <Select
+                                            {...field}
+                                            options={sessionFormatValues}
+                                            value={sessionFormatValues.find(
+                                                (current) => current.label === selectedSessionData.sessionFormat
+                                            )}
+                                        />
+                                    )}
+                                />
+                            </Col>
+                            <Col>
+                                <Form.Label>Lieu de la session</Form.Label>
+                                <Controller
+                                    name="sessionLocation"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <Select
+                                            {...field}
+                                            options={sessionLocationValues}
+                                            value={sessionLocationValues.find(
+                                                (current) => current.label === selectedSessionData.sessionLocation
+                                            )}
+                                        />
+                                    )}
+                                />
+                            </Col>
+                        </Row>
                     </Col>
                 </Row>
             }

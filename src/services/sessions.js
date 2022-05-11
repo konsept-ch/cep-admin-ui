@@ -20,11 +20,11 @@ export const sessionsApi = createApi({
             query: () => `sessions`,
         }),
         updateSession: builder.mutation({
-            query: ({ sessionId, sessionFormat, sessionName, startDate }) => {
+            query: ({ sessionId, sessionName, startDate, ...rest }) => {
                 return {
                     url: `sessions/${sessionId}`,
                     method: 'PUT',
-                    body: { sessionFormat, sessionName, startDate },
+                    body: { sessionName, startDate, ...rest },
                 }
             },
         }),
