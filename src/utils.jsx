@@ -223,3 +223,14 @@ export const inscriptionsGridColumnDefs = [
     'export',
     'chartRange',
 ]
+
+export const formatToFlatObject = (data) => {
+    const objectValuesEntries = Object.entries(data)
+        .filter(([_k, v]) => typeof v === 'object' && !Array.isArray(v) && v !== null)
+        .reduce((acc, [k, v]) => {
+            acc[k] = v.label
+            return acc
+        }, {})
+
+    return { ...data, ...objectValuesEntries }
+}

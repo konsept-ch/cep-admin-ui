@@ -7,6 +7,7 @@ import Select from 'react-select'
 
 import { CommonModal } from '../components'
 import { useUpdateCourseMutation } from '../services/courses'
+import { formatToFlatObject } from '../utils'
 
 export function EditCourseModal({ refetchCourses, selectedCourseData, adminsData }) {
     const {
@@ -272,22 +273,9 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, adminsData
                                 variant="primary"
                                 disabled={!isDirty}
                                 onClick={handleSubmit(async (newData) => {
-                                    const formatData = (data) => {
-                                        const objectValuesEntries = Object.entries(data)
-                                            .filter(
-                                                ([_k, v]) => typeof v === 'object' && !Array.isArray(v) && v !== null
-                                            )
-                                            .reduce((acc, [k, v]) => {
-                                                acc[k] = v.label
-                                                return acc
-                                            }, {})
-
-                                        return { ...data, ...objectValuesEntries }
-                                    }
-
                                     const { error: mutationError } = await updateCourse({
                                         courseId: selectedCourseData.id,
-                                        newData: formatData(newData),
+                                        newData: formatToFlatObject(newData),
                                     })
                                     if (typeof mutationError === 'undefined') {
                                         closeCourseEditModal()
@@ -329,7 +317,7 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, adminsData
             isVisible={isModalVisible}
             onHide={() => closeCourseEditModal()}
             backdrop="static"
-            dialogClassName="course-update-modal"
+            dialogClassName="update-modal"
         />
     )
 }

@@ -1,21 +1,36 @@
-import { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-
-import { fetchSessionsAction, updateSessionAction } from '../actions/sessions.ts'
-import { sessionsSelector } from '../reducers'
-import { Grid } from '../components'
-import { formatDate } from '../utils'
+import { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 
-export function SessionsPage() {
-    const dispatch = useDispatch()
-    const sessions = useSelector(sessionsSelector)
+import { Grid, EditBtnCellRenderer, EditSessionModal } from '../components'
+import { formatDate } from '../utils'
+import { useGetSessionsQuery } from '../services/sessions'
 
-    useEffect(() => {
-        dispatch(fetchSessionsAction())
-    }, [])
+export function SessionsPage() {
+    const [selectedSessionData, setSelectedSessionData] = useState()
+
+    const {
+        data: sessions,
+        isFetching,
+        refetch: refetchSessions,
+    } = useGetSessionsQuery(null, { refetchOnMountOrArgChange: true })
+
+    const openSessionEditModal = ({ data }) => {
+        // workaround - passes a new object to trigger reopen when the same row is clicked
+        setSelectedSessionData({ ...data })
+    }
 
     const columnDefs = [
+        {
+            field: 'edit',
+            headerName: '',
+            cellRenderer: 'btnCellRenderer',
+            headerTooltip: "Modifier l'organisation",
+            cellClass: 'edit-column',
+            pinned: 'left',
+            maxWidth: 60,
+            filter: false,
+            sortable: false,
+        },
         {
             field: 'name',
             headerName: 'Titre de la session',
@@ -30,7 +45,7 @@ export function SessionsPage() {
         },
         {
             field: 'duration',
-            headerName: 'Durée',
+            headerName: 'Durée (jours)',
             filter: 'agNumberColumnFilter',
             headerTooltip: 'La durée de la session',
             type: 'numericColumn',
@@ -79,6 +94,18 @@ export function SessionsPage() {
             headerTooltip: 'Si la session est cachée',
             valueGetter: ({ data: { hidden } }) => (hidden ? 'Cachée' : 'Visible'),
         },
+        {
+            field: 'sessionFormat',
+            headerName: 'Format de la session',
+            filter: 'agSetColumnFilter',
+            headerTooltip: 'Le format de la session',
+        },
+        {
+            field: 'sessionLocation',
+            headerName: 'Lieu de la session',
+            filter: 'agSetColumnFilter',
+            headerTooltip: 'Le lieu de la session',
+        },
         // {
         //     field: 'invited',
         //     headerName: 'Invitée',
@@ -111,16 +138,18 @@ export function SessionsPage() {
             id,
             name,
             code,
+            sessionFormat,
+            sessionLocation,
             restrictions: { hidden, dates },
             pricing: { price },
-            meta: { created, updated, duration },
+            meta: { created, updated, days },
             areInvitesSent,
             quotas: { days: quotaDays, used: isUsedForQuota },
         }) => ({
             id,
             name,
             code,
-            duration,
+            duration: days,
             price,
             creationDate: created,
             lastModifiedDate: updated,
@@ -129,6 +158,8 @@ export function SessionsPage() {
             startDate: dates[0],
             quotaDays,
             isUsedForQuota,
+            sessionFormat,
+            sessionLocation,
         })
     )
 
@@ -137,7 +168,14 @@ export function SessionsPage() {
             <Helmet>
                 <title>Sessions - Former22</title>
             </Helmet>
-            <Grid name="Sessions" columnDefs={columnDefs} rowData={rowData} />
+            <EditSessionModal {...{ refetchSessions, selectedSessionData }} />
+            <Grid
+                name="Sessions"
+                columnDefs={columnDefs}
+                rowData={rowData}
+                isDataLoading={isFetching}
+                components={{ btnCellRenderer: EditBtnCellRenderer({ onClick: openSessionEditModal }) }}
+            />
         </>
     )
 }
