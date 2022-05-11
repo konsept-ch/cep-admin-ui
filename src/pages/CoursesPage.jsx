@@ -1,38 +1,41 @@
-import { useCallback, useEffect, useState, useMemo } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useState, useMemo } from 'react'
 
-import { Grid, CourseDetailsModal } from '../components'
-import { fetchCoursesAction, updateCourseAction } from '../actions/courses.ts'
-import { coursesSelector } from '../reducers'
+import { Grid, CourseDetailsModal, EditBtnCellRenderer, EditCourseModal } from '../components'
 import { formatDate } from '../utils'
 import { Helmet } from 'react-helmet-async'
 import { useGetAdminsQuery } from '../services/admins'
+import { useGetCoursesQuery } from '../services/courses'
 
 export function CoursesPage() {
-    const dispatch = useDispatch()
-    const courses = useSelector(coursesSelector)
-    const fetchCourses = useCallback(() => dispatch(fetchCoursesAction()), [dispatch])
-    const updateCourse = useCallback(
-        ({ courseId, field, newValue }) => dispatch(updateCourseAction({ courseId, field, newValue })),
-        [dispatch]
-    )
+    const [selectedCourseData, setSelectedCourseData] = useState(null)
 
-    // Using a query hook automatically fetches data and returns query values
+    const {
+        data: courses,
+        isFetching,
+        refetch: refetchCourses,
+    } = useGetCoursesQuery(null, { refetchOnMountOrArgChange: true })
+
     const { data: adminsData, error, isLoading } = useGetAdminsQuery(null, { refetchOnMountOrArgChange: true })
-    // Individual hooks are also accessible under the generated endpoints:
-    // const { data, error, isLoading } = pokemonApi.endpoints.getPokemonByName.useQuery('bulbasaur')
 
-    const admins = adminsData?.map((admin) => admin.name)
+    const admins = adminsData?.map((admin) => ({ value: admin.id, label: admin.name }))
 
-    useEffect(() => {
-        fetchCourses()
-    }, [fetchCourses])
-
-    const typeStageValues = ['Attestation', 'Certificat', 'Autre']
-    const teachingMethodValues = ['Présentiel', 'Distanciel', 'E-learning', 'Mixte/Blended']
-    const codeCategoryValues = ['Catalogue', 'FSM', 'PS', 'CIE', 'CAS']
+    const openCourseEditModal = ({ data }) => {
+        // workaround - passes a new object to trigger reopen when the same row is clicked
+        setSelectedCourseData({ ...data })
+    }
 
     const columnDefs = [
+        {
+            field: 'edit',
+            headerName: '',
+            cellRenderer: 'btnCellRenderer',
+            headerTooltip: 'Modifier la formation',
+            cellClass: 'edit-column',
+            pinned: 'left',
+            maxWidth: 60,
+            filter: false,
+            sortable: false,
+        },
         {
             field: 'name',
             headerName: 'Titre de la formation',
@@ -70,11 +73,6 @@ export function CoursesPage() {
             headerName: 'CF (coordinateur)',
             filter: 'agTextColumnFilter',
             headerTooltip: 'Le coordinateur de la formation',
-            editable: true,
-            cellEditor: 'agRichSelectCellEditor',
-            cellEditorParams: { values: admins },
-            onCellValueChanged: (data) =>
-                updateCourse({ courseId: data.data.id, field: data.colDef.field, newValue: data.newValue }),
             width: 170,
         },
         {
@@ -82,11 +80,6 @@ export function CoursesPage() {
             headerName: 'RF (responsable)',
             filter: 'agTextColumnFilter',
             headerTooltip: 'Le responsable de la formation',
-            editable: true,
-            cellEditor: 'agRichSelectCellEditor',
-            cellEditorParams: { values: admins },
-            onCellValueChanged: (data) =>
-                updateCourse({ courseId: data.data.id, field: data.colDef.field, newValue: data.newValue }),
             width: 170,
         },
 
@@ -94,36 +87,21 @@ export function CoursesPage() {
             field: 'typeStage',
             headerName: 'Type stage',
             filter: 'agTextColumnFilter',
-            editable: true,
             headerTooltip: 'Le type stage',
-            cellEditor: 'agRichSelectCellEditor',
-            cellEditorParams: { values: typeStageValues },
-            onCellValueChanged: (data) =>
-                updateCourse({ courseId: data.data.id, field: data.colDef.field, newValue: data.newValue }),
             width: 120,
         },
         {
             field: 'teachingMethod',
             headerName: 'Méthode enseignement',
             filter: 'agTextColumnFilter',
-            editable: true,
             headerTooltip: 'La méthode pédagogique',
-            cellEditor: 'agRichSelectCellEditor',
-            cellEditorParams: { values: teachingMethodValues },
-            onCellValueChanged: (data) =>
-                updateCourse({ courseId: data.data.id, field: data.colDef.field, newValue: data.newValue }),
             width: 210,
         },
         {
             field: 'codeCategory',
             headerName: 'Code catégorie',
             filter: 'agTextColumnFilter',
-            editable: true,
             headerTooltip: 'Le code catégorie',
-            cellEditor: 'agRichSelectCellEditor',
-            cellEditorParams: { values: codeCategoryValues },
-            onCellValueChanged: (data) =>
-                updateCourse({ courseId: data.data.id, field: data.colDef.field, newValue: data.newValue }),
             width: 150,
         },
         {
@@ -150,6 +128,37 @@ export function CoursesPage() {
             valueFormatter: ({ value }) => formatDate({ dateString: value, isDateVisible: true }),
             type: 'numericColumn',
         },
+        {
+            field: 'theme',
+            headerName: 'Thème',
+            filter: 'agTextColumnFilter',
+            headerTooltip: 'Le thème de la formation',
+        },
+        {
+            field: 'targetAudience',
+            headerName: 'Public cible',
+            filter: 'agTextColumnFilter',
+            headerTooltip: 'Le public cible',
+        },
+        {
+            field: 'billingMode',
+            headerName: 'Mode de facturation',
+            filter: 'agSetColumnFilter',
+            headerTooltip: 'Le mode de facturation',
+        },
+        {
+            field: 'pricingType',
+            headerName: 'Tarification',
+            filter: 'agSetColumnFilter',
+            headerTooltip: 'La tarification de la formation',
+        },
+        {
+            field: 'baseRate',
+            headerName: 'Tarif de base',
+            filter: 'agNumberColumnFilter',
+            headerTooltip: 'La tarification de la formation',
+            type: 'numericColumn',
+        },
     ]
 
     const rowData = useMemo(
@@ -167,6 +176,11 @@ export function CoursesPage() {
                     typeStage,
                     teachingMethod,
                     codeCategory,
+                    theme,
+                    targetAudience,
+                    billingMode,
+                    pricingType,
+                    baseRate,
                 }) => ({
                     id,
                     name,
@@ -181,6 +195,11 @@ export function CoursesPage() {
                     typeStage,
                     teachingMethod,
                     codeCategory,
+                    theme,
+                    targetAudience,
+                    billingMode,
+                    pricingType,
+                    baseRate,
                 })
             ),
         [courses]
@@ -193,11 +212,18 @@ export function CoursesPage() {
             <Helmet>
                 <title>Formations - Former22</title>
             </Helmet>
+            <EditCourseModal
+                refetchCourses={refetchCourses}
+                selectedCourseData={selectedCourseData}
+                adminsData={admins}
+            />
             <Grid
                 {...{
                     name: 'Formations',
                     columnDefs,
                     rowData,
+                    components: { btnCellRenderer: EditBtnCellRenderer({ onClick: openCourseEditModal }) },
+                    isDataLoading: isFetching,
                 }}
             />
 
@@ -205,7 +231,7 @@ export function CoursesPage() {
                 <CourseDetailsModal
                     closeModal={() => setSelectedCourseId()}
                     courseDetailsData={courses.find(({ id }) => id === selectedCourseId)}
-                    onAfterSave={fetchCourses}
+                    onAfterSave={refetchCourses}
                 />
             ) : null}
         </>

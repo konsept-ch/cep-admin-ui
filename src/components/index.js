@@ -10,3 +10,4 @@ export { ConfirmInscriptionChangeButton } from './ConfirmInscriptionChangeButton
 export { EditBtnCellRenderer } from './EditBtnCellRenderer'
 export { EditUserModal } from './EditUserModal'
 export { EditOrganizationModal } from './EditOrganizationModal'
+export { EditCourseModal } from './EditCourseModal'
