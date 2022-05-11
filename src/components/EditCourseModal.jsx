@@ -13,11 +13,14 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, adminsData
         register,
         handleSubmit,
         setValue,
+        watch,
         reset,
         control,
         formState: { isDirty, errors },
     } = useForm()
     const [isModalVisible, setIsModalVisible] = useState(false)
+
+    const watchIsRecurrent = watch('isRecurrent')
 
     useEffect(() => {
         if (selectedCourseData != null) {
@@ -32,6 +35,7 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, adminsData
                 billingMode: selectedCourseData?.billingMode,
                 pricingType: selectedCourseData?.pricingType,
                 baseRate: selectedCourseData?.baseRate,
+                isRecurrent: selectedCourseData?.isRecurrent,
             })
             setIsModalVisible(true)
         }
@@ -160,6 +164,13 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, adminsData
                                     )}
                                 />
                             </Col>
+                            <Col>
+                                <Form.Label>Formation Récurrente</Form.Label>
+                                <Form.Check {...register('isRecurrent')} type="switch" />
+                                <Form.Text>{`La formation ${
+                                    watchIsRecurrent ? 'est' : "n'est pas"
+                                } récurrente`}</Form.Text>
+                            </Col>
                         </Row>
 
                         <Row className="mb-3">
@@ -190,8 +201,8 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, adminsData
                         </Row>
 
                         <Row className="mb-3">
-                            <Form.Label>Mode de facturation</Form.Label>
                             <Col>
+                                <Form.Label>Mode de facturation</Form.Label>
                                 <Form.Check
                                     {...register('billingMode')}
                                     type="radio"
@@ -205,11 +216,8 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, adminsData
                                     value="Par session"
                                 />
                             </Col>
-                        </Row>
-
-                        <Row className="mb-3">
-                            <Form.Label>Tarification</Form.Label>
                             <Col>
+                                <Form.Label>Tarification</Form.Label>
                                 <Form.Check
                                     {...register('pricingType')}
                                     type="radio"
@@ -223,32 +231,27 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, adminsData
                                     value="Par cours"
                                 />
                             </Col>
-                        </Row>
-
-                        <Row>
                             <Col>
-                                <Col sm={4} className="pe-0">
-                                    <Form.Group className="mb-3" controlId="baseRate">
-                                        <Form.Label>Tarif de base</Form.Label>
-                                        <InputGroup className="mb-3" hasValidation>
-                                            <InputGroup.Text id="baseRatePrepend">CHF</InputGroup.Text>
-                                            <Form.Control
-                                                type="number"
-                                                isInvalid={errors?.baseRate}
-                                                min={0}
-                                                aria-describedby="baseRatePrepend"
-                                                {...register('baseRate', {
-                                                    valueAsNumber: true,
-                                                    min: { value: 0, message: 'Un nombre positif est nécessaire' },
-                                                })}
-                                            />
-                                            <Form.Control.Feedback type="invalid">
-                                                {errors?.baseRate?.message}
-                                            </Form.Control.Feedback>
-                                        </InputGroup>
-                                        <Form.Text>Si tarif de base négocié pour l'ensemble des cours</Form.Text>
-                                    </Form.Group>
-                                </Col>
+                                <Form.Group controlId="baseRate">
+                                    <Form.Label>Tarif de base</Form.Label>
+                                    <InputGroup className="mb-3" hasValidation>
+                                        <InputGroup.Text id="baseRatePrepend">CHF</InputGroup.Text>
+                                        <Form.Control
+                                            type="number"
+                                            isInvalid={errors?.baseRate}
+                                            min={0}
+                                            aria-describedby="baseRatePrepend"
+                                            {...register('baseRate', {
+                                                valueAsNumber: true,
+                                                min: { value: 0, message: 'Un nombre positif est nécessaire' },
+                                            })}
+                                        />
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors?.baseRate?.message}
+                                        </Form.Control.Feedback>
+                                    </InputGroup>
+                                    <Form.Text>Si tarif de base négocié pour l'ensemble des cours</Form.Text>
+                                </Form.Group>
                             </Col>
                         </Row>
                     </Col>
