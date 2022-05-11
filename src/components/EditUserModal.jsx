@@ -115,7 +115,7 @@ export function EditUserModal({ refetchUsers, selectedUserData }) {
             isVisible={isModalVisible}
             onHide={() => closeUserEditModal()}
             backdrop="static"
-            dialogClassName="user-update-modal"
+            dialogClassName="update-modal"
         />
     )
 }

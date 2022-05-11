@@ -296,7 +296,7 @@ export function EditOrganizationModal({ refetchOrganizations, selectedOrganizati
             isVisible={isModalVisible}
             onHide={() => closeOrganizationEditModal()}
             backdrop="static"
-            dialogClassName="organization-update-modal"
+            dialogClassName="update-modal"
         />
     )
 }

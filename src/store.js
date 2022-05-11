@@ -7,7 +7,6 @@ import { rootSaga } from './saga'
 import { notificationsReducer } from './reducers/notifications'
 import { agendaReducer } from './reducers/agenda'
 import { inscriptionsReducer } from './reducers/inscriptions'
-import { sessionsReducer } from './reducers/sessions'
 import { parametersReducer } from './reducers/parameters'
 import { loadingReducer } from './reducers/loading'
 import { templatesReducer } from './reducers/templates'
@@ -16,6 +15,7 @@ import { adminsApi } from './services/admins'
 import { usersApi } from './services/users'
 import { organizationsApi } from './services/organizations'
 import { coursesApi } from './services/courses'
+import { sessionsApi } from './services/sessions'
 
 const sagaMiddleware = createSagaMiddleware()
 
@@ -24,7 +24,6 @@ export const store = configureStore({
         notifications: notificationsReducer,
         agenda: agendaReducer,
         inscriptions: inscriptionsReducer,
-        sessions: sessionsReducer,
         parameters: parametersReducer,
         loading: loadingReducer,
         templates: templatesReducer,
@@ -34,6 +33,7 @@ export const store = configureStore({
         [usersApi.reducerPath]: usersApi.reducer,
         [organizationsApi.reducerPath]: organizationsApi.reducer,
         [coursesApi.reducerPath]: coursesApi.reducer,
+        [sessionsApi.reducerPath]: sessionsApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat([
@@ -42,6 +42,7 @@ export const store = configureStore({
             adminsApi.middleware,
             organizationsApi.middleware,
             coursesApi.middleware,
+            sessionsApi.middleware,
         ]),
 })
 
