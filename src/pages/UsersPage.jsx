@@ -76,7 +76,7 @@ export function UsersPage() {
             field: 'shouldReceiveSms',
             headerName: 'Recevoir des SMS',
             filter: 'agSetColumnFilter',
-            headerTooltip: 'Est-ce que cet utilisateur reçoit des SMS',
+            headerTooltip: 'Si cet utilisateur reçoit des SMS',
             valueGetter: ({ data: { shouldReceiveSms } }) => (shouldReceiveSms ? 'Oui' : 'Non'),
         },
     ]

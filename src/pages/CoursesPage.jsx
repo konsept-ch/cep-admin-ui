@@ -108,7 +108,7 @@ export function CoursesPage() {
             field: 'hidden',
             headerName: 'Visibilité',
             filter: 'agSetColumnFilter',
-            headerTooltip: 'Est-ce que la formation est cachée',
+            headerTooltip: 'Si la formation est cachée',
             valueGetter: ({ data: { hidden } }) => (hidden ? 'Cachée' : 'Visible'),
             width: 120,
         },
@@ -158,6 +158,13 @@ export function CoursesPage() {
             filter: 'agNumberColumnFilter',
             headerTooltip: 'La tarification de la formation',
             type: 'numericColumn',
+        },
+        {
+            field: 'isRecurrent',
+            headerName: 'Formation Récurrente',
+            filter: 'agSetColumnFilter',
+            headerTooltip: 'Si la formation est récurrente',
+            valueGetter: ({ data: { isRecurrent } }) => (isRecurrent ? 'Oui' : 'Non'),
         },
     ]
 

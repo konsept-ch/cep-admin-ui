@@ -76,7 +76,7 @@ export function SessionsPage() {
             field: 'hidden',
             headerName: 'Visibilité',
             filter: 'agSetColumnFilter',
-            headerTooltip: 'Est-ce que la session est cachée',
+            headerTooltip: 'Si la session est cachée',
             valueGetter: ({ data: { hidden } }) => (hidden ? 'Cachée' : 'Visible'),
         },
         // {
@@ -84,7 +84,7 @@ export function SessionsPage() {
         //     headerName: 'Invitée',
         //     filter: 'agTextColumnFilter',
         //     cellEditor: 'agRichSelectCellEditor',
-        //     headerTooltip: 'Est-ce que la session est invitée',
+        //     headerTooltip: 'Si la session est invitée',
         //     editable: true,
         //     valueGetter: ({ data: { invited } }) => (invited ? 'Oui' : 'Non'),
         //     cellEditorParams: { values: ['Oui', 'Non'] },
