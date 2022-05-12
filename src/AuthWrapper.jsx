@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Button, Col, Container, Form, InputGroup, Row, Spinner } from 'react-bootstrap'
+import { Button, Col, Container, Form, InputGroup, Row } from 'react-bootstrap'
 import { toast } from 'react-toastify'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -10,8 +10,10 @@ import {
     faArrowRightToBracket,
     // faGlobe,
 } from '@fortawesome/pro-regular-svg-icons'
+
 import { cookies, clearAllAuthCookies, keepAuthAlive, callApi } from './utils'
 import { authCookiesMaxAgeSeconds, MIDDLEWARE_URL } from './constants/config'
+import { ButtonIcon } from './components'
 
 let keepAliveInterval
 
@@ -164,9 +166,9 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                                 </InputGroup>
                             </Form.Group> */}
                             <Button variant="primary" type="submit">
-                                <FontAwesomeIcon icon={faPaperPlaneTop} /> Envoyer code
+                                <ButtonIcon isLoading={isCodeLoading} icon={faPaperPlaneTop} />
+                                Envoyer code
                             </Button>
-                            {isCodeLoading && <Spinner animation="grow" size="sm" />}
                         </Form>
                     ) : (
                         <Form>
@@ -179,7 +181,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                                     </InputGroup.Text>
                                     <Form.Control
                                         type="number"
-                                        placeholder="1234"
+                                        placeholder="123456"
                                         value={code}
                                         onChange={({ target: { value } }) => setCode(value)}
                                     />
@@ -217,9 +219,9 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                                 </Form.Text>
                             </Form.Group>
                             <Button variant="primary" type="submit" onClick={onLoginButtonClick}>
-                                <FontAwesomeIcon icon={faArrowRightToBracket} /> Connexion
+                                <ButtonIcon isLoading={isLoginLoading} icon={faArrowRightToBracket} />
+                                Connexion
                             </Button>
-                            {isLoginLoading && <Spinner animation="grow" size="sm" />}
                         </Form>
                     )}
                 </Col>
