@@ -34,7 +34,7 @@ export function EditUserModal({ refetchUsers, selectedUserData }) {
 
     return (
         <CommonModal
-            title={selectedUserData?.fullName}
+            title={`${selectedUserData?.lastName} ${selectedUserData?.firstName}`}
             content={
                 <Row>
                     <Col>
@@ -42,11 +42,11 @@ export function EditUserModal({ refetchUsers, selectedUserData }) {
                         {selectedUserData != null && (
                             <dl>
                                 <dt>Nom</dt>
-                                <dd>{selectedUserData.fullName}</dd>
+                                <dd>{`${selectedUserData?.lastName} ${selectedUserData?.firstName}`}</dd>
                                 <dt>E-mail</dt>
                                 <dd>{selectedUserData.email}</dd>
                                 <dt>Organisation</dt>
-                                <dd>{selectedUserData.mainOrganization}</dd>
+                                <dd>{selectedUserData.mainOrganizationName}</dd>
                             </dl>
                         )}
                     </Col>
