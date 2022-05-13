@@ -64,7 +64,7 @@ export function UsersPage() {
             headerName: 'Rôles',
             filter: 'agTextColumnFilter',
             headerTooltip: "Les rôles de l'utilisateur",
-            valueGetter: ({ data: { roles } }) => roles.map(({ translationKey }) => translationKey).join(', '),
+            valueGetter: ({ data: { roles } }) => roles.join(', '),
         },
         {
             field: 'profession',
