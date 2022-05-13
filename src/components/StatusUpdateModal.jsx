@@ -74,11 +74,19 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
                         <dd>
                             <a href={`mailto:${statusUpdateData.user.email}`}>{statusUpdateData.user.email}</a>
                         </dd>
-                        <dt>Profession du participant</dt>
-                        <dd>{statusUpdateData.user.profession}</dd>
+                        <dt>Fonction professionnelle</dt>
+                        <dd>{statusUpdateData.user.profession ?? '(Aucune profession choisie)'}</dd>
                         <dt>Numéro de téléphone du participant</dt>
                         <dd>
-                            {statusUpdateData.user.phone} ({statusUpdateData.user.phoneForSms})
+                            {statusUpdateData.user.phone ? (
+                                <>
+                                    {statusUpdateData.user.phone}
+                                    <br />
+                                    <i>({statusUpdateData.user.phoneForSms})</i>
+                                </>
+                            ) : (
+                                '(Aucun numéro saisi)'
+                            )}
                         </dd>
                         <dt>Recevoir SMS ?</dt>
                         <dd>{statusUpdateData.user.shouldReceiveSms ? 'Oui' : 'Non'}</dd>
