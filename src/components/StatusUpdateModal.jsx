@@ -82,7 +82,9 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
                                 <>
                                     {statusUpdateData.user.phone}
                                     <br />
-                                    <i>({statusUpdateData.user.phoneForSms})</i>
+                                    <a href={`tel:${statusUpdateData.user.phoneForSms}`}>
+                                        <i>({statusUpdateData.user.phoneForSms})</i>
+                                    </a>
                                 </>
                             ) : (
                                 '(Aucun numéro saisi)'
