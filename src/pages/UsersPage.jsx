@@ -48,7 +48,7 @@ export function UsersPage() {
             headerTooltip: "L'e-mail de l'utilisateur",
         },
         {
-            field: 'mainOrganization',
+            field: 'mainOrganizationName',
             headerName: 'Organisation',
             filter: 'agSetColumnFilter',
             headerTooltip: "L'organisation de l'utilisateur",
@@ -64,7 +64,7 @@ export function UsersPage() {
             headerName: 'Rôles',
             filter: 'agTextColumnFilter',
             headerTooltip: "Les rôles de l'utilisateur",
-            valueGetter: ({ data: { roles } }) => roles.map(({ translationKey }) => translationKey).join(', '),
+            valueGetter: ({ data: { roles } }) => roles.join(', '),
         },
         {
             field: 'profession',
@@ -85,9 +85,8 @@ export function UsersPage() {
         id: user.id,
         firstName: user.firstName,
         lastName: user.lastName,
-        fullName: user.name,
         email: user.email,
-        mainOrganization: user.mainOrganization?.name,
+        mainOrganizationName: user.mainOrganizationName,
         shouldReceiveSms: user.shouldReceiveSms,
         telephone: user.phone,
         roles: user.roles,
