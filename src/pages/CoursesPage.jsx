@@ -17,7 +17,7 @@ export function CoursesPage() {
 
     const { data: adminsData, error, isLoading } = useGetAdminsQuery(null, { refetchOnMountOrArgChange: true })
 
-    const admins = adminsData?.map((admin) => ({ value: admin.id, label: admin.name }))
+    const admins = adminsData?.map((admin) => ({ value: admin.id, label: `${admin.first_name} ${admin.last_name}` }))
 
     const openCourseEditModal = ({ data }) => {
         // workaround - passes a new object to trigger reopen when the same row is clicked
