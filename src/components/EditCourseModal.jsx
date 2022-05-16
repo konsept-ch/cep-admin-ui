@@ -7,7 +7,7 @@ import Select from 'react-select'
 
 import { CommonModal } from '../components'
 import { useUpdateCourseMutation } from '../services/courses'
-import { formatToFlatObject } from '../utils'
+import { formatToFlatObject, formatDate } from '../utils'
 
 export function EditCourseModal({ refetchCourses, selectedCourseData, adminsData }) {
     const {
@@ -86,11 +86,18 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, adminsData
                                 <dt>Coût</dt>
                                 <dd>{selectedCourseData.price}</dd>
                                 <dt>Visibilité</dt>
-                                <dd>{selectedCourseData.hidden}</dd>
+                                <dd>{selectedCourseData.hidden ? 'Cachée' : 'Visible'}</dd>
                                 <dt>Date de création</dt>
-                                <dd>{selectedCourseData.creationDate}</dd>
+                                <dd>
+                                    {formatDate({ dateString: selectedCourseData.creationDate, isDateVisible: true })}
+                                </dd>
                                 <dt>Dernière modification</dt>
-                                <dd>{selectedCourseData.lastModifiedDate}</dd>
+                                <dd>
+                                    {formatDate({
+                                        dateString: selectedCourseData.lastModifiedDate,
+                                        isDateVisible: true,
+                                    })}
+                                </dd>
                             </dl>
                         )}
                     </Col>
