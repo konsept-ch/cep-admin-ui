@@ -96,21 +96,27 @@ export const Calendar = ({ resources, events, calendarRef, refreshCallback }) =>
                     luxon2Plugin,
                 ]}
                 eventClick={(info) => {
+                    console.log('info', info)
                     info.jsEvent.preventDefault()
                     setSelectedEvent({ ...info.event._def, range: info.event._instance.range })
                 }}
-                eventContent={(eventInfo) => (
-                    <>
-                        <b>
-                            <span className="event-content-room">{eventInfo.event._def.extendedProps.room?.name}</span>|
-                            {Intl.DateTimeFormat(DATE_FORMAT_SWISS_FRENCH, DATE_FORMAT_OPTIONS).format(
-                                new Date(eventInfo.event._instance.range.start)
-                            )}
-                        </b>
-                        <br />
-                        <i>{eventInfo.event.title}</i>
-                    </>
-                )}
+                eventContent={(eventInfo) =>
+                    console.log('eventInfo', eventInfo) || (
+                        <>
+                            <b>
+                                <span className="event-content-room">
+                                    {eventInfo.event._def.extendedProps.room?.name}
+                                </span>
+                                |
+                                {Intl.DateTimeFormat(DATE_FORMAT_SWISS_FRENCH, DATE_FORMAT_OPTIONS).format(
+                                    new Date(eventInfo.event._instance.range.start)
+                                )}
+                            </b>
+                            <br />
+                            <i>{eventInfo.event.title}</i>
+                        </>
+                    )
+                }
                 businessHours={{
                     startTime: '08:30',
                     endTime: '17:00',
