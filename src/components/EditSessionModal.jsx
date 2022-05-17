@@ -18,23 +18,6 @@ export function EditSessionModal({ refetchSessions, selectedSessionData }) {
     } = useForm()
     const [isModalVisible, setIsModalVisible] = useState(false)
 
-    useEffect(() => {
-        if (selectedSessionData != null) {
-            reset({
-                sessionFormat: selectedSessionData?.sessionFormat,
-                sessionLocation: selectedSessionData?.sessionLocation,
-            })
-            setIsModalVisible(true)
-        }
-    }, [selectedSessionData, setValue, reset])
-
-    const [updateSession, { isLoading: isSessionUpdating }] = useUpdateSessionMutation()
-
-    const closeSessionEditModal = () => {
-        setIsModalVisible(false)
-        refetchSessions()
-    }
-
     const sessionFormatValues = [
         { value: 'présentiel', label: 'Présentiel' },
         { value: 'visioconférence', label: 'Visioconférence' },
@@ -46,6 +29,25 @@ export function EditSessionModal({ refetchSessions, selectedSessionData }) {
         { value: 'lausanne', label: 'Lausanne' },
         { value: 'hors-Lausanne', label: 'Hors-Lausanne' },
     ]
+
+    useEffect(() => {
+        if (selectedSessionData != null) {
+            reset({
+                sessionFormat: sessionFormatValues.find(({ label }) => label === selectedSessionData?.sessionFormat),
+                sessionLocation: sessionLocationValues.find(
+                    ({ label }) => label === selectedSessionData?.sessionLocation
+                ),
+            })
+            setIsModalVisible(true)
+        }
+    }, [selectedSessionData, setValue, reset])
+
+    const [updateSession, { isLoading: isSessionUpdating }] = useUpdateSessionMutation()
+
+    const closeSessionEditModal = () => {
+        setIsModalVisible(false)
+        refetchSessions()
+    }
 
     return (
         <CommonModal
@@ -83,15 +85,7 @@ export function EditSessionModal({ refetchSessions, selectedSessionData }) {
                                 <Controller
                                     name="sessionFormat"
                                     control={control}
-                                    render={({ field }) => (
-                                        <Select
-                                            {...field}
-                                            options={sessionFormatValues}
-                                            value={sessionFormatValues.find(
-                                                (current) => current.label === selectedSessionData.sessionFormat
-                                            )}
-                                        />
-                                    )}
+                                    render={({ field }) => <Select {...field} options={sessionFormatValues} />}
                                 />
                             </Col>
                             <Col>
@@ -99,15 +93,7 @@ export function EditSessionModal({ refetchSessions, selectedSessionData }) {
                                 <Controller
                                     name="sessionLocation"
                                     control={control}
-                                    render={({ field }) => (
-                                        <Select
-                                            {...field}
-                                            options={sessionLocationValues}
-                                            value={sessionLocationValues.find(
-                                                (current) => current.label === selectedSessionData.sessionLocation
-                                            )}
-                                        />
-                                    )}
+                                    render={({ field }) => <Select {...field} options={sessionLocationValues} />}
                                 />
                             </Col>
                         </Row>
