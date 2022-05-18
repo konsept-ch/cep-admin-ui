@@ -12,7 +12,7 @@
     --fc-button-active-bg-color: #{$color-blue-hover};
     --fc-button-active-border-color: #{$color-blue-hover};
     --fc-event-bg-color: #{$color-blue};
-    --fc-event-border-color: #{$color-blue};
+    --fc-event-border-color: #ffffff;
     --fc-event-text-color: #ffffff;
     --fc-event-selected-overlay-color: rgb(0 0 0 / 25%);
     --fc-more-link-bg-color: #d0d0d0;
@@ -145,6 +145,19 @@
     }
 }
 
+.fc .fc-daygrid-event {
+    margin-top: unset;
+}
+
+.fc-timegrid-event .fc-event-main {
+    padding: 5px;
+}
+
+.fc-event-main {
+    overflow: hidden;
+    padding: 5px;
+}
+
 .fc-event-main > i {
     font-style: normal;
 }
@@ -183,4 +196,16 @@
             }
         }
     }
+}
+
+.event-content-room {
+    background: #ffffff52;
+    padding: 3px 5px 0;
+    border-radius: 50px;
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.event-content-divider {
+    margin-right: 5px;
 }
