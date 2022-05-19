@@ -7,7 +7,7 @@ import Select from 'react-select'
 
 import { CommonModal } from '../components'
 import { useUpdateCourseMutation } from '../services/courses'
-import { formatToFlatObject } from '../utils'
+import { formatToFlatObject, formatDate } from '../utils'
 
 export function EditCourseModal({ refetchCourses, selectedCourseData, adminsData }) {
     const {
@@ -22,32 +22,6 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, adminsData
     const [isModalVisible, setIsModalVisible] = useState(false)
 
     const watchIsRecurrent = watch('isRecurrent')
-
-    useEffect(() => {
-        if (selectedCourseData != null) {
-            reset({
-                coordinator: selectedCourseData?.coordinator,
-                responsible: selectedCourseData?.responsible,
-                typeStage: selectedCourseData?.typeStage,
-                teachingMethod: selectedCourseData?.teachingMethod,
-                codeCategory: selectedCourseData?.codeCategory,
-                theme: selectedCourseData?.theme,
-                targetAudience: selectedCourseData?.targetAudience,
-                billingMode: selectedCourseData?.billingMode,
-                pricingType: selectedCourseData?.pricingType,
-                baseRate: selectedCourseData?.baseRate,
-                isRecurrent: selectedCourseData?.isRecurrent,
-            })
-            setIsModalVisible(true)
-        }
-    }, [selectedCourseData, setValue, reset])
-
-    const [updateCourse, { isLoading: isCourseUpdating }] = useUpdateCourseMutation()
-
-    const closeCourseEditModal = () => {
-        setIsModalVisible(false)
-        refetchCourses()
-    }
 
     const typeStageValues = [
         { value: 'attestation', label: 'Attestation' },
@@ -70,6 +44,32 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, adminsData
         { value: 'cas', label: 'CAS' },
     ]
 
+    useEffect(() => {
+        if (selectedCourseData != null) {
+            reset({
+                coordinator: adminsData.find(({ label }) => label === selectedCourseData.coordinator),
+                responsible: adminsData.find(({ label }) => label === selectedCourseData.responsible),
+                typeStage: typeStageValues.find(({ label }) => label === selectedCourseData.typeStage),
+                teachingMethod: teachingMethodValues.find(({ label }) => label === selectedCourseData.teachingMethod),
+                codeCategory: codeCategoryValues.find(({ label }) => label === selectedCourseData.codeCategory),
+                theme: selectedCourseData?.theme,
+                targetAudience: selectedCourseData?.targetAudience,
+                billingMode: selectedCourseData?.billingMode,
+                pricingType: selectedCourseData?.pricingType,
+                baseRate: selectedCourseData?.baseRate,
+                isRecurrent: selectedCourseData?.isRecurrent,
+            })
+            setIsModalVisible(true)
+        }
+    }, [selectedCourseData, setValue, reset])
+
+    const [updateCourse, { isLoading: isCourseUpdating }] = useUpdateCourseMutation()
+
+    const closeCourseEditModal = () => {
+        setIsModalVisible(false)
+        refetchCourses()
+    }
+
     return (
         <CommonModal
             title={selectedCourseData?.name}
@@ -86,11 +86,18 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, adminsData
                                 <dt>Coût</dt>
                                 <dd>{selectedCourseData.price}</dd>
                                 <dt>Visibilité</dt>
-                                <dd>{selectedCourseData.hidden}</dd>
+                                <dd>{selectedCourseData.hidden ? 'Cachée' : 'Visible'}</dd>
                                 <dt>Date de création</dt>
-                                <dd>{selectedCourseData.creationDate}</dd>
+                                <dd>
+                                    {formatDate({ dateString: selectedCourseData.creationDate, isDateVisible: true })}
+                                </dd>
                                 <dt>Dernière modification</dt>
-                                <dd>{selectedCourseData.lastModifiedDate}</dd>
+                                <dd>
+                                    {formatDate({
+                                        dateString: selectedCourseData.lastModifiedDate,
+                                        isDateVisible: true,
+                                    })}
+                                </dd>
                             </dl>
                         )}
                     </Col>
@@ -103,15 +110,7 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, adminsData
                                 <Controller
                                     name="coordinator"
                                     control={control}
-                                    render={({ field }) => (
-                                        <CreatableSelect
-                                            {...field}
-                                            options={adminsData}
-                                            value={adminsData.find(
-                                                (current) => current.label === selectedCourseData.coordinator
-                                            )}
-                                        />
-                                    )}
+                                    render={({ field }) => <CreatableSelect {...field} options={adminsData} />}
                                 />
                             </Col>
                             <Col>
@@ -119,15 +118,7 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, adminsData
                                 <Controller
                                     name="responsible"
                                     control={control}
-                                    render={({ field }) => (
-                                        <CreatableSelect
-                                            {...field}
-                                            options={adminsData}
-                                            value={adminsData.find(
-                                                (current) => current.label === selectedCourseData.responsible
-                                            )}
-                                        />
-                                    )}
+                                    render={({ field }) => <CreatableSelect {...field} options={adminsData} />}
                                 />
                             </Col>
                         </Row>
@@ -138,15 +129,7 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, adminsData
                                 <Controller
                                     name="typeStage"
                                     control={control}
-                                    render={({ field }) => (
-                                        <Select
-                                            {...field}
-                                            options={typeStageValues}
-                                            value={typeStageValues.find(
-                                                (current) => current.label === selectedCourseData.typeStage
-                                            )}
-                                        />
-                                    )}
+                                    render={({ field }) => <Select {...field} options={typeStageValues} />}
                                 />
                             </Col>
                             <Col>
@@ -154,15 +137,7 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, adminsData
                                 <Controller
                                     name="teachingMethod"
                                     control={control}
-                                    render={({ field }) => (
-                                        <Select
-                                            {...field}
-                                            options={teachingMethodValues}
-                                            value={teachingMethodValues.find(
-                                                (current) => current.label === selectedCourseData.teachingMethod
-                                            )}
-                                        />
-                                    )}
+                                    render={({ field }) => <Select {...field} options={teachingMethodValues} />}
                                 />
                             </Col>
                             <Col>
@@ -180,15 +155,7 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, adminsData
                                 <Controller
                                     name="codeCategory"
                                     control={control}
-                                    render={({ field }) => (
-                                        <Select
-                                            {...field}
-                                            options={codeCategoryValues}
-                                            value={codeCategoryValues.find(
-                                                (current) => current.label === selectedCourseData.codeCategory
-                                            )}
-                                        />
-                                    )}
+                                    render={({ field }) => <Select {...field} options={codeCategoryValues} />}
                                 />
                             </Col>
                             <Col>

@@ -47,6 +47,7 @@ export const Calendar = ({ resources, events, calendarRef, refreshCallback }) =>
                     // }).format(new Date(event.start)),
                     start: DateTime.fromISO(event.start, { zone: 'UTC' }).toISO(),
                     end: DateTime.fromISO(event.end, { zone: 'UTC' }).toISO(),
+                    display: 'block',
                 }))}
                 resourceAreaHeaderContent="Salles"
                 height="100%"
@@ -102,7 +103,8 @@ export const Calendar = ({ resources, events, calendarRef, refreshCallback }) =>
                 eventContent={(eventInfo) => (
                     <>
                         <b>
-                            <span className="event-content-room">{eventInfo.event._def.extendedProps.room?.name}</span>|
+                            <span className="event-content-room">{eventInfo.event._def.extendedProps.room?.name}</span>
+                            <span className="event-content-divider">|</span>
                             {Intl.DateTimeFormat(DATE_FORMAT_SWISS_FRENCH, DATE_FORMAT_OPTIONS).format(
                                 new Date(eventInfo.event._instance.range.start)
                             )}

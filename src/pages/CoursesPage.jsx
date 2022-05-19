@@ -17,7 +17,7 @@ export function CoursesPage() {
 
     const { data: adminsData, error, isLoading } = useGetAdminsQuery(null, { refetchOnMountOrArgChange: true })
 
-    const admins = adminsData?.map((admin) => ({ value: admin.id, label: admin.name }))
+    const admins = adminsData?.map((admin) => ({ value: admin.id, label: `${admin.first_name} ${admin.last_name}` }))
 
     const openCourseEditModal = ({ data }) => {
         // workaround - passes a new object to trigger reopen when the same row is clicked
@@ -175,9 +175,11 @@ export function CoursesPage() {
                     id,
                     name,
                     code,
-                    restrictions: { hidden },
+                    hidden,
                     price,
-                    meta: { created, updated, duration },
+                    creationDate,
+                    lastModifiedDate,
+                    duration,
                     coordinator,
                     responsible,
                     typeStage,
@@ -188,6 +190,7 @@ export function CoursesPage() {
                     billingMode,
                     pricingType,
                     baseRate,
+                    isRecurrent,
                 }) => ({
                     id,
                     name,
@@ -196,8 +199,8 @@ export function CoursesPage() {
                     price,
                     coordinator,
                     responsible,
-                    creationDate: created,
-                    lastModifiedDate: updated,
+                    creationDate,
+                    lastModifiedDate,
                     hidden,
                     typeStage,
                     teachingMethod,
@@ -207,6 +210,7 @@ export function CoursesPage() {
                     billingMode,
                     pricingType,
                     baseRate,
+                    isRecurrent,
                 })
             ),
         [courses]
