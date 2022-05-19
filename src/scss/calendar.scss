@@ -149,10 +149,6 @@
     margin-top: unset;
 }
 
-.fc-timegrid-event .fc-event-main {
-    padding: 5px;
-}
-
 .fc-event-main {
     overflow: hidden;
     padding: 5px;
@@ -160,6 +156,10 @@
 
 .fc-event-main > i {
     font-style: normal;
+}
+
+.fc-timegrid-event .fc-event-main {
+    padding: 5px;
 }
 
 .svg-inline--fa.fa-w-10 {
