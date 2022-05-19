@@ -12,6 +12,7 @@ import {
     faChalkboardTeacher,
     faUsers,
     faBook,
+    faFileInvoiceDollar,
 } from '@fortawesome/pro-light-svg-icons'
 import {
     PATH_AGENDA,
@@ -24,6 +25,7 @@ import {
     PATH_COMMUNITY,
     PATH_USERS,
     PATH_ORGANIZATIONS,
+    PATH_INVOICE,
 } from '../constants/constants'
 import { clearAllAuthCookies } from '../utils'
 
@@ -92,6 +94,9 @@ export const Navigation = ({ isLoggedIn }) => {
                         </NavDropdown>
                         <Nav.Link href={`/${PATH_TEMPLATES}`} onClick={goTo(PATH_TEMPLATES)}>
                             <FontAwesomeIcon icon={faEnvelopeOpenText} /> Modèles
+                        </Nav.Link>
+                        <Nav.Link href={`/${PATH_INVOICE}`} onClick={goTo(PATH_INVOICE)}>
+                            <FontAwesomeIcon icon={faFileInvoiceDollar} /> Factures
                         </Nav.Link>
                         <NavDropdown
                             active={location.pathname.startsWith(`/${PATH_COMMUNITY}`)}
