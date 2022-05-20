@@ -3,16 +3,20 @@ import { Helmet } from 'react-helmet-async'
 import { Container, Button } from 'react-bootstrap'
 
 import { Grid, EditBtnCellRenderer, InvoiceModal } from '../components'
-import { useGetInvoicesQuery } from '../services/invoices'
+import { useGetInvoicesQuery, useGetInvoiceOptionsQuery } from '../services/invoices'
 
 export function InvoicePage() {
     const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false)
     const [invoiceModalData, setInvoiceModalData] = useState({})
     const {
         data: invoicesData,
-        isFetching,
+        isFetchingInvoices,
         refetch: refetchInvoices,
     } = useGetInvoicesQuery(null, { refetchOnMountOrArgChange: true })
+
+    const { data: invoiceOptions, isFetchingOptions } = useGetInvoiceOptionsQuery(null, {
+        refetchOnMountOrArgChange: true,
+    })
 
     const openInvoiceEditModal = ({ data }) => {
         // workaround - passes a new object to trigger reopen when the same row is clicked
@@ -32,11 +36,37 @@ export function InvoicePage() {
             filter: false,
             sortable: false,
         },
+        {
+            field: 'participantName',
+            headerName: 'Participant',
+            tooltipField: 'participantName',
+            headerTooltip: 'Le nom du participant',
+            filter: 'agTextColumnFilter',
+        },
+        {
+            field: 'formateurName',
+            headerName: 'Formateur',
+            tooltipField: 'formateurName',
+            headerTooltip: 'Le nom du formateur',
+            filter: 'agTextColumnFilter',
+        },
+        {
+            field: 'formation',
+            headerName: 'Formation',
+            tooltipField: 'formation',
+            headerTooltip: 'Le nom de la formation',
+            filter: 'agTextColumnFilter',
+        },
+        {
+            field: 'session',
+            headerName: 'Session',
+            tooltipField: 'session',
+            headerTooltip: 'Le nom de la session',
+            filter: 'agTextColumnFilter',
+        },
     ]
 
-    const rowData = invoicesData?.map((invoice) => ({
-        id: invoice.id,
-    }))
+    const rowData = invoicesData
 
     return (
         <>
@@ -47,16 +77,18 @@ export function InvoicePage() {
                 name="Factures"
                 columnDefs={columnDefs}
                 rowData={rowData}
-                isDataLoading={isFetching}
+                isDataLoading={isFetchingInvoices || isFetchingOptions}
                 components={{ btnCellRenderer: EditBtnCellRenderer({ onClick: openInvoiceEditModal }) }}
             />
             <InvoiceModal
-                {...{
-                    refetchInvoices,
-                    selectedInvoiceData: invoiceModalData,
-                    closeModal: () => setIsInvoiceModalOpen(false),
-                    isModalOpen: isInvoiceModalOpen,
+                refetchInvoices={refetchInvoices}
+                selectedInvoiceData={invoiceModalData}
+                closeModal={() => {
+                    setIsInvoiceModalOpen(false)
+                    setInvoiceModalData({})
                 }}
+                isModalOpen={isInvoiceModalOpen}
+                invoiceOptions={invoiceOptions}
             />
             <Container fluid className="py-2">
                 <Button variant="success" onClick={() => openInvoiceEditModal({})}>

@@ -3,76 +3,91 @@ import { Button, Spinner, Row, Form, Col, OverlayTrigger, Tooltip } from 'react-
 import { useForm, Controller } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import Select from 'react-select'
+import { v4 as uuidv4 } from 'uuid'
 
 import { CommonModal } from '../components'
-import { useUpdateInvoiceMutation, useGetInvoiceOptionsQuery } from '../services/invoices'
+import { useUpdateInvoiceMutation } from '../services/invoices'
+import { formatToFlatObject } from '../utils'
 
-export function InvoiceModal({ refetchInvoices, selectedInvoiceData, closeModal, isModalOpen }) {
+export function InvoiceModal({ refetchInvoices, selectedInvoiceData, closeModal, isModalOpen, invoiceOptions }) {
     const {
         handleSubmit,
-        setValue,
         reset,
         control,
         formState: { isDirty },
     } = useForm()
 
+    const tutorsNames = invoiceOptions?.tutorsNames.map(({ first_name, last_name }) => ({
+        value: `${first_name}-${last_name}`,
+        label: `${first_name} ${last_name}`,
+    }))
+
+    const participantsNames = invoiceOptions?.participantsNames.map(({ first_name, last_name }) => ({
+        value: `${first_name}-${last_name}`,
+        label: `${first_name} ${last_name}`,
+    }))
+
+    const coursesNames = invoiceOptions?.coursesNames.map(({ course_name }) => ({
+        value: course_name,
+        label: course_name,
+    }))
+
+    const sessionsNames = invoiceOptions?.sessionsNames.map(({ course_name }) => ({
+        value: course_name,
+        label: course_name,
+    }))
+
     useEffect(() => {
         if (selectedInvoiceData != null) {
+            const { participantName, formateurName, formation, session } = selectedInvoiceData
             reset({
-                participantName: Boolean(selectedInvoiceData?.participantName),
-                formateurName: Boolean(selectedInvoiceData?.formateurName),
-                formation: Boolean(selectedInvoiceData?.formation),
-                session: Boolean(selectedInvoiceData?.session),
+                participantName: participantsNames?.find(({ label }) => label === participantName),
+                formateurName: tutorsNames?.find(({ label }) => label === formateurName),
+                formation: coursesNames?.find(({ label }) => label === formation),
+                session: sessionsNames?.find(({ label }) => label === session),
             })
         }
-    }, [selectedInvoiceData, setValue, reset])
+    }, [selectedInvoiceData])
 
     const [updateInvoice, { isLoading: isInvoiceUpdating }] = useUpdateInvoiceMutation()
-    const { data: invoiceOptions, isFetching } = useGetInvoiceOptionsQuery(null, { refetchOnMountOrArgChange: true })
 
     const closeInvoiceModal = () => {
         closeModal()
         refetchInvoices()
     }
 
-    console.log(invoiceOptions)
-
-    const participantsNames = invoiceOptions?.participantsNames.map((current) => ({
-        value: `${current.first_name}-${current.last_name}`,
-        label: `${current.first_name} ${current.last_name}`,
-    }))
-
-    const coursesNames = invoiceOptions?.coursesNames.map((current) => ({
-        value: current.sessionsNames,
-        label: current.sessionsNames,
-    }))
-
-    const sessionsNames = invoiceOptions?.sessionsNames.map((current) => ({
-        value: current.sessionsNames,
-        label: current.sessionsNames,
-    }))
-
     return (
         <CommonModal
             title="Ajouter une facture"
             content={
                 <Row>
-                    <h6>Détails de la facture</h6>
                     <Col>
+                        <h6>Détails de la facture</h6>
+                        <dl>
+                            <dt>Participant</dt>
+                            <dd>{selectedInvoiceData?.participantName}</dd>
+                            <dt>Formateur</dt>
+                            <dd>{selectedInvoiceData?.formateurName}</dd>
+                            <dt>Formation</dt>
+                            <dd>{selectedInvoiceData?.formation}</dd>
+                            <dt>Session</dt>
+                            <dd>{selectedInvoiceData?.session}</dd>
+                        </dl>
+                    </Col>
+                    <Col>
+                        <h6>Modifier la facture</h6>
                         <Form.Label>Nom du participant</Form.Label>
                         <Controller
                             name="participantName"
                             control={control}
                             render={({ field }) => <Select {...field} options={participantsNames} />}
                         />
-                        <Form.Label>Nom du formateurs</Form.Label>
+                        <Form.Label>Nom du formateur</Form.Label>
                         <Controller
                             name="formateurName"
                             control={control}
-                            render={({ field }) => <Select {...field} options={participantsNames} />}
+                            render={({ field }) => <Select {...field} options={tutorsNames} />}
                         />
-                    </Col>
-                    <Col>
                         <Form.Label>Formation</Form.Label>
                         <Controller
                             name="formation"
@@ -102,10 +117,10 @@ export function InvoiceModal({ refetchInvoices, selectedInvoiceData, closeModal,
                             <Button
                                 variant="primary"
                                 disabled={!isDirty}
-                                onClick={handleSubmit(async ({ shouldReceiveSms }) => {
+                                onClick={handleSubmit(async (formData) => {
                                     const { error: mutationError } = await updateInvoice({
-                                        id: selectedInvoiceData.id,
-                                        body: { shouldReceiveSms },
+                                        id: selectedInvoiceData ? selectedInvoiceData.invoiceId : uuidv4(),
+                                        body: formatToFlatObject(formData),
                                     })
                                     if (typeof mutationError === 'undefined') {
                                         closeInvoiceModal()
