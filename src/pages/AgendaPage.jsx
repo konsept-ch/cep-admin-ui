@@ -29,8 +29,6 @@ export const AgendaPage = () => {
         dispatch(fetchAgendaAction())
     }, [dispatch])
 
-    console.log(events)
-
     useEffect(() => {
         if (Object.keys(selectedRoomIds).length <= 1) {
             const initialSelectedRoomIds = rooms.reduce(

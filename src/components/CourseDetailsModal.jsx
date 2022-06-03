@@ -222,8 +222,6 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData = {}, onAfter
                     onClick={async () => {
                         const courseData = await callApi({ path: `courseBySlug/${courseDetailsData.slug}` })
 
-                        console.log('compare', courseData.description, courseDetailsData.description)
-
                         if (courseData.description !== courseDetailsData.description) {
                             toast.error(
                                 'Erreur ! Des modifications sur la même formation ont été faites directement dans Claroline, vous devriez refaire vos modifications, veuillez rafraîchir la page (bouton F5) avant de continuer.',
