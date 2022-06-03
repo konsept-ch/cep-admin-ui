@@ -72,18 +72,8 @@ export function InscriptionsPage() {
             {
                 field: 'status',
                 headerName: 'Statut',
-                editable: ({ data: { status } }) => !Object.values(FINAL_STATUSES).includes(status),
-                cellEditor: 'agRichSelectCellEditor',
-                cellEditorParams: {
-                    values: inscriptionStatuses,
-                },
-                onCellValueChanged: ({ data: { id: currentInscriptionId }, newValue }) => {
-                    setIsUpdateModalVisible(true)
-                    setStatusUpdateData({
-                        ...inscriptions.find(({ id }) => id === currentInscriptionId),
-                        newStatus: newValue,
-                    })
-                },
+                filter: 'agSetColumnFilter',
+                headerTooltip: "Le statut de l'utilisateur",
             },
             {
                 field: 'organization',
@@ -186,6 +176,20 @@ export function InscriptionsPage() {
                                 newStatus: data.status,
                             })
                         },
+                    },
+                    {
+                        name: 'Modifier statut',
+                        subMenu: inscriptionStatuses.map((current) => ({
+                            name: current,
+                            action: () => {
+                                setIsUpdateModalVisible(true)
+                                setStatusUpdateData({
+                                    ...inscriptions.find(({ id }) => id === data.id),
+                                    newStatus: current,
+                                })
+                            },
+                        })),
+                        disabled: Object.values(FINAL_STATUSES).includes(data.status),
                     },
                     {
                         name: 'Modifier statut en mass',
