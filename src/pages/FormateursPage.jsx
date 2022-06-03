@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet-async'
 import { Grid } from '../components'
 import { fetchFormateursAction } from '../actions/formateurs.ts'
 import { formateursSelector } from '../reducers'
-import { inscriptionStatuses, formatDate } from '../utils'
+import { formatDate } from '../utils'
 
 export function FormateursPage() {
     const dispatch = useDispatch()
@@ -20,7 +20,7 @@ export function FormateursPage() {
             headerName: 'Participant',
             filter: 'agSetColumnFilter',
             filterParams: { excelMode: 'windows' },
-            headerTooltip: "L'utilisateur qui est inscrit à la session",
+            headerTooltip: 'Le formateur de la session',
             checkboxSelection: true,
             headerCheckboxSelection: true,
         },
@@ -29,42 +29,39 @@ export function FormateursPage() {
             field: 'session',
             headerName: 'Session',
             filter: 'agTextColumnFilter',
-            headerTooltip: "Le nom de la session dans laquelle l'utilisateur s'est inscrit",
+            headerTooltip: 'Le nom de la session que le formateur donne',
         },
         {
             field: 'status',
             headerName: 'Statut',
-            editable: true,
-            cellEditor: 'agRichSelectCellEditor',
-            cellEditorParams: {
-                values: inscriptionStatuses,
-            },
+            filter: 'agSetColumnFilter',
+            headerTooltip: 'Le statut du formateur',
         },
         {
             field: 'organization',
             headerName: 'Organisation',
             filter: 'agTextColumnFilter',
-            headerTooltip: "L'organisation de l'utilisateur",
+            headerTooltip: "L'organisation du formateur",
         },
         {
             field: 'organizationCode',
             headerName: "Code de l'organisation",
             filter: 'agTextColumnFilter',
-            headerTooltip: "Le code d'organization de l'utilisateur",
+            headerTooltip: "Le code d'organization du formateur",
             initialHide: true,
         },
         {
             field: 'hierarchy',
             headerName: "Hiérarchie de l'entité/entreprise",
             filter: 'agTextColumnFilter',
-            headerTooltip: "L'organisation de l'utilisateur",
+            headerTooltip: "La hiérarchie de l'organisation du formateur",
             initialHide: true,
         },
         {
             field: 'email',
             headerName: 'E-mail',
             filter: 'agTextColumnFilter',
-            headerTooltip: "L'e-mail de l'utilisateur",
+            headerTooltip: "L'e-mail du formateur",
         },
         {
             field: 'startDate',
