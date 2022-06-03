@@ -137,7 +137,6 @@ export const Grid = ({
                             defaultToolPanel: false,
                             hiddenByDefault: false,
                         },
-                        suppressReactUi: true, // TODO report cell editor dropdown issue to ag-Grid
                         enableCharts: true,
                         enableRangeSelection: true,
                         enableCellChangeFlash: true,

@@ -1,5 +1,5 @@
 import { StrictMode } from 'react'
-import { render } from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import 'ag-grid-enterprise'
@@ -10,7 +10,10 @@ import { App } from './App'
 // import { reportWebVitals } from './reportWebVitals'
 import './scss/index.scss'
 
-render(
+const container = document.getElementById('root')
+const root = createRoot(container) // createRoot(container!) if you use TypeScript
+
+root.render(
     <StrictMode>
         <Provider store={store}>
             <BrowserRouter basename={process.env.PUBLIC_URL}>
@@ -19,8 +22,7 @@ render(
                 </Routes>
             </BrowserRouter>
         </Provider>
-    </StrictMode>,
-    document.getElementById('root')
+    </StrictMode>
 )
 
 // If you want your app to work offline and load faster, you can
