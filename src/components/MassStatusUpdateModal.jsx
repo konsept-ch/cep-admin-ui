@@ -40,7 +40,6 @@ export const MassStatusUpdateModal = ({ closeModal, inscriptionsData, updateStat
             backdrop="static"
             keyboard={false}
             dialogClassName="mass-status-change-modal"
-            contentClassName="mass-status-change-modal-content"
         >
             <Modal.Header closeButton>
                 <Modal.Title as="h3">Modifier statut en mass</Modal.Title>

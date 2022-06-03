@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
+import { toast } from 'react-toastify'
 import { Grid, StatusUpdateModal, MassStatusUpdateModal } from '../components'
 import {
     fetchInscriptionsAction,
@@ -38,12 +39,13 @@ export function InscriptionsPage() {
     const isMassUpdatePossible =
         selectedRowsData.length > 1 &&
         selectedRowsData.every((current, index, array) => {
-            if (!Object.values(FINAL_STATUSES).includes(current.status)) {
+            const isFinalStatus = Object.values(FINAL_STATUSES).includes(current.status)
+            const isSameStatus = index > 0 ? array[index - 1].status === current.status : true
+
+            if (!isFinalStatus && isSameStatus) {
                 return true
             }
-            if (index > 0) {
-                return array[index - 1].status === current.status
-            }
+
             return false
         })
 
@@ -192,7 +194,7 @@ export function InscriptionsPage() {
                             action: () => {
                                 setIsMassUpdateModalVisible(true)
                                 setStatusMassUpdateData({
-                                    status: current.status,
+                                    status: data.status,
                                     newStatus: current,
                                 })
                             },
@@ -241,6 +243,9 @@ export function InscriptionsPage() {
                                     setIsUpdateModalVisible(false)
                                     setStatusUpdateData(null)
                                     dispatch(fetchInscriptionsAction())
+                                    toast.success(
+                                        `Statut d'inscription modifié de "${statusUpdateData.status}" à "${statusUpdateData.newStatus}"`
+                                    )
                                 },
                             })
                         )
@@ -267,6 +272,9 @@ export function InscriptionsPage() {
                                     setIsMassUpdateModalVisible(false)
                                     setStatusMassUpdateData(null)
                                     dispatch(fetchInscriptionsAction())
+                                    toast.success(
+                                        `Plusieurs statuts d'inscription changés de "${statusMassUpdateData.status}" à "${statusMassUpdateData.newStatus}"`
+                                    )
                                 },
                             })
                         )

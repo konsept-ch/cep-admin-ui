@@ -60,6 +60,9 @@ export const STATUSES = {
     REFUSEE_PAR_CEP: 'Refusée par CEP',
     INVITEE: 'Invitée',
     PROPOSEE: 'Proposée',
+    PARTICIPATION: 'Participation', // generate invoice
+    PARTICIPATION_PARTIELLE: 'Participation Partielle', // generate invoice
+    NON_PARTICIPATION: 'Non-participation',
     ...FINAL_STATUSES,
 }
 
@@ -89,6 +92,10 @@ export const draftVariables = {
 }
 
 export const formatDate = ({ dateString, isTimeVisible, isDateVisible }) => {
+    if (dateString == null) {
+        return
+    }
+
     const date = new Date(dateString)
     const getDay = () => (date.getDate() < 10 ? `0${date.getDate()}` : date.getDate())
     const getMonth = () => {
