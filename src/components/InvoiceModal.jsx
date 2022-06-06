@@ -1,50 +1,29 @@
 import { useEffect } from 'react'
 import { Button, Spinner, Row, Form, Col, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { useForm, Controller } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
-import Select from 'react-select'
-import { v4 as uuidv4 } from 'uuid'
 
 import { CommonModal } from '../components'
 import { useUpdateInvoiceMutation } from '../services/invoices'
 import { formatToFlatObject } from '../utils'
 
-export function InvoiceModal({ refetchInvoices, selectedInvoiceData, closeModal, isModalOpen, invoiceOptions }) {
+export function InvoiceModal({ refetchInvoices, selectedInvoiceData, closeModal, isModalOpen }) {
     const {
+        register,
         handleSubmit,
         reset,
-        control,
         formState: { isDirty },
     } = useForm()
 
-    const tutorsNames = invoiceOptions?.tutorsNames.map(({ first_name, last_name }) => ({
-        value: `${first_name}-${last_name}`,
-        label: `${first_name} ${last_name}`,
-    }))
-
-    const participantsNames = invoiceOptions?.participantsNames.map(({ first_name, last_name }) => ({
-        value: `${first_name}-${last_name}`,
-        label: `${first_name} ${last_name}`,
-    }))
-
-    const coursesNames = invoiceOptions?.coursesNames.map(({ course_name }) => ({
-        value: course_name,
-        label: course_name,
-    }))
-
-    const sessionsNames = invoiceOptions?.sessionsNames.map(({ course_name }) => ({
-        value: course_name,
-        label: course_name,
-    }))
-
     useEffect(() => {
         if (selectedInvoiceData != null) {
-            const { participantName, formateurName, formation, session } = selectedInvoiceData
+            const { participantName, tutorsNames, courseName, sessionName } = selectedInvoiceData
+
             reset({
-                participantName: participantsNames?.find(({ label }) => label === participantName),
-                formateurName: tutorsNames?.find(({ label }) => label === formateurName),
-                formation: coursesNames?.find(({ label }) => label === formation),
-                session: sessionsNames?.find(({ label }) => label === session),
+                participantName,
+                tutorsNames,
+                courseName,
+                sessionName,
             })
         }
     }, [selectedInvoiceData])
@@ -66,40 +45,24 @@ export function InvoiceModal({ refetchInvoices, selectedInvoiceData, closeModal,
                         <dl>
                             <dt>Participant</dt>
                             <dd>{selectedInvoiceData?.participantName}</dd>
-                            <dt>Formateur</dt>
-                            <dd>{selectedInvoiceData?.formateurName}</dd>
+                            <dt>Formateurs</dt>
+                            <dd>{selectedInvoiceData?.tutorsNames}</dd>
                             <dt>Formation</dt>
-                            <dd>{selectedInvoiceData?.formation}</dd>
+                            <dd>{selectedInvoiceData?.courseName}</dd>
                             <dt>Session</dt>
-                            <dd>{selectedInvoiceData?.session}</dd>
+                            <dd>{selectedInvoiceData?.sessionName}</dd>
                         </dl>
                     </Col>
                     <Col>
                         <h6>Modifier la facture</h6>
                         <Form.Label>Nom du participant</Form.Label>
-                        <Controller
-                            name="participantName"
-                            control={control}
-                            render={({ field }) => <Select {...field} options={participantsNames} />}
-                        />
+                        <Form.Control {...register('participantName')} />
                         <Form.Label>Nom du formateur</Form.Label>
-                        <Controller
-                            name="formateurName"
-                            control={control}
-                            render={({ field }) => <Select {...field} options={tutorsNames} />}
-                        />
+                        <Form.Control {...register('tutorsNames')} />
                         <Form.Label>Formation</Form.Label>
-                        <Controller
-                            name="formation"
-                            control={control}
-                            render={({ field }) => <Select {...field} options={coursesNames} />}
-                        />
+                        <Form.Control {...register('courseName')} />
                         <Form.Label>Session</Form.Label>
-                        <Controller
-                            name="session"
-                            control={control}
-                            render={({ field }) => <Select {...field} options={sessionsNames} />}
-                        />
+                        <Form.Control {...register('sessionName')} />
                     </Col>
                 </Row>
             }
@@ -119,7 +82,7 @@ export function InvoiceModal({ refetchInvoices, selectedInvoiceData, closeModal,
                                 disabled={!isDirty}
                                 onClick={handleSubmit(async (formData) => {
                                     const { error: mutationError } = await updateInvoice({
-                                        id: selectedInvoiceData ? selectedInvoiceData.invoiceId : uuidv4(),
+                                        id: selectedInvoiceData.id,
                                         body: formatToFlatObject(formData),
                                     })
                                     if (typeof mutationError === 'undefined') {
