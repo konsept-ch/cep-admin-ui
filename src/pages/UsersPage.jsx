@@ -5,16 +5,17 @@ import { Grid, EditBtnCellRenderer, EditUserModal } from '../components'
 import { useGetUsersQuery } from '../services/users'
 
 export function UsersPage() {
-    const [selectedUserData, setSelectedUserData] = useState(null)
+    const [isUserModalOpen, setIsUserModalOpen] = useState(false)
+    const [selectedUserId, setSelectedUserId] = useState()
     const {
         data: usersData,
         isFetching,
         refetch: refetchUsers,
     } = useGetUsersQuery(null, { refetchOnMountOrArgChange: true })
 
-    const openUserEditModal = ({ data }) => {
-        // workaround - passes a new object to trigger reopen when the same row is clicked
-        setSelectedUserData({ ...data })
+    const openUserEditModal = ({ data: { id } }) => {
+        setSelectedUserId(id)
+        setIsUserModalOpen(true)
     }
 
     const columnDefs = [
@@ -129,7 +130,17 @@ export function UsersPage() {
                 isDataLoading={isFetching}
                 components={{ btnCellRenderer: EditBtnCellRenderer({ onClick: openUserEditModal }) }}
             />
-            <EditUserModal {...{ refetchUsers, selectedUserData }} />
+            <EditUserModal
+                {...{
+                    refetchUsers,
+                    selectedUserData: rowData?.find(({ id }) => id === selectedUserId),
+                    closeModal: () => {
+                        setIsUserModalOpen(false)
+                        setSelectedUserId()
+                    },
+                    isModalOpen: isUserModalOpen,
+                }}
+            />
         </>
     )
 }

@@ -13,8 +13,8 @@ export function InvoicePage() {
         refetch: refetchInvoices,
     } = useGetInvoicesQuery(null, { refetchOnMountOrArgChange: true })
 
-    const openInvoiceEditModal = ({ data: { invoiceId } }) => {
-        setSelectedInvoiceId(invoiceId)
+    const openInvoiceEditModal = ({ data: { id } }) => {
+        setSelectedInvoiceId(id)
         setIsInvoiceModalOpen(true)
     }
 
@@ -74,7 +74,7 @@ export function InvoicePage() {
             />
             <InvoiceModal
                 refetchInvoices={refetchInvoices}
-                selectedInvoiceData={invoicesData?.find(({ invoiceId }) => invoiceId === selectedInvoiceId)}
+                selectedInvoiceData={invoicesData?.find(({ id }) => id === selectedInvoiceId)}
                 closeModal={() => {
                     setIsInvoiceModalOpen(false)
                     setSelectedInvoiceId()

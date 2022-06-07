@@ -6,7 +6,8 @@ import { formatDate } from '../utils'
 import { useGetSessionsQuery } from '../services/sessions'
 
 export function SessionsPage() {
-    const [selectedSessionData, setSelectedSessionData] = useState()
+    const [isSessionModalOpen, setIsSessionModalOpen] = useState(false)
+    const [selectedSessionId, setSelectedSessionId] = useState()
 
     const {
         data: sessions,
@@ -15,8 +16,8 @@ export function SessionsPage() {
     } = useGetSessionsQuery(null, { refetchOnMountOrArgChange: true })
 
     const openSessionEditModal = ({ data }) => {
-        // workaround - passes a new object to trigger reopen when the same row is clicked
-        setSelectedSessionData({ ...data })
+        setSelectedSessionId(data.id)
+        setIsSessionModalOpen(true)
     }
 
     const columnDefs = useMemo(
@@ -174,7 +175,17 @@ export function SessionsPage() {
             <Helmet>
                 <title>Sessions - Former22</title>
             </Helmet>
-            <EditSessionModal {...{ refetchSessions, selectedSessionData }} />
+            <EditSessionModal
+                {...{
+                    refetchSessions,
+                    selectedSessionData: rowData?.find(({ id }) => id === selectedSessionId),
+                    closeModal: () => {
+                        setIsSessionModalOpen(false)
+                        setSelectedSessionId()
+                    },
+                    isModalOpen: isSessionModalOpen,
+                }}
+            />
             <Grid
                 name="Sessions"
                 columnDefs={columnDefs}
