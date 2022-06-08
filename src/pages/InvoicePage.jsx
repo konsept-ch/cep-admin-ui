@@ -74,7 +74,7 @@ export function InvoicePage() {
                 isDataLoading={isFetchingInvoices}
                 components={{ btnCellRenderer: EditBtnCellRenderer({ onClick: openInvoiceEditModal }) }}
                 getContextMenuItems={({
-                    node: { data },
+                    node: { data: rowData },
                     columnApi: {
                         columnModel: { columnDefs: gridColumnDefs },
                     },
@@ -82,15 +82,14 @@ export function InvoicePage() {
                     {
                         name: 'Exporter pour Crésus',
                         action: () => {
-                            const fields = gridColumnDefs
+                            const fieldsData = gridColumnDefs
                                 .filter(({ field }) => field !== columnDefs[0].field)
                                 .map(({ headerName, field }) => ({ headerName, field }))
-                            const { id, ...filteredData } = data
 
-                            console.log(data)
-                            console.log(Object.values(filteredData))
+                            const fields = fieldsData.map(({ headerName }) => headerName)
+                            const data = fieldsData.map(({ field }) => rowData[field])
 
-                            const csv = Papa.unparse([filteredData])
+                            const csv = Papa.unparse({ fields, data })
 
                             downloadCsvFile({ csv, fileName: 'CSV pour Crésus' })
                         },

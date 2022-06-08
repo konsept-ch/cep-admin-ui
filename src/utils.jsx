@@ -46,11 +46,6 @@ export const mapClassNameToEventType = ({ className }) =>
         'online-async': 'async',
     }[className])
 
-export const FINAL_STATUSES = {
-    ANNULEE: 'Annulée',
-    ECARTEE: 'Écartée',
-}
-
 export const STATUSES = {
     EN_ATTENTE: 'En attente',
     A_TRAITER_PAR_RH: 'À traiter par RH',
@@ -60,11 +55,16 @@ export const STATUSES = {
     REFUSEE_PAR_CEP: 'Refusée par CEP',
     INVITEE: 'Invitée',
     PROPOSEE: 'Proposée',
+    ANNULEE: 'Annulée',
+    ECARTEE: 'Écartée',
     PARTICIPATION: 'Participation',
     PARTICIPATION_PARTIELLE: 'Participation Partielle',
     NON_PARTICIPATION: 'Non-participation',
-    ...FINAL_STATUSES,
 }
+
+export const FINAL_STATUSES = [STATUSES.ANNULEE, STATUSES.ECARTEE]
+
+export const INVOICE_STATUSES = [STATUSES.PARTICIPATION, STATUSES.PARTICIPATION_PARTIELLE, STATUSES.NON_PARTICIPATION]
 
 export const statusWarnings = {
     [STATUSES.ECARTEE]: {
@@ -251,7 +251,7 @@ export const downloadCsvFile = ({ csv, fileName }) => {
 
     a.setAttribute('href', url)
 
-    a.setAttribute('download', `${fileName}.csv`)
+    a.setAttribute('download', `${fileName}.txt`)
 
     a.click()
     a.remove()

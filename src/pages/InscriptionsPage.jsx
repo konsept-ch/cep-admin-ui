@@ -39,7 +39,7 @@ export function InscriptionsPage() {
     const isMassUpdatePossible =
         selectedRowsData.length > 1 &&
         selectedRowsData.every((current, index, array) => {
-            const isFinalStatus = Object.values(FINAL_STATUSES).includes(current.status)
+            const isFinalStatus = FINAL_STATUSES.includes(current.status)
             const isSameStatus = index > 0 ? array[index - 1].status === current.status : true
 
             if (!isFinalStatus && isSameStatus) {
@@ -211,7 +211,7 @@ export function InscriptionsPage() {
                                 })
                             },
                         })),
-                        disabled: Object.values(FINAL_STATUSES).includes(data.status),
+                        disabled: selectedRowsData.length > 1 || FINAL_STATUSES.includes(data.status),
                     },
                     {
                         name: 'Modifier statut en mass',
