@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
+import Papa from 'papaparse'
 
 import { Grid, EditBtnCellRenderer, InvoiceModal } from '../components'
 import { useGetInvoicesQuery } from '../services/invoices'
-import { gridContextMenu, convertJsonToCsv, downloadCsvFile } from '../utils'
+import { gridContextMenu, downloadCsvFile } from '../utils'
 
 export function InvoicePage() {
     const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false)
@@ -72,13 +73,24 @@ export function InvoicePage() {
                 rowData={invoicesData}
                 isDataLoading={isFetchingInvoices}
                 components={{ btnCellRenderer: EditBtnCellRenderer({ onClick: openInvoiceEditModal }) }}
-                getContextMenuItems={({ node: { data } }) => [
+                getContextMenuItems={({
+                    node: { data },
+                    columnApi: {
+                        columnModel: { columnDefs: gridColumnDefs },
+                    },
+                }) => [
                     {
                         name: 'Exporter pour Crésus',
                         action: () => {
+                            const fields = gridColumnDefs
+                                .filter(({ field }) => field !== columnDefs[0].field)
+                                .map(({ headerName, field }) => ({ headerName, field }))
                             const { id, ...filteredData } = data
 
-                            const csv = convertJsonToCsv({ data: filteredData })
+                            console.log(data)
+                            console.log(Object.values(filteredData))
+
+                            const csv = Papa.unparse([filteredData])
 
                             downloadCsvFile({ csv, fileName: 'CSV pour Crésus' })
                         },
