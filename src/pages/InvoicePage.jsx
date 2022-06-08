@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async'
 
 import { Grid, EditBtnCellRenderer, InvoiceModal } from '../components'
 import { useGetInvoicesQuery } from '../services/invoices'
+import { gridContextMenu, convertJsonToCsv, downloadCsvFile } from '../utils'
 
 export function InvoicePage() {
     const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false)
@@ -71,6 +72,20 @@ export function InvoicePage() {
                 rowData={invoicesData}
                 isDataLoading={isFetchingInvoices}
                 components={{ btnCellRenderer: EditBtnCellRenderer({ onClick: openInvoiceEditModal }) }}
+                getContextMenuItems={({ node: { data } }) => [
+                    {
+                        name: 'Exporter pour Crésus',
+                        action: () => {
+                            const { id, ...filteredData } = data
+
+                            const csv = convertJsonToCsv({ data: filteredData })
+
+                            downloadCsvFile({ csv, fileName: 'CSV pour Crésus' })
+                        },
+                    },
+                    'separator',
+                    ...gridContextMenu,
+                ]}
             />
             <InvoiceModal
                 refetchInvoices={refetchInvoices}
