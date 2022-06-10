@@ -72,7 +72,7 @@ export const Grid = ({
                 // refresh rows based on the filter (not automatic to allow for batching multiple filters)
                 gridApi.onFilterChanged()
             }
-        }, 0)
+        }, 200)
     }, [activePredefinedFiltersById, name, rowData, gridApi])
 
     return (
@@ -133,7 +133,7 @@ export const Grid = ({
                 <AgGridReact
                     {...{
                         // debug: true,
-                        suppressReactUi: true, // TODO: report issues with frozen rows and cells on initial load
+                        // suppressReactUi: true, // TODO: report issues with frozen rows and cells on initial load
                         sideBar: {
                             toolPanels: ['columns', 'filters'],
                             defaultToolPanel: false,

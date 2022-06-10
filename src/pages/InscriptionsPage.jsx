@@ -59,6 +59,7 @@ export function InscriptionsPage() {
                 headerTooltip: "L'utilisateur qui est inscrit à la session",
                 checkboxSelection: true,
                 headerCheckboxSelection: true,
+                aggFunc: 'count',
             },
             { field: 'profession', headerName: 'Fonction/Profession' },
             {
@@ -116,6 +117,15 @@ export function InscriptionsPage() {
                     }[type] ?? type),
             },
             {
+                field: 'startDate',
+                headerName: 'Date de début',
+                filter: 'agDateColumnFilter',
+                headerTooltip: 'La date de début de la session',
+                sort: 'asc',
+                valueFormatter: ({ value }) => formatDate({ dateString: value, isDateVisible: true }),
+                type: 'numericColumn',
+            },
+            {
                 field: 'quotaDays',
                 headerName: 'Jours de quota',
                 filter: 'agNumberColumnFilter',
@@ -129,16 +139,6 @@ export function InscriptionsPage() {
                 headerTooltip: 'Les quotas de la session',
                 valueGetter: ({ data }) =>
                     typeof data !== 'undefined' ? (data.isUsedForQuota ? 'Utilisé' : 'Non-utilisé') : '',
-                // valueGetter: ({ data: { isUsedForQuota } }) => (isUsedForQuota ? 'Utilisé' : 'Non-utilisé'),
-            },
-            {
-                field: 'startDate',
-                headerName: 'Date de début',
-                filter: 'agDateColumnFilter',
-                headerTooltip: 'La date de début de la session',
-                sort: 'asc',
-                valueFormatter: ({ value }) => formatDate({ dateString: value, isDateVisible: true }),
-                type: 'numericColumn',
             },
         ],
         []
