@@ -138,7 +138,7 @@ export function InscriptionsPage() {
                 filter: 'agSetColumnFilter',
                 headerTooltip: 'Les quotas de la session',
                 valueGetter: ({ data }) =>
-                    typeof data !== 'undefined' ? (data.isUsedForQuota ? 'Utilisé' : 'Non-utilisé') : '',
+                    typeof data === 'undefined' ? '' : data.isUsedForQuota ? 'Utilisé' : 'Non-utilisé',
             },
         ],
         []

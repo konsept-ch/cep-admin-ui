@@ -109,7 +109,7 @@ export function CoursesPage() {
             headerName: 'Visibilité',
             filter: 'agSetColumnFilter',
             headerTooltip: 'Si la formation est cachée',
-            valueGetter: ({ data: { hidden } }) => (hidden ? 'Cachée' : 'Visible'),
+            valueGetter: ({ data }) => (typeof data === 'undefined' ? '' : data.hidden ? 'Cachée' : 'Visible'),
             width: 120,
         },
         {
@@ -164,7 +164,7 @@ export function CoursesPage() {
             headerName: 'Formation Récurrente',
             filter: 'agSetColumnFilter',
             headerTooltip: 'Si la formation est récurrente',
-            valueGetter: ({ data: { isRecurrent } }) => (isRecurrent ? 'Oui' : 'Non'),
+            valueGetter: ({ data }) => (typeof data === 'undefined' ? '' : data.isRecurrent ? 'Oui' : 'Non'),
         },
     ]
 

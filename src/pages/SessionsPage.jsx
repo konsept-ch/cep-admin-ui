@@ -70,7 +70,8 @@ export function SessionsPage() {
                 headerName: 'Utilisé pour quotas',
                 filter: 'agSetColumnFilter',
                 headerTooltip: 'Les quotas de la session',
-                valueGetter: ({ data: { isUsedForQuota } }) => (isUsedForQuota ? 'Utilisé' : 'Non-utilisé'),
+                valueGetter: ({ data }) =>
+                    typeof data === 'undefined' ? '' : data.isUsedForQuota ? 'Utilisé' : 'Non-utilisé',
             },
             {
                 field: 'creationDate',
@@ -93,7 +94,7 @@ export function SessionsPage() {
                 headerName: 'Visibilité',
                 filter: 'agSetColumnFilter',
                 headerTooltip: 'Si la session est cachée',
-                valueGetter: ({ data: { hidden } }) => (hidden ? 'Cachée' : 'Visible'),
+                valueGetter: ({ data }) => (typeof data === 'undefined' ? '' : data.hidden ? 'Cachée' : 'Visible'),
             },
             {
                 field: 'sessionFormat',
