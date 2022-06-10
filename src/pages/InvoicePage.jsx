@@ -4,7 +4,7 @@ import Papa from 'papaparse'
 
 import { Grid, EditBtnCellRenderer, InvoiceModal } from '../components'
 import { useGetInvoicesQuery } from '../services/invoices'
-import { gridContextMenu, downloadCsvFile } from '../utils'
+import { gridContextMenu, downloadCsvFile, formatDate } from '../utils'
 
 export function InvoicePage() {
     const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false)
@@ -58,6 +58,22 @@ export function InvoicePage() {
             headerName: 'Session',
             tooltipField: 'sessionName',
             headerTooltip: 'Le nom de la session',
+            filter: 'agTextColumnFilter',
+        },
+        {
+            field: 'createdAt',
+            headerName: 'Date de création',
+            tooltipField: 'createdAt',
+            headerTooltip: 'Date de création de facture',
+            filter: 'agTextColumnFilter',
+            valueGetter: ({ data: { createdAt } }) =>
+                formatDate({ dateString: Number(createdAt), isDateVisible: true }),
+        },
+        {
+            field: 'inscriptionStatus',
+            headerName: "Statut de l'inscription",
+            tooltipField: 'inscriptionStatus',
+            headerTooltip: "Statut de l'inscription",
             filter: 'agTextColumnFilter',
         },
     ]
