@@ -76,7 +76,7 @@ export function UsersPage() {
             headerName: 'SMS ?',
             filter: 'agSetColumnFilter',
             headerTooltip: 'Si cet utilisateur reçoit des SMS',
-            valueGetter: ({ data: { shouldReceiveSms } }) => (shouldReceiveSms ? 'Oui' : 'Non'),
+            valueGetter: ({ data }) => (typeof data === 'undefined' ? '' : data.shouldReceiveSms ? 'Oui' : 'Non'),
             width: 115,
         },
         {
@@ -100,7 +100,7 @@ export function UsersPage() {
             headerName: 'Rôles',
             filter: 'agTextColumnFilter',
             headerTooltip: "Les rôles de l'utilisateur",
-            valueGetter: ({ data: { roles } }) => [...roles].sort().join(', '),
+            valueGetter: ({ data }) => (typeof data === 'undefined' ? '' : [...data.roles].sort().join(', ')),
         },
     ]
 
