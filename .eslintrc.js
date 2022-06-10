@@ -18,7 +18,6 @@ module.exports = {
         'no-return-assign': 'error',
         'no-self-compare': 'error',
         'no-undef-init': 'error',
-        'no-undefined': 'error',
         'no-use-before-define': 'error',
         'no-void': 'error',
         'no-cond-assign': 'error',

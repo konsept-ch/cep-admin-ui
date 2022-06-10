@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { Button, Spinner, Row, Form, Col, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { useForm, Controller } from 'react-hook-form'
 import { toast } from 'react-toastify'
@@ -18,17 +18,23 @@ export function EditSessionModal({ refetchSessions, selectedSessionData }) {
     } = useForm()
     const [isModalVisible, setIsModalVisible] = useState(false)
 
-    const sessionFormatValues = [
-        { value: 'présentiel', label: 'Présentiel' },
-        { value: 'visioconférence', label: 'Visioconférence' },
-        { value: 'mixte', label: 'Mixte' },
-        { value: 'e-learning', label: 'E-learning' },
-    ]
+    const sessionFormatValues = useMemo(
+        () => [
+            { value: 'présentiel', label: 'Présentiel' },
+            { value: 'visioconférence', label: 'Visioconférence' },
+            { value: 'mixte', label: 'Mixte' },
+            { value: 'e-learning', label: 'E-learning' },
+        ],
+        []
+    )
 
-    const sessionLocationValues = [
-        { value: 'lausanne', label: 'Lausanne' },
-        { value: 'hors-Lausanne', label: 'Hors-Lausanne' },
-    ]
+    const sessionLocationValues = useMemo(
+        () => [
+            { value: 'lausanne', label: 'Lausanne' },
+            { value: 'hors-Lausanne', label: 'Hors-Lausanne' },
+        ],
+        []
+    )
 
     useEffect(() => {
         if (selectedSessionData != null) {
@@ -40,7 +46,7 @@ export function EditSessionModal({ refetchSessions, selectedSessionData }) {
             })
             setIsModalVisible(true)
         }
-    }, [selectedSessionData, setValue, reset])
+    }, [selectedSessionData, setValue, reset, sessionFormatValues, sessionLocationValues])
 
     const [updateSession, { isLoading: isSessionUpdating }] = useUpdateSessionMutation()
 

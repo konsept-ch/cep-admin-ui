@@ -62,7 +62,7 @@ export function InscriptionsPage() {
             },
             { field: 'profession', headerName: 'Fonction/Profession' },
             {
-                field: 'session',
+                field: 'sessionName',
                 headerName: 'Session',
                 filter: 'agTextColumnFilter',
                 headerTooltip: "Le nom de la session dans laquelle l'utilisateur s'est inscrit",
@@ -116,6 +116,22 @@ export function InscriptionsPage() {
                     }[type] ?? type),
             },
             {
+                field: 'quotaDays',
+                headerName: 'Jours de quota',
+                filter: 'agNumberColumnFilter',
+                headerTooltip: 'Les jours de quota de la session',
+                type: 'numericColumn',
+            },
+            {
+                field: 'isUsedForQuota',
+                headerName: 'Utilisé pour quotas',
+                filter: 'agSetColumnFilter',
+                headerTooltip: 'Les quotas de la session',
+                valueGetter: ({ data }) =>
+                    typeof data !== 'undefined' ? (data.isUsedForQuota ? 'Utilisé' : 'Non-utilisé') : '',
+                // valueGetter: ({ data: { isUsedForQuota } }) => (isUsedForQuota ? 'Utilisé' : 'Non-utilisé'),
+            },
+            {
                 field: 'startDate',
                 headerName: 'Date de début',
                 filter: 'agDateColumnFilter',
@@ -125,7 +141,7 @@ export function InscriptionsPage() {
                 type: 'numericColumn',
             },
         ],
-        [inscriptions]
+        []
     )
 
     const rowData = inscriptions
@@ -135,7 +151,9 @@ export function InscriptionsPage() {
             participant: `${user.lastName} ${user.firstName}`,
             profession: user.profession,
             type,
-            session: session.name,
+            sessionName: session.name,
+            quotaDays: session.quotaDays,
+            isUsedForQuota: session.isUsedForQuota,
             status,
             startDate: session.startDate,
             inscriptionDate,
@@ -165,6 +183,10 @@ export function InscriptionsPage() {
                         suppressCount: true,
                     },
                 }}
+                defaultColDef={{
+                    aggFunc: false,
+                }}
+                groupDefaultExpanded={0}
                 groupIncludeFooter={false}
                 getContextMenuItems={({ node: { data } }) => [
                     {

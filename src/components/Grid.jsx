@@ -32,6 +32,7 @@ export const Grid = ({
     rowData,
     isDataLoading,
     components,
+    defaultColDef,
     ...gridProps
 }) => {
     const [gridApi, setGridApi] = useState(null)
@@ -132,6 +133,7 @@ export const Grid = ({
                 <AgGridReact
                     {...{
                         // debug: true,
+                        suppressReactUi: true, // TODO: report issues with frozen rows and cells on initial load
                         sideBar: {
                             toolPanels: ['columns', 'filters'],
                             defaultToolPanel: false,
@@ -160,6 +162,7 @@ export const Grid = ({
                             sortable: true,
                             filter: true,
                             aggFunc: 'count',
+                            ...defaultColDef,
                         },
                         statusBar: {
                             statusPanels: [
