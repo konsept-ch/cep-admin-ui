@@ -26,9 +26,15 @@ export const invoicesApi = createApi({
                 body,
             }),
         }),
+        removeInvoice: builder.mutation({
+            query: ({ id }) => ({
+                url: `invoice/${id}`,
+                method: 'DELETE',
+            }),
+        }),
     }),
 })
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useGetInvoicesQuery, useUpdateInvoiceMutation } = invoicesApi
+export const { useGetInvoicesQuery, useUpdateInvoiceMutation, useRemoveInvoiceMutation } = invoicesApi
