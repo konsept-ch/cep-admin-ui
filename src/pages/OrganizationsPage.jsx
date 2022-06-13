@@ -11,7 +11,8 @@ import {
 } from '../services/organizations'
 
 export function OrganizationsPage() {
-    const [selectedOrganizationData, setSelectedOrganizationData] = useState(null)
+    const [isOrganizationModalOpen, setIsOrganizationModalOpen] = useState(false)
+    const [selectedOrganizationId, setSelectedOrganizationId] = useState(null)
     const [isAddModalOpen, setIsAddModalOpen] = useState(false)
     const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false)
 
@@ -23,9 +24,9 @@ export function OrganizationsPage() {
     const [addOrganizations, { isLoading: isAddingOrganizations }] = useAddOrganizationsMutation()
     const [removeOrganizations, { isLoading: isRemovingOrganizations }] = useRemoveOrganizationsMutation()
 
-    const openOrganizationEditModal = ({ data }) => {
-        // workaround - passes a new object to trigger reopen when the same row is clicked
-        setSelectedOrganizationData({ ...data })
+    const openOrganizationEditModal = ({ data: { id } }) => {
+        setSelectedOrganizationId(id)
+        setIsOrganizationModalOpen(true)
     }
 
     const columnDefs = [
@@ -297,7 +298,17 @@ export function OrganizationsPage() {
                 isVisible={isRemoveModalOpen}
                 onHide={() => setIsRemoveModalOpen(false)}
             />
-            <EditOrganizationModal {...{ refetchOrganizations, selectedOrganizationData }} />
+            <EditOrganizationModal
+                {...{
+                    refetchOrganizations,
+                    selectedOrganizationData: rowData?.find(({ id }) => id === selectedOrganizationId),
+                    closeModal: () => {
+                        setIsOrganizationModalOpen(false)
+                        setSelectedOrganizationId()
+                    },
+                    isModalOpen: isOrganizationModalOpen,
+                }}
+            />
             <Grid
                 name="Organisations"
                 columnDefs={columnDefs}

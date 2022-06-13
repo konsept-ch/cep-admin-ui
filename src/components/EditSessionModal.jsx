@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { Button, Spinner, Row, Form, Col, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { useForm, Controller } from 'react-hook-form'
 import { toast } from 'react-toastify'
@@ -8,7 +8,7 @@ import { CommonModal } from '../components'
 import { useUpdateSessionMutation } from '../services/sessions'
 import { formatToFlatObject } from '../utils'
 
-export function EditSessionModal({ refetchSessions, selectedSessionData }) {
+export function EditSessionModal({ refetchSessions, selectedSessionData, closeModal, isModalOpen }) {
     const {
         handleSubmit,
         setValue,
@@ -16,7 +16,6 @@ export function EditSessionModal({ refetchSessions, selectedSessionData }) {
         control,
         formState: { isDirty },
     } = useForm()
-    const [isModalVisible, setIsModalVisible] = useState(false)
 
     const sessionFormatValues = useMemo(
         () => [
@@ -39,19 +38,18 @@ export function EditSessionModal({ refetchSessions, selectedSessionData }) {
     useEffect(() => {
         if (selectedSessionData != null) {
             reset({
-                sessionFormat: sessionFormatValues.find(({ label }) => label === selectedSessionData?.sessionFormat),
-                sessionLocation: sessionLocationValues.find(
-                    ({ label }) => label === selectedSessionData?.sessionLocation
-                ),
+                sessionFormat:
+                    sessionFormatValues.find(({ label }) => label === selectedSessionData?.sessionFormat) ?? '',
+                sessionLocation:
+                    sessionLocationValues.find(({ label }) => label === selectedSessionData?.sessionLocation) ?? '',
             })
-            setIsModalVisible(true)
         }
     }, [selectedSessionData, setValue, reset, sessionFormatValues, sessionLocationValues])
 
     const [updateSession, { isLoading: isSessionUpdating }] = useUpdateSessionMutation()
 
     const closeSessionEditModal = () => {
-        setIsModalVisible(false)
+        closeModal(false)
         refetchSessions()
     }
 
@@ -166,7 +164,7 @@ export function EditSessionModal({ refetchSessions, selectedSessionData }) {
                     </OverlayTrigger>
                 </>
             }
-            isVisible={isModalVisible}
+            isVisible={isModalOpen}
             onHide={() => closeSessionEditModal()}
             backdrop="static"
             dialogClassName="update-modal"

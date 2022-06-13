@@ -6,7 +6,7 @@ import { toast } from 'react-toastify'
 import { CommonModal } from '../components'
 import { useUpdateOrganizationMutation } from '../services/organizations'
 
-export function EditOrganizationModal({ refetchOrganizations, selectedOrganizationData }) {
+export function EditOrganizationModal({ refetchOrganizations, selectedOrganizationData, closeModal, isModalOpen }) {
     const {
         register,
         handleSubmit,
@@ -14,7 +14,6 @@ export function EditOrganizationModal({ refetchOrganizations, selectedOrganizati
         reset,
         formState: { isDirty, errors },
     } = useForm()
-    const [isModalVisible, setIsModalVisible] = useState(false)
 
     useEffect(() => {
         if (selectedOrganizationData != null) {
@@ -32,14 +31,13 @@ export function EditOrganizationModal({ refetchOrganizations, selectedOrganizati
                 postalAddressDepartmentCode: selectedOrganizationData?.postalAddressDepartmentCode,
                 postalAddressLocality: selectedOrganizationData?.postalAddressLocality,
             })
-            setIsModalVisible(true)
         }
     }, [selectedOrganizationData, setValue, reset])
 
     const [updateOrganization, { isLoading: isOrganizationUpdating }] = useUpdateOrganizationMutation()
 
     const closeOrganizationEditModal = () => {
-        setIsModalVisible(false)
+        closeModal()
         refetchOrganizations()
     }
 
@@ -293,7 +291,7 @@ export function EditOrganizationModal({ refetchOrganizations, selectedOrganizati
                     </OverlayTrigger>
                 </>
             }
-            isVisible={isModalVisible}
+            isVisible={isModalOpen}
             onHide={() => closeOrganizationEditModal()}
             backdrop="static"
             dialogClassName="update-modal"

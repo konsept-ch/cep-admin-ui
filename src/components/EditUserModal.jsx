@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Button, Spinner, Row, Form, Col, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
@@ -6,29 +6,26 @@ import { toast } from 'react-toastify'
 import { CommonModal } from '../components'
 import { useUpdateUserMutation } from '../services/users'
 
-export function EditUserModal({ refetchUsers, selectedUserData }) {
+export function EditUserModal({ refetchUsers, selectedUserData, closeModal, isModalOpen }) {
     const {
         register,
         handleSubmit,
-        setValue,
         reset,
         formState: { isDirty },
     } = useForm()
-    const [isModalVisible, setIsModalVisible] = useState(false)
 
     useEffect(() => {
         if (selectedUserData != null) {
             reset({
                 shouldReceiveSms: Boolean(selectedUserData?.shouldReceiveSms),
             })
-            setIsModalVisible(true)
         }
-    }, [selectedUserData, setValue, reset])
+    }, [selectedUserData, reset])
 
     const [updateUser, { isLoading: isUserUpdating }] = useUpdateUserMutation()
 
     const closeUserEditModal = () => {
-        setIsModalVisible(false)
+        closeModal()
         refetchUsers()
     }
 
@@ -112,7 +109,7 @@ export function EditUserModal({ refetchUsers, selectedUserData }) {
                     </OverlayTrigger>
                 </>
             }
-            isVisible={isModalVisible}
+            isVisible={isModalOpen}
             onHide={() => closeUserEditModal()}
             backdrop="static"
             dialogClassName="update-modal"
