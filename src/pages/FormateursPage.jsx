@@ -21,8 +21,6 @@ export function FormateursPage() {
             filter: 'agSetColumnFilter',
             filterParams: { excelMode: 'windows' },
             headerTooltip: 'Le formateur de la session',
-            checkboxSelection: true,
-            headerCheckboxSelection: true,
         },
         { field: 'profession', headerName: 'Fonction/Profession' },
         {

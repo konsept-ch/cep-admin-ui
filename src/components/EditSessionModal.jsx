@@ -128,6 +128,7 @@ export function EditSessionModal({ refetchSessions, selectedSessionData, closeMo
                                         ...formatToFlatObject(newData),
                                     })
                                     if (typeof mutationError === 'undefined') {
+                                        toast.success('Succès !')
                                         closeSessionEditModal()
                                     } else {
                                         toast.error(
