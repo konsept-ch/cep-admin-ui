@@ -63,6 +63,7 @@ export const EmailTemplateBodyInput = ({
     shouldHandleKeyCommand,
     shouldHaveVariables,
     isEmailSubjectInput,
+    shouldHaveBlockTag,
     ...rest
 }) => {
     const convertStateFromHTML = (state) => {
@@ -87,7 +88,7 @@ export const EmailTemplateBodyInput = ({
 
     const handleChange = (editorState) => {
         const htmlState = stateToHTML(editorState.getCurrentContent(), {
-            defaultBlockTag: isEmailSubjectInput ? null : 'p',
+            defaultBlockTag: shouldHaveBlockTag ? 'p' : null,
         })
 
         onChange(htmlState)

@@ -194,6 +194,7 @@ export function TemplatesPage() {
                                     }}
                                     shouldHandleKeyCommand
                                     shouldHaveVariables
+                                    shouldHaveBlockTag
                                 />
 
                                 <label>Texte de l'SMS :</label>
