@@ -4,6 +4,8 @@ import Select from 'react-select'
 import { ListGroup, Row, Col, Container, Button, FloatingLabel, Form, Badge } from 'react-bootstrap'
 import classNames from 'classnames'
 import { equals } from 'ramda'
+import { Helmet } from 'react-helmet-async'
+
 import { templatesSelector, templateForInvitesSelector } from '../reducers'
 import { CommonModal } from '../components'
 import {
@@ -14,7 +16,6 @@ import {
 } from '../actions/templates.ts'
 import { getUniqueId, inscriptionStatuses } from '../utils'
 import { EmailTemplateBodyInput } from '../components/EmailTemplateBodyInput'
-import { Helmet } from 'react-helmet-async'
 
 export function TemplatesPage() {
     const [selectedTemplateData, setSelectedTemplateData] = useState(null)

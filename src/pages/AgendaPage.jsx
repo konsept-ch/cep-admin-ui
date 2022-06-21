@@ -4,6 +4,7 @@ import { Container, Button, Collapse, InputGroup, FormControl, OverlayTrigger, T
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeftFromLine, faArrowRightToLine } from '@fortawesome/pro-solid-svg-icons'
 import { faFilterCircleXmark } from '@fortawesome/pro-light-svg-icons'
+import { Helmet } from 'react-helmet-async'
 
 import { Calendar } from '../components'
 import { fetchAgendaAction } from '../actions/agenda.ts'
@@ -12,7 +13,6 @@ import { RoomSelection } from '../components/RoomSelection'
 import { BulkSelect } from '../components/BulkSelect'
 import { ExpandController } from '../components/ExpandController'
 import { ROOM_TYPE_VIRTUAL } from '../constants/agenda'
-import { Helmet } from 'react-helmet-async'
 import { RoomCheckbox } from '../components/RoomCheckbox'
 
 export const AgendaPage = () => {
