@@ -66,8 +66,7 @@ export function InvoicePage() {
             tooltipField: 'createdAt',
             headerTooltip: 'Date de création de facture',
             filter: 'agTextColumnFilter',
-            valueGetter: ({ data: { createdAt } }) =>
-                formatDate({ dateString: Number(createdAt), isDateVisible: true }),
+            valueGetter: ({ data: { createdAt } }) => formatDate({ dateString: createdAt, isDateVisible: true }),
         },
         {
             field: 'inscriptionStatus',
