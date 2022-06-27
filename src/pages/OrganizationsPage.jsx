@@ -344,9 +344,9 @@ export function OrganizationsPage() {
                     Ajouter ou supprimer toutes les organisations à/de toutes les formations, sauf l'organisation par
                     défaut :
                 </p>
-                <Button variant="success" onClick={() => setIsAddModalOpen(true)}>
+                <Button variant="success" className="me-2" onClick={() => setIsAddModalOpen(true)}>
                     Ajouter organisations
-                </Button>{' '}
+                </Button>
                 <Button variant="danger" onClick={() => setIsRemoveModalOpen(true)}>
                     Supprimer organisations
                 </Button>
