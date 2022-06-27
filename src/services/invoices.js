@@ -32,9 +32,20 @@ export const invoicesApi = createApi({
                 method: 'DELETE',
             }),
         }),
+        createGroupedBiannualInvoices: builder.mutation({
+            query: () => ({
+                url: `invoice/biannual`,
+                method: 'POST',
+            }),
+        }),
     }),
 })
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useGetInvoicesQuery, useUpdateInvoiceMutation, useRemoveInvoiceMutation } = invoicesApi
+export const {
+    useGetInvoicesQuery,
+    useUpdateInvoiceMutation,
+    useRemoveInvoiceMutation,
+    useCreateGroupedBiannualInvoicesMutation,
+} = invoicesApi

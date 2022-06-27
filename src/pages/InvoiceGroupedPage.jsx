@@ -4,7 +4,7 @@ import { Container, Button } from 'react-bootstrap'
 import Papa from 'papaparse'
 
 import { Grid, EditBtnCellRenderer, InvoiceModal, CommonModal } from '../components'
-import { useGetInvoicesQuery } from '../services/invoices'
+import { useGetInvoicesQuery, useCreateGroupedBiannualInvoicesMutation } from '../services/invoices'
 import { gridContextMenu, downloadCsvFile, formatDate } from '../utils'
 
 export function InvoiceGroupedPage() {
@@ -17,6 +17,9 @@ export function InvoiceGroupedPage() {
         isFetchingInvoices,
         refetch: refetchInvoices,
     } = useGetInvoicesQuery(null, { refetchOnMountOrArgChange: true })
+
+    const [createBiannualInvoices, { isLoading: isCreatingBiannualInvoices }] =
+        useCreateGroupedBiannualInvoicesMutation()
 
     const openInvoiceEditModal = ({ data: { id } }) => {
         setSelectedInvoiceId(id)
