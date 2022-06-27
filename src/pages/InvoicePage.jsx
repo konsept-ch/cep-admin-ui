@@ -1,16 +1,13 @@
 import { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
-import { Container, Button } from 'react-bootstrap'
 import Papa from 'papaparse'
 
-import { Grid, EditBtnCellRenderer, InvoiceModal, CommonModal } from '../components'
+import { Grid, EditBtnCellRenderer, InvoiceModal } from '../components'
 import { useGetInvoicesQuery } from '../services/invoices'
 import { gridContextMenu, downloadCsvFile, formatDate } from '../utils'
 
 export function InvoicePage() {
     const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false)
-    const [isSemestrialModalOpen, setIsSemestrialModalOpen] = useState(false)
-    const [isAnnualModalOpen, setIsAnnualModalOpen] = useState(false)
     const [selectedInvoiceId, setSelectedInvoiceId] = useState()
     const {
         data: invoicesData,
@@ -125,44 +122,6 @@ export function InvoicePage() {
                 }}
                 isModalOpen={isInvoiceModalOpen}
             />
-            <CommonModal
-                title="Générer factures sémestrielles"
-                content={
-                    <dl>
-                        <dt>Dernière génération de fractures semestrielles :</dt>
-                        <dd>{formatDate({ dateString: new Date(), isDateVisible: true })}</dd>
-                        <dt>Nombre de factures qui seront générées :</dt>
-                        <dd>16</dd>
-                        <dt>Nombre de participations affectées :</dt>
-                        <dd>116</dd>
-                    </dl>
-                }
-                footer={<Button variant="success">Générer</Button>}
-                isVisible={isSemestrialModalOpen}
-                onHide={() => setIsSemestrialModalOpen(false)}
-            />
-            <CommonModal
-                title="Générer factures annuelles"
-                content={
-                    <dl>
-                        <dt>Dernière génération de fractures annuelles :</dt>
-                        <dd>{formatDate({ dateString: new Date(), isDateVisible: true })}</dd>
-                        <dt>Nombre de factures qui seront générées :</dt>
-                        <dd>10</dd>
-                        <dt>Nombre de participations affectées :</dt>
-                        <dd>99</dd>
-                    </dl>
-                }
-                footer={<Button variant="success">Générer</Button>}
-                isVisible={isAnnualModalOpen}
-                onHide={() => setIsAnnualModalOpen(false)}
-            />
-            <Container fluid className="mb-2">
-                <Button onClick={() => setIsSemestrialModalOpen(true)} className="me-2">
-                    Générer des factures groupées semestrielles
-                </Button>
-                <Button onClick={() => setIsAnnualModalOpen(true)}> Générer des factures groupées annuelles</Button>
-            </Container>
         </>
     )
 }
