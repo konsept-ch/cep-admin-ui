@@ -28,6 +28,7 @@
 .nav-link {
     transition: box-shadow 0.15s linear;
     box-shadow: 0 0 0 0 #e8ca01;
+    white-space: nowrap;
 
     .dropdown-menu & {
         margin-left: 5px;

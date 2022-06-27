@@ -7,7 +7,7 @@ import { Grid, EditBtnCellRenderer, InvoiceModal, CommonModal } from '../compone
 import { useGetInvoicesQuery } from '../services/invoices'
 import { gridContextMenu, downloadCsvFile, formatDate } from '../utils'
 
-export function InvoicePage() {
+export function InvoiceGroupedPage() {
     const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false)
     const [isSemestrialModalOpen, setIsSemestrialModalOpen] = useState(false)
     const [isAnnualModalOpen, setIsAnnualModalOpen] = useState(false)
@@ -83,10 +83,10 @@ export function InvoicePage() {
     return (
         <>
             <Helmet>
-                <title>Factures directes - Former22</title>
+                <title>Factures groupées - Former22</title>
             </Helmet>
             <Grid
-                name="Factures directes"
+                name="Factures groupées"
                 columnDefs={columnDefs}
                 rowData={invoicesData}
                 isDataLoading={isFetchingInvoices}

@@ -17,5 +17,7 @@ export const PATH_COMMUNITY = 'community'
 export const PATH_ORGANIZATIONS = 'organisations'
 export const PATH_USERS = 'users'
 export const PATH_INVOICE = 'factures'
+export const PATH_INVOICE_DIRECT = 'direct'
+export const PATH_INVOICE_GROUPED = 'grouped'
 
 export const splitComment = '<!-- AUTO -->'

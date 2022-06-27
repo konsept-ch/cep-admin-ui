@@ -26,6 +26,8 @@ import {
     PATH_USERS,
     PATH_ORGANIZATIONS,
     PATH_INVOICE,
+    PATH_INVOICE_DIRECT,
+    PATH_INVOICE_GROUPED,
 } from '../constants/constants'
 import { clearAllAuthCookies } from '../utils'
 
@@ -95,9 +97,27 @@ export const Navigation = ({ isLoggedIn }) => {
                         <Nav.Link href={`/${PATH_TEMPLATES}`} onClick={goTo(PATH_TEMPLATES)}>
                             <FontAwesomeIcon icon={faEnvelopeOpenText} /> Modèles
                         </Nav.Link>
-                        <Nav.Link href={`/${PATH_INVOICE}`} onClick={goTo(PATH_INVOICE)}>
-                            <FontAwesomeIcon icon={faFileInvoiceDollar} /> Factures
-                        </Nav.Link>
+                        <NavDropdown
+                            active={location.pathname.startsWith(`/${PATH_INVOICE}`)}
+                            title={
+                                <>
+                                    <FontAwesomeIcon icon={faFileInvoiceDollar} /> Factures
+                                </>
+                            }
+                        >
+                            <Nav.Link
+                                href={`/${PATH_INVOICE}/${PATH_INVOICE_DIRECT}`}
+                                onClick={goTo(`${PATH_INVOICE}/${PATH_INVOICE_DIRECT}`)}
+                            >
+                                <FontAwesomeIcon icon={faFileInvoiceDollar} /> Factures directes
+                            </Nav.Link>
+                            <Nav.Link
+                                href={`/${PATH_INVOICE}/${PATH_INVOICE_GROUPED}`}
+                                onClick={goTo(`${PATH_INVOICE}/${PATH_INVOICE_GROUPED}`)}
+                            >
+                                <FontAwesomeIcon icon={faFileInvoiceDollar} /> Factures groupées
+                            </Nav.Link>
+                        </NavDropdown>
                         <NavDropdown
                             active={location.pathname.startsWith(`/${PATH_COMMUNITY}`)}
                             title={
