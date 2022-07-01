@@ -84,7 +84,6 @@ export const Grid = ({
                             <Col>
                                 <h1 className="mt-3">{name}</h1>
                             </Col>
-                            <Col />
                             {predefinedFilters.map(({ id, label }) => (
                                 <Col className="my-auto" key={id}>
                                     <Form.Group controlId={id}>

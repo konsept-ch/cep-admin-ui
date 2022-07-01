@@ -13,6 +13,7 @@ import {
     faUsers,
     faBook,
     faFileInvoiceDollar,
+    faFilePlus,
 } from '@fortawesome/pro-light-svg-icons'
 import {
     PATH_AGENDA,
@@ -28,6 +29,7 @@ import {
     PATH_INVOICE,
     PATH_INVOICE_DIRECT,
     PATH_INVOICE_GROUPED,
+    PATH_INVOICE_GENERATE,
 } from '../constants/constants'
 import { clearAllAuthCookies } from '../utils'
 
@@ -105,6 +107,13 @@ export const Navigation = ({ isLoggedIn }) => {
                                 </>
                             }
                         >
+                            <Nav.Link
+                                href={`/${PATH_INVOICE}/${PATH_INVOICE_GENERATE}`}
+                                onClick={goTo(`${PATH_INVOICE}/${PATH_INVOICE_GENERATE}`)}
+                            >
+                                <FontAwesomeIcon icon={faFilePlus} /> Générer factures groupées
+                            </Nav.Link>
+                            <NavDropdown.Divider />
                             <Nav.Link
                                 href={`/${PATH_INVOICE}/${PATH_INVOICE_DIRECT}`}
                                 onClick={goTo(`${PATH_INVOICE}/${PATH_INVOICE_DIRECT}`)}
