@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async'
 import Papa from 'papaparse'
 
 import { Grid, EditBtnCellRenderer, InvoiceModal } from '../components'
-import { useGetInvoicesQuery } from '../services/invoices'
+import { useGetDirectInvoicesQuery } from '../services/invoices'
 import { gridContextMenu, downloadCsvFile, formatDate } from '../utils'
 
 export function InvoiceGroupedPage() {
@@ -13,7 +13,7 @@ export function InvoiceGroupedPage() {
         data: invoicesData,
         isFetchingInvoices,
         refetch: refetchInvoices,
-    } = useGetInvoicesQuery(null, { refetchOnMountOrArgChange: true })
+    } = useGetDirectInvoicesQuery(null, { refetchOnMountOrArgChange: true })
 
     const openInvoiceEditModal = ({ data: { id } }) => {
         setSelectedInvoiceId(id)

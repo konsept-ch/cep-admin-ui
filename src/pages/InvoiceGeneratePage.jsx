@@ -4,19 +4,19 @@ import { Container, Button } from 'react-bootstrap'
 import Papa from 'papaparse'
 
 import { Grid, EditBtnCellRenderer, InvoiceModal, CommonModal } from '../components'
-import { useGetInvoicesQuery, useCreateGroupedBiannualInvoicesMutation } from '../services/invoices'
+import { useGetDirectInvoicesQuery, useCreateGroupedBiannualInvoicesMutation } from '../services/invoices'
 import { gridContextMenu, downloadCsvFile, formatDate } from '../utils'
 
 export function InvoiceGeneratePage() {
     const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false)
-    const [isSemestrialModalOpen, setIsSemestrialModalOpen] = useState(false)
+    const [isBiannualModalOpen, setIsBiannualModalOpen] = useState(false)
     const [isAnnualModalOpen, setIsAnnualModalOpen] = useState(false)
     const [selectedInvoiceId, setSelectedInvoiceId] = useState()
     const {
         data: invoicesData,
         isFetchingInvoices,
         refetch: refetchInvoices,
-    } = useGetInvoicesQuery(null, { refetchOnMountOrArgChange: true })
+    } = useGetDirectInvoicesQuery(null, { refetchOnMountOrArgChange: true })
 
     const [createBiannualInvoices, { isLoading: isCreatingBiannualInvoices }] =
         useCreateGroupedBiannualInvoicesMutation()
@@ -34,9 +34,10 @@ export function InvoiceGeneratePage() {
             headerTooltip: "Modifier l'utilisateur",
             cellClass: 'edit-column',
             pinned: 'left',
-            maxWidth: 60,
+            maxWidth: 96,
             filter: false,
             sortable: false,
+            checkboxSelection: true,
         },
         {
             field: 'participantName',
@@ -141,8 +142,8 @@ export function InvoiceGeneratePage() {
                     </dl>
                 }
                 footer={<Button variant="success">Générer</Button>}
-                isVisible={isSemestrialModalOpen}
-                onHide={() => setIsSemestrialModalOpen(false)}
+                isVisible={isBiannualModalOpen}
+                onHide={() => setIsBiannualModalOpen(false)}
             />
             <CommonModal
                 title="Générer factures annuelles"
@@ -161,7 +162,7 @@ export function InvoiceGeneratePage() {
                 onHide={() => setIsAnnualModalOpen(false)}
             />
             <Container fluid className="mb-2">
-                <Button onClick={() => setIsSemestrialModalOpen(true)} className="me-2">
+                <Button onClick={() => setIsBiannualModalOpen(true)} className="me-2">
                     Générer des factures groupées semestrielles
                 </Button>
                 <Button onClick={() => setIsAnnualModalOpen(true)}> Générer des factures groupées annuelles</Button>

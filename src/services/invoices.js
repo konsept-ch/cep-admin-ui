@@ -16,8 +16,8 @@ export const invoicesApi = createApi({
         },
     }),
     endpoints: (builder) => ({
-        getInvoices: builder.query({
-            query: () => `invoices`,
+        getDirectInvoices: builder.query({
+            query: () => `invoices/direct`,
         }),
         updateInvoice: builder.mutation({
             query: ({ id, body }) => ({
@@ -44,7 +44,7 @@ export const invoicesApi = createApi({
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
 export const {
-    useGetInvoicesQuery,
+    useGetDirectInvoicesQuery,
     useUpdateInvoiceMutation,
     useRemoveInvoiceMutation,
     useCreateGroupedBiannualInvoicesMutation,
