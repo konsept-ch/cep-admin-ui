@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
 import { CommonModal } from '../components'
-import { useUpdateInvoiceMutation, useRemoveInvoiceMutation } from '../services/invoices'
+import { useUpdateDirectInvoiceMutation, useRemoveDirectInvoiceMutation } from '../services/invoices'
 import { formatToFlatObject } from '../utils'
 
 export function InvoiceModal({ refetchInvoices, selectedInvoiceData, closeModal, isModalOpen }) {
@@ -29,8 +29,8 @@ export function InvoiceModal({ refetchInvoices, selectedInvoiceData, closeModal,
     }, [selectedInvoiceData])
 
     const [isDeleteWarningVisible, setIsDeleteWarningVisible] = useState(false)
-    const [updateInvoice, { isLoading: isInvoiceUpdating }] = useUpdateInvoiceMutation()
-    const [removeInvoice, { isLoading: isRemovingInvoice }] = useRemoveInvoiceMutation()
+    const [updateInvoice, { isLoading: isInvoiceUpdating }] = useUpdateDirectInvoiceMutation()
+    const [removeInvoice, { isLoading: isRemovingInvoice }] = useRemoveDirectInvoiceMutation()
 
     const closeInvoiceModal = () => {
         closeModal()

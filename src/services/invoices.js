@@ -19,16 +19,16 @@ export const invoicesApi = createApi({
         getDirectInvoices: builder.query({
             query: () => `invoices/direct`,
         }),
-        updateInvoice: builder.mutation({
+        updateDirectInvoice: builder.mutation({
             query: ({ id, body }) => ({
-                url: `invoice/${id}`,
+                url: `invoice/direct/${id}`,
                 method: 'PUT',
                 body,
             }),
         }),
-        removeInvoice: builder.mutation({
+        removeDirectInvoice: builder.mutation({
             query: ({ id }) => ({
-                url: `invoice/${id}`,
+                url: `invoice/direct/${id}`,
                 method: 'DELETE',
             }),
         }),
@@ -45,7 +45,7 @@ export const invoicesApi = createApi({
 // auto-generated based on the defined endpoints
 export const {
     useGetDirectInvoicesQuery,
-    useUpdateInvoiceMutation,
-    useRemoveInvoiceMutation,
+    useUpdateDirectInvoiceMutation,
+    useRemoveDirectInvoiceMutation,
     useCreateGroupedBiannualInvoicesMutation,
 } = invoicesApi
