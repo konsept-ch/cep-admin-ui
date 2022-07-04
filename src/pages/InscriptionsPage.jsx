@@ -305,7 +305,6 @@ export function InscriptionsPage() {
                             })
                         )
                     }
-                    columnDefs={columnDefs}
                 />
             )}
         </>

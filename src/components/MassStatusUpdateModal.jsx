@@ -6,11 +6,12 @@ import classNames from 'classnames'
 import { fetchParametersAction } from '../actions/parameters.ts'
 import { fetchTemplateRawPreviewAction } from '../actions/templates.ts'
 import { parametersSelector, loadingSelector, templatesLoadingSelector } from '../reducers'
-import { statusWarnings, inscriptionsGridRowClassRules } from '../utils'
+import { statusWarnings, inscriptionsGridRowClassRules, formatDate } from '../utils'
 import { EmailTemplateBodyInput } from './EmailTemplateBodyInput'
 
-export const MassStatusUpdateModal = ({ closeModal, inscriptionsData, updateStatus, columnDefs, selectedRowsData }) => {
+export const MassStatusUpdateModal = ({ closeModal, inscriptionsData, updateStatus, selectedRowsData }) => {
     const [selectedTemplateData, setSelectedTemplateData] = useState(null)
+    const [gridApi, setGridApi] = useState(null)
 
     const parameters = useSelector(parametersSelector)
     const isSagaLoading = useSelector(loadingSelector)
@@ -20,6 +21,10 @@ export const MassStatusUpdateModal = ({ closeModal, inscriptionsData, updateStat
     useEffect(() => {
         dispatch(fetchParametersAction())
     }, [])
+
+    useEffect(() => {
+        gridApi?.sizeColumnsToFit()
+    }, [gridApi])
 
     const isEmailTemplateSelected = selectedTemplateData !== null && selectedTemplateData.templateId !== 'no-email'
 
@@ -32,6 +37,95 @@ export const MassStatusUpdateModal = ({ closeModal, inscriptionsData, updateStat
               template.statuses.find((status) => status.value === inscriptionsData.newStatus)
           )
         : []
+
+    const columnDefs = [
+        {
+            field: 'participant',
+            headerName: 'Participant',
+            filter: 'agSetColumnFilter',
+            filterParams: { excelMode: 'windows' },
+            headerTooltip: "L'utilisateur qui est inscrit à la session",
+            aggFunc: 'count',
+        },
+        { field: 'profession', headerName: 'Fonction/Profession' },
+        {
+            field: 'sessionName',
+            headerName: 'Session',
+            filter: 'agTextColumnFilter',
+            headerTooltip: "Le nom de la session dans laquelle l'utilisateur s'est inscrit",
+            hide: true,
+        },
+        {
+            field: 'status',
+            headerName: 'Statut',
+            filter: 'agSetColumnFilter',
+            headerTooltip: "Le statut de l'utilisateur",
+        },
+        {
+            field: 'organization',
+            headerName: 'Organisation',
+            filter: 'agTextColumnFilter',
+            headerTooltip: "L'organisation de l'utilisateur",
+        },
+        {
+            field: 'organizationCode',
+            headerName: "Code de l'organisation",
+            filter: 'agTextColumnFilter',
+            headerTooltip: "Le code d'organization de l'utilisateur",
+            initialHide: true,
+        },
+        {
+            field: 'hierarchy',
+            headerName: "Hiérarchie de l'entité/entreprise",
+            filter: 'agTextColumnFilter',
+            headerTooltip: "L'organisation de l'utilisateur",
+            initialHide: true,
+        },
+        {
+            field: 'email',
+            headerName: 'E-mail',
+            filter: 'agTextColumnFilter',
+            headerTooltip: "L'e-mail de l'utilisateur",
+        },
+        {
+            field: 'type',
+            headerName: "Type d'inscription",
+            filter: 'agSetColumnFilter',
+            // setting default value for data resolves an uncaught type error
+            valueGetter: ({ data: { type } = {} }) =>
+                ({
+                    cancellation: 'Annulation',
+                    learner: 'Participant',
+                    tutor: 'Formateur',
+                    pending: 'En attente', // ?
+                    group: 'Groupe', // ?
+                }[type] ?? type),
+        },
+        {
+            field: 'startDate',
+            headerName: 'Date de début',
+            filter: 'agDateColumnFilter',
+            headerTooltip: 'La date de début de la session',
+            sort: 'asc',
+            valueFormatter: ({ value }) => formatDate({ dateString: value, isDateVisible: true }),
+            type: 'numericColumn',
+        },
+        {
+            field: 'quotaDays',
+            headerName: 'Jours de quota',
+            filter: 'agNumberColumnFilter',
+            headerTooltip: 'Les jours de quota de la session',
+            type: 'numericColumn',
+        },
+        {
+            field: 'isUsedForQuota',
+            headerName: 'Utilisé pour quotas',
+            filter: 'agSetColumnFilter',
+            headerTooltip: 'Les quotas de la session',
+            valueGetter: ({ data }) =>
+                typeof data === 'undefined' ? '' : data.isUsedForQuota ? 'Utilisé' : 'Non-utilisé',
+        },
+    ]
 
     return (
         <Modal
@@ -169,6 +263,7 @@ export const MassStatusUpdateModal = ({ closeModal, inscriptionsData, updateStat
                         rowData={selectedRowsData}
                         rowClassRules={inscriptionsGridRowClassRules}
                         functionsReadOnly
+                        onGridReady={({ api }) => setGridApi(api)}
                     />
                 </div>
             </Modal.Body>
