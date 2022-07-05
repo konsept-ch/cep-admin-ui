@@ -1,11 +1,10 @@
 import { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Container, Button } from 'react-bootstrap'
-import Papa from 'papaparse'
 
 import { Grid, EditBtnCellRenderer, InvoiceModal, CommonModal } from '../components'
-import { useGetInvoicesQuery, useCreateGroupedBiannualInvoicesMutation } from '../services/invoices'
-import { gridContextMenu, downloadCsvFile, formatDate } from '../utils'
+import { useGetInvoicesQuery } from '../services/invoices'
+import { formatDate } from '../utils'
 
 export function InvoiceGroupedPage() {
     const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false)
@@ -17,9 +16,6 @@ export function InvoiceGroupedPage() {
         isFetchingInvoices,
         refetch: refetchInvoices,
     } = useGetInvoicesQuery(null, { refetchOnMountOrArgChange: true })
-
-    const [createBiannualInvoices, { isLoading: isCreatingBiannualInvoices }] =
-        useCreateGroupedBiannualInvoicesMutation()
 
     const openInvoiceEditModal = ({ data: { id } }) => {
         setSelectedInvoiceId(id)
@@ -94,30 +90,6 @@ export function InvoiceGroupedPage() {
                 rowData={invoicesData}
                 isDataLoading={isFetchingInvoices}
                 components={{ btnCellRenderer: EditBtnCellRenderer({ onClick: openInvoiceEditModal }) }}
-                getContextMenuItems={({
-                    node: { data: rowData },
-                    columnApi: {
-                        columnModel: { columnDefs: gridColumnDefs },
-                    },
-                }) => [
-                    {
-                        name: 'Exporter pour Crésus',
-                        action: () => {
-                            const fieldsData = gridColumnDefs
-                                .filter(({ field }) => field !== columnDefs[0].field)
-                                .map(({ headerName, field }) => ({ headerName, field }))
-
-                            const fields = fieldsData.map(({ headerName }) => headerName)
-                            const data = fieldsData.map(({ field }) => rowData[field])
-
-                            const csv = Papa.unparse({ fields, data })
-
-                            downloadCsvFile({ csv, fileName: 'CSV pour Crésus' })
-                        },
-                    },
-                    'separator',
-                    ...gridContextMenu,
-                ]}
             />
             <InvoiceModal
                 refetchInvoices={refetchInvoices}

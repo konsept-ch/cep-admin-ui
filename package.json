@@ -67,7 +67,6 @@
     "luxon": "2.4.0",
     "markdownlint": "0.25.1",
     "markdownlint-cli": "0.31.1",
-    "papaparse": "5.3.2",
     "postcss-scss": "4.0.4",
     "prettier": "2.7.1",
     "ramda": "0.28.0",

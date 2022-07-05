@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
-import Papa from 'papaparse'
 
 import { Grid, EditBtnCellRenderer, InvoiceModal } from '../components'
 import { useGetInvoicesQuery, useGetCresusDataMutation } from '../services/invoices'
