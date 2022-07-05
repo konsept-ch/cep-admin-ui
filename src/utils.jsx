@@ -242,17 +242,19 @@ export const formatToFlatObject = (data) => {
     return { ...data, ...objectValuesEntries }
 }
 
-export const downloadCsvFile = ({ csv, fileName }) => {
-    const blob = new Blob([csv], { type: 'text/csv' })
+export const downloadCsvFile = ({ csvArray }) => {
+    csvArray.forEach(({ csv, fileName }) => {
+        const blob = new Blob([csv], { type: 'text/csv' })
 
-    const url = window.URL.createObjectURL(blob)
+        const url = window.URL.createObjectURL(blob)
 
-    const a = document.createElement('a')
+        const a = document.createElement('a')
 
-    a.setAttribute('href', url)
+        a.setAttribute('href', url)
 
-    a.setAttribute('download', `${fileName}.txt`)
+        a.setAttribute('download', `${fileName}.txt`)
 
-    a.click()
-    a.remove()
+        a.click()
+        a.remove()
+    })
 }

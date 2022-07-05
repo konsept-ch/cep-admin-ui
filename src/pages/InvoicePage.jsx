@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async'
 import Papa from 'papaparse'
 
 import { Grid, EditBtnCellRenderer, InvoiceModal } from '../components'
-import { useGetInvoicesQuery } from '../services/invoices'
+import { useGetInvoicesQuery, useGetCresusDataMutation } from '../services/invoices'
 import { gridContextMenu, downloadCsvFile, formatDate } from '../utils'
 
 export function InvoicePage() {
@@ -14,6 +14,8 @@ export function InvoicePage() {
         isFetchingInvoices,
         refetch: refetchInvoices,
     } = useGetInvoicesQuery(null, { refetchOnMountOrArgChange: true })
+
+    const [getCresusData] = useGetCresusDataMutation()
 
     const openInvoiceEditModal = ({ data: { id } }) => {
         setSelectedInvoiceId(id)
@@ -88,25 +90,12 @@ export function InvoicePage() {
                 rowData={invoicesData}
                 isDataLoading={isFetchingInvoices}
                 components={{ btnCellRenderer: EditBtnCellRenderer({ onClick: openInvoiceEditModal }) }}
-                getContextMenuItems={({
-                    node: { data: rowData },
-                    columnApi: {
-                        columnModel: { columnDefs: gridColumnDefs },
-                    },
-                }) => [
+                getContextMenuItems={({ node: { data: rowData } }) => [
                     {
                         name: 'Exporter pour Crésus',
-                        action: () => {
-                            const fieldsData = gridColumnDefs
-                                .filter(({ field }) => field !== columnDefs[0].field)
-                                .map(({ headerName, field }) => ({ headerName, field }))
-
-                            const fields = fieldsData.map(({ headerName }) => headerName)
-                            const data = fieldsData.map(({ field }) => rowData[field])
-
-                            const csv = Papa.unparse({ fields, data })
-
-                            downloadCsvFile({ csv, fileName: 'CSV pour Crésus' })
+                        action: async () => {
+                            const { data } = await getCresusData({ invoiceId: rowData.id })
+                            downloadCsvFile({ csvArray: data })
                         },
                     },
                     'separator',

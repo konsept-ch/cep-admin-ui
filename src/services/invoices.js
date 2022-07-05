@@ -19,6 +19,11 @@ export const invoicesApi = createApi({
         getInvoices: builder.query({
             query: () => `invoices`,
         }),
+        getCresusData: builder.mutation({
+            query: ({ invoiceId }) => ({
+                url: `invoices/cresus/${invoiceId}`,
+            }),
+        }),
         updateInvoice: builder.mutation({
             query: ({ id, body }) => ({
                 url: `invoice/${id}`,
@@ -45,6 +50,7 @@ export const invoicesApi = createApi({
 // auto-generated based on the defined endpoints
 export const {
     useGetInvoicesQuery,
+    useGetCresusDataMutation,
     useUpdateInvoiceMutation,
     useRemoveInvoiceMutation,
     useCreateGroupedBiannualInvoicesMutation,
