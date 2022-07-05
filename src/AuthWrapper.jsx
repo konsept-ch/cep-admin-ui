@@ -24,7 +24,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
     const [isCodeLoading, setCodeLoading] = useState(false)
     const [isCodeSent, setCodeSent] = useState(false)
     const [isLoginLoading, setLoginLoading] = useState(false)
-    const [shouldRememberMe, setShouldRememberMe] = useState(cookies.get('rememberMe') === 'true')
+    const [shouldRememberMe, setShouldRememberMe] = useState(true)
 
     const maxAge = authCookiesMaxAgeSeconds[shouldRememberMe]
     const path = '/'
