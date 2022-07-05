@@ -14,7 +14,7 @@ export function InvoicePage() {
         refetch: refetchInvoices,
     } = useGetInvoicesQuery(null, { refetchOnMountOrArgChange: true })
 
-    const [getCresusData] = useGetCresusDataMutation()
+    const [getCresusData, { isLoading: isCresusDataLoading }] = useGetCresusDataMutation()
 
     const openInvoiceEditModal = ({ data: { id } }) => {
         setSelectedInvoiceId(id)
@@ -87,7 +87,7 @@ export function InvoicePage() {
                 name="Factures directes"
                 columnDefs={columnDefs}
                 rowData={invoicesData}
-                isDataLoading={isFetchingInvoices}
+                isDataLoading={isFetchingInvoices || isCresusDataLoading}
                 components={{ btnCellRenderer: EditBtnCellRenderer({ onClick: openInvoiceEditModal }) }}
                 getContextMenuItems={({ node: { data: rowData } }) => [
                     {
