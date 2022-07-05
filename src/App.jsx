@@ -17,7 +17,7 @@ import { ErrorBoundary } from './pages/ErrorBoundaryPage'
 import { OrganizationsPage } from './pages/OrganizationsPage'
 import { UsersPage } from './pages/UsersPage'
 import { InvoicesDirectPage } from './pages/InvoicesDirectPage'
-import { InvoiceGroupedPage } from './pages/InvoiceGroupedPage'
+import { InvoicesGroupedPage } from './pages/InvoicesGroupedPage'
 import { InvoiceGeneratePage } from './pages/InvoiceGeneratePage'
 import { Navigation } from './components'
 import { Footer } from './components/Footer'
@@ -93,7 +93,7 @@ export function App() {
                             <Route
                                 exact
                                 path={`${PATH_INVOICE}/${PATH_INVOICE_GROUPED}`}
-                                element={<InvoiceGroupedPage />}
+                                element={<InvoicesGroupedPage />}
                             />
                             <Route
                                 exact
