@@ -6,7 +6,7 @@ import { Grid, EditBtnCellRenderer, InvoiceModal } from '../components'
 import { useGetDirectInvoicesQuery } from '../services/invoices'
 import { gridContextMenu, downloadCsvFile, formatDate } from '../utils'
 
-export function InvoicePage() {
+export function InvoicesDirectPage() {
     const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false)
     const [selectedInvoiceId, setSelectedInvoiceId] = useState()
     const {

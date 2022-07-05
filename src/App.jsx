@@ -16,7 +16,7 @@ import { FormateursPage } from './pages/FormateursPage'
 import { ErrorBoundary } from './pages/ErrorBoundaryPage'
 import { OrganizationsPage } from './pages/OrganizationsPage'
 import { UsersPage } from './pages/UsersPage'
-import { InvoicePage } from './pages/InvoicePage'
+import { InvoicesDirectPage } from './pages/InvoicesDirectPage'
 import { InvoiceGroupedPage } from './pages/InvoiceGroupedPage'
 import { InvoiceGeneratePage } from './pages/InvoiceGeneratePage'
 import { Navigation } from './components'
@@ -80,7 +80,11 @@ export function App() {
                             <Route exact path={`${PATH_CATALOGUE}/${PATH_SESSIONS}`} element={<SessionsPage />} />
                             <Route exact path={PATH_TEMPLATES} element={<TemplatesPage />} />
                             <Route exact path={`${PATH_COMMUNITY}/${PATH_USERS}`} element={<UsersPage />} />
-                            <Route exact path={`${PATH_INVOICE}/${PATH_INVOICE_DIRECT}`} element={<InvoicePage />} />
+                            <Route
+                                exact
+                                path={`${PATH_INVOICE}/${PATH_INVOICE_DIRECT}`}
+                                element={<InvoicesDirectPage />}
+                            />
                             <Route
                                 exact
                                 path={`${PATH_INVOICE}/${PATH_INVOICE_GENERATE}`}
