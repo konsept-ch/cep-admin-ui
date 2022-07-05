@@ -18,7 +18,7 @@ import { ButtonIcon } from './components'
 let keepAliveInterval
 
 export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
-    const [email, setEmail] = useState('')
+    const [email, setEmail] = useState(cookies.get('email'))
     const [code, setCode] = useState('')
     const [token, setToken] = useState('')
     const [isCodeLoading, setCodeLoading] = useState(false)
@@ -44,7 +44,6 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
         cookies.addChangeListener(({ name, value }) => {
             // clear when logout event is triggered
             if (name === 'isLoggedIn' && typeof value === 'undefined') {
-                setEmail('')
                 setCode('')
                 setToken('')
                 setCodeSent(false)
@@ -60,6 +59,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
         event.preventDefault()
         setCodeLoading(true)
         setCodeSent(false)
+        cookies.set('email', email, { path, maxAge: 99999999 })
         ;(async () => {
             const response = await (
                 await fetch(`${MIDDLEWARE_URL}/auth/sendCode`, {
@@ -102,7 +102,6 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
             if (areCodeAndTokenCorrect) {
                 cookies.set('rememberMe', shouldRememberMe, { path, maxAge })
                 cookies.set('isLoggedIn', true, { path, maxAge })
-                cookies.set('email', email, { path, maxAge })
                 cookies.set('code', code, { path, maxAge })
                 cookies.set('token', token, { path, maxAge })
 
@@ -210,12 +209,14 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                             <Form.Group className="mb-3" controlId="formBasicRememberMe">
                                 <Form.Check
                                     type="checkbox"
-                                    label="Se souvenir de moi"
+                                    label="Se souvenir de moi (max. 12 heures)"
                                     value={shouldRememberMe}
                                     onChange={({ target: { checked } }) => setShouldRememberMe(checked)}
                                 />
                                 <Form.Text className="text-muted">
-                                    Rester identifié.e même après fermeture de navigateur (max. 30 minutes)
+                                    Rester identifié.e même après fermeture de navigateur/onglet
+                                    <br />
+                                    ou mise en vielle de votre appareil
                                 </Form.Text>
                             </Form.Group>
                             <Button variant="primary" type="submit" onClick={onLoginButtonClick}>
