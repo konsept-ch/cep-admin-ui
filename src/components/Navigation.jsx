@@ -78,7 +78,7 @@ export const Navigation = ({ isLoggedIn }) => {
                                 href={`/${PATH_INSCRIPTIONS}/${PATH_INSCRIPTIONS}/${PATH_ANNULATIONS}`}
                                 onClick={goTo(`${PATH_INSCRIPTIONS}/${PATH_INSCRIPTIONS}/${PATH_ANNULATIONS}`)}
                             >
-                                <FontAwesomeIcon icon={faBan} /> Inscriptions annulations
+                                <FontAwesomeIcon icon={faBan} /> Annulations
                             </Nav.Link>
                         </NavDropdown>
                         <NavDropdown

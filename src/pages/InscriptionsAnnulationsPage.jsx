@@ -133,10 +133,10 @@ export function InscriptionsAnnulationsPage() {
     return (
         <>
             <Helmet>
-                <title>Participants - Former22</title>
+                <title> Annulations - Former22</title>
             </Helmet>
             <Grid
-                name="Participants"
+                name="Annulations"
                 /* TODO: decouple active filters from Grid? */
                 columnDefs={columnDefs}
                 rowData={rowData}
