@@ -52,6 +52,15 @@ export function InscriptionsPage() {
     const columnDefs = useMemo(
         () => [
             {
+                field: 'startDate',
+                headerName: 'Date de début',
+                filter: 'agDateColumnFilter',
+                headerTooltip: 'La date de début de la session',
+                sort: 'asc',
+                valueFormatter: ({ value }) => formatDate({ dateString: value, isDateVisible: true }),
+                type: 'numericColumn',
+            },
+            {
                 field: 'participant',
                 headerName: 'Participant',
                 filter: 'agSetColumnFilter',
@@ -69,6 +78,12 @@ export function InscriptionsPage() {
                 headerTooltip: "Le nom de la session dans laquelle l'utilisateur s'est inscrit",
                 rowGroup: true,
                 hide: true,
+                // TODO: sort ignoring accents
+                comparator: (valueA, valueB, nodeA, nodeB, isDescending) => {
+                    // if (valueA == valueB) return 0;
+                    // return (valueA > valueB) ? 1 : -1;
+                    return valueA?.localeCompare(valueB)
+                },
             },
             {
                 field: 'status',
@@ -116,15 +131,7 @@ export function InscriptionsPage() {
                         group: 'Groupe', // ?
                     }[type] ?? type),
             },
-            {
-                field: 'startDate',
-                headerName: 'Date de début',
-                filter: 'agDateColumnFilter',
-                headerTooltip: 'La date de début de la session',
-                sort: 'asc',
-                valueFormatter: ({ value }) => formatDate({ dateString: value, isDateVisible: true }),
-                type: 'numericColumn',
-            },
+
             {
                 field: 'quotaDays',
                 headerName: 'Jours de quota',

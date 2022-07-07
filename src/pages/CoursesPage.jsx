@@ -71,14 +71,14 @@ export function CoursesPage() {
         {
             field: 'coordinator',
             headerName: 'CF (coordinateur)',
-            filter: 'agTextColumnFilter',
+            filter: 'agSetColumnFilter',
             headerTooltip: 'Le coordinateur de la formation',
             width: 170,
         },
         {
             field: 'responsible',
             headerName: 'RF (responsable)',
-            filter: 'agTextColumnFilter',
+            filter: 'agSetColumnFilter',
             headerTooltip: 'Le responsable de la formation',
             width: 170,
         },

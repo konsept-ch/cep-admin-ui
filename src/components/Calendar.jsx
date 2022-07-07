@@ -64,7 +64,7 @@ export const Calendar = ({ resources, events, calendarRef, refreshCallback }) =>
                             </div>
                         ),
                         click: refreshCallback,
-                        hint: 'Rafraîchir',
+                        hint: 'Rafraîchir données de Claroline',
                     },
                 }}
                 headerToolbar={{
