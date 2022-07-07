@@ -5,6 +5,7 @@ import { ToastContainer } from 'react-toastify'
 import { Container } from 'react-bootstrap'
 
 import { InscriptionsPage } from './pages/InscriptionsPage'
+import { InscriptionsAnnulationsPage } from './pages/InscriptionsAnnulationsPage'
 import { SurveyPage } from './pages/SurveyPage'
 import { SessionsPage } from './pages/SessionsPage'
 import { CoursesPage } from './pages/CoursesPage'
@@ -35,6 +36,7 @@ import {
     PATH_INVOICE,
     PATH_INVOICE_DIRECT,
     PATH_INVOICE_GROUPED,
+    PATH_ANNULATIONS,
 } from './constants/constants'
 import { AuthWrapper } from './AuthWrapper'
 import { cookies } from './utils'
@@ -68,6 +70,11 @@ export function App() {
                                 exact
                                 path={`${PATH_INSCRIPTIONS}/${PATH_INSCRIPTIONS}`}
                                 element={<InscriptionsPage />}
+                            />
+                            <Route
+                                exact
+                                path={`${PATH_INSCRIPTIONS}/${PATH_INSCRIPTIONS}/${PATH_ANNULATIONS}`}
+                                element={<InscriptionsAnnulationsPage />}
                             />
                             <Route
                                 exact

@@ -16,6 +16,7 @@ import { organizationsApi } from './services/organizations'
 import { coursesApi } from './services/courses'
 import { sessionsApi } from './services/sessions'
 import { invoicesApi } from './services/invoices'
+import { inscriptionsApi } from './services/inscriptions'
 
 const sagaMiddleware = createSagaMiddleware()
 
@@ -35,6 +36,7 @@ export const store = configureStore({
         [coursesApi.reducerPath]: coursesApi.reducer,
         [sessionsApi.reducerPath]: sessionsApi.reducer,
         [invoicesApi.reducerPath]: invoicesApi.reducer,
+        [inscriptionsApi.reducerPath]: inscriptionsApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat([
@@ -45,6 +47,7 @@ export const store = configureStore({
             coursesApi.middleware,
             sessionsApi.middleware,
             invoicesApi.middleware,
+            inscriptionsApi.middleware,
         ]),
 })
 

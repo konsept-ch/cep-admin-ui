@@ -13,6 +13,7 @@ import {
     faUsers,
     faBook,
     faFileInvoiceDollar,
+    faBan,
 } from '@fortawesome/pro-light-svg-icons'
 import {
     PATH_AGENDA,
@@ -28,6 +29,7 @@ import {
     PATH_INVOICE,
     PATH_INVOICE_DIRECT,
     PATH_INVOICE_GROUPED,
+    PATH_ANNULATIONS,
 } from '../constants/constants'
 import { clearAllAuthCookies } from '../utils'
 
@@ -71,6 +73,12 @@ export const Navigation = ({ isLoggedIn }) => {
                                 onClick={goTo(`${PATH_INSCRIPTIONS}/${PATH_FORMATEURS}`)}
                             >
                                 <FontAwesomeIcon icon={faChalkboardTeacher} /> Formateurs
+                            </Nav.Link>
+                            <Nav.Link
+                                href={`/${PATH_INSCRIPTIONS}/${PATH_INSCRIPTIONS}/${PATH_ANNULATIONS}`}
+                                onClick={goTo(`${PATH_INSCRIPTIONS}/${PATH_INSCRIPTIONS}/${PATH_ANNULATIONS}`)}
+                            >
+                                <FontAwesomeIcon icon={faBan} /> Inscriptions annulations
                             </Nav.Link>
                         </NavDropdown>
                         <NavDropdown
