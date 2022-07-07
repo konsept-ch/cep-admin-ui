@@ -15,6 +15,9 @@ export const Event = ({ selectedEvent }) => (
         <dt>Capacité :</dt>
         <dd>{selectedEvent.extendedProps.room?.capacity}</dd>
 
+        <dt>Participants inscrits :</dt>
+        <dd>{selectedEvent.extendedProps.studentsCount}</dd>
+
         <dt>Temps</dt>
         <dd className="pl-3">
             <b>Début</b> :<br />
@@ -29,6 +32,24 @@ export const Event = ({ selectedEvent }) => (
             <b>Début</b> -{Intl.DateTimeFormat(DATE_FORMAT_SWISS_FRENCH, dateOptions).format(selectedEvent.range.start)}
             <br />
             <b>Fin</b> - {Intl.DateTimeFormat(DATE_FORMAT_SWISS_FRENCH, dateOptions).format(selectedEvent.range.end)}
+        </dd>
+
+        <dt>Formateurs :</dt>
+        <dd className="pl-3">
+            <ul>
+                {selectedEvent.extendedProps.teachers?.map((teacher, index) => (
+                    <li key={index}>{teacher}</li>
+                ))}
+            </ul>
+        </dd>
+
+        <dt>Séances :</dt>
+        <dd className="pl-3">
+            <ul>
+                {selectedEvent.extendedProps.seances?.map((seance, index) => (
+                    <li key={index}>{seance}</li>
+                ))}
+            </ul>
         </dd>
     </dl>
 )
