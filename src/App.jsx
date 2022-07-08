@@ -19,6 +19,7 @@ import { OrganizationsPage } from './pages/OrganizationsPage'
 import { UsersPage } from './pages/UsersPage'
 import { InvoicePage } from './pages/InvoicePage'
 import { InvoiceGroupedPage } from './pages/InvoiceGroupedPage'
+import { SeancesPage } from './pages/SeancesPage'
 import { Navigation } from './components'
 import { Footer } from './components/Footer'
 import {
@@ -37,6 +38,7 @@ import {
     PATH_INVOICE_DIRECT,
     PATH_INVOICE_GROUPED,
     PATH_ANNULATIONS,
+    PATH_SEANCES,
 } from './constants/constants'
 import { AuthWrapper } from './AuthWrapper'
 import { cookies } from './utils'
@@ -83,6 +85,7 @@ export function App() {
                             />
                             <Route exact path={`${PATH_CATALOGUE}/${PATH_FORMATIONS}`} element={<CoursesPage />} />
                             <Route exact path={`${PATH_CATALOGUE}/${PATH_SESSIONS}`} element={<SessionsPage />} />
+                            <Route exact path={`${PATH_CATALOGUE}/${PATH_SEANCES}`} element={<SeancesPage />} />
                             <Route exact path={PATH_TEMPLATES} element={<TemplatesPage />} />
                             <Route exact path={`${PATH_COMMUNITY}/${PATH_USERS}`} element={<UsersPage />} />
                             <Route exact path={`${PATH_INVOICE}/${PATH_INVOICE_DIRECT}`} element={<InvoicePage />} />

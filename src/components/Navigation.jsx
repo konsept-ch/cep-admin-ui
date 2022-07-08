@@ -30,6 +30,7 @@ import {
     PATH_INVOICE_DIRECT,
     PATH_INVOICE_GROUPED,
     PATH_ANNULATIONS,
+    PATH_SEANCES,
 } from '../constants/constants'
 import { clearAllAuthCookies } from '../utils'
 
@@ -100,6 +101,12 @@ export const Navigation = ({ isLoggedIn }) => {
                                 onClick={goTo(`${PATH_CATALOGUE}/${PATH_SESSIONS}`)}
                             >
                                 <FontAwesomeIcon icon={faPresentationScreen} /> Sessions
+                            </Nav.Link>
+                            <Nav.Link
+                                href={`/${PATH_CATALOGUE}/${PATH_SEANCES}`}
+                                onClick={goTo(`${PATH_CATALOGUE}/${PATH_SEANCES}`)}
+                            >
+                                <FontAwesomeIcon icon={faPresentationScreen} /> Séances
                             </Nav.Link>
                         </NavDropdown>
                         <Nav.Link href={`/${PATH_TEMPLATES}`} onClick={goTo(PATH_TEMPLATES)}>

@@ -19,6 +19,9 @@ export const sessionsApi = createApi({
         getSessions: builder.query({
             query: () => `sessions`,
         }),
+        getSeances: builder.query({
+            query: () => `seances`,
+        }),
         updateSession: builder.mutation({
             query: ({ sessionId, sessionName, startDate, ...rest }) => {
                 return {
@@ -31,4 +34,4 @@ export const sessionsApi = createApi({
     }),
 })
 
-export const { useGetSessionsQuery, useUpdateSessionMutation } = sessionsApi
+export const { useGetSessionsQuery, useUpdateSessionMutation, useGetSeancesQuery } = sessionsApi
