@@ -14,6 +14,7 @@ import {
     faBook,
     faFileInvoiceDollar,
     faBan,
+    faBookOpenCover,
 } from '@fortawesome/pro-light-svg-icons'
 import {
     PATH_AGENDA,
@@ -106,7 +107,7 @@ export const Navigation = ({ isLoggedIn }) => {
                                 href={`/${PATH_CATALOGUE}/${PATH_SEANCES}`}
                                 onClick={goTo(`${PATH_CATALOGUE}/${PATH_SEANCES}`)}
                             >
-                                <FontAwesomeIcon icon={faPresentationScreen} /> Séances
+                                <FontAwesomeIcon icon={faBookOpenCover} /> Séances
                             </Nav.Link>
                         </NavDropdown>
                         <Nav.Link href={`/${PATH_TEMPLATES}`} onClick={goTo(PATH_TEMPLATES)}>
