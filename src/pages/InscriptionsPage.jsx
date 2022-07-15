@@ -72,6 +72,41 @@ export function InscriptionsPage() {
             },
             { field: 'profession', headerName: 'Fonction/Profession' },
             {
+                field: 'coordinator',
+                headerName: 'CF (coordinateur)',
+                filter: 'agSetColumnFilter',
+                headerTooltip: 'Le coordinateur de la formation',
+                width: 170,
+                rowGroup: true,
+                hide: true,
+                // TODO: sort ignoring accents
+                comparator: (_valueA, _valueB, nodeA, nodeB) => {
+                    return nodeA.key?.localeCompare(nodeB.key)
+                },
+            },
+            {
+                field: 'startYear',
+                headerName: 'Année de début',
+                filter: 'agDateColumnFilter',
+                headerTooltip: "L'année de début de la session",
+                sort: 'asc',
+                type: 'numericColumn',
+                rowGroup: true,
+                hide: true,
+            },
+            {
+                field: 'courseName',
+                headerName: 'Formation',
+                filter: 'agTextColumnFilter',
+                headerTooltip: 'Le nom de la formation',
+                rowGroup: true,
+                hide: true,
+                // TODO: sort ignoring accents
+                comparator: (_valueA, _valueB, nodeA, nodeB) => {
+                    return nodeA.key?.localeCompare(nodeB.key)
+                },
+            },
+            {
                 field: 'sessionName',
                 headerName: 'Session',
                 filter: 'agTextColumnFilter',
@@ -79,10 +114,8 @@ export function InscriptionsPage() {
                 rowGroup: true,
                 hide: true,
                 // TODO: sort ignoring accents
-                comparator: (valueA, valueB, nodeA, nodeB, isDescending) => {
-                    // if (valueA == valueB) return 0;
-                    // return (valueA > valueB) ? 1 : -1;
-                    return valueA?.localeCompare(valueB)
+                comparator: (_valueA, _valueB, nodeA, nodeB) => {
+                    return nodeA.key?.localeCompare(nodeB.key)
                 },
             },
             {
@@ -153,7 +186,7 @@ export function InscriptionsPage() {
 
     const rowData = inscriptions
         .filter((current) => current != null)
-        .map(({ id, user, session, status, inscriptionDate, type }) => ({
+        .map(({ id, user, session, status, inscriptionDate, type, coordinator }) => ({
             id,
             participant: `${user.lastName} ${user.firstName}`,
             profession: user.profession,
@@ -168,6 +201,9 @@ export function InscriptionsPage() {
             hierarchy: user.hierarchy,
             organization: user.organization,
             email: user.email,
+            coordinator,
+            courseName: session.courseName,
+            startYear: session.startYear,
         }))
 
     return (
@@ -193,7 +229,8 @@ export function InscriptionsPage() {
                 defaultColDef={{
                     aggFunc: false,
                 }}
-                groupDefaultExpanded={0}
+                groupDefaultExpanded={1}
+                groupDisplayType="groupRows"
                 groupIncludeFooter={false}
                 getContextMenuItems={({ node: { data } }) => [
                     {
