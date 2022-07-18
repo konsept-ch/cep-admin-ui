@@ -99,6 +99,8 @@ export function InscriptionsPage() {
                 comparator: (_valueA, _valueB, nodeA, nodeB) => {
                     return nodeA.key?.localeCompare(nodeB.key)
                 },
+                valueGetter: ({ data }) =>
+                    `${data?.sessionName} [${formatDate({ dateString: data?.startDate, isDateVisible: true })}]`,
             },
             {
                 field: 'startDate',
