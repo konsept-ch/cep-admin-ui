@@ -49,6 +49,8 @@ export function InscriptionsPage() {
             return false
         })
 
+    const checkIsSingleUpdatePossible = ({ status }) => selectedRowsData.length <= 1 && !FINAL_STATUSES.includes(status)
+
     const columnDefs = useMemo(
         () => [
             {
@@ -243,7 +245,7 @@ export function InscriptionsPage() {
                             })
                         },
                     },
-                    {
+                    checkIsSingleUpdatePossible({ status: data.status }) && {
                         name: 'Modifier statut',
                         subMenu: inscriptionStatuses.map((current) => ({
                             name: current,
@@ -254,10 +256,10 @@ export function InscriptionsPage() {
                                     newStatus: current,
                                 })
                             },
+                            disabled: current === data.status,
                         })),
-                        disabled: selectedRowsData.length > 1 || FINAL_STATUSES.includes(data.status),
                     },
-                    {
+                    isMassUpdatePossible && {
                         name: 'Modifier statut en mass',
                         subMenu: inscriptionStatuses.map((current) => ({
                             name: current,
@@ -268,8 +270,8 @@ export function InscriptionsPage() {
                                     newStatus: current,
                                 })
                             },
+                            disabled: current === data.status,
                         })),
-                        disabled: !isMassUpdatePossible,
                     },
                     'separator',
                     ...gridContextMenu,
