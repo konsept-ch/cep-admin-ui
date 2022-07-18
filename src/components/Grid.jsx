@@ -147,6 +147,7 @@ export const Grid = ({
                         animateRows: true,
                         groupIncludeFooter: true,
                         groupSelectsChildren: true,
+                        groupRowsSticky: true,
                         suppressAggFuncInHeader: true,
                         rowSelection: 'multiple',
                         suppressRowClickSelection: true,
