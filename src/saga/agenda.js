@@ -8,7 +8,7 @@ import { setLoadingAction } from '../actions/loading'
 function* fetchAgendaSaga(action) {
     yield put(setLoadingAction({ loading: true }))
 
-    const roomsAndEvents = yield call(callService, { endpoint: 'roomsAndEvents', action })
+    const roomsAndEvents = yield call(callService, { endpoint: 'agenda', action })
 
     yield put(setAgendaAction({ roomsAndEvents }))
 
