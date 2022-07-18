@@ -50,6 +50,7 @@ export const STATUSES = {
     EN_ATTENTE: 'En attente',
     A_TRAITER_PAR_RH: 'À traiter par RH',
     REFUSEE_PAR_RH: 'Réfusée par RH',
+    VALIDE_PAR_RH: 'Validée par RH',
     ENTREE_WEB: 'Entrée Web',
     ACCEPTEE_PAR_CEP: 'Acceptée par CEP',
     REFUSEE_PAR_CEP: 'Refusée par CEP',
