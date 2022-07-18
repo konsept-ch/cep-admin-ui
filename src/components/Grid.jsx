@@ -33,6 +33,7 @@ export const Grid = ({
     isDataLoading,
     components,
     defaultColDef,
+    defaultSortModel,
     ...gridProps
 }) => {
     const [gridApi, setGridApi] = useState(null)
@@ -74,6 +75,14 @@ export const Grid = ({
             }
         }, 200)
     }, [activePredefinedFiltersById, name, rowData, gridApi])
+
+    const onGridReady = ({ api, columnApi }) => {
+        setGridApi(api)
+
+        if (defaultSortModel !== undefined) {
+            columnApi.applyColumnState({ state: defaultSortModel })
+        }
+    }
 
     return (
         <>
@@ -182,7 +191,7 @@ export const Grid = ({
                         getContextMenuItems: () => gridContextMenu,
                         getRowId: ({ data }) => data.id,
                         localeText,
-                        onGridReady: ({ api }) => setGridApi(api),
+                        onGridReady,
                         rowData,
                         ...gridProps,
                     }}

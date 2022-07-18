@@ -54,26 +54,6 @@ export function InscriptionsPage() {
     const columnDefs = useMemo(
         () => [
             {
-                field: 'startDate',
-                headerName: 'Date de début',
-                filter: 'agDateColumnFilter',
-                headerTooltip: 'La date de début de la session',
-                sort: 'asc',
-                valueFormatter: ({ value }) => formatDate({ dateString: value, isDateVisible: true }),
-                type: 'numericColumn',
-            },
-            {
-                field: 'participant',
-                headerName: 'Participant',
-                filter: 'agSetColumnFilter',
-                filterParams: { excelMode: 'windows' },
-                headerTooltip: "L'utilisateur qui est inscrit à la session",
-                checkboxSelection: true,
-                headerCheckboxSelection: true,
-                aggFunc: 'count',
-            },
-            { field: 'profession', headerName: 'Fonction/Profession' },
-            {
                 field: 'coordinator',
                 headerName: 'CF (coordinateur)',
                 filter: 'agSetColumnFilter',
@@ -120,6 +100,25 @@ export function InscriptionsPage() {
                     return nodeA.key?.localeCompare(nodeB.key)
                 },
             },
+            {
+                field: 'startDate',
+                headerName: 'Date de début',
+                filter: 'agDateColumnFilter',
+                headerTooltip: 'La date de début de la session',
+                valueFormatter: ({ value }) => formatDate({ dateString: value, isDateVisible: true }),
+                type: 'numericColumn',
+            },
+            {
+                field: 'participant',
+                headerName: 'Participant',
+                filter: 'agSetColumnFilter',
+                filterParams: { excelMode: 'windows' },
+                headerTooltip: "L'utilisateur qui est inscrit à la session",
+                checkboxSelection: true,
+                headerCheckboxSelection: true,
+                aggFunc: 'count',
+            },
+            { field: 'profession', headerName: 'Fonction/Profession' },
             {
                 field: 'status',
                 headerName: 'Statut',
@@ -231,6 +230,13 @@ export function InscriptionsPage() {
                 defaultColDef={{
                     aggFunc: false,
                 }}
+                defaultSortModel={[
+                    { colId: 'coordinator', sort: 'asc', sortIndex: 0 },
+                    { colId: 'startYear', sort: 'asc', sortIndex: 1 },
+                    { colId: 'courseName', sort: 'asc', sortIndex: 2 },
+                    { colId: 'sessionName', sort: 'asc', sortIndex: 3 },
+                    { colId: 'participant', sort: 'asc', sortIndex: 4 },
+                ]}
                 groupDefaultExpanded={1}
                 groupDisplayType="groupRows"
                 groupIncludeFooter={false}
