@@ -20,7 +20,7 @@ import classNames from 'classnames'
 
 import { localeText } from '../agGridLocaleText'
 import { gridLoadingSelector } from '../reducers'
-import { gridContextMenu } from '../utils'
+import { gridContextMenu, STATUSES } from '../utils'
 
 const Loader = () => <PuffLoader color="#e8ca01" loading size={100} />
 
@@ -67,7 +67,9 @@ export const Grid = ({
                 // set filter model and update
                 filterInstance.setModel({
                     filterType: 'set',
-                    values: activePredefinedFiltersById['onlyWebEntries'] ? ['Entrée Web'] : null,
+                    values: activePredefinedFiltersById['onlyWebEntries']
+                        ? [STATUSES.ENTREE_WEB, STATUSES.VALIDE_PAR_RH]
+                        : null,
                 })
 
                 // refresh rows based on the filter (not automatic to allow for batching multiple filters)
