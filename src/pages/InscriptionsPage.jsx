@@ -15,6 +15,7 @@ import {
     inscriptionsGridRowClassRules,
     gridContextMenu,
     FINAL_STATUSES,
+    STATUSES,
 } from '../utils'
 
 export function InscriptionsPage() {
@@ -28,7 +29,7 @@ export function InscriptionsPage() {
     const [activePredefinedFiltersById, setActivePredefinedFiltersById] = useState({ onlyWebEntries: true })
 
     const predefinedFilters = [
-        { id: 'onlyWebEntries', label: 'Entrées Web uniquement' },
+        { id: 'onlyWebEntries', label: [STATUSES.ENTREE_WEB, STATUSES.VALIDE_PAR_RH].join('; ') },
         // { id: 'filter2', label: 'Filter 2' },
     ]
 
