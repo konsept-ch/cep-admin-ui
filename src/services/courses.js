@@ -22,16 +22,14 @@ export const coursesApi = createApi({
             query: () => `courses`,
         }),
         updateCourse: builder.mutation({
-            query: ({ courseId, newData }) => {
-                return {
-                    url: `course/${courseId}`,
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: { newData },
-                }
-            },
+            query: ({ courseId, newData }) => ({
+                url: `course/${courseId}`,
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: { newData },
+            }),
         }),
     }),
 })
