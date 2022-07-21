@@ -18,6 +18,7 @@ export function EditUserModal({ refetchUsers, selectedUserData, closeModal, isMo
         if (selectedUserData != null) {
             reset({
                 shouldReceiveSms: Boolean(selectedUserData?.shouldReceiveSms),
+                colorCode: selectedUserData?.colorCode,
             })
         }
     }, [selectedUserData, reset])
@@ -51,6 +52,10 @@ export function EditUserModal({ refetchUsers, selectedUserData, closeModal, isMo
                         <h6>Modifier l'utilisateur</h6>
                         <Form.Switch label="Recevoir des SMS" {...register('shouldReceiveSms')} />
                     </Col>
+                    <Col>
+                        <Form.Label>Code couleur CF</Form.Label>
+                        <Form.Control {...register('colorCode')} />
+                    </Col>
                 </Row>
             }
             footer={
@@ -67,10 +72,10 @@ export function EditUserModal({ refetchUsers, selectedUserData, closeModal, isMo
                             <Button
                                 variant="primary"
                                 disabled={!isDirty}
-                                onClick={handleSubmit(async ({ shouldReceiveSms }) => {
+                                onClick={handleSubmit(async ({ shouldReceiveSms, colorCode }) => {
                                     const { error: mutationError } = await updateUser({
                                         id: selectedUserData.id,
-                                        body: { shouldReceiveSms },
+                                        body: { shouldReceiveSms, colorCode },
                                     })
                                     if (typeof mutationError === 'undefined') {
                                         closeUserEditModal()

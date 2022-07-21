@@ -81,6 +81,13 @@ export function UsersPage() {
             width: 115,
         },
         {
+            field: 'colorCode',
+            headerName: 'Code couleur CF',
+            filter: 'agTextColumnFilter',
+            headerTooltip: 'The color code of the user',
+            width: 150,
+        },
+        {
             field: 'telephone',
             tooltipField: 'telephone',
             headerName: 'Téléphone',
@@ -112,6 +119,7 @@ export function UsersPage() {
         email: user.email,
         mainOrganizationName: user.mainOrganizationName,
         shouldReceiveSms: user.shouldReceiveSms,
+        colorCode: user.colorCode,
         telephone: user.phone,
         phoneForSms: user.phoneForSms,
         roles: user.roles,
