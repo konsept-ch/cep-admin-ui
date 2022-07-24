@@ -2,6 +2,8 @@ import { useEffect, useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
 import { toast } from 'react-toastify'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCross } from '@fortawesome/pro-regular-svg-icons'
 
 import { Grid, StatusUpdateModal, MassStatusUpdateModal } from '../components'
 import {
@@ -271,11 +273,17 @@ export function InscriptionsPage() {
                             },
                             disabled: currentStatus === data.status || UNSELECTABLE_STATUSES.includes(currentStatus),
                             checked: currentStatus === data.status,
+                            icon:
+                                FINAL_STATUSES.includes(currentStatus) && !UNSELECTABLE_STATUSES.includes(currentStatus)
+                                    ? '!'
+                                    : '',
                             tooltip:
                                 currentStatus === data.status
                                     ? 'Statut actuel de la sélection'
                                     : UNSELECTABLE_STATUSES.includes(currentStatus)
                                     ? 'Statut dérivé (non sélectionnable)'
+                                    : FINAL_STATUSES.includes(currentStatus)
+                                    ? 'Statut final !'
                                     : '',
                         })),
                     },
