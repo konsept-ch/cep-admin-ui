@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
 import { toast } from 'react-toastify'
+
 import { Grid, StatusUpdateModal, MassStatusUpdateModal } from '../components'
 import {
     fetchInscriptionsAction,
@@ -16,6 +17,7 @@ import {
     gridContextMenu,
     FINAL_STATUSES,
     STATUSES,
+    UNSELECTABLE_STATUSES,
 } from '../utils'
 
 export function InscriptionsPage() {
@@ -254,32 +256,50 @@ export function InscriptionsPage() {
                             })
                         },
                     },
-                    checkIsSingleUpdatePossible({ status: data.status }) && {
+                    selectedRowsData.length <= 1 && {
                         name: 'Modifier statut',
-                        subMenu: inscriptionStatuses.map((current) => ({
-                            name: current,
+                        disabled: !checkIsSingleUpdatePossible({ status: data.status }),
+                        tooltip: FINAL_STATUSES.includes(data.status) ? 'Statut final (non modifiable)' : '',
+                        subMenu: inscriptionStatuses.map((currentStatus) => ({
+                            name: currentStatus,
                             action: () => {
                                 setIsUpdateModalVisible(true)
                                 setStatusUpdateData({
                                     ...inscriptions.find(({ id }) => id === data.id),
-                                    newStatus: current,
+                                    newStatus: currentStatus,
                                 })
                             },
-                            disabled: current === data.status,
+                            disabled: currentStatus === data.status || UNSELECTABLE_STATUSES.includes(currentStatus),
+                            checked: currentStatus === data.status,
+                            tooltip:
+                                currentStatus === data.status
+                                    ? 'Statut actuel de la sélection'
+                                    : UNSELECTABLE_STATUSES.includes(currentStatus)
+                                    ? 'Statut dérivé (non sélectionnable)'
+                                    : '',
                         })),
                     },
-                    isMassUpdatePossible && {
+                    selectedRowsData.length > 1 && {
                         name: 'Modifier statut en mass',
-                        subMenu: inscriptionStatuses.map((current) => ({
-                            name: current,
+                        disabled: !isMassUpdatePossible,
+                        tooltip: !isMassUpdatePossible ? 'Statut final (non modifiable)' : '',
+                        subMenu: inscriptionStatuses.map((currentStatus) => ({
+                            name: currentStatus,
                             action: () => {
                                 setIsMassUpdateModalVisible(true)
                                 setStatusMassUpdateData({
                                     status: data.status,
-                                    newStatus: current,
+                                    newStatus: currentStatus,
                                 })
                             },
-                            disabled: current === data.status,
+                            disabled: currentStatus === data.status || UNSELECTABLE_STATUSES.includes(currentStatus),
+                            checked: currentStatus === data.status,
+                            tooltip:
+                                currentStatus === data.status
+                                    ? 'Statut actuel de la sélection'
+                                    : UNSELECTABLE_STATUSES.includes(currentStatus)
+                                    ? 'Statut dérivé (non sélectionnable)'
+                                    : '',
                         })),
                     },
                     'separator',
