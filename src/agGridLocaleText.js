@@ -15,26 +15,31 @@ export const localeText = {
     searchOoo: 'Rechercher...',
     blanks: 'Vide',
 
-    // for number filter and text filter
+    // Number Filter & Text Filter
     filterOoo: 'Filtrer...',
     applyFilter: 'Appliquer...',
     cancelFilter: 'Annuler',
     equals: 'Egale',
     notEquals: 'Pas égal',
     notEqual: 'Pas égal',
+    blank: 'Vide',
+    notBlank: 'Pas vide',
+    empty: 'Choisissez',
 
     // for number filter
-    lessThan: 'moins que',
+    lessThan: 'Moins que',
     greaterThan: 'Plus que',
-    lessThanOrEqual: 'moins que ou égal',
+    lessThanOrEqual: 'Moins que ou égal',
     greaterThanOrEqual: 'Plus que ou égal',
-    inRange: 'dans la gamme',
+    inRange: 'Dans la gamme',
+    inRangeStart: 'De',
+    inRangeEnd: 'À',
 
     // for text filter
     contains: 'Contient',
     notContains: 'Ne contient pas',
-    startsWith: 'Commencer par',
-    endsWith: 'Términer par',
+    startsWith: 'Commence par',
+    endsWith: 'Términe par',
 
     // filter conditions
     andCondition: 'ET',
@@ -45,16 +50,16 @@ export const localeText = {
 
     // tool panel
     columns: 'Colonnes',
-    filters: 'Filtre',
+    filters: 'Filtres',
     rowGroupColumns: 'Colonnes Pivot',
-    rowGroupColumnsEmptyMessage: 'glissez des collonnes ici pour les grouper',
+    rowGroupColumnsEmptyMessage: 'glissez des colonnes ici pour les grouper',
     valueColumns: 'Colonnes de valeur',
     pivotMode: 'Mode Pivot',
     groups: 'Groupes',
     values: 'Valeurs',
     pivots: 'Pivots',
-    valueColumnsEmptyMessage: 'glissez des collonnes ici pour les agréger',
-    pivotColumnsEmptyMessage: 'glissez des collonnes ici pour les pivoter',
+    valueColumnsEmptyMessage: 'glissez des colonnes ici pour les agréger',
+    pivotColumnsEmptyMessage: 'glissez des colonnes ici pour les pivoter',
     toolPanelButton: "Ouvrir panneau d'outils",
 
     // other
@@ -68,13 +73,12 @@ export const localeText = {
     groupBy: 'Grouper par',
     ungroupBy: 'Dégrouper par',
     resetColumns: 'Réinitialiser les colonnes',
-    expandAll: 'Accroître groupes',
-    collapseAll: 'Écrouler groupes',
+    expandAll: 'Développer groupes',
+    collapseAll: 'Réduire groupes',
     toolPanel: "Panneau d'outils",
     export: 'Exporter',
-    csvExport: 'Sous forme (csv)',
-    excelExport: 'Sous forme (.xlsx)',
-    excelXmlExport: 'Sous forme (.xml)',
+    csvExport: 'CSV (.csv)',
+    excelExport: 'Excel (.xlsx)',
 
     // enterprise menu pinning
     pinLeft: '<< Épingle gauche',
@@ -95,7 +99,7 @@ export const localeText = {
 
     // standard menu
     copy: 'Copier',
-    copyWithHeaders: "Copier avec l'êntete",
+    copyWithHeaders: "Copier avec l'en-tête",
     ctrlC: 'Ctrl + C',
     paste: 'Coller',
     ctrlV: 'Ctrl + V',
