@@ -102,7 +102,7 @@
         display: flex;
         flex-flow: row wrap;
         align-items: flex-start;
-        margin: 0 var(--bs-gutter-x, -0.75rem);
+        margin: 0 -0.75rem;
 
         &:last-child {
             justify-content: end;
@@ -111,7 +111,7 @@
 
     .fc-button-group,
     .fc-today-button {
-        margin: 0 var(--bs-gutter-x, 0.75rem);
+        margin: 0 0.75rem;
     }
 
     .fc-toolbar-title {
@@ -128,7 +128,7 @@
 
     // stylelint-disable-next-line selector-max-compound-selectors -- overwriting library styles
     .fc-direction-ltr & > * > :not(:first-child) {
-        margin: 0 var(--bs-gutter-x, 0.75rem);
+        margin: 0 0.75rem;
     }
 }
 
