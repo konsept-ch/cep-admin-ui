@@ -103,15 +103,22 @@ export function InscriptionsPage() {
                     return nodeA.key?.localeCompare(nodeB.key)
                 },
                 valueGetter: ({ data }) =>
-                    `${data?.sessionName} [${formatDate({ dateString: data?.startDate, isDateVisible: true })}]`,
+                    `${data?.sessionName} [${
+                        data?.isPending
+                            ? data?.startDate
+                            : formatDate({ dateString: data?.startDate, isDateVisible: true })
+                    }]`,
             },
             {
                 field: 'startDate',
                 headerName: 'Date de début',
                 filter: 'agDateColumnFilter',
                 headerTooltip: 'La date de début de la session',
-                valueFormatter: ({ value }) => formatDate({ dateString: value, isDateVisible: true }),
                 type: 'numericColumn',
+                valueGetter: ({ data }) =>
+                    data?.isPending
+                        ? data?.startDate
+                        : formatDate({ dateString: data?.startDate, isDateVisible: true }),
             },
             {
                 field: 'participant',
@@ -192,7 +199,7 @@ export function InscriptionsPage() {
 
     const rowData = inscriptions
         .filter((current) => current != null)
-        .map(({ id, user, session, status, inscriptionDate, type, coordinator }) => ({
+        .map(({ id, user, session, status, inscriptionDate, type, coordinator, isPending }) => ({
             id,
             participant: `${user.lastName} ${user.firstName}`,
             profession: user.profession,
@@ -210,6 +217,7 @@ export function InscriptionsPage() {
             coordinator,
             courseName: session.courseName,
             startYear: session.startYear,
+            isPending,
         }))
 
     return (
