@@ -1,4 +1,4 @@
-// import { StrictMode } from 'react'
+import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
@@ -14,15 +14,15 @@ const container = document.getElementById('root')
 const root = createRoot(container) // createRoot(container!) if you use TypeScript
 
 root.render(
-    // <StrictMode>
-    <Provider store={store}>
-        <BrowserRouter basename={process.env.PUBLIC_URL}>
-            <Routes>
-                <Route path="*" element={<App />} />
-            </Routes>
-        </BrowserRouter>
-    </Provider>
-    // </StrictMode>
+    <StrictMode>
+        <Provider store={store}>
+            <BrowserRouter basename={process.env.PUBLIC_URL}>
+                <Routes>
+                    <Route path="*" element={<App />} />
+                </Routes>
+            </BrowserRouter>
+        </Provider>
+    </StrictMode>
 )
 
 // If you want your app to work offline and load faster, you can
