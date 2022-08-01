@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Button, Spinner, Row, Form, Col, OverlayTrigger, Tooltip, InputGroup } from 'react-bootstrap'
 import { useForm, Controller } from 'react-hook-form'
 import { toast } from 'react-toastify'
@@ -9,11 +9,10 @@ import { CommonModal } from '../components'
 import { useUpdateCourseMutation } from '../services/courses'
 import { formatToFlatObject, formatDate } from '../utils'
 
-export function EditCourseModal({ refetchCourses, selectedCourseData, adminsData }) {
+export function EditCourseModal({ refetchCourses, selectedCourseData, setSelectedCourseData, admins }) {
     const {
         register,
         handleSubmit,
-        setValue,
         watch,
         reset,
         control,
@@ -23,32 +22,42 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, adminsData
 
     const watchIsRecurrent = watch('isRecurrent')
 
-    const typeStageValues = [
-        { value: 'attestation', label: 'Attestation' },
-        { value: 'certificat', label: 'Certificat' },
-        { value: 'autre', label: 'Autre' },
-    ]
+    const typeStageValues = useMemo(
+        () => [
+            { value: 'attestation', label: 'Attestation' },
+            { value: 'certificat', label: 'Certificat' },
+            { value: 'autre', label: 'Autre' },
+        ],
+        []
+    )
 
-    const teachingMethodValues = [
-        { value: 'présentiel', label: 'Présentiel' },
-        { value: 'distanciel', label: 'Distanciel' },
-        { value: 'e-learning', label: 'E-learning' },
-        { value: 'mixte/blended', label: 'Mixte/Blended' },
-    ]
+    const teachingMethodValues = useMemo(
+        () => [
+            { value: 'présentiel', label: 'Présentiel' },
+            { value: 'distanciel', label: 'Distanciel' },
+            { value: 'e-learning', label: 'E-learning' },
+            { value: 'mixte/blended', label: 'Mixte/Blended' },
+        ],
+        []
+    )
 
-    const codeCategoryValues = [
-        { value: 'catalogue', label: 'Catalogue' },
-        { value: 'fsm', label: 'FSM' },
-        { value: 'ps', label: 'PS' },
-        { value: 'cie', label: 'CIE' },
-        { value: 'cas', label: 'CAS' },
-    ]
+    const codeCategoryValues = useMemo(
+        () => [
+            { value: 'catalogue', label: 'Catalogue' },
+            { value: 'fsm', label: 'FSM' },
+            { value: 'ps', label: 'PS' },
+            { value: 'cie', label: 'CIE' },
+            { value: 'cas', label: 'CAS' },
+        ],
+        []
+    )
 
     useEffect(() => {
         if (selectedCourseData != null) {
+            console.log('selectedCourseData?.theme', selectedCourseData?.theme)
             reset({
-                coordinator: adminsData.find(({ label }) => label === selectedCourseData.coordinator),
-                responsible: adminsData.find(({ label }) => label === selectedCourseData.responsible),
+                coordinator: admins.find(({ label }) => label === selectedCourseData.coordinator),
+                responsible: admins.find(({ label }) => label === selectedCourseData.responsible),
                 typeStage: typeStageValues.find(({ label }) => label === selectedCourseData.typeStage),
                 teachingMethod: teachingMethodValues.find(({ label }) => label === selectedCourseData.teachingMethod),
                 codeCategory: codeCategoryValues.find(({ label }) => label === selectedCourseData.codeCategory),
@@ -61,11 +70,12 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, adminsData
             })
             setIsModalVisible(true)
         }
-    }, [selectedCourseData, setValue, reset])
+    }, [selectedCourseData, reset, admins, typeStageValues, teachingMethodValues, codeCategoryValues])
 
     const [updateCourse, { isLoading: isCourseUpdating }] = useUpdateCourseMutation()
 
     const closeCourseEditModal = () => {
+        setSelectedCourseData(null)
         setIsModalVisible(false)
         refetchCourses()
     }
@@ -110,7 +120,7 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, adminsData
                                 <Controller
                                     name="coordinator"
                                     control={control}
-                                    render={({ field }) => <CreatableSelect {...field} options={adminsData} />}
+                                    render={({ field }) => <CreatableSelect {...field} options={admins} />}
                                 />
                             </Col>
                             <Col>
@@ -118,7 +128,7 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, adminsData
                                 <Controller
                                     name="responsible"
                                     control={control}
-                                    render={({ field }) => <CreatableSelect {...field} options={adminsData} />}
+                                    render={({ field }) => <CreatableSelect {...field} options={admins} />}
                                 />
                             </Col>
                         </Row>

@@ -1,6 +1,9 @@
 import { useState, useMemo } from 'react'
+import { Button } from 'react-bootstrap'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPen } from '@fortawesome/pro-light-svg-icons'
 
-import { Grid, CourseDetailsModal, EditBtnCellRenderer, EditCourseModal } from '../components'
+import { Grid, CourseDetailsModal, /* EditBtnCellRenderer, */ EditCourseModal } from '../components'
 import { formatDate } from '../utils'
 import { Helmet } from 'react-helmet-async'
 import { useGetAdminsQuery } from '../services/users'
@@ -17,7 +20,10 @@ export function CoursesPage() {
 
     const { data: adminsData /* error, isLoading */ } = useGetAdminsQuery(null, { refetchOnMountOrArgChange: true })
 
-    const admins = adminsData?.map((admin) => ({ value: admin.id, label: `${admin.first_name} ${admin.last_name}` }))
+    const admins = useMemo(
+        () => adminsData?.map((admin) => ({ value: admin.id, label: `${admin.first_name} ${admin.last_name}` })),
+        [adminsData]
+    )
 
     const openCourseEditModal = ({ data }) => {
         // workaround - passes a new object to trigger reopen when the same row is clicked
@@ -28,13 +34,23 @@ export function CoursesPage() {
         {
             field: 'edit',
             headerName: '',
-            cellRenderer: 'btnCellRenderer',
+            cellRenderer: ({ data }) => (
+                <Button
+                    variant="primary"
+                    onClick={() => openCourseEditModal({ data })}
+                    size="sm"
+                    className="edit-button-style"
+                >
+                    <FontAwesomeIcon icon={faPen} />
+                </Button>
+            ),
             headerTooltip: 'Modifier la formation',
             cellClass: 'edit-column',
             pinned: 'left',
             maxWidth: 60,
             filter: false,
             sortable: false,
+            valueGetter: ({ data }) => data,
         },
         {
             field: 'name',
@@ -226,14 +242,15 @@ export function CoursesPage() {
             <EditCourseModal
                 refetchCourses={refetchCourses}
                 selectedCourseData={selectedCourseData}
-                adminsData={admins}
+                setSelectedCourseData={setSelectedCourseData}
+                admins={admins}
             />
             <Grid
                 {...{
                     name: 'Formations',
                     columnDefs,
                     rowData,
-                    components: { btnCellRenderer: EditBtnCellRenderer({ onClick: openCourseEditModal }) },
+                    // components: { btnCellRenderer: EditBtnCellRenderer({ onClick: openCourseEditModal }) },
                     isDataLoading: isFetching,
                 }}
             />

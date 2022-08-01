@@ -3,7 +3,6 @@ import { Modal, Button, Form, FloatingLabel, Row, Col } from 'react-bootstrap'
 import { v4 as uuidv4 } from 'uuid'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUp, faDown } from '@fortawesome/pro-solid-svg-icons'
-import { MIDDLEWARE_URL } from '../constants/config'
 import { mapClassNameToEventType, mapEventTypeToClassName, callApi } from '../utils'
 import { splitComment } from '../constants/constants'
 // import { RichEditor } from './RichEditor'
@@ -296,6 +295,7 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData = {}, onAfter
                                 successCallback: () => toast.success('Succès !'),
                             })
 
+                            // eslint-disable-next-line no-console
                             console.log(savedCourseResponse)
                         }
 

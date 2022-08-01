@@ -38,6 +38,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
         } else {
             clearAllAuthCookies()
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {
@@ -53,6 +54,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                 toast.success('Déconnexion OK')
             }
         })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const onSendCodeButtonClick = (event) => {
