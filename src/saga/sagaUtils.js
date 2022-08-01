@@ -4,7 +4,7 @@ import { toast } from 'react-toastify'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRotateRight } from '@fortawesome/pro-regular-svg-icons'
 import { MIDDLEWARE_URL } from '../constants/config'
-import { cookies, formatDate } from '../utils'
+import { cookies } from '../utils'
 
 export function* callService({ endpoint, action, successCallback = () => {}, options = {} }) {
     try {

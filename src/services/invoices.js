@@ -1,48 +1,36 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { createApi } from '@reduxjs/toolkit/query/react'
 
-import { cookies } from '../utils'
-import { MIDDLEWARE_URL } from '../constants/config'
+import { prepareBaseQuery } from './serviceUtils'
 
 export const invoicesApi = createApi({
     reducerPath: 'invoicesApi',
-    baseQuery: fetchBaseQuery({
-        baseUrl: MIDDLEWARE_URL,
-        prepareHeaders: (headers) => {
-            headers.set('Access-Control-Allow-Origin', '*')
-            headers.set('x-login-email-address', cookies.get('email'))
-            headers.set('x-login-email-code', cookies.get('code'))
-            headers.set('x-login-token', cookies.get('token'))
-            return headers
-        },
-    }),
+    baseQuery: prepareBaseQuery({ servicePath: 'invoices' }),
     endpoints: (builder) => ({
         getInvoices: builder.query({
-            query: () => `invoices`,
+            query: () => '',
         }),
         updateInvoice: builder.mutation({
             query: ({ id, body }) => ({
-                url: `invoice/${id}`,
+                url: id,
                 method: 'PUT',
                 body,
             }),
         }),
         removeInvoice: builder.mutation({
             query: ({ id }) => ({
-                url: `invoice/${id}`,
+                url: id,
                 method: 'DELETE',
             }),
         }),
         createGroupedBiannualInvoices: builder.mutation({
             query: () => ({
-                url: `invoice/biannual`,
+                url: 'biannual',
                 method: 'POST',
             }),
         }),
     }),
 })
 
-// Export hooks for usage in functional components, which are
-// auto-generated based on the defined endpoints
 export const {
     useGetInvoicesQuery,
     useUpdateInvoiceMutation,

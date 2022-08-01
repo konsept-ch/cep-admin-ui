@@ -4,11 +4,8 @@ import { Helmet } from 'react-helmet-async'
 import { toast } from 'react-toastify'
 
 import { Grid, CommonModal, EditBtnCellRenderer, EditOrganizationModal } from '../components'
-import {
-    useGetOrganizationsQuery,
-    useAddOrganizationsMutation,
-    useRemoveOrganizationsMutation,
-} from '../services/organizations'
+import { useGetOrganizationsQuery } from '../services/organizations'
+import { useAddOrganizationsMutation, useRemoveOrganizationsMutation } from '../services/courses'
 
 export function OrganizationsPage() {
     const [isOrganizationModalOpen, setIsOrganizationModalOpen] = useState(false)

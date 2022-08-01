@@ -1,39 +1,39 @@
-// Need to use the React-specific entry point to import createApi
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { createApi } from '@reduxjs/toolkit/query/react'
 
-import { cookies } from '../utils'
-import { MIDDLEWARE_URL } from '../constants/config'
+import { prepareBaseQuery } from './serviceUtils'
 
-// Define a service using a base URL and expected endpoints
 export const coursesApi = createApi({
     reducerPath: 'coursesApi',
-    baseQuery: fetchBaseQuery({
-        baseUrl: MIDDLEWARE_URL,
-        prepareHeaders: (headers) => {
-            headers.set('Access-Control-Allow-Origin', '*')
-            headers.set('x-login-email-address', cookies.get('email'))
-            headers.set('x-login-email-code', cookies.get('code'))
-            headers.set('x-login-token', cookies.get('token'))
-            return headers
-        },
-    }),
+    baseQuery: prepareBaseQuery({ servicePath: 'courses' }),
     endpoints: (builder) => ({
         getCourses: builder.query({
-            query: () => `courses`,
+            query: () => '',
         }),
         updateCourse: builder.mutation({
             query: ({ courseId, newData }) => ({
-                url: `course/${courseId}`,
+                url: courseId,
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
                 body: { newData },
+            }),
+        }),
+        addOrganizations: builder.mutation({
+            query: () => ({
+                url: 'addOrganizations',
+                method: 'PUT',
+            }),
+        }),
+        removeOrganizations: builder.mutation({
+            query: () => ({
+                url: 'removeOrganizations',
+                method: 'PUT',
             }),
         }),
     }),
 })
 
-// Export hooks for usage in functional components, which are
-// auto-generated based on the defined endpoints
-export const { useGetCoursesQuery, useUpdateCourseMutation } = coursesApi
+export const {
+    useGetCoursesQuery,
+    useUpdateCourseMutation,
+    useAddOrganizationsMutation,
+    useRemoveOrganizationsMutation,
+} = coursesApi

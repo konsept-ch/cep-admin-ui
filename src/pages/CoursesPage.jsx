@@ -3,7 +3,7 @@ import { useState, useMemo } from 'react'
 import { Grid, CourseDetailsModal, EditBtnCellRenderer, EditCourseModal } from '../components'
 import { formatDate } from '../utils'
 import { Helmet } from 'react-helmet-async'
-import { useGetAdminsQuery } from '../services/admins'
+import { useGetAdminsQuery } from '../services/users'
 import { useGetCoursesQuery } from '../services/courses'
 
 export function CoursesPage() {
@@ -15,7 +15,7 @@ export function CoursesPage() {
         refetch: refetchCourses,
     } = useGetCoursesQuery(null, { refetchOnMountOrArgChange: true })
 
-    const { data: adminsData, error, isLoading } = useGetAdminsQuery(null, { refetchOnMountOrArgChange: true })
+    const { data: adminsData /* error, isLoading */ } = useGetAdminsQuery(null, { refetchOnMountOrArgChange: true })
 
     const admins = adminsData?.map((admin) => ({ value: admin.id, label: `${admin.first_name} ${admin.last_name}` }))
 
