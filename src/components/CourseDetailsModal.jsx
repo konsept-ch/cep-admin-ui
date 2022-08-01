@@ -220,7 +220,7 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData = {}, onAfter
                 <Button
                     variant="primary"
                     onClick={async () => {
-                        const courseData = await callApi({ path: `courseBySlug/${courseDetailsData.slug}` })
+                        const courseData = await callApi({ path: `courses/by-slug/${courseDetailsData.slug}` })
 
                         if (courseData.description !== courseDetailsData.description) {
                             toast.error(
@@ -286,7 +286,7 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData = {}, onAfter
                             </div>`
 
                             const savedCourseResponse = await callApi({
-                                path: `saveCourseById/${courseDetailsData.id}`,
+                                path: `courses/save-by-id/${courseDetailsData.id}`,
                                 method: 'put',
                                 headers: { 'content-type': 'application/json' },
                                 body: JSON.stringify({
