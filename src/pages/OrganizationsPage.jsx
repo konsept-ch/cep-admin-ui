@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet-async'
 import { toast } from 'react-toastify'
 
 import { Grid, CommonModal, EditBtnCellRenderer, EditOrganizationModal } from '../components'
-import { useGetOrganizationsQuery } from '../services/organizations'
+import { useGetOrganizationsHierarchyQuery } from '../services/organizations'
 import { useAddOrganizationsMutation, useRemoveOrganizationsMutation } from '../services/courses'
 
 export function OrganizationsPage() {
@@ -17,7 +17,7 @@ export function OrganizationsPage() {
         data: organizations,
         isFetching,
         refetch: refetchOrganizations,
-    } = useGetOrganizationsQuery(null, { refetchOnMountOrArgChange: true })
+    } = useGetOrganizationsHierarchyQuery(null, { refetchOnMountOrArgChange: true })
     const [addOrganizations, { isLoading: isAddingOrganizations }] = useAddOrganizationsMutation()
     const [removeOrganizations, { isLoading: isRemovingOrganizations }] = useRemoveOrganizationsMutation()
 

@@ -19,6 +19,7 @@ export const PATH_USERS = 'users'
 export const PATH_INVOICE = 'factures'
 export const PATH_INVOICE_DIRECT = 'direct'
 export const PATH_INVOICE_GROUPED = 'grouped'
+export const PATH_INVOICE_MANUAL = 'manual'
 export const PATH_ANNULATIONS = 'annulations'
 export const PATH_SEANCES = 'seances'
 

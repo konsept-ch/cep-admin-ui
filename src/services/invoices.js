@@ -9,6 +9,9 @@ export const invoicesApi = createApi({
         getInvoices: builder.query({
             query: () => '',
         }),
+        getManualInvoices: builder.query({
+            query: () => 'manual',
+        }),
         updateInvoice: builder.mutation({
             query: ({ id, body }) => ({
                 url: id,
@@ -16,9 +19,22 @@ export const invoicesApi = createApi({
                 body,
             }),
         }),
+        updateManualInvoice: builder.mutation({
+            query: ({ id, body }) => ({
+                url: `manual/${id}`,
+                method: 'PUT',
+                body,
+            }),
+        }),
         removeInvoice: builder.mutation({
             query: ({ id }) => ({
                 url: id,
+                method: 'DELETE',
+            }),
+        }),
+        removeManualInvoice: builder.mutation({
+            query: ({ id }) => ({
+                url: `manual/${id}`,
                 method: 'DELETE',
             }),
         }),
@@ -33,7 +49,10 @@ export const invoicesApi = createApi({
 
 export const {
     useGetInvoicesQuery,
+    useGetManualInvoicesQuery,
     useUpdateInvoiceMutation,
+    useUpdateManualInvoiceMutation,
     useRemoveInvoiceMutation,
+    useRemoveManualInvoiceMutation,
     useCreateGroupedBiannualInvoicesMutation,
 } = invoicesApi

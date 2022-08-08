@@ -15,6 +15,8 @@ import {
     faFileInvoiceDollar,
     faBan,
     faBookOpenCover,
+    faObjectGroup,
+    faHandHoldingDollar,
 } from '@fortawesome/pro-light-svg-icons'
 import {
     PATH_AGENDA,
@@ -30,6 +32,7 @@ import {
     PATH_INVOICE,
     PATH_INVOICE_DIRECT,
     PATH_INVOICE_GROUPED,
+    PATH_INVOICE_MANUAL,
     PATH_ANNULATIONS,
     PATH_SEANCES,
 } from '../constants/constants'
@@ -131,7 +134,13 @@ export const Navigation = ({ isLoggedIn }) => {
                                 href={`/${PATH_INVOICE}/${PATH_INVOICE_GROUPED}`}
                                 onClick={goTo(`${PATH_INVOICE}/${PATH_INVOICE_GROUPED}`)}
                             >
-                                <FontAwesomeIcon icon={faFileInvoiceDollar} /> Factures groupées
+                                <FontAwesomeIcon icon={faObjectGroup} /> Factures groupées
+                            </Nav.Link>
+                            <Nav.Link
+                                href={`/${PATH_INVOICE}/${PATH_INVOICE_MANUAL}`}
+                                onClick={goTo(`${PATH_INVOICE}/${PATH_INVOICE_MANUAL}`)}
+                            >
+                                <FontAwesomeIcon icon={faHandHoldingDollar} /> Factures manuelles
                             </Nav.Link>
                         </NavDropdown>
                         <NavDropdown

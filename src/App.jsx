@@ -19,6 +19,7 @@ import { OrganizationsPage } from './pages/OrganizationsPage'
 import { UsersPage } from './pages/UsersPage'
 import { InvoicePage } from './pages/InvoicePage'
 import { InvoiceGroupedPage } from './pages/InvoiceGroupedPage'
+import { ManualInvoicesPage } from './pages/ManualInvoicesPage'
 import { SeancesPage } from './pages/SeancesPage'
 import { Navigation } from './components'
 import { Footer } from './components/Footer'
@@ -37,6 +38,7 @@ import {
     PATH_INVOICE,
     PATH_INVOICE_DIRECT,
     PATH_INVOICE_GROUPED,
+    PATH_INVOICE_MANUAL,
     PATH_ANNULATIONS,
     PATH_SEANCES,
 } from './constants/constants'
@@ -93,6 +95,11 @@ export function App() {
                                 exact
                                 path={`${PATH_INVOICE}/${PATH_INVOICE_GROUPED}`}
                                 element={<InvoiceGroupedPage />}
+                            />
+                            <Route
+                                exact
+                                path={`${PATH_INVOICE}/${PATH_INVOICE_MANUAL}`}
+                                element={<ManualInvoicesPage />}
                             />
                             <Route
                                 exact
