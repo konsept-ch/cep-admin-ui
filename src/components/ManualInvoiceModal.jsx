@@ -127,25 +127,42 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                             </Col>
                         </Row>
                         <h6>Articles</h6>
+                        <Row>
+                            <Col>
+                                <Form.Label>Designation</Form.Label>
+                            </Col>
+                            <Col>
+                                <Form.Label>Unité</Form.Label>
+                            </Col>
+                            <Col>
+                                <Form.Label>Nombre</Form.Label>
+                            </Col>
+                            <Col>
+                                <Form.Label>Prix</Form.Label>
+                            </Col>
+                        </Row>
                         {selectedInvoiceData?.items?.map(({ designation, unit, amount, price }, index) => (
-                            <Row key={index}>
-                                <Col>
-                                    <Form.Label>Designation</Form.Label>
-                                    <Form.Control {...register(`items.${index}.designation`)} />
-                                </Col>
-                                <Col>
-                                    <Form.Label>Unité</Form.Label>
-                                    <Form.Control {...register(`items.${index}.unit`)} />
-                                </Col>
-                                <Col>
-                                    <Form.Label>Nombre</Form.Label>
-                                    <Form.Control {...register(`items.${index}.amount`)} />
-                                </Col>
-                                <Col>
-                                    <Form.Label>Prix</Form.Label>
-                                    <Form.Control {...register(`items.${index}.price`)} />
-                                </Col>
-                            </Row>
+                            <>
+                                <Row key={index}>
+                                    <Col>
+                                        <Form.Control
+                                            as="textarea"
+                                            rows="4"
+                                            {...register(`items.${index}.designation`)}
+                                        />
+                                    </Col>
+                                    <Col>
+                                        <Form.Control {...register(`items.${index}.unit`)} />
+                                    </Col>
+                                    <Col>
+                                        <Form.Control {...register(`items.${index}.amount`)} />
+                                    </Col>
+                                    <Col>
+                                        <Form.Control {...register(`items.${index}.price`)} />
+                                    </Col>
+                                </Row>
+                                <hr />
+                            </>
                         ))}
                         <h6>Autres</h6>
                         <Row>
