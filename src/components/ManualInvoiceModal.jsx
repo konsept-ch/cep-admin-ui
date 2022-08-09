@@ -14,6 +14,12 @@ const getInvoiceNumber = ({ courseYear, userCode, invoiceNumberForCurrentYear })
 
 const defaultEmptyItem = { designation: '', unit: '', amount: 0, price: 0 }
 
+const tvaOptions = [
+    { value: '0', label: 'EXONERE' },
+    { value: '7.7', label: 'TVA 7.7%' },
+]
+const defaultTvaOption = tvaOptions[1]
+
 export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, closeModal, isModalOpen }) {
     const {
         control,
@@ -198,7 +204,7 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                             <Col />
                             <Col>
                                 <Form.Label>TVA</Form.Label>
-                                <Form.Control {...register('vatCode')} />
+                                <Select options={tvaOptions} defaultValue={defaultTvaOption} />
                             </Col>
                         </Row>
                     </>
