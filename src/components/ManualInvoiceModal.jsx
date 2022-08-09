@@ -20,6 +20,8 @@ const tvaOptions = [
 ]
 const defaultTvaOption = tvaOptions[1]
 
+const currentYear = new Date().getFullYear()
+
 export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, closeModal, isModalOpen }) {
     const {
         control,
@@ -82,6 +84,11 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
 
     const isEditModal = selectedInvoiceData !== undefined
 
+    const invoiceCourseYear = {
+        value: selectedInvoiceData?.courseYear,
+        label: selectedInvoiceData?.courseYear,
+    }
+
     return (
         <>
             <CommonModal
@@ -107,7 +114,7 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                                 <Form.Label>Adresse postale</Form.Label>
                                 <Form.Control as="textarea" {...register('customClientAddress')} />
                                 <Form.Label>E-mail</Form.Label>
-                                <Form.Control {...register('customClientEmail')} />
+                                <Form.Control {...register('customClientEmail')} type="email" />
                             </Col>
                         </Row>
                         <Row>
@@ -120,7 +127,15 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                         <Row>
                             <Col>
                                 <Form.Label>Année formation</Form.Label>
-                                <Form.Control {...register('courseYear')} />
+                                <Select
+                                    options={[
+                                        invoiceCourseYear,
+                                        { value: currentYear - 1, label: currentYear - 1 },
+                                        { value: currentYear, label: currentYear },
+                                        { value: currentYear + 1, label: currentYear + 1 },
+                                    ]}
+                                    defaultValue={invoiceCourseYear}
+                                />
                                 <Form.Label>Numéro facture: </Form.Label>
 
                                 {getInvoiceNumber({
@@ -178,13 +193,19 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                                         />
                                     </Col>
                                     <Col>
-                                        <Form.Control {...register(`items.${index}.unit`)} />
+                                        <Select
+                                            options={[
+                                                { value: 'jours', label: 'jours' },
+                                                { value: 'heures', label: 'heures' },
+                                            ]}
+                                            defaultValue={{ value: '', label: '' }}
+                                        />
                                     </Col>
                                     <Col>
-                                        <Form.Control {...register(`items.${index}.amount`)} />
+                                        <Form.Control {...register(`items.${index}.amount`)} type="number" />
                                     </Col>
                                     <Col>
-                                        <Form.Control {...register(`items.${index}.price`)} />
+                                        <Form.Control {...register(`items.${index}.price`)} type="number" />
                                     </Col>
                                 </Row>
                                 <hr />
