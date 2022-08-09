@@ -12,6 +12,8 @@ import { formatToFlatObject } from '../utils'
 const getInvoiceNumber = ({ courseYear, userCode, invoiceNumberForCurrentYear }) =>
     ` ${`${courseYear}`?.slice(-2)}${`${userCode}`?.padStart(2, 0)}${`${invoiceNumberForCurrentYear}`?.padStart(4, 0)}`
 
+const defaultEmptyItem = { designation: '', unit: '', amount: 0, price: 0 }
+
 export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, closeModal, isModalOpen }) {
     const {
         control,
@@ -22,7 +24,7 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
         watch,
     } = useForm()
 
-    const { fields } = useFieldArray({ control, name: 'items' })
+    const { fields, append, remove } = useFieldArray({ control, name: 'items' })
 
     const courseYearWatched = watch('courseYear')
 
@@ -54,7 +56,7 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                 courseYear: '',
                 invoiceDate: '',
                 vatCode: '',
-                items: [],
+                items: [defaultEmptyItem],
             })
         }
     }, [selectedInvoiceData])
@@ -128,22 +130,40 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                         </Row>
                         <h6>Articles</h6>
                         <Row>
-                            <Col>
-                                <Form.Label>Designation</Form.Label>
+                            <Col xs={1}>
+                                <Form.Label>
+                                    <strong>Actions</strong>
+                                </Form.Label>
                             </Col>
                             <Col>
-                                <Form.Label>Unité</Form.Label>
+                                <Form.Label>
+                                    <strong>Designation</strong>
+                                </Form.Label>
                             </Col>
                             <Col>
-                                <Form.Label>Nombre</Form.Label>
+                                <Form.Label>
+                                    <strong>Unité</strong>
+                                </Form.Label>
                             </Col>
                             <Col>
-                                <Form.Label>Prix</Form.Label>
+                                <Form.Label>
+                                    <strong>Nombre</strong>
+                                </Form.Label>
+                            </Col>
+                            <Col>
+                                <Form.Label>
+                                    <strong>Prix</strong>
+                                </Form.Label>
                             </Col>
                         </Row>
-                        {selectedInvoiceData?.items?.map(({ designation, unit, amount, price }, index) => (
+                        {fields.map(({ id }, index) => (
                             <>
-                                <Row key={index}>
+                                <Row key={id}>
+                                    <Col xs={1}>
+                                        <Button variant="danger" onClick={() => remove(index)}>
+                                            Supprimer
+                                        </Button>
+                                    </Col>
                                     <Col>
                                         <Form.Control
                                             as="textarea"
@@ -164,6 +184,15 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                                 <hr />
                             </>
                         ))}
+
+                        <Row>
+                            <Col xs={1} />
+                            <Col>
+                                <Button variant="success" onClick={() => append(defaultEmptyItem)}>
+                                    Ajouter
+                                </Button>
+                            </Col>
+                        </Row>
                         <h6>Autres</h6>
                         <Row>
                             <Col />
