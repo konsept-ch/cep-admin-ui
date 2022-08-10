@@ -1,43 +1,46 @@
 import { DATE_FORMAT_SWISS_FRENCH } from '../constants/constants'
 import { dateOptions } from '../utils'
 
-export const Event = ({ selectedEvent }) => (
+export const Event = ({
+    selectedEvent: {
+        extendedProps: { description, room, studentsCount, teachers, seances, creator },
+        range,
+    },
+}) => (
     <dl>
         <dt>Description :</dt>
-        <dd>{selectedEvent.extendedProps.description}</dd>
+        <dd>{description}</dd>
 
         <dt>Salle :</dt>
-        <dd>{selectedEvent.extendedProps.room?.name}</dd>
+        <dd>{room?.name}</dd>
 
         <dt>Étage :</dt>
-        <dd>{selectedEvent.extendedProps.room?.description}</dd>
+        <dd>{room?.description}</dd>
 
         <dt>Capacité :</dt>
-        <dd>{selectedEvent.extendedProps.room?.capacity}</dd>
+        <dd>{room?.capacity}</dd>
 
         <dt>Participants inscrits :</dt>
-        <dd>{selectedEvent.extendedProps.studentsCount}</dd>
+        <dd>{studentsCount}</dd>
 
-        <dt>Temps</dt>
-        <dd className="pl-3">
+        <dt>Heures</dt>
+        <dd className="ps-3">
             <b>Début</b> :<br />
-            {Intl.DateTimeFormat(DATE_FORMAT_SWISS_FRENCH, dateOptions).format(selectedEvent.range.start)}
+            {Intl.DateTimeFormat(DATE_FORMAT_SWISS_FRENCH, dateOptions).format(range.start)}
             <br />
             <b>Fin</b> :<br />
-            {Intl.DateTimeFormat(DATE_FORMAT_SWISS_FRENCH, dateOptions).format(selectedEvent.range.end)}
+            {Intl.DateTimeFormat(DATE_FORMAT_SWISS_FRENCH, dateOptions).format(range.end)}
         </dd>
 
         <dt>Créé par :</dt>
-        <dd className="pl-3">
-            <b>Début</b> -{Intl.DateTimeFormat(DATE_FORMAT_SWISS_FRENCH, dateOptions).format(selectedEvent.range.start)}
-            <br />
-            <b>Fin</b> - {Intl.DateTimeFormat(DATE_FORMAT_SWISS_FRENCH, dateOptions).format(selectedEvent.range.end)}
+        <dd>
+            {creator.lastName} {creator.firstName} &lt;{creator.email}&gt;
         </dd>
 
         <dt>Formateurs :</dt>
         <dd className="pl-3">
             <ul>
-                {selectedEvent.extendedProps.teachers?.map((teacher, index) => (
+                {teachers?.map((teacher, index) => (
                     <li key={index}>{teacher}</li>
                 ))}
             </ul>
@@ -46,7 +49,7 @@ export const Event = ({ selectedEvent }) => (
         <dt>Séances :</dt>
         <dd className="pl-3">
             <ul>
-                {selectedEvent.extendedProps.seances?.map((seance, index) => (
+                {seances?.map((seance, index) => (
                     <li key={index}>{seance}</li>
                 ))}
             </ul>

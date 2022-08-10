@@ -6,14 +6,10 @@ import { faArrowLeftFromLine, faArrowRightToLine } from '@fortawesome/pro-solid-
 import { faFilterCircleXmark } from '@fortawesome/pro-light-svg-icons'
 import { Helmet } from 'react-helmet-async'
 
-import { Calendar } from '../components'
+import { Calendar, RoomSelection, BulkSelect, ExpandController, RoomCheckbox } from '../components'
 import { fetchAgendaAction } from '../actions/agenda.ts'
 import { roomsAndEventsSelector } from '../reducers'
-import { RoomSelection } from '../components/RoomSelection'
-import { BulkSelect } from '../components/BulkSelect'
-import { ExpandController } from '../components/ExpandController'
 import { ROOM_TYPE_VIRTUAL } from '../constants/agenda'
-import { RoomCheckbox } from '../components/RoomCheckbox'
 
 export const AgendaPage = () => {
     const { rooms, events } = useSelector(roomsAndEventsSelector)
