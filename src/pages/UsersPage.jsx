@@ -1,7 +1,10 @@
 import { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
+import { Button } from 'react-bootstrap'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPen } from '@fortawesome/pro-light-svg-icons'
 
-import { Grid, EditBtnCellRenderer, EditUserModal } from '../components'
+import { Grid, EditUserModal } from '../components'
 import { useGetUsersQuery } from '../services/users'
 
 export function UsersPage() {
@@ -22,7 +25,16 @@ export function UsersPage() {
         {
             field: 'edit',
             headerName: '',
-            cellRenderer: 'btnCellRenderer',
+            cellRenderer: ({ data }) => (
+                <Button
+                    variant="primary"
+                    onClick={() => openUserEditModal({ data })}
+                    size="sm"
+                    className="edit-button-style"
+                >
+                    <FontAwesomeIcon icon={faPen} />
+                </Button>
+            ),
             headerTooltip: "Modifier l'utilisateur",
             cellClass: 'edit-column',
             pinned: 'left',
@@ -131,13 +143,7 @@ export function UsersPage() {
             <Helmet>
                 <title>Utilisateurs - Former22</title>
             </Helmet>
-            <Grid
-                name="Utilisateurs"
-                columnDefs={columnDefs}
-                rowData={rowData}
-                isDataLoading={isFetching}
-                components={{ btnCellRenderer: EditBtnCellRenderer({ onClick: openUserEditModal }) }}
-            />
+            <Grid name="Utilisateurs" columnDefs={columnDefs} rowData={rowData} isDataLoading={isFetching} />
             <EditUserModal
                 {...{
                     refetchUsers,

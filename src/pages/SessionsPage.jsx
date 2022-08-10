@@ -1,7 +1,10 @@
 import { useState, useMemo } from 'react'
 import { Helmet } from 'react-helmet-async'
+import { Button } from 'react-bootstrap'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPen } from '@fortawesome/pro-light-svg-icons'
 
-import { Grid, EditBtnCellRenderer, EditSessionModal } from '../components'
+import { Grid, EditSessionModal } from '../components'
 import { formatDate } from '../utils'
 import { useGetSessionsQuery } from '../services/sessions'
 
@@ -25,7 +28,16 @@ export function SessionsPage() {
             {
                 field: 'edit',
                 headerName: '',
-                cellRenderer: 'btnCellRenderer',
+                cellRenderer: ({ data }) => (
+                    <Button
+                        variant="primary"
+                        onClick={() => openSessionEditModal({ data })}
+                        size="sm"
+                        className="edit-button-style"
+                    >
+                        <FontAwesomeIcon icon={faPen} />
+                    </Button>
+                ),
                 headerTooltip: "Modifier l'organisation",
                 cellClass: 'edit-column',
                 pinned: 'left',
@@ -187,13 +199,7 @@ export function SessionsPage() {
                     isModalOpen: isSessionModalOpen,
                 }}
             />
-            <Grid
-                name="Sessions"
-                columnDefs={columnDefs}
-                rowData={rowData}
-                isDataLoading={isFetching}
-                components={{ btnCellRenderer: EditBtnCellRenderer({ onClick: openSessionEditModal }) }}
-            />
+            <Grid name="Sessions" columnDefs={columnDefs} rowData={rowData} isDataLoading={isFetching} />
         </>
     )
 }

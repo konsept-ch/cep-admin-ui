@@ -1,8 +1,11 @@
 import { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import Papa from 'papaparse'
+import { Button } from 'react-bootstrap'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPen } from '@fortawesome/pro-light-svg-icons'
 
-import { Grid, EditBtnCellRenderer, InvoiceModal } from '../components'
+import { Grid, InvoiceModal } from '../components'
 import { useGetInvoicesQuery } from '../services/invoices'
 import { gridContextMenu, downloadCsvFile, formatDate } from '../utils'
 
@@ -24,7 +27,16 @@ export function InvoicePage() {
         {
             field: 'edit',
             headerName: '',
-            cellRenderer: 'btnCellRenderer',
+            cellRenderer: ({ data }) => (
+                <Button
+                    variant="primary"
+                    onClick={() => openInvoiceEditModal({ data })}
+                    size="sm"
+                    className="edit-button-style"
+                >
+                    <FontAwesomeIcon icon={faPen} />
+                </Button>
+            ),
             headerTooltip: "Modifier l'utilisateur",
             cellClass: 'edit-column',
             pinned: 'left',
@@ -87,7 +99,6 @@ export function InvoicePage() {
                 columnDefs={columnDefs}
                 rowData={invoicesData}
                 isDataLoading={isFetchingInvoices}
-                components={{ btnCellRenderer: EditBtnCellRenderer({ onClick: openInvoiceEditModal }) }}
                 getContextMenuItems={({
                     node: { data: rowData },
                     columnApi: {

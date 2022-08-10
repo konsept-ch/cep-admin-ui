@@ -2,8 +2,10 @@ import { useState } from 'react'
 import { Button, Container, Spinner } from 'react-bootstrap'
 import { Helmet } from 'react-helmet-async'
 import { toast } from 'react-toastify'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPen } from '@fortawesome/pro-light-svg-icons'
 
-import { Grid, CommonModal, EditBtnCellRenderer, EditOrganizationModal } from '../components'
+import { Grid, CommonModal, EditOrganizationModal } from '../components'
 import { useGetOrganizationsHierarchyQuery } from '../services/organizations'
 import { useAddOrganizationsMutation, useRemoveOrganizationsMutation } from '../services/courses'
 
@@ -30,7 +32,16 @@ export function OrganizationsPage() {
         {
             field: 'edit',
             headerName: '',
-            cellRenderer: 'btnCellRenderer',
+            cellRenderer: ({ data }) => (
+                <Button
+                    variant="primary"
+                    onClick={() => openOrganizationEditModal({ data })}
+                    size="sm"
+                    className="edit-button-style"
+                >
+                    <FontAwesomeIcon icon={faPen} />
+                </Button>
+            ),
             headerTooltip: "Modifier l'organisation",
             cellClass: 'edit-column',
             pinned: 'left',
@@ -334,7 +345,6 @@ export function OrganizationsPage() {
                 groupDefaultExpanded={1}
                 groupIncludeFooter={false}
                 rowGroupPanelShow="never"
-                components={{ btnCellRenderer: EditBtnCellRenderer({ onClick: openOrganizationEditModal }) }}
             />
             <Container fluid className="mb-2">
                 <p>
