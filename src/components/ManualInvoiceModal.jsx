@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Button, Spinner, Row, Form, Col, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { useForm, useFieldArray } from 'react-hook-form'
+import { useForm, useFieldArray, Controller } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import Select from 'react-select'
+import DatePicker from 'react-datepicker'
 
 import { CommonModal } from '../components'
 import { useUpdateManualInvoiceMutation } from '../services/invoices'
@@ -20,7 +21,7 @@ const tvaOptions = [
 ]
 const defaultTvaOption = tvaOptions[1]
 
-const currentYear = new Date().getFullYear()
+// const currentYear = new Date().getFullYear()
 
 export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, closeModal, isModalOpen }) {
     const {
@@ -31,6 +32,8 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
         formState: { isDirty },
         watch,
     } = useForm()
+
+    const [startDate, setStartDate] = useState(new Date())
 
     const { fields, append, remove } = useFieldArray({ control, name: 'items' })
 
@@ -127,14 +130,18 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                         <Row>
                             <Col>
                                 <Form.Label>Année formation</Form.Label>
-                                <Select
-                                    options={[
-                                        invoiceCourseYear,
-                                        { value: currentYear - 1, label: currentYear - 1 },
-                                        { value: currentYear, label: currentYear },
-                                        { value: currentYear + 1, label: currentYear + 1 },
-                                    ]}
-                                    defaultValue={invoiceCourseYear}
+                                <Controller
+                                    control={control}
+                                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                                        <DatePicker
+                                            selected={startDate}
+                                            onChange={(date) => setStartDate(date)}
+                                            showYearPicker
+                                            dateFormat="yyyy"
+                                            className="form-control"
+                                        />
+                                    )}
+                                    name="courseYear"
                                 />
                                 <Form.Label>Numéro facture: </Form.Label>
 
