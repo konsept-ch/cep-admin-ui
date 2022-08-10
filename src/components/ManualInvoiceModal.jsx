@@ -185,8 +185,8 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                             </Col>
                         </Row>
                         {fields.map(({ id }, index) => (
-                            <>
-                                <Row key={id}>
+                            <div key={id}>
+                                <Row>
                                     <Col xs={1}>
                                         <Button variant="danger" onClick={() => remove(index)}>
                                             Supprimer
@@ -216,7 +216,7 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                                     </Col>
                                 </Row>
                                 <hr />
-                            </>
+                            </div>
                         ))}
 
                         <Row>

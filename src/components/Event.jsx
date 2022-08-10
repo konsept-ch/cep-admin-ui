@@ -3,7 +3,16 @@ import { dateOptions } from '../utils'
 
 export const Event = ({
     selectedEvent: {
-        extendedProps: { description, room, studentsCount, teachers, seances, creator },
+        extendedProps: {
+            description,
+            room,
+            studentsCount,
+            teachers,
+            seances,
+            creator,
+            sessionInscriptionsCount,
+            sessionMaxUsers,
+        },
         range,
     },
 }) => (
@@ -17,11 +26,18 @@ export const Event = ({
         <dt>Étage :</dt>
         <dd>{room?.description}</dd>
 
-        <dt>Capacité :</dt>
+        <dt>Capacité salle :</dt>
         <dd>{room?.capacity}</dd>
 
-        <dt>Participants inscrits :</dt>
+        <dt>Participants inscrits à la séance :</dt>
         <dd>{studentsCount}</dd>
+
+        <dt>Occupation de la session :</dt>
+        <dd>
+            {!(sessionMaxUsers > -1)
+                ? '(aucune restriction de nombre de participants)'
+                : `${sessionInscriptionsCount}/${sessionMaxUsers}`}
+        </dd>
 
         <dt>Heures</dt>
         <dd className="ps-3">
@@ -46,7 +62,7 @@ export const Event = ({
             </ul>
         </dd>
 
-        <dt>Séances :</dt>
+        <dt>Autres séances :</dt>
         <dd className="pl-3">
             <ul>
                 {seances?.map((seance, index) => (

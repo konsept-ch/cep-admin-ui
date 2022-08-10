@@ -134,6 +134,23 @@ export const Calendar = ({ resources, events, calendarRef, refreshCallback }) =>
                     </Offcanvas.Body>
                 </Offcanvas>
             )}
+            {/* {selectedEvent && (
+                <Modal show={selectedEvent !== null} onHide={() => setSelectedEvent(null)}>
+                    <Modal.Header closeButton>
+                        <Modal.Title as="h4">{selectedEvent.title}</Modal.Title>
+                    </Modal.Header>
+
+                    <Modal.Body>
+                        <Event selectedEvent={selectedEvent} />
+                    </Modal.Body>
+
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => setSelectedEvent(null)}>
+                            Fermer
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+            )} */}
         </>
     )
 }
