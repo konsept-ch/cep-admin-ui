@@ -129,7 +129,7 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                         </Row>
                         <Row>
                             <Col>
-                                <Form.Label>Année formation</Form.Label>
+                                <Form.Label>Année formation</Form.Label> {/* +-1 */}
                                 <Controller
                                     control={control}
                                     render={({ field: { onChange, onBlur, value, ref } }) => (
@@ -144,7 +144,6 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                                     name="courseYear"
                                 />
                                 <Form.Label>Numéro facture: </Form.Label>
-
                                 {getInvoiceNumber({
                                     courseYear: courseYearWatched,
                                     userCode: '1',
@@ -175,12 +174,12 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                             </Col>
                             <Col>
                                 <Form.Label>
-                                    <strong>Nombre</strong>
+                                    <strong>Nombre</strong> {/* positiv */}
                                 </Form.Label>
                             </Col>
                             <Col>
                                 <Form.Label>
-                                    <strong>Prix</strong>
+                                    <strong>Prix</strong> {/* peut etre negatif */}
                                 </Form.Label>
                             </Col>
                         </Row>
@@ -204,6 +203,8 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                                             options={[
                                                 { value: 'jours', label: 'jours' },
                                                 { value: 'heures', label: 'heures' },
+                                                { value: 'forfait', label: 'forfait' },
+                                                { value: 'frais effectifs', label: 'frais effectifs' },
                                             ]}
                                             defaultValue={{ value: '', label: '' }}
                                         />
