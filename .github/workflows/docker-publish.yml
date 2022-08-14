@@ -85,8 +85,8 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args:
-            REACT_APP_SERVICE_URL: ${{ env.SERVICE_URL_PROD }}
+          build-args: |
+            REACT_APP_SERVICE_URL:${{ env.SERVICE_URL_PROD }}
 
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
@@ -101,8 +101,8 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args:
-            REACT_APP_SERVICE_URL: ${{ env.SERVICE_URL_VAL }}
+          build-args: |
+            REACT_APP_SERVICE_URL:${{ env.SERVICE_URL_VAL }}
 
       # Sign the resulting Docker image digest except on PRs and private repos
       # The keyless signing process records signatures on the Rekor public
