@@ -72,20 +72,37 @@ jobs:
       - name: 'test log stuff'
         run: echo "${{ secrets.SERVICE_URL_PROD }} - ${{ secrets.SERVICE_URL_VAL }} - $SERVICE_URL_PROD - $SERVICE_URL_VAL"
 
-      - name: Set branch-based environment variables
-        uses: iamtheyammer/branch-env-vars@v1.1.3
-        with:
-          bevOverwrite: true
-          REACT_APP_SERVICE_URL: |
-            release/*:${{ secrets.SERVICE_URL_PROD }}
-            master:${{ secrets.SERVICE_URL_VAL }}
-            !default:http://localhost:4000/
+      # - name: Set branch-based environment variables
+      #   uses: iamtheyammer/branch-env-vars@v1.1.3
+      #   with:
+      #     bevOverwrite: true
+      #     REACT_APP_SERVICE_URL: |
+      #       master:${{ secrets.SERVICE_URL_VAL }}
+      #       release/*:${{ secrets.SERVICE_URL_PROD }}
+      #       !default:http://localhost:4000/
 
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
       - name: Build and push Docker image
-        id: build-and-push
+        if: ${{ contains(env.GITHUB_REF_NAME, 'release') }}
+        id: build-and-push-if-release
         uses: docker/build-push-action@v2
+        env:
+          REACT_APP_SERVICE_URL: https://middleware.cep.swiss
+        with:
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      # Build and push Docker image with Buildx (don't push on PR)
+      # https://github.com/docker/build-push-action
+      - name: Build and push Docker image
+        if: ${{ env.GITHUB_REF_NAME == 'master' }}
+        id: build-and-push-if-master
+        uses: docker/build-push-action@v2
+        env:
+          REACT_APP_SERVICE_URL: https://middleware.cep-val.ch
         with:
           context: .
           push: ${{ github.event_name != 'pull_request' }}
