@@ -21,6 +21,8 @@ env:
   REGISTRY: ghcr.io
   # github.repository as <account>/<repo>
   IMAGE_NAME: ${{ github.repository }}
+  SERVICE_URL_PROD: https://middleware.cep.swiss
+  SERVICE_URL_VAL: https://middleware.cep-val.ch
 
 jobs:
   build:
@@ -31,6 +33,9 @@ jobs:
       # This is used to complete the identity challenge
       # with sigstore/fulcio when running outside of PRs.
       id-token: write
+
+    env:
+      Greeting: Hello
 
     steps:
       - name: Checkout repository
@@ -63,6 +68,9 @@ jobs:
         uses: docker/metadata-action@v3
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+      - name: 'test log stuff'
+        run: echo "${{ secrets.SERVICE_URL_PROD }} - ${{ secrets.SERVICE_URL_VAL }} - $SERVICE_URL_PROD - $SERVICE_URL_VAL"
 
       - name: Set branch-based environment variables
         uses: iamtheyammer/branch-env-vars@v1.1.3
