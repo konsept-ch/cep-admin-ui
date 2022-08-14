@@ -70,7 +70,7 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
       - name: 'test log stuff'
-        run: echo "${{ secrets.SERVICE_URL_PROD }} - ${{ secrets.SERVICE_URL_VAL }} - $SERVICE_URL_PROD - $SERVICE_URL_VAL"
+        run: echo "${{ env.GITHUB_REF_NAME }} -- $GITHUB_REF_NAME -- ${{ env.GITHUB_REF_NAME == 'master' }}"
 
       # - name: Set branch-based environment variables
       #   uses: iamtheyammer/branch-env-vars@v1.1.3
