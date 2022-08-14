@@ -67,6 +67,7 @@ jobs:
       - name: Set branch-based environment variables
         uses: iamtheyammer/branch-env-vars@v1.1.3
         with:
+          bevOverwrite: true
           REACT_APP_SERVICE_URL: |
             release/*:${{ secrets.SERVICE_URL_PROD }}
             master:${{ secrets.SERVICE_URL_VAL }}
