@@ -5,6 +5,7 @@ FROM node:16.16-alpine as build-deps
 ARG FONTAWESOME_NPM_AUTH_TOKEN
 WORKDIR /usr/src/app
 COPY ["package.json", "package-lock.json*", ".npmrc", "./"]
+RUN npm config set '//npm.fontawesome.com/:_authToken' "$FONTAWESOME_NPM_AUTH_TOKEN"
 RUN npm ci
 COPY . .
 RUN npm run build
