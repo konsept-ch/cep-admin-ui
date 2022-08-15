@@ -1,5 +1,4 @@
-export const MIDDLEWARE_URL = process.env.REACT_APP_SERVICE_URL ?? '/api/v1'
-
-console.log(process.env.REACT_APP_SERVICE_URL, MIDDLEWARE_URL)
+export const MIDDLEWARE_URL =
+    process.env.NODE_ENV === 'production' ? 'https://middleware.cep-val.ch' : 'http://localhost:4000'
 
 export const authCookiesMaxAgeSeconds = { true: 43200, false: 60 }
