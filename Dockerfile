@@ -6,17 +6,12 @@ WORKDIR /usr/src/app
 COPY ["package.json", "package-lock.json*", ".npmrc", "./"]
 RUN npm ci
 COPY . .
-ENV REACT_APP_SERVICE_URL=$REACT_APP_SERVICE_URL
-ENV SERVICES_URL=$REACT_APP_SERVICE_URL
-RUN npm run build
+ENV REACT_APP_SERVICE_URL=${REACT_APP_SERVICE_URL}
+RUN cross-env REACT_APP_SERVICE_URL=${REACT_APP_SERVICE_URL} npm run build
 
 # Stage 2 - the static server
 FROM nginx:1.23-alpine
 COPY --from=build-deps /usr/src/app/build /var/www
-# COPY nginx.conf /etc/nginx/nginx.conf
-ENV REACT_APP_SERVICE_URL=$REACT_APP_SERVICE_URL
-ENV SERVICES_URL=$REACT_APP_SERVICE_URL
-COPY ./nginx.conf.template /nginx.conf.template
+COPY nginx.conf /etc/nginx/nginx.conf
 EXPOSE 80
-# CMD ["nginx", "-g", "'daemon off;'"]
-CMD ["/bin/sh" , "-c" , "envsubst < /nginx.conf.template > /etc/nginx/nginx.conf && exec nginx -g 'daemon off;'"]
+CMD ["nginx", "-g", "'daemon off;'"]
