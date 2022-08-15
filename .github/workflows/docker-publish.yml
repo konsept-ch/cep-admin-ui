@@ -71,7 +71,7 @@ jobs:
       # https://github.com/docker/build-push-action
 
       - name: (Prod - release) Build and push Docker image
-        if: ${{ github.event_name == 'release')}}
+        if: ${{ github.event_name == 'release' }}
         id: build-and-push-if-release
         uses: docker/build-push-action@v3
         with:
