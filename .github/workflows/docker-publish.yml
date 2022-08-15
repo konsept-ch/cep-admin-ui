@@ -70,8 +70,8 @@ jobs:
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
 
-      - name: (Prod - release) Build and push Docker image
-        if: ${{ github.event_name == 'release' }}
+      - name: Build and push Docker image
+        # if: ${{ github.event_name == 'release' }}
         id: build-and-push
         uses: docker/build-push-action@v3
         with:
