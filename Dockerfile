@@ -7,7 +7,7 @@ COPY ["package.json", "package-lock.json*", ".npmrc", "./"]
 RUN npm ci
 COPY . .
 ENV REACT_APP_SERVICE_URL=${REACT_APP_SERVICE_URL}
-RUN cross-env REACT_APP_SERVICE_URL=$REACT_APP_SERVICE_URL npm run build
+RUN npm run build
 
 # Stage 2 - the static server
 FROM nginx:1.23-alpine
