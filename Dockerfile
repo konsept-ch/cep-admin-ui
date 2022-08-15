@@ -3,7 +3,7 @@
 # Stage 1 - the build process
 FROM node:16.16-alpine as build-deps
 ARG FONTAWESOME_NPM_AUTH_TOKEN
-ARG REACT_APP_SERVICES_URL
+# ARG REACT_APP_SERVICES_URL
 WORKDIR /usr/src/app
 COPY ["package.json", "package-lock.json*", ".npmrc", "./"]
 RUN npm config set '//npm.fontawesome.com/:_authToken' "$FONTAWESOME_NPM_AUTH_TOKEN"

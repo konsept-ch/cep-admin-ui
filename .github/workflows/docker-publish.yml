@@ -6,15 +6,15 @@ name: Docker Publish
 # documentation.
 
 on:
-  workflow_dispatch:
+  # workflow_dispatch:
   release:
     types: [released]
-  push:
-    branches: [$default-branch]
-    # Publish semver tags as releases.
-    tags: ['v*.*.*']
-  pull_request:
-    branches: [$default-branch]
+  # push:
+  # branches: [$default-branch]
+  # Publish semver tags as releases.
+  # tags: ['v*.*.*']
+  # pull_request:
+  #   branches: [$default-branch]
 
 env:
   # Use docker.io for Docker Hub if empty
@@ -72,7 +72,7 @@ jobs:
 
       - name: (Prod - release) Build and push Docker image
         if: ${{ github.event_name == 'release' }}
-        id: build-and-push-if-release
+        id: build-and-push
         uses: docker/build-push-action@v3
         with:
           context: .
@@ -81,20 +81,21 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             FONTAWESOME_NPM_AUTH_TOKEN=${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}
-            REACT_APP_SERVICES_URL=https://middleware.cep.swiss
+          #  REACT_APP_SERVICES_URL=https://middleware.cep.swiss
 
-      - name: (Val - master) Build and push Docker image
-        if: ${{ github.ref_name == 'master' }}
-        id: build-and-push-if-master
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          build-args: |
-            FONTAWESOME_NPM_AUTH_TOKEN=${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}
-            REACT_APP_SERVICES_URL=https://middleware.cep-val.ch
+      # - name: (Val - master) Build and push Docker image
+      #   # if: ${{ github.ref_name == 'master' }}
+      #   # if: ${{ github.event_name == 'release' }}
+      #   id: build-and-push-if-master
+      #   uses: docker/build-push-action@v3
+      #   with:
+      #     context: .
+      #     push: ${{ github.event_name != 'pull_request' }}
+      #     tags: ${{ steps.meta.outputs.tags }}-uat
+      #     labels: ${{ steps.meta.outputs.labels }}
+      #     build-args: |
+      #       FONTAWESOME_NPM_AUTH_TOKEN=${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}
+      #       REACT_APP_SERVICES_URL=https://middleware.cep-val.ch
 
       # Sign the resulting Docker image digest except on PRs and private repos
       # The keyless signing process records signatures on the Rekor public
