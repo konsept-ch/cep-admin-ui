@@ -87,7 +87,7 @@ jobs:
             REACT_APP_SERVICES_URL=https://middleware.cep.swiss
 
       - name: (Val - master) Build and push Docker image
-        if: ${{ github.ref_name == 'master') }}
+        if: ${{ github.ref_name == 'master' }}
         id: build-and-push-if-release
         uses: docker/build-push-action@v3
         with:
