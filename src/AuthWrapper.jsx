@@ -70,7 +70,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                         'Content-Type': 'application/json',
                         'Access-Control-Allow-Origin': '*',
                     },
-                    body: JSON.stringify({ email, code }),
+                    body: JSON.stringify({ email }),
                 })
             ).json()
 
@@ -89,15 +89,26 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
         event.preventDefault()
         setLoginLoading(true)
         ;(async () => {
-            const response = await callApi({
-                path: 'auth/checkCodeAndToken',
-                method: 'post',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email, code, token }),
-                // successCallback: () => toast.success('Login OK !'),
-            })
+            // const response = await callApi({
+            //     path: 'auth/checkCodeAndToken',
+            //     method: 'post',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //     },
+            //     body: JSON.stringify({ email, code, token }),
+            //     // successCallback: () => toast.success('Login OK !'),
+            // })
+
+            const response = await (
+                await fetch(`${MIDDLEWARE_URL}auth/checkCodeAndToken`, {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*',
+                    },
+                    body: JSON.stringify({ email, code, token }),
+                })
+            ).json()
 
             const { areCodeAndTokenCorrect } = response
 
