@@ -1,4 +1,4 @@
-export const MIDDLEWARE_URL = process.env.REACT_APP_SERVICE_URL ?? 'http://localhost:4000'
+export const MIDDLEWARE_URL = process.env.REACT_APP_SERVICE_URL ?? '/api/v1'
 
 console.log(process.env.REACT_APP_SERVICE_URL, MIDDLEWARE_URL)
 
