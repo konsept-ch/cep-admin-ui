@@ -64,7 +64,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
         cookies.set('email', email, { path, maxAge: 99999999 })
         ;(async () => {
             const response = await (
-                await fetch(`${MIDDLEWARE_URL}/auth/sendCode`, {
+                await fetch(`${MIDDLEWARE_URL}auth/sendCode`, {
                     method: 'post',
                     headers: {
                         'Content-Type': 'application/json',
