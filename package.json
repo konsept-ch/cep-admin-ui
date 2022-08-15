@@ -6,11 +6,11 @@
   "license": "SEE LICENSE IN LICENSE.txt",
   "private": true,
   "engines": {
-    "node": ">=16.15.1",
+    "node": ">=16.16.0",
     "npm": ">=8.11.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "cross-env TSC_COMPILE_ON_ERROR=true DISABLE_ESLINT_PLUGIN=true react-scripts start",
     "test": "react-scripts test",
     "build": "react-scripts build",
     "markdownlint:check": "markdownlint README.md",
