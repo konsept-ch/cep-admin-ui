@@ -6,7 +6,7 @@ name: Docker Publish
 # documentation.
 
 on:
-  # workflow_dispatch:
+  workflow_dispatch:
   release:
     types: [released]
   # push:
@@ -83,10 +83,10 @@ jobs:
             FONTAWESOME_NPM_AUTH_TOKEN=${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}
             REACT_APP_SERVICES_URL=https://middleware.cep.swiss
 
-      - name: (Val - master) Build and push Docker image
-        if: ${{ github.ref_name == 'master' }}
+      - name: (Val - workflow_dispatch) Build and push Docker image
+        if: ${{ github.event_name == 'workflow_dispatch' }}
         # if: ${{ github.event_name == 'release' }}
-        id: build-and-push-if-master
+        id: build-and-push-if-manual
         uses: docker/build-push-action@v3
         with:
           context: .
