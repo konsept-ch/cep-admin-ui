@@ -64,7 +64,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
         cookies.set('email', email, { path, maxAge: 99999999 })
         ;(async () => {
             const response = await (
-                await fetch(`${MIDDLEWARE_URL}auth/sendCode`, {
+                await fetch(new URL('auth/sendCode', MIDDLEWARE_URL).href, {
                     method: 'post',
                     headers: {
                         'Content-Type': 'application/json',
@@ -89,26 +89,15 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
         event.preventDefault()
         setLoginLoading(true)
         ;(async () => {
-            // const response = await callApi({
-            //     path: 'auth/checkCodeAndToken',
-            //     method: 'post',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //     },
-            //     body: JSON.stringify({ email, code, token }),
-            //     // successCallback: () => toast.success('Login OK !'),
-            // })
-
-            const response = await (
-                await fetch(`${MIDDLEWARE_URL}auth/checkCodeAndToken`, {
-                    method: 'post',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*',
-                    },
-                    body: JSON.stringify({ email, code, token }),
-                })
-            ).json()
+            const response = await callApi({
+                path: 'auth/checkCodeAndToken',
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, code, token }),
+                // successCallback: () => toast.success('Login OK !'),
+            })
 
             const { areCodeAndTokenCorrect } = response
 

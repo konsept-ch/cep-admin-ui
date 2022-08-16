@@ -8,7 +8,7 @@ import { cookies } from '../utils'
 
 export function* callService({ endpoint, action, successCallback = () => {}, options = {} }) {
     try {
-        const result = yield fetch(`${MIDDLEWARE_URL}/${endpoint}`, {
+        const result = yield fetch(new URL(endpoint, MIDDLEWARE_URL).href, {
             ...options,
             headers: {
                 'Access-Control-Allow-Origin': '*',
@@ -32,7 +32,7 @@ export function* callService({ endpoint, action, successCallback = () => {}, opt
                 </>,
                 { autoClose: false }
             )
-            yield fetch(`${MIDDLEWARE_URL}/reportError`, {
+            yield fetch(new URL('reportError', MIDDLEWARE_URL).href, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

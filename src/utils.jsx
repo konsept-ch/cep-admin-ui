@@ -132,9 +132,7 @@ export const isObjEmpty = (obj) => Object.keys(obj).length === 0
 
 export const callApi = async ({ path = '', method = 'GET', headers, body, successCallback = () => {} }) => {
     try {
-        const url = `${new URL(path, MIDDLEWARE_URL)}`
-
-        const response = await fetch(url, {
+        const response = await fetch(new URL(path, MIDDLEWARE_URL).href, {
             headers: {
                 'Access-Control-Allow-Origin': '*',
                 'x-login-email-address': cookies.get('email'),
@@ -159,7 +157,7 @@ export const callApi = async ({ path = '', method = 'GET', headers, body, succes
                 </>,
                 { autoClose: false }
             )
-            fetch(`${MIDDLEWARE_URL}/reportError`, {
+            fetch(new URL('reportError', MIDDLEWARE_URL).href, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

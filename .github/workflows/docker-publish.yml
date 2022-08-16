@@ -70,9 +70,9 @@ jobs:
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
 
-      - name: Build and push Docker image
-        # if: ${{ github.event_name == 'release' }}
-        id: build-and-push
+      - name: (Prod - release) Build and push Docker image
+        if: ${{ github.event_name == 'release' }}
+        id: build-and-push-if-release
         uses: docker/build-push-action@v3
         with:
           context: .
@@ -81,21 +81,21 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             FONTAWESOME_NPM_AUTH_TOKEN=${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}
-          #  REACT_APP_SERVICES_URL=https://middleware.cep.swiss
+            REACT_APP_SERVICES_URL=https://middleware.cep.swiss
 
-      # - name: (Val - master) Build and push Docker image
-      #   # if: ${{ github.ref_name == 'master' }}
-      #   # if: ${{ github.event_name == 'release' }}
-      #   id: build-and-push-if-master
-      #   uses: docker/build-push-action@v3
-      #   with:
-      #     context: .
-      #     push: ${{ github.event_name != 'pull_request' }}
-      #     tags: ${{ steps.meta.outputs.tags }}-uat
-      #     labels: ${{ steps.meta.outputs.labels }}
-      #     build-args: |
-      #       FONTAWESOME_NPM_AUTH_TOKEN=${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}
-      #       REACT_APP_SERVICES_URL=https://middleware.cep-val.ch
+      - name: (Val - master) Build and push Docker image
+        if: ${{ github.ref_name == 'master' }}
+        # if: ${{ github.event_name == 'release' }}
+        id: build-and-push-if-master
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}-uat
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            FONTAWESOME_NPM_AUTH_TOKEN=${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}
+            REACT_APP_SERVICES_URL=https://middleware.cep-val.ch
 
       # Sign the resulting Docker image digest except on PRs and private repos
       # The keyless signing process records signatures on the Rekor public
