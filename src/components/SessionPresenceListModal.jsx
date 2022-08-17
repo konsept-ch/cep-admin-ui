@@ -35,6 +35,8 @@ export function SessionPresenceListModal({ sessionId, closeModal, isModalOpen })
         }
     }, [presenceList, reset])
 
+    const learnersCount = presenceList?.learners.length ?? 0
+
     return (
         <CommonModal
             title="Liste de présences"
@@ -76,6 +78,15 @@ export function SessionPresenceListModal({ sessionId, closeModal, isModalOpen })
                                     <td>
                                         {lastName} {firstName}
                                     </td>
+                                    {presenceList?.eventDates.map(() => (
+                                        <td />
+                                    ))}
+                                </tr>
+                            ))}
+                            {[...Array(25 - learnersCount)].map((_, index) => (
+                                <tr>
+                                    <td>{index + 1 + learnersCount}</td>
+                                    <td />
                                     {presenceList?.eventDates.map(() => (
                                         <td />
                                     ))}
