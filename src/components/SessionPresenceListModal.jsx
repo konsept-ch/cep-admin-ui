@@ -1,17 +1,18 @@
 import { useEffect } from 'react'
-import { Button, Spinner, Form, Table, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { Button, Spinner, Form, Table as BsTable, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
-import { Packer, Document, HeadingLevel, Paragraph } from 'docx'
+import { Packer, Document, HeadingLevel, Paragraph, Table, TableRow, TableCell } from 'docx'
 
 import { CommonModal } from '../components'
 import { useGetPresenceListQuery } from '../services/sessions'
 
 export function SessionPresenceListModal({ sessionId, closeModal, isModalOpen }) {
-    const {
-        register,
-        reset,
-        formState: { isDirty },
-    } = useForm()
+    const { register, reset, watch } = useForm()
+
+    const courseName = watch('courseName')
+    const eventDates = watch('eventDates')
+    const tutors = watch('tutors')
+    const sessionCode = watch('sessionCode')
 
     const { data: presenceList } = useGetPresenceListQuery(
         { sessionId },
@@ -43,8 +44,131 @@ export function SessionPresenceListModal({ sessionId, closeModal, isModalOpen })
                 {
                     children: [
                         new Paragraph({
-                            text: presenceList.courseName,
+                            text: courseName,
                             heading: HeadingLevel.HEADING_1,
+                        }),
+                        new Paragraph({
+                            text: eventDates,
+                            heading: HeadingLevel.HEADING_2,
+                        }),
+                        new Paragraph({
+                            text: tutors,
+                            heading: HeadingLevel.HEADING_2,
+                        }),
+                        new Paragraph({
+                            text: sessionCode,
+                            heading: HeadingLevel.HEADING_2,
+                        }),
+                        new Table({
+                            rows: [
+                                new TableRow({
+                                    children: [
+                                        new TableCell({
+                                            children: [
+                                                new Paragraph({
+                                                    text: '№',
+                                                    heading: HeadingLevel.HEADING_3,
+                                                }),
+                                            ],
+                                        }),
+                                        new TableCell({
+                                            children: [
+                                                new Paragraph({
+                                                    text: 'Nom Prénom',
+                                                    heading: HeadingLevel.HEADING_3,
+                                                }),
+                                            ],
+                                        }),
+                                        ...(presenceList != null
+                                            ? presenceList.eventDates.map(
+                                                  (_, index) =>
+                                                      new TableCell({
+                                                          children: [
+                                                              new Paragraph({
+                                                                  text: `Jour ${index + 1}`,
+                                                                  heading: HeadingLevel.HEADING_3,
+                                                              }),
+                                                          ],
+                                                      })
+                                              )
+                                            : []),
+                                    ],
+                                }),
+                                ...(presenceList != null
+                                    ? presenceList.learners.map(
+                                          ({ firstName, lastName }, index) =>
+                                              new TableRow({
+                                                  children: [
+                                                      new TableCell({
+                                                          children: [
+                                                              new Paragraph({
+                                                                  text: `${index + 1}`,
+                                                                  heading: HeadingLevel.HEADING_3,
+                                                              }),
+                                                          ],
+                                                      }),
+                                                      new TableCell({
+                                                          children: [
+                                                              new Paragraph({
+                                                                  text: `${lastName} ${firstName}`,
+                                                                  heading: HeadingLevel.HEADING_3,
+                                                              }),
+                                                          ],
+                                                      }),
+                                                      ...(presenceList != null
+                                                          ? presenceList.eventDates.map(
+                                                                () =>
+                                                                    new TableCell({
+                                                                        children: [
+                                                                            new Paragraph({
+                                                                                text: ' ',
+                                                                                heading: HeadingLevel.HEADING_3,
+                                                                            }),
+                                                                        ],
+                                                                    })
+                                                            )
+                                                          : []),
+                                                  ],
+                                              })
+                                      )
+                                    : []),
+                                ...[...Array(25 - learnersCount)].map(
+                                    (_, index) =>
+                                        new TableRow({
+                                            children: [
+                                                new TableCell({
+                                                    children: [
+                                                        new Paragraph({
+                                                            text: `${index + 1 + learnersCount}`,
+                                                            heading: HeadingLevel.HEADING_3,
+                                                        }),
+                                                    ],
+                                                }),
+                                                new TableCell({
+                                                    children: [
+                                                        new Paragraph({
+                                                            text: ' ',
+                                                            heading: HeadingLevel.HEADING_3,
+                                                        }),
+                                                    ],
+                                                }),
+                                                ...(presenceList != null
+                                                    ? presenceList.eventDates.map(
+                                                          () =>
+                                                              new TableCell({
+                                                                  children: [
+                                                                      new Paragraph({
+                                                                          text: ' ',
+                                                                          heading: HeadingLevel.HEADING_3,
+                                                                      }),
+                                                                  ],
+                                                              })
+                                                      )
+                                                    : []),
+                                            ],
+                                        })
+                                ),
+                            ],
                         }),
                     ],
                 },
@@ -82,7 +206,7 @@ export function SessionPresenceListModal({ sessionId, closeModal, isModalOpen })
                         <Form.Label>Code session</Form.Label>
                         <Form.Control {...register('sessionCode')} />
                     </Form.Group>
-                    <Table bordered>
+                    <BsTable bordered>
                         <thead>
                             <tr>
                                 <th>№</th>
@@ -117,7 +241,7 @@ export function SessionPresenceListModal({ sessionId, closeModal, isModalOpen })
                                 </tr>
                             ))}
                         </tbody>
-                    </Table>
+                    </BsTable>
                 </>
             }
             footer={

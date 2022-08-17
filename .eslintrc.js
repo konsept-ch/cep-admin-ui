@@ -1,5 +1,11 @@
 module.exports = {
-    extends: ['react-app', 'plugin:prettier/recommended'],
+    root: true,
+    extends: ['react-app', 'prettier'],
+    plugins: ['import'],
+    env: {
+        browser: true,
+        es2022: true,
+    },
     rules: {
         'linebreak-style': ['error', 'unix'],
         eqeqeq: ['error', 'smart'],
@@ -29,5 +35,13 @@ module.exports = {
         'prefer-arrow-callback': 'error',
         'prefer-const': 'error',
         'prefer-template': 'error',
+        'prefer-object-has-own': 'warn',
+        'import/no-absolute-path': 'error',
+        'import/no-self-import': 'error',
+        'import/no-cycle': 'error',
+        'import/named': 'error',
+        'import/no-duplicates': 'warn',
+        'import/no-default-export': 'warn',
+        'import/no-namespace': 'warn',
     },
 }
