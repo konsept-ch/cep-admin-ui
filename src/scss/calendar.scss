@@ -208,6 +208,10 @@
     border-radius: 50px;
     display: inline-block;
     margin-right: 5px;
+
+    &.is-first-physical {
+        background: #333333;
+    }
 }
 
 .event-content-divider {

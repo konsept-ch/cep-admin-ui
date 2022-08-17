@@ -100,17 +100,23 @@ export const Calendar = ({ resources, events, calendarRef, refreshCallback }) =>
                     info.jsEvent.preventDefault()
                     setSelectedEvent({ ...info.event._def, range: info.event._instance.range })
                 }}
-                eventContent={(eventInfo) => (
+                eventContent={({ event }) => (
                     <>
                         <b>
-                            <span className="event-content-room">{eventInfo.event._def.extendedProps.room?.name}</span>
+                            <span
+                                className={classNames('event-content-room', {
+                                    'is-first-physical': event._def.extendedProps.isFirstPhysical,
+                                })}
+                            >
+                                {event._def.extendedProps.room?.name}
+                            </span>
                             <span className="event-content-divider">|</span>
                             {Intl.DateTimeFormat(DATE_FORMAT_SWISS_FRENCH, DATE_FORMAT_OPTIONS).format(
-                                new Date(eventInfo.event._instance.range.start)
+                                new Date(event._instance.range.start)
                             )}
                         </b>
                         <br />
-                        <i>{eventInfo.event.title}</i>
+                        <i>{event.title}</i>
                     </>
                 )}
                 businessHours={{
