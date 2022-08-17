@@ -52,16 +52,28 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, setSelecte
         []
     )
 
+    const themeValues = useMemo(
+        () => [
+            { value: 'Informatique & Compétences numériques', label: 'Informatique & Compétences numériques' },
+            { value: 'Administration & Politiques publiques', label: 'Administration & Politiques publiques' },
+            { value: 'Intelligence collective & Agilité', label: 'Intelligence collective & Agilité' },
+            { value: 'Organisation & Management', label: 'Organisation & Management' },
+            { value: 'Communication & Relations', label: 'Communication & Relations' },
+            { value: 'Efficacité personnelle', label: 'Efficacité personnelle' },
+            { value: 'Prévention & Santé', label: 'Prévention & Santé' },
+        ],
+        []
+    )
+
     useEffect(() => {
         if (selectedCourseData != null) {
-            console.log('selectedCourseData?.theme', selectedCourseData?.theme)
             reset({
                 coordinator: admins.find(({ label }) => label === selectedCourseData.coordinator),
                 responsible: admins.find(({ label }) => label === selectedCourseData.responsible),
                 typeStage: typeStageValues.find(({ label }) => label === selectedCourseData.typeStage),
                 teachingMethod: teachingMethodValues.find(({ label }) => label === selectedCourseData.teachingMethod),
                 codeCategory: codeCategoryValues.find(({ label }) => label === selectedCourseData.codeCategory),
-                theme: selectedCourseData?.theme,
+                theme: themeValues.find(({ label }) => label === selectedCourseData.theme),
                 targetAudience: selectedCourseData?.targetAudience,
                 billingMode: selectedCourseData?.billingMode,
                 pricingType: selectedCourseData?.pricingType,
@@ -170,7 +182,11 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, setSelecte
                             </Col>
                             <Col>
                                 <Form.Label>Thème</Form.Label>
-                                <Form.Control {...register('theme')} />
+                                <Controller
+                                    name="theme"
+                                    control={control}
+                                    render={({ field }) => <Select {...field} options={themeValues} />}
+                                />
                             </Col>
                             <Col>
                                 <Form.Label>Public cible</Form.Label>
