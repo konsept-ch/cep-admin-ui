@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Button, Spinner, Form, Table, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 
@@ -8,14 +9,31 @@ export function SessionPresenceListModal({ sessionId, closeModal, isModalOpen })
     const {
         handleSubmit,
         register,
+        reset,
         formState: { isDirty },
     } = useForm()
 
-    const {
-        data: presenceList,
-        isFetching,
-        refetch: refetchPresenceList,
-    } = useGetPresenceListQuery({ sessionId }, { refetchOnMountOrArgChange: true, skip: !isModalOpen })
+    const { data: presenceList } = useGetPresenceListQuery(
+        { sessionId },
+        { refetchOnMountOrArgChange: true, skip: !isModalOpen }
+    )
+
+    useEffect(() => {
+        if (presenceList != null) {
+            reset({
+                courseName: presenceList.courseName,
+                eventDates: presenceList.eventDates
+                    .map((date) =>
+                        Intl.DateTimeFormat('fr-CH', { year: 'numeric', month: 'long', day: 'numeric' }).format(
+                            new Date(date)
+                        )
+                    )
+                    .join(', '),
+                tutors: presenceList.tutors.map(({ firstName, lastName }) => `${lastName} ${firstName}`).join(', '),
+                sessionCode: `Liste de présences (${presenceList.sessionCode})`,
+            })
+        }
+    }, [presenceList, reset])
 
     return (
         <CommonModal
