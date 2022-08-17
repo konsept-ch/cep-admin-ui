@@ -64,7 +64,7 @@ export const AgendaPage = () => {
                             ({ room }) =>
                                 (selectedRoomIds[room?.id] &&
                                     searchedRooms.some((searchedRoom) => searchedRoom.id === room?.id)) ||
-                                (selectedRoomIds['no-room'] && room == null)
+                                (selectedRoomIds['no-room'] && (room == null || room.id === undefined))
                         )}
                         calendarRef={calendarRef}
                         refreshCallback={() => dispatch(fetchAgendaAction())}
