@@ -13,6 +13,8 @@ export const Event = ({
             sessionInscriptionsCount,
             sessionMaxUsers,
             isFirstPhysical,
+            coordinator,
+            coordinatorColorCode,
         },
         range,
     },
@@ -66,6 +68,14 @@ export const Event = ({
         <dt>Créé par :</dt>
         <dd>
             {creator.lastName} {creator.firstName} &lt;{creator.email}&gt;
+        </dd>
+
+        <dt>Coordinateur :</dt>
+        <dd>
+            {coordinator}
+            <div className="coordinator-color-indicator" style={{ background: `#${coordinatorColorCode}` }}>
+                {coordinatorColorCode}
+            </div>
         </dd>
 
         <dt>Formateurs :</dt>

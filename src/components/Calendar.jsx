@@ -101,7 +101,10 @@ export const Calendar = ({ resources, events, calendarRef, refreshCallback }) =>
                     setSelectedEvent({ ...info.event._def, range: info.event._instance.range })
                 }}
                 eventContent={({ event }) => (
-                    <>
+                    <div
+                        className="event-wrapper"
+                        style={{ background: `#${event._def.extendedProps.coordinatorColorCode}` }}
+                    >
                         <b>
                             <span
                                 className={classNames('event-content-room', {
@@ -117,7 +120,7 @@ export const Calendar = ({ resources, events, calendarRef, refreshCallback }) =>
                         </b>
                         <br />
                         <i>{event.title}</i>
-                    </>
+                    </div>
                 )}
                 businessHours={{
                     startTime: '08:30',
