@@ -12,11 +12,26 @@ export const Event = ({
             creator,
             sessionInscriptionsCount,
             sessionMaxUsers,
+            isFirstPhysical,
         },
         range,
     },
 }) => (
     <dl>
+        <dt>Est-ce la première séance physique ?</dt>
+        <dd>
+            {isFirstPhysical ? (
+                <>
+                    <span className="first-physical-indicator">Oui</span> - dans cette session, ceci est la première
+                    séance dans le lieu "CEP"
+                </>
+            ) : (
+                <>
+                    Non <em>(selon algorithme actuel)</em>
+                </>
+            )}
+        </dd>
+
         <dt>Description :</dt>
         <dd>{description}</dd>
 
