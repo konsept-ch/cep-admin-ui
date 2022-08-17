@@ -9,6 +9,9 @@ export const sessionsApi = createApi({
         getSessions: builder.query({
             query: () => '',
         }),
+        getPresenceList: builder.query({
+            query: ({ sessionId }) => `presence-list/${sessionId}`,
+        }),
         getSeances: builder.query({
             query: () => 'seances',
         }),
@@ -22,4 +25,5 @@ export const sessionsApi = createApi({
     }),
 })
 
-export const { useGetSessionsQuery, useUpdateSessionMutation, useGetSeancesQuery } = sessionsApi
+export const { useGetSessionsQuery, useUpdateSessionMutation, useGetSeancesQuery, useGetPresenceListQuery } =
+    sessionsApi

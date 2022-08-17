@@ -4,12 +4,13 @@ import { Button } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPen } from '@fortawesome/pro-light-svg-icons'
 
-import { Grid, EditSessionModal } from '../components'
-import { formatDate } from '../utils'
+import { Grid, EditSessionModal, SessionPresenceListModal } from '../components'
+import { formatDate, gridContextMenu } from '../utils'
 import { useGetSessionsQuery } from '../services/sessions'
 
 export function SessionsPage() {
     const [isSessionModalOpen, setIsSessionModalOpen] = useState(false)
+    const [isPresenceListModalOpen, setIsPresenceListModalOpen] = useState(false)
     const [selectedSessionId, setSelectedSessionId] = useState()
 
     const {
@@ -21,6 +22,11 @@ export function SessionsPage() {
     const openSessionEditModal = ({ data }) => {
         setSelectedSessionId(data.id)
         setIsSessionModalOpen(true)
+    }
+
+    const openPresenceListModal = ({ data }) => {
+        setSelectedSessionId(data.id)
+        setIsPresenceListModalOpen(true)
     }
 
     const columnDefs = useMemo(
@@ -190,16 +196,38 @@ export function SessionsPage() {
             </Helmet>
             <EditSessionModal
                 {...{
-                    refetchSessions,
                     selectedSessionData: rowData?.find(({ id }) => id === selectedSessionId),
                     closeModal: () => {
                         setIsSessionModalOpen(false)
                         setSelectedSessionId()
+                        refetchSessions()
                     },
                     isModalOpen: isSessionModalOpen,
                 }}
             />
-            <Grid name="Sessions" columnDefs={columnDefs} rowData={rowData} isDataLoading={isFetching} />
+            <SessionPresenceListModal
+                closeModal={() => {
+                    setIsPresenceListModalOpen(false)
+                    setSelectedSessionId()
+                    refetchSessions()
+                }}
+                sessionId={selectedSessionId}
+                isModalOpen={isPresenceListModalOpen}
+            />
+            <Grid
+                name="Sessions"
+                columnDefs={columnDefs}
+                rowData={rowData}
+                isDataLoading={isFetching}
+                getContextMenuItems={({ node: { data } }) => [
+                    {
+                        name: 'Liste de présences',
+                        action: () => openPresenceListModal({ data }),
+                    },
+                    'separator',
+                    ...gridContextMenu,
+                ]}
+            />
         </>
     )
 }

@@ -8,7 +8,7 @@ import { CommonModal } from '../components'
 import { useUpdateSessionMutation } from '../services/sessions'
 import { formatToFlatObject } from '../utils'
 
-export function EditSessionModal({ refetchSessions, selectedSessionData, closeModal, isModalOpen }) {
+export function EditSessionModal({ selectedSessionData, closeModal, isModalOpen }) {
     const {
         handleSubmit,
         setValue,
@@ -47,11 +47,6 @@ export function EditSessionModal({ refetchSessions, selectedSessionData, closeMo
     }, [selectedSessionData, setValue, reset, sessionFormatValues, sessionLocationValues])
 
     const [updateSession, { isLoading: isSessionUpdating }] = useUpdateSessionMutation()
-
-    const closeSessionEditModal = () => {
-        closeModal(false)
-        refetchSessions()
-    }
 
     return (
         <CommonModal
@@ -129,7 +124,7 @@ export function EditSessionModal({ refetchSessions, selectedSessionData, closeMo
                                     })
                                     if (typeof mutationError === 'undefined') {
                                         toast.success('Succès !')
-                                        closeSessionEditModal()
+                                        closeModal()
                                     } else {
                                         toast.error(
                                             <>
@@ -156,7 +151,7 @@ export function EditSessionModal({ refetchSessions, selectedSessionData, closeMo
                             <Button
                                 variant="outline-primary"
                                 onClick={() => {
-                                    closeSessionEditModal()
+                                    closeModal()
                                 }}
                             >
                                 Annuler
@@ -166,7 +161,7 @@ export function EditSessionModal({ refetchSessions, selectedSessionData, closeMo
                 </>
             }
             isVisible={isModalOpen}
-            onHide={() => closeSessionEditModal()}
+            onHide={() => closeModal()}
             backdrop="static"
             dialogClassName="update-modal"
         />
