@@ -1,13 +1,13 @@
 import { useEffect } from 'react'
 import { Button, Spinner, Form, Table, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
+import { Packer, Document, HeadingLevel, Paragraph } from 'docx'
 
 import { CommonModal } from '../components'
 import { useGetPresenceListQuery } from '../services/sessions'
 
 export function SessionPresenceListModal({ sessionId, closeModal, isModalOpen }) {
     const {
-        handleSubmit,
         register,
         reset,
         formState: { isDirty },
@@ -36,6 +36,30 @@ export function SessionPresenceListModal({ sessionId, closeModal, isModalOpen })
     }, [presenceList, reset])
 
     const learnersCount = presenceList?.learners.length ?? 0
+
+    const generateDocx = () => {
+        const doc = new Document({
+            sections: [
+                {
+                    children: [
+                        new Paragraph({
+                            text: presenceList.courseName,
+                            heading: HeadingLevel.HEADING_1,
+                        }),
+                    ],
+                },
+            ],
+        })
+
+        Packer.toBlob(doc).then((blob) => {
+            const url = window.URL.createObjectURL(blob)
+            const a = document.createElement('a')
+            a.setAttribute('href', url)
+            a.setAttribute('download', `Présences - ${presenceList.sessionCode.replaceAll('/', '-')}.docx`)
+            a.click()
+            a.remove()
+        })
+    }
 
     return (
         <CommonModal
@@ -98,16 +122,9 @@ export function SessionPresenceListModal({ sessionId, closeModal, isModalOpen })
             }
             footer={
                 <>
-                    <OverlayTrigger
-                        placement="top"
-                        overlay={
-                            <Tooltip>
-                                {isDirty ? 'Appliquer la modification' : "Vous n'avez pas fait de modification"}
-                            </Tooltip>
-                        }
-                    >
+                    <OverlayTrigger placement="top" overlay={<Tooltip>Télécharger Word (.docx)</Tooltip>}>
                         <div>
-                            <Button variant="primary" disabled={!isDirty} onClick={handleSubmit(async (newData) => {})}>
+                            <Button variant="primary" onClick={generateDocx}>
                                 {false ? (
                                     <>
                                         <Spinner animation="grow" size="sm" /> Télécharger Word (.docx)...
