@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { Button, Spinner, Form, Table as BsTable, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
-import { Packer, Document, HeadingLevel, Paragraph, Table, TableRow, TableCell } from 'docx'
+import { Packer, Document, HeadingLevel, Paragraph, Table, TableRow, TableCell, WidthType } from 'docx'
 
 import { CommonModal } from '../components'
 import { useGetPresenceListQuery } from '../services/sessions'
@@ -48,18 +48,40 @@ export function SessionPresenceListModal({ sessionId, closeModal, isModalOpen })
                             heading: HeadingLevel.HEADING_1,
                         }),
                         new Paragraph({
+                            text: ' ',
+                        }),
+                        new Paragraph({
                             text: eventDates,
                             heading: HeadingLevel.HEADING_2,
+                        }),
+                        new Paragraph({
+                            text: ' ',
                         }),
                         new Paragraph({
                             text: tutors,
                             heading: HeadingLevel.HEADING_2,
                         }),
                         new Paragraph({
+                            text: ' ',
+                        }),
+                        new Paragraph({
                             text: sessionCode,
                             heading: HeadingLevel.HEADING_2,
                         }),
+                        new Paragraph({
+                            text: ' ',
+                        }),
                         new Table({
+                            width: {
+                                size: 100,
+                                type: WidthType.PERCENTAGE,
+                            },
+                            margins: {
+                                top: 70,
+                                bottom: 70,
+                                right: 70,
+                                left: 70,
+                            },
                             rows: [
                                 new TableRow({
                                     children: [
