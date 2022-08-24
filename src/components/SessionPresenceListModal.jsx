@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { Button, Spinner, Form, Table as BsTable, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
-import { Packer, Document, HeadingLevel, Paragraph, Table, TableRow, TableCell, WidthType } from 'docx'
+import { Packer, Document, HeadingLevel, Paragraph, Table, TableRow, TableCell, WidthType, AlignmentType } from 'docx'
 
 import { CommonModal } from '../components'
 import { useGetPresenceListQuery } from '../services/sessions'
@@ -90,6 +90,7 @@ export function SessionPresenceListModal({ sessionId, closeModal, isModalOpen })
                                                 new Paragraph({
                                                     text: '№',
                                                     heading: HeadingLevel.HEADING_3,
+                                                    alignment: AlignmentType.RIGHT,
                                                 }),
                                             ],
                                         }),
@@ -109,6 +110,7 @@ export function SessionPresenceListModal({ sessionId, closeModal, isModalOpen })
                                                               new Paragraph({
                                                                   text: `Jour ${index + 1}`,
                                                                   heading: HeadingLevel.HEADING_3,
+                                                                  alignment: AlignmentType.CENTER,
                                                               }),
                                                           ],
                                                       })
@@ -126,6 +128,7 @@ export function SessionPresenceListModal({ sessionId, closeModal, isModalOpen })
                                                               new Paragraph({
                                                                   text: `${index + 1}`,
                                                                   heading: HeadingLevel.HEADING_3,
+                                                                  alignment: AlignmentType.RIGHT,
                                                               }),
                                                           ],
                                                       }),
@@ -163,6 +166,7 @@ export function SessionPresenceListModal({ sessionId, closeModal, isModalOpen })
                                                         new Paragraph({
                                                             text: `${index + 1 + learnersCount}`,
                                                             heading: HeadingLevel.HEADING_3,
+                                                            alignment: AlignmentType.RIGHT,
                                                         }),
                                                     ],
                                                 }),
@@ -217,7 +221,7 @@ export function SessionPresenceListModal({ sessionId, closeModal, isModalOpen })
                         <Form.Control {...register('courseName')} />
                     </Form.Group>
                     <Form.Group className="mb-3">
-                        <Form.Label>Dates de séances</Form.Label>
+                        <Form.Label>Dates de séances physiques</Form.Label>
                         <Form.Control {...register('eventDates')} />
                     </Form.Group>
                     <Form.Group className="mb-3">
