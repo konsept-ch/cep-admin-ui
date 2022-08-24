@@ -128,8 +128,6 @@ export const formatDate = ({ dateString, isTimeVisible, isDateVisible }) => {
     return [getDate(), getTime()].filter(Boolean).join(', ')
 }
 
-export const isObjEmpty = (obj) => Object.keys(obj).length === 0
-
 export const callApi = async ({ path = '', method = 'GET', headers, body, successCallback = () => {} }) => {
     try {
         const response = await fetch(new URL(path, MIDDLEWARE_URL).href, {
