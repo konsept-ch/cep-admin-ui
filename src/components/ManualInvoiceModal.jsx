@@ -11,7 +11,7 @@ import { useGetOrganizationsFlatWithAddressQuery } from '../services/organizatio
 import { formatToFlatObject } from '../utils'
 
 const getInvoiceNumber = ({ courseYear, userCode, invoiceNumberForCurrentYear }) =>
-    ` ${`${courseYear}`?.slice(-2)}${`${userCode}`?.padStart(2, 0)}${`${invoiceNumberForCurrentYear}`?.padStart(4, 0)}`
+    ` ${`${courseYear}`.slice(-2)}${`${userCode}`.padStart(2, 0)}${`${invoiceNumberForCurrentYear}`.padStart(4, 0)}`
 
 const defaultEmptyItem = { designation: '', unit: '', amount: 0, price: 0 }
 
