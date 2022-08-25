@@ -17,7 +17,7 @@ import {
 import { getUniqueId, inscriptionStatuses } from '../utils'
 import { EmailTemplateBodyInput } from '../components/EmailTemplateBodyInput'
 
-export function TemplatesPage() {
+export function AttestationTemplatesPage() {
     const [selectedTemplateData, setSelectedTemplateData] = useState(null)
     const [isSessionInvitesModalVisible, setIsSessionInvitesModalVisible] = useState(false)
     const [isDeleteWarningVisible, setIsDeleteWarningVisible] = useState(false)
@@ -55,10 +55,10 @@ export function TemplatesPage() {
     return (
         <>
             <Helmet>
-                <title>Modèles E-mail - Former22</title>
+                <title>Modèles Attestations - Former22</title>
             </Helmet>
             <Container fluid className="templates-page">
-                <h1>Modèles E-mail</h1>
+                <h1>Modèles Attestations</h1>
                 <Row>
                     <Col>
                         <ListGroup>

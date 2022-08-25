@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Modal, Button, ListGroup, Alert, Spinner } from 'react-bootstrap'
+import { Modal, Button, ListGroup, Alert, Spinner, Row } from 'react-bootstrap'
 import { useSelector, useDispatch } from 'react-redux'
 import classNames from 'classnames'
 import { fetchParametersAction } from '../actions/parameters.ts'
@@ -50,160 +50,265 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
             <Modal.Header closeButton>
                 <Modal.Title as="h3">Changer le statut d'inscription</Modal.Title>
             </Modal.Header>
-            <Modal.Body className="row">
-                {statusWarnings[statusUpdateData.status]?.[statusUpdateData.newStatus] && (
-                    <div className="col-sm-12">
-                        <Alert variant="warning">
-                            {statusWarnings[statusUpdateData.status][statusUpdateData.newStatus]}
-                        </Alert>
-                    </div>
-                )}
-                <div className="col">
-                    <h6>Détails de l'inscription</h6>
-                    <dl>
-                        <dt>Date d'inscription</dt>
-                        <dd>{formatDate({ dateString: statusUpdateData.inscriptionDate, isDateVisible: true })}</dd>
-                        <dt>Statut actuel de l'inscription</dt>
-                        <dd>{statusUpdateData.status}</dd>
-                    </dl>
-                    <hr />
-                    <dl>
-                        <dt>Nom du participant</dt>
-                        <dd>{`${statusUpdateData.user.lastName} ${statusUpdateData.user.firstName}`}</dd>
-                        <dt>E-mail du participant</dt>
-                        <dd>
-                            <a href={`mailto:${statusUpdateData.user.email}`}>{statusUpdateData.user.email}</a>
-                        </dd>
-                        <dt>Fonction professionnelle</dt>
-                        <dd>{statusUpdateData.user.profession ?? '(Aucune profession choisie)'}</dd>
-                        <dt>Numéro de téléphone du participant</dt>
-                        <dd>
-                            {statusUpdateData.user.phone ? (
-                                <>
-                                    {statusUpdateData.user.phone}
-                                    <br />
-                                    <a href={`tel:${statusUpdateData.user.phoneForSms}`}>
-                                        <i>({statusUpdateData.user.phoneForSms})</i>
-                                    </a>
-                                </>
-                            ) : (
-                                '(Aucun numéro saisi)'
-                            )}
-                        </dd>
-                        <dt>Recevoir SMS ?</dt>
-                        <dd>{statusUpdateData.user.shouldReceiveSms ? 'Oui' : 'Non'}</dd>
-                    </dl>
-                    <hr />
-                    <dl>
-                        <dt>Nom de la session</dt>
-                        <dd>{statusUpdateData.session.name}</dd>
-                        <dt>Date de début</dt>
-                        <dd>{formatDate({ dateString: statusUpdateData.session.startDate, isDateVisible: true })}</dd>
-                        <dt>Statut de la session</dt>
-                        <dd>(à faire - invitée)</dd>
-                    </dl>
-                </div>
-                <div className="col">
-                    <Alert variant="primary">
-                        <h6>Nouveau statut</h6>
-                        <Alert.Heading as="h3" className="mb-0">
-                            {statusUpdateData.newStatus}
-                        </Alert.Heading>
-                    </Alert>
-                    <h6>Choix de modèle</h6>
-                    <ListGroup>
-                        <ListGroup.Item
-                            onClick={() =>
-                                setSelectedTemplateData({
-                                    templateId: 'no-email',
-                                    emailBody: 'Aucun e-mail ne sera envoyé',
-                                    emailSubject: null,
-                                })
-                            }
-                            className={classNames({
-                                'active-template': selectedTemplateData?.templateId === 'no-email',
-                            })}
-                        >
-                            <h4>Aucun e-mail</h4>
-                            <p>Aucun e-mail ne sera envoyé</p>
-                        </ListGroup.Item>
-                        {emailTemplates.length > 0 &&
-                            emailTemplates.map(({ title, descriptionText, emailBody, templateId, emailSubject }) => (
-                                <ListGroup.Item
-                                    key={templateId}
-                                    onClick={() => {
-                                        setSelectedTemplateData({ emailBody, templateId, emailSubject })
-                                        fetchTemplatePreviews({ templateId })
-                                    }}
-                                    className={classNames({
-                                        'active-template': selectedTemplateData?.templateId === templateId,
-                                    })}
-                                >
-                                    <h4>{title}</h4>
-                                    <p>{descriptionText}</p>
-                                </ListGroup.Item>
-                            ))}
-                    </ListGroup>
-                </div>
-                <div className="col template-preview">
-                    <h6>Aperçu de l'e-mail</h6>
-                    {isEmailTemplateSelected ? (
-                        <dl>
-                            <dt>Sujet de l'email</dt>
-                            <dd>
-                                {!areTemplatesLoading ? (
-                                    <EmailTemplateBodyInput
-                                        className="email-preview"
-                                        onChange={() => {}}
-                                        value={{
-                                            value: templatePreviews.emailSubject,
-                                            templateId: selectedTemplateData.templateId,
-                                        }}
-                                        readOnly
-                                    />
-                                ) : (
-                                    <Spinner animation="grow" size="sm" />
-                                )}
-                            </dd>
-                            <dt>Corps de l'e-mail</dt>
-                            <dd>
-                                {!areTemplatesLoading ? (
-                                    <EmailTemplateBodyInput
-                                        className="email-preview"
-                                        onChange={() => {}}
-                                        value={{
-                                            value: templatePreviews.emailContent,
-                                            templateId: selectedTemplateData.templateId,
-                                        }}
-                                        readOnly
-                                    />
-                                ) : (
-                                    <Spinner animation="grow" size="sm" />
-                                )}
-                            </dd>
-                            <dt>Corps de l'SMS</dt>
-                            <dd>
-                                {!areTemplatesLoading ? (
-                                    <EmailTemplateBodyInput
-                                        className="email-preview"
-                                        onChange={() => {}}
-                                        value={{
-                                            value: templatePreviews.smsContent,
-                                            templateId: selectedTemplateData.templateId,
-                                        }}
-                                        readOnly
-                                    />
-                                ) : (
-                                    <Spinner animation="grow" size="sm" />
-                                )}
-                            </dd>
-                        </dl>
-                    ) : selectedTemplateData?.templateId === 'no-email' ? (
-                        'Aucun e-mail ne sera envoyé'
-                    ) : (
-                        'Sélectionnez un modèle'
+            <Modal.Body>
+                <Row>
+                    {statusWarnings[statusUpdateData.status]?.[statusUpdateData.newStatus] && (
+                        <div className="col-sm-12">
+                            <Alert variant="warning">
+                                {statusWarnings[statusUpdateData.status][statusUpdateData.newStatus]}
+                            </Alert>
+                        </div>
                     )}
-                </div>
+                    <div className="col">
+                        <h6>Détails de l'inscription</h6>
+                        <dl>
+                            <dt>Date d'inscription</dt>
+                            <dd>{formatDate({ dateString: statusUpdateData.inscriptionDate, isDateVisible: true })}</dd>
+                            <dt>Statut actuel de l'inscription</dt>
+                            <dd>{statusUpdateData.status}</dd>
+                        </dl>
+                        <hr />
+                        <dl>
+                            <dt>Nom du participant</dt>
+                            <dd>{`${statusUpdateData.user.lastName} ${statusUpdateData.user.firstName}`}</dd>
+                            <dt>E-mail du participant</dt>
+                            <dd>
+                                <a href={`mailto:${statusUpdateData.user.email}`}>{statusUpdateData.user.email}</a>
+                            </dd>
+                            <dt>Fonction professionnelle</dt>
+                            <dd>{statusUpdateData.user.profession ?? '(Aucune profession choisie)'}</dd>
+                            <dt>Numéro de téléphone du participant</dt>
+                            <dd>
+                                {statusUpdateData.user.phone ? (
+                                    <>
+                                        {statusUpdateData.user.phone}
+                                        <br />
+                                        <a href={`tel:${statusUpdateData.user.phoneForSms}`}>
+                                            <i>({statusUpdateData.user.phoneForSms})</i>
+                                        </a>
+                                    </>
+                                ) : (
+                                    '(Aucun numéro saisi)'
+                                )}
+                            </dd>
+                            <dt>Recevoir SMS ?</dt>
+                            <dd>{statusUpdateData.user.shouldReceiveSms ? 'Oui' : 'Non'}</dd>
+                        </dl>
+                        <hr />
+                        <dl>
+                            <dt>Nom de la session</dt>
+                            <dd>{statusUpdateData.session.name}</dd>
+                            <dt>Date de début</dt>
+                            <dd>
+                                {formatDate({ dateString: statusUpdateData.session.startDate, isDateVisible: true })}
+                            </dd>
+                            <dt>Statut de la session</dt>
+                            <dd>(à faire - invitée)</dd>
+                        </dl>
+                    </div>
+                    <div className="col">
+                        <Alert variant="primary">
+                            <h6>Nouveau statut</h6>
+                            <Alert.Heading as="h3" className="mb-0">
+                                {statusUpdateData.newStatus}
+                            </Alert.Heading>
+                        </Alert>
+                        <h6>Choix de modèle d'e-mail</h6>
+                        <ListGroup>
+                            <ListGroup.Item
+                                onClick={() =>
+                                    setSelectedTemplateData({
+                                        templateId: 'no-email',
+                                        emailBody: 'Aucun e-mail ne sera envoyé',
+                                        emailSubject: null,
+                                    })
+                                }
+                                className={classNames({
+                                    'active-template': selectedTemplateData?.templateId === 'no-email',
+                                })}
+                            >
+                                <h4>Aucun e-mail</h4>
+                                <p>Aucun e-mail ne sera envoyé</p>
+                            </ListGroup.Item>
+                            {emailTemplates.length > 0 &&
+                                emailTemplates.map(
+                                    ({ title, descriptionText, emailBody, templateId, emailSubject }) => (
+                                        <ListGroup.Item
+                                            key={templateId}
+                                            onClick={() => {
+                                                setSelectedTemplateData({ emailBody, templateId, emailSubject })
+                                                fetchTemplatePreviews({ templateId })
+                                            }}
+                                            className={classNames({
+                                                'active-template': selectedTemplateData?.templateId === templateId,
+                                            })}
+                                        >
+                                            <h4>{title}</h4>
+                                            <p>{descriptionText}</p>
+                                        </ListGroup.Item>
+                                    )
+                                )}
+                        </ListGroup>
+                    </div>
+                    <div className="col template-preview">
+                        <h6>Aperçu de l'e-mail</h6>
+                        {isEmailTemplateSelected ? (
+                            <dl>
+                                <dt>Sujet de l'email</dt>
+                                <dd>
+                                    {!areTemplatesLoading ? (
+                                        <EmailTemplateBodyInput
+                                            className="email-preview"
+                                            onChange={() => {}}
+                                            value={{
+                                                value: templatePreviews.emailSubject,
+                                                templateId: selectedTemplateData.templateId,
+                                            }}
+                                            readOnly
+                                        />
+                                    ) : (
+                                        <Spinner animation="grow" size="sm" />
+                                    )}
+                                </dd>
+                                <dt>Corps de l'e-mail</dt>
+                                <dd>
+                                    {!areTemplatesLoading ? (
+                                        <EmailTemplateBodyInput
+                                            className="email-preview"
+                                            onChange={() => {}}
+                                            value={{
+                                                value: templatePreviews.emailContent,
+                                                templateId: selectedTemplateData.templateId,
+                                            }}
+                                            readOnly
+                                        />
+                                    ) : (
+                                        <Spinner animation="grow" size="sm" />
+                                    )}
+                                </dd>
+                                <dt>Corps de l'SMS</dt>
+                                <dd>
+                                    {!areTemplatesLoading ? (
+                                        <EmailTemplateBodyInput
+                                            className="email-preview"
+                                            onChange={() => {}}
+                                            value={{
+                                                value: templatePreviews.smsContent,
+                                                templateId: selectedTemplateData.templateId,
+                                            }}
+                                            readOnly
+                                        />
+                                    ) : (
+                                        <Spinner animation="grow" size="sm" />
+                                    )}
+                                </dd>
+                            </dl>
+                        ) : selectedTemplateData?.templateId === 'no-email' ? (
+                            'Aucun e-mail ne sera envoyé'
+                        ) : (
+                            'Sélectionnez un modèle'
+                        )}
+                    </div>
+                </Row>
+                <Row>
+                    <div className="col-sm-4">
+                        <h6>Choix de modèle d'attestation</h6>
+                        <ListGroup>
+                            <ListGroup.Item
+                                onClick={() =>
+                                    setSelectedTemplateData({
+                                        templateId: 'no-email',
+                                        emailBody: 'Aucun e-mail ne sera envoyé',
+                                        emailSubject: null,
+                                    })
+                                }
+                                className={classNames({
+                                    'active-template': selectedTemplateData?.templateId === 'no-email',
+                                })}
+                            >
+                                <h4>Aucun e-mail</h4>
+                                <p>Aucun e-mail ne sera envoyé</p>
+                            </ListGroup.Item>
+                            {emailTemplates.length > 0 &&
+                                emailTemplates.map(
+                                    ({ title, descriptionText, emailBody, templateId, emailSubject }) => (
+                                        <ListGroup.Item
+                                            key={templateId}
+                                            onClick={() => {
+                                                setSelectedTemplateData({ emailBody, templateId, emailSubject })
+                                                fetchTemplatePreviews({ templateId })
+                                            }}
+                                            className={classNames({
+                                                'active-template': selectedTemplateData?.templateId === templateId,
+                                            })}
+                                        >
+                                            <h4>{title}</h4>
+                                            <p>{descriptionText}</p>
+                                        </ListGroup.Item>
+                                    )
+                                )}
+                        </ListGroup>
+                    </div>
+                    <div className="col template-preview">
+                        <h6>Aperçu de l'attestation</h6>
+                        {isEmailTemplateSelected ? (
+                            <dl>
+                                <dt>Sujet de l'email</dt>
+                                <dd>
+                                    {!areTemplatesLoading ? (
+                                        <EmailTemplateBodyInput
+                                            className="email-preview"
+                                            onChange={() => {}}
+                                            value={{
+                                                value: templatePreviews.emailSubject,
+                                                templateId: selectedTemplateData.templateId,
+                                            }}
+                                            readOnly
+                                        />
+                                    ) : (
+                                        <Spinner animation="grow" size="sm" />
+                                    )}
+                                </dd>
+                                <dt>Corps de l'e-mail</dt>
+                                <dd>
+                                    {!areTemplatesLoading ? (
+                                        <EmailTemplateBodyInput
+                                            className="email-preview"
+                                            onChange={() => {}}
+                                            value={{
+                                                value: templatePreviews.emailContent,
+                                                templateId: selectedTemplateData.templateId,
+                                            }}
+                                            readOnly
+                                        />
+                                    ) : (
+                                        <Spinner animation="grow" size="sm" />
+                                    )}
+                                </dd>
+                                <dt>Corps de l'SMS</dt>
+                                <dd>
+                                    {!areTemplatesLoading ? (
+                                        <EmailTemplateBodyInput
+                                            className="email-preview"
+                                            onChange={() => {}}
+                                            value={{
+                                                value: templatePreviews.smsContent,
+                                                templateId: selectedTemplateData.templateId,
+                                            }}
+                                            readOnly
+                                        />
+                                    ) : (
+                                        <Spinner animation="grow" size="sm" />
+                                    )}
+                                </dd>
+                            </dl>
+                        ) : selectedTemplateData?.templateId === 'no-email' ? (
+                            'Aucun e-mail ne sera envoyé'
+                        ) : (
+                            'Sélectionnez un modèle'
+                        )}
+                    </div>
+                </Row>
             </Modal.Body>
             <Modal.Footer>
                 <ConfirmInscriptionChangeButton

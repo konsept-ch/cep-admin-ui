@@ -10,6 +10,7 @@ import { SurveyPage } from './pages/SurveyPage'
 import { SessionsPage } from './pages/SessionsPage'
 import { CoursesPage } from './pages/CoursesPage'
 import { TemplatesPage } from './pages/TemplatesPage'
+import { AttestationTemplatesPage } from './pages/AttestationTemplatesPage'
 import { AgendaPage } from './pages/AgendaPage'
 import { TypographyPage } from './pages/TypographyPage'
 import { NotificationsPage } from './pages/NotificationsPage'
@@ -30,6 +31,8 @@ import {
     PATH_NOTIFICATIONS,
     PATH_FORMATIONS,
     PATH_TEMPLATES,
+    PATH_EMAIL_TEMPLATES,
+    PATH_ATTESTATION_TEMPLATES,
     PATH_ORGANIZATIONS,
     PATH_FORMATEURS,
     PATH_USERS,
@@ -88,6 +91,16 @@ export function App() {
                             <Route exact path={`${PATH_CATALOGUE}/${PATH_FORMATIONS}`} element={<CoursesPage />} />
                             <Route exact path={`${PATH_CATALOGUE}/${PATH_SESSIONS}`} element={<SessionsPage />} />
                             <Route exact path={`${PATH_CATALOGUE}/${PATH_SEANCES}`} element={<SeancesPage />} />
+                            <Route
+                                exact
+                                path={`${PATH_TEMPLATES}/${PATH_EMAIL_TEMPLATES}`}
+                                element={<TemplatesPage />}
+                            />
+                            <Route
+                                exact
+                                path={`${PATH_TEMPLATES}/${PATH_ATTESTATION_TEMPLATES}`}
+                                element={<AttestationTemplatesPage />}
+                            />
                             <Route exact path={PATH_TEMPLATES} element={<TemplatesPage />} />
                             <Route exact path={`${PATH_COMMUNITY}/${PATH_USERS}`} element={<UsersPage />} />
                             <Route exact path={`${PATH_INVOICE}/${PATH_INVOICE_DIRECT}`} element={<InvoicePage />} />

@@ -26,6 +26,8 @@ import {
     PATH_FORMATIONS,
     PATH_SESSIONS,
     PATH_TEMPLATES,
+    PATH_EMAIL_TEMPLATES,
+    PATH_ATTESTATION_TEMPLATES,
     PATH_COMMUNITY,
     PATH_USERS,
     PATH_ORGANIZATIONS,
@@ -113,9 +115,30 @@ export const Navigation = ({ isLoggedIn }) => {
                                 <FontAwesomeIcon icon={faBookOpenCover} /> Séances
                             </Nav.Link>
                         </NavDropdown>
-                        <Nav.Link href={`/${PATH_TEMPLATES}`} onClick={goTo(PATH_TEMPLATES)}>
+                        {/* <Nav.Link href={`/${PATH_TEMPLATES}`} onClick={goTo(PATH_TEMPLATES)}>
                             <FontAwesomeIcon icon={faEnvelopeOpenText} /> Modèles
-                        </Nav.Link>
+                        </Nav.Link> */}
+                        <NavDropdown
+                            active={location.pathname.startsWith(`/${PATH_TEMPLATES}`)}
+                            title={
+                                <>
+                                    <FontAwesomeIcon icon={faEnvelopeOpenText} /> Modèles
+                                </>
+                            }
+                        >
+                            <Nav.Link
+                                href={`/${PATH_TEMPLATES}/${PATH_EMAIL_TEMPLATES}`}
+                                onClick={goTo(`${PATH_TEMPLATES}/${PATH_EMAIL_TEMPLATES}`)}
+                            >
+                                <FontAwesomeIcon icon={faEnvelopeOpenText} /> E-mail
+                            </Nav.Link>
+                            <Nav.Link
+                                href={`/${PATH_TEMPLATES}/${PATH_ATTESTATION_TEMPLATES}`}
+                                onClick={goTo(`${PATH_TEMPLATES}/${PATH_ATTESTATION_TEMPLATES}`)}
+                            >
+                                <FontAwesomeIcon icon={faEnvelopeOpenText} /> Attestations
+                            </Nav.Link>
+                        </NavDropdown>
                         <NavDropdown
                             active={location.pathname.startsWith(`/${PATH_INVOICE}`)}
                             title={
