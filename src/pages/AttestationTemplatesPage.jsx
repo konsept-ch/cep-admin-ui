@@ -5,23 +5,30 @@ import { equals } from 'ramda'
 import { Helmet } from 'react-helmet-async'
 
 import { CommonModal } from '../components'
-import { addTemplateAction, deleteTemplateAction, updateTemplateAction } from '../actions/templates.ts'
-import { getUniqueId, inscriptionStatuses } from '../utils'
+import { useCreateAttestationMutation, useGetAttestationsQuery } from '../services/attestations'
+import { getUniqueId } from '../utils'
 
 export function AttestationTemplatesPage() {
+    const { data: attestations } = useGetAttestationsQuery(null, {
+        refetchOnMountOrArgChange: true,
+    })
+    const [createAttestation] = useCreateAttestationMutation()
     const [selectedTemplateData, setSelectedTemplateData] = useState(null)
-    const [isSessionInvitesModalVisible, setIsSessionInvitesModalVisible] = useState(false)
     const [isDeleteWarningVisible, setIsDeleteWarningVisible] = useState(false)
     const [discardWarningData, setDiscardWarningData] = useState({ isVisible: false })
 
     const templates = [
         {
-            id: '1',
+            path: 'data/aaaaaaaaaaaaaaaaaaaa/qwerty-1.docx',
+            filename: 'test-1.docx',
+            idModel: '1',
             title: 'Modèle attestation 1',
             descriptionText: 'Description du modèle attestation 1',
         },
         {
-            id: '2',
+            path: 'data/aaaaaaaaaaaaaaaaaaaa/asdffgghh-2.docx',
+            filename: 'test-2.docx',
+            idModel: '2',
             title: 'Modèle attestation 2',
             descriptionText: 'Description du modèle attestation 2',
         },
@@ -30,12 +37,7 @@ export function AttestationTemplatesPage() {
     const generateNewTemplate = () => ({
         title: 'Nouveau modèle',
         descriptionText: '',
-        emailBody: '',
-        emailSubject: '',
-        smsBody: '',
-        statuses: inscriptionStatuses.map((current) => ({ value: current, label: current })),
-        id: getUniqueId(),
-        isUsedForSessionInvites: false,
+        idModel: getUniqueId(),
     })
 
     const checkIsTemplateChanged = () => {
@@ -43,7 +45,7 @@ export function AttestationTemplatesPage() {
             selectedTemplateData !== null &&
             templates != null &&
             !equals(
-                templates.find(({ id }) => id === selectedTemplateData.id),
+                templates.find(({ idModel }) => idModel === selectedTemplateData.idModel),
                 selectedTemplateData
             )
         )
@@ -60,80 +62,56 @@ export function AttestationTemplatesPage() {
                     <Col>
                         <ListGroup>
                             {templates.length > 0 &&
-                                templates.map(
-                                    ({
-                                        title,
-                                        descriptionText,
-                                        emailBody,
-                                        statuses,
-                                        id,
-                                        isUsedForSessionInvites,
-                                        emailSubject,
-                                        smsBody,
-                                    }) => (
-                                        <ListGroup.Item
-                                            key={id}
-                                            onClick={() => {
-                                                checkIsTemplateChanged()
-                                                    ? setDiscardWarningData({
-                                                          isVisible: true,
-                                                          selectNewTemplate: () =>
-                                                              setSelectedTemplateData({
-                                                                  title,
-                                                                  descriptionText,
-                                                                  emailSubject,
-                                                                  smsBody,
-                                                                  emailBody,
-                                                                  statuses,
-                                                                  id,
-                                                                  isUsedForSessionInvites,
-                                                              }),
-                                                      })
-                                                    : setSelectedTemplateData({
-                                                          title,
-                                                          descriptionText,
-                                                          emailSubject,
-                                                          smsBody,
-                                                          emailBody,
-                                                          statuses,
-                                                          id,
-                                                          isUsedForSessionInvites,
-                                                      })
-                                            }}
-                                            className={classNames({
-                                                'active-template': selectedTemplateData?.id === id,
-                                            })}
-                                        >
-                                            <div className="d-flex align-items-start justify-content-between">
-                                                <h4 className="d-inline-block">{title}</h4>
-                                                {isUsedForSessionInvites && (
-                                                    <Badge bg="warning" text="dark">
-                                                        Sessions invitées
-                                                    </Badge>
-                                                )}
-                                            </div>
-                                            {descriptionText && <p>{descriptionText}</p>}
-                                        </ListGroup.Item>
-                                    )
-                                )}
+                                templates.map(({ path, title, descriptionText, filename, idModel }) => (
+                                    <ListGroup.Item
+                                        key={idModel}
+                                        onClick={() => {
+                                            checkIsTemplateChanged()
+                                                ? setDiscardWarningData({
+                                                      isVisible: true,
+                                                      selectNewTemplate: () =>
+                                                          setSelectedTemplateData({
+                                                              path,
+                                                              filename,
+                                                              idModel,
+                                                              title,
+                                                              descriptionText,
+                                                          }),
+                                                  })
+                                                : setSelectedTemplateData({
+                                                      path,
+                                                      filename,
+                                                      idModel,
+                                                      title,
+                                                      descriptionText,
+                                                  })
+                                        }}
+                                        className={classNames({
+                                            'active-template': selectedTemplateData?.idModel === idModel,
+                                        })}
+                                    >
+                                        <div className="d-flex align-items-start justify-content-between">
+                                            <h4 className="d-inline-block">{title}</h4>
+                                        </div>
+                                        {descriptionText && <p>{descriptionText}</p>}
+                                    </ListGroup.Item>
+                                ))}
                         </ListGroup>
                         <Button
                             variant="success"
                             onClick={() => {
+                                const newTemplateData = generateNewTemplate()
+
                                 if (checkIsTemplateChanged()) {
                                     setDiscardWarningData({
                                         isVisible: true,
                                         selectNewTemplate: () => {
-                                            const newTemplateData = generateNewTemplate()
-
-                                            dispatch(addTemplateAction({ templateData: newTemplateData }))
+                                            createAttestation({ attestationData: newTemplateData })
                                             setSelectedTemplateData(newTemplateData)
                                         },
                                     })
                                 } else {
-                                    const newTemplateData = generateNewTemplate()
-
-                                    dispatch(addTemplateAction({ templateData: newTemplateData }))
+                                    createAttestation({ attestationData: newTemplateData })
                                     setSelectedTemplateData(newTemplateData)
                                 }
                             }}
@@ -168,14 +146,22 @@ export function AttestationTemplatesPage() {
                                 </FloatingLabel>
                                 <Form.Group controlId="formFile" className="mb-3">
                                     <Form.Label>Fichier Word (.docx):</Form.Label>
-                                    <Form.Control type="file" />
+                                    <Form.Control
+                                        type="file"
+                                        accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                        onChange={({ target: { value } }) => {
+                                            const formData = new FormData()
+                                            formData.append('file', value)
+                                            setSelectedTemplateData({ ...selectedTemplateData, filename: formData })
+                                        }}
+                                    />
                                 </Form.Group>
                                 <div className="d-flex justify-content-between mb-2">
                                     <div>
                                         <Button
                                             variant="primary"
                                             onClick={() => {
-                                                dispatch(updateTemplateAction({ templateData: selectedTemplateData }))
+                                                console.log('update attestation')
                                             }}
                                             className="mt-2 me-2"
                                             disabled={!checkIsTemplateChanged()}
@@ -191,58 +177,13 @@ export function AttestationTemplatesPage() {
                                         </Button>
                                     </div>
                                     <CommonModal
-                                        title="User autre modèle pour sessions invitées"
-                                        content={
-                                            <>
-                                                <p>Il existe déjà un modèle pour les invitations à une session.</p>
-                                                <p>Êtes-vous sûr de vouloir mettre à jour le modèle ?</p>
-                                            </>
-                                        }
-                                        footer={
-                                            <Button
-                                                variant="secondary"
-                                                onClick={() => {
-                                                    dispatch(
-                                                        updateTemplateAction({
-                                                            templateData: {
-                                                                ...templateForInvites,
-                                                                isUsedForSessionInvites: false,
-                                                            },
-                                                        })
-                                                    )
-                                                    dispatch(
-                                                        updateTemplateAction({
-                                                            templateData: {
-                                                                ...selectedTemplateData,
-                                                                isUsedForSessionInvites: true,
-                                                            },
-                                                        })
-                                                    )
-                                                    setSelectedTemplateData({
-                                                        ...selectedTemplateData,
-                                                        isUsedForSessionInvites: true,
-                                                    })
-                                                    setIsSessionInvitesModalVisible(false)
-                                                }}
-                                            >
-                                                Utiliser
-                                            </Button>
-                                        }
-                                        isVisible={isSessionInvitesModalVisible}
-                                        onHide={() => setIsSessionInvitesModalVisible(false)}
-                                    />
-                                    <CommonModal
                                         title="Avertissement"
                                         content={<p>Êtes-vous sûr de vouloir supprimer ce modèle?</p>}
                                         footer={
                                             <Button
                                                 variant="danger"
                                                 onClick={() => {
-                                                    dispatch(
-                                                        deleteTemplateAction({
-                                                            id: selectedTemplateData.id,
-                                                        })
-                                                    )
+                                                    console.log('delete attestation')
                                                     setSelectedTemplateData(null)
                                                     setIsDeleteWarningVisible(false)
                                                 }}
@@ -261,9 +202,7 @@ export function AttestationTemplatesPage() {
                                                 <Button
                                                     variant="primary"
                                                     onClick={() => {
-                                                        dispatch(
-                                                            updateTemplateAction({ templateData: selectedTemplateData })
-                                                        )
+                                                        console.log('update attestation')
                                                         discardWarningData.selectNewTemplate()
                                                         setDiscardWarningData({ isVisible: false })
                                                     }}
