@@ -320,6 +320,16 @@ export function InscriptionsPage() {
                                     : '',
                         })),
                     },
+                    {
+                        name: 'Créer attestation',
+                        action: () => {
+                            setIsUpdateModalVisible(true)
+                            setStatusUpdateData({
+                                ...inscriptions.find(({ id }) => id === data.id),
+                                newStatus: data.status,
+                            })
+                        },
+                    },
                     'separator',
                     ...gridContextMenu,
                 ]}

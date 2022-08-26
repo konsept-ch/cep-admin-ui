@@ -39,6 +39,19 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
           )
         : []
 
+    const attestationTemplates = [
+        {
+            templateId: '1',
+            title: 'Modèle attestation 1',
+            descriptionText: 'Description du modèle attestation 1',
+        },
+        {
+            templateId: '2',
+            title: 'Modèle attestation 2',
+            descriptionText: 'Description du modèle attestation 2',
+        },
+    ]
+
     return (
         <Modal
             show
@@ -210,46 +223,47 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
                         )}
                     </div>
                 </Row>
-                <Row>
-                    <div className="col-sm-4">
-                        <h6>Choix de modèle d'attestation</h6>
-                        <ListGroup>
-                            <ListGroup.Item
-                                onClick={() =>
-                                    setSelectedTemplateData({
-                                        templateId: 'no-email',
-                                        emailBody: 'Aucun e-mail ne sera envoyé',
-                                        emailSubject: null,
-                                    })
-                                }
-                                className={classNames({
-                                    'active-template': selectedTemplateData?.templateId === 'no-email',
-                                })}
-                            >
-                                <h4>Aucun e-mail</h4>
-                                <p>Aucun e-mail ne sera envoyé</p>
-                            </ListGroup.Item>
-                            {emailTemplates.length > 0 &&
-                                emailTemplates.map(
-                                    ({ title, descriptionText, emailBody, templateId, emailSubject }) => (
-                                        <ListGroup.Item
-                                            key={templateId}
-                                            onClick={() => {
-                                                setSelectedTemplateData({ emailBody, templateId, emailSubject })
-                                                fetchTemplatePreviews({ templateId })
-                                            }}
-                                            className={classNames({
-                                                'active-template': selectedTemplateData?.templateId === templateId,
-                                            })}
-                                        >
-                                            <h4>{title}</h4>
-                                            <p>{descriptionText}</p>
-                                        </ListGroup.Item>
-                                    )
-                                )}
-                        </ListGroup>
-                    </div>
-                    <div className="col template-preview">
+                {statusUpdateData.newStatus === 'Participation' && (
+                    <Row>
+                        <div className="col-sm-4">
+                            <h6>Choix de modèle d'attestation</h6>
+                            <ListGroup>
+                                <ListGroup.Item
+                                    onClick={() =>
+                                        setSelectedTemplateData({
+                                            templateId: 'no-attestation',
+                                            emailBody: 'Aucun e-mail ne sera envoyé',
+                                            emailSubject: null,
+                                        })
+                                    }
+                                    className={classNames({
+                                        'active-template': selectedTemplateData?.templateId === 'no-attestation',
+                                    })}
+                                >
+                                    <h4>Aucune attestation</h4>
+                                    <p>Aucun attestation ne sera déposé dans l'espace personnel</p>
+                                </ListGroup.Item>
+                                {attestationTemplates.length > 0 &&
+                                    attestationTemplates.map(
+                                        ({ title, descriptionText, emailBody, templateId, emailSubject }) => (
+                                            <ListGroup.Item
+                                                key={templateId}
+                                                onClick={() => {
+                                                    // setSelectedTemplateData({ emailBody, templateId, emailSubject })
+                                                    // fetchTemplatePreviews({ templateId })
+                                                }}
+                                                className={classNames({
+                                                    'active-template': selectedTemplateData?.templateId === templateId,
+                                                })}
+                                            >
+                                                <h4>{title}</h4>
+                                                <p>{descriptionText}</p>
+                                            </ListGroup.Item>
+                                        )
+                                    )}
+                            </ListGroup>
+                        </div>
+                        {/*  <div className="col template-preview">
                         <h6>Aperçu de l'attestation</h6>
                         {isEmailTemplateSelected ? (
                             <dl>
@@ -307,8 +321,9 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
                         ) : (
                             'Sélectionnez un modèle'
                         )}
-                    </div>
-                </Row>
+                    </div> */}
+                    </Row>
+                )}
             </Modal.Body>
             <Modal.Footer>
                 <ConfirmInscriptionChangeButton

@@ -6,29 +6,28 @@ import classNames from 'classnames'
 import { equals } from 'ramda'
 import { Helmet } from 'react-helmet-async'
 
-import { templatesSelector, templateForInvitesSelector } from '../reducers'
 import { CommonModal } from '../components'
-import {
-    fetchTemplatesAction,
-    addTemplateAction,
-    deleteTemplateAction,
-    updateTemplateAction,
-} from '../actions/templates.ts'
+import { addTemplateAction, deleteTemplateAction, updateTemplateAction } from '../actions/templates.ts'
 import { getUniqueId, inscriptionStatuses } from '../utils'
-import { EmailTemplateBodyInput } from '../components/EmailTemplateBodyInput'
 
 export function AttestationTemplatesPage() {
     const [selectedTemplateData, setSelectedTemplateData] = useState(null)
     const [isSessionInvitesModalVisible, setIsSessionInvitesModalVisible] = useState(false)
     const [isDeleteWarningVisible, setIsDeleteWarningVisible] = useState(false)
     const [discardWarningData, setDiscardWarningData] = useState({ isVisible: false })
-    const templates = useSelector(templatesSelector)
-    const templateForInvites = useSelector(templateForInvitesSelector)
-    const dispatch = useDispatch()
 
-    useEffect(() => {
-        dispatch(fetchTemplatesAction())
-    }, [])
+    const templates = [
+        {
+            templateId: '1',
+            title: 'Modèle attestation 1',
+            descriptionText: 'Description du modèle attestation 1',
+        },
+        {
+            templateId: '2',
+            title: 'Modèle attestation 2',
+            descriptionText: 'Description du modèle attestation 2',
+        },
+    ]
 
     const generateNewTemplate = () => ({
         title: 'Nouveau modèle',
@@ -169,58 +168,10 @@ export function AttestationTemplatesPage() {
                                         }
                                     />
                                 </FloatingLabel>
-                                <label>Sujet de l'email :</label>
-                                <EmailTemplateBodyInput
-                                    className="email-subject-input"
-                                    onChange={(value) =>
-                                        setSelectedTemplateData({ ...selectedTemplateData, emailSubject: value })
-                                    }
-                                    value={{
-                                        value: selectedTemplateData.emailSubject,
-                                        templateId: selectedTemplateData.templateId,
-                                    }}
-                                    shouldHaveVariables
-                                    isEmailSubjectInput
-                                />
-
-                                <label>Corps de l'e-mail :</label>
-                                <EmailTemplateBodyInput
-                                    className="email-body-input"
-                                    onChange={(value) =>
-                                        setSelectedTemplateData({ ...selectedTemplateData, emailBody: value })
-                                    }
-                                    value={{
-                                        value: selectedTemplateData.emailBody,
-                                        templateId: selectedTemplateData.templateId,
-                                    }}
-                                    shouldHandleKeyCommand
-                                    shouldHaveVariables
-                                    shouldHaveBlockTag
-                                />
-
-                                <label>Texte de l'SMS :</label>
-                                <EmailTemplateBodyInput
-                                    className="email-body-input"
-                                    onChange={(value) =>
-                                        setSelectedTemplateData({ ...selectedTemplateData, smsBody: value })
-                                    }
-                                    value={{
-                                        value: selectedTemplateData.smsBody,
-                                        templateId: selectedTemplateData.templateId,
-                                    }}
-                                    shouldHaveVariables
-                                />
-
-                                <label>Valable pour statuts :</label>
-                                <Select
-                                    onChange={(selectedStatuses) =>
-                                        setSelectedTemplateData({ ...selectedTemplateData, statuses: selectedStatuses })
-                                    }
-                                    value={selectedTemplateData.statuses}
-                                    closeMenuOnSelect={false}
-                                    isMulti
-                                    options={inscriptionStatuses.map((current) => ({ value: current, label: current }))}
-                                />
+                                <Form.Group controlId="formFile" className="mb-3">
+                                    <Form.Label>Fichier Word (.docx):</Form.Label>
+                                    <Form.Control type="file" />
+                                </Form.Group>
                                 <div className="d-flex justify-content-between mb-2">
                                     <div>
                                         <Button
@@ -241,34 +192,6 @@ export function AttestationTemplatesPage() {
                                             Supprimer
                                         </Button>
                                     </div>
-                                    {selectedTemplateData.isUsedForSessionInvites ? (
-                                        <p className="mt-3">Utilisé pour sessions invitées</p>
-                                    ) : (
-                                        <Button
-                                            variant="secondary"
-                                            onClick={() => {
-                                                if (templateForInvites) {
-                                                    setIsSessionInvitesModalVisible(true)
-                                                } else {
-                                                    dispatch(
-                                                        updateTemplateAction({
-                                                            templateData: {
-                                                                ...selectedTemplateData,
-                                                                isUsedForSessionInvites: true,
-                                                            },
-                                                        })
-                                                    )
-                                                    setSelectedTemplateData({
-                                                        ...selectedTemplateData,
-                                                        isUsedForSessionInvites: true,
-                                                    })
-                                                }
-                                            }}
-                                            className="mt-2"
-                                        >
-                                            Utiliser pour sessions invitées
-                                        </Button>
-                                    )}
                                     <CommonModal
                                         title="User autre modèle pour sessions invitées"
                                         content={
