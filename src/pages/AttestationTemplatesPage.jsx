@@ -1,6 +1,4 @@
-import { useState, useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import Select from 'react-select'
+import { useState } from 'react'
 import { ListGroup, Row, Col, Container, Button, FloatingLabel, Form, Badge } from 'react-bootstrap'
 import classNames from 'classnames'
 import { equals } from 'ramda'
@@ -18,12 +16,12 @@ export function AttestationTemplatesPage() {
 
     const templates = [
         {
-            templateId: '1',
+            id: '1',
             title: 'Modèle attestation 1',
             descriptionText: 'Description du modèle attestation 1',
         },
         {
-            templateId: '2',
+            id: '2',
             title: 'Modèle attestation 2',
             descriptionText: 'Description du modèle attestation 2',
         },
@@ -36,7 +34,7 @@ export function AttestationTemplatesPage() {
         emailSubject: '',
         smsBody: '',
         statuses: inscriptionStatuses.map((current) => ({ value: current, label: current })),
-        templateId: getUniqueId(),
+        id: getUniqueId(),
         isUsedForSessionInvites: false,
     })
 
@@ -45,7 +43,7 @@ export function AttestationTemplatesPage() {
             selectedTemplateData !== null &&
             templates != null &&
             !equals(
-                templates.find(({ templateId }) => templateId === selectedTemplateData.templateId),
+                templates.find(({ id }) => id === selectedTemplateData.id),
                 selectedTemplateData
             )
         )
@@ -68,13 +66,13 @@ export function AttestationTemplatesPage() {
                                         descriptionText,
                                         emailBody,
                                         statuses,
-                                        templateId,
+                                        id,
                                         isUsedForSessionInvites,
                                         emailSubject,
                                         smsBody,
                                     }) => (
                                         <ListGroup.Item
-                                            key={templateId}
+                                            key={id}
                                             onClick={() => {
                                                 checkIsTemplateChanged()
                                                     ? setDiscardWarningData({
@@ -87,7 +85,7 @@ export function AttestationTemplatesPage() {
                                                                   smsBody,
                                                                   emailBody,
                                                                   statuses,
-                                                                  templateId,
+                                                                  id,
                                                                   isUsedForSessionInvites,
                                                               }),
                                                       })
@@ -98,12 +96,12 @@ export function AttestationTemplatesPage() {
                                                           smsBody,
                                                           emailBody,
                                                           statuses,
-                                                          templateId,
+                                                          id,
                                                           isUsedForSessionInvites,
                                                       })
                                             }}
                                             className={classNames({
-                                                'active-template': selectedTemplateData?.templateId === templateId,
+                                                'active-template': selectedTemplateData?.id === id,
                                             })}
                                         >
                                             <div className="d-flex align-items-start justify-content-between">
@@ -242,7 +240,7 @@ export function AttestationTemplatesPage() {
                                                 onClick={() => {
                                                     dispatch(
                                                         deleteTemplateAction({
-                                                            templateId: selectedTemplateData.templateId,
+                                                            id: selectedTemplateData.id,
                                                         })
                                                     )
                                                     setSelectedTemplateData(null)
