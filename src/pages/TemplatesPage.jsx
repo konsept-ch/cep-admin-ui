@@ -55,10 +55,10 @@ export function TemplatesPage() {
     return (
         <>
             <Helmet>
-                <title>Modèles E-mail - Former22</title>
+                <title>Modèles d'e-mails - Former22</title>
             </Helmet>
             <Container fluid className="templates-page">
-                <h1>Modèles E-mail</h1>
+                <h1>Modèles d'e-mails</h1>
                 <Row>
                     <Col>
                         <ListGroup>

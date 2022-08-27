@@ -10,13 +10,31 @@ export const attestationsApi = createApi({
             query: () => '',
         }),
         createAttestation: builder.mutation({
-            query: ({ attestationData }) => ({
+            query: () => ({
                 url: '',
                 method: 'POST',
-                body: { ...attestationData },
+                // body: { ...attestationData },
+            }),
+        }),
+        updateAttestation: builder.mutation({
+            query: ({ uuid, title, description }) => ({
+                url: uuid,
+                method: 'PUT',
+                body: { title, description },
+            }),
+        }),
+        deleteAttestation: builder.mutation({
+            query: ({ uuid }) => ({
+                url: uuid,
+                method: 'DELETE',
             }),
         }),
     }),
 })
 
-export const { useGetAttestationsQuery, useCreateAttestationMutation } = attestationsApi
+export const {
+    useGetAttestationsQuery,
+    useCreateAttestationMutation,
+    useUpdateAttestationMutation,
+    useDeleteAttestationMutation,
+} = attestationsApi
