@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { ListGroup, Row, Col, Container, Button, FloatingLabel, Form, Badge } from 'react-bootstrap'
 import classNames from 'classnames'
-import { equals } from 'ramda'
 import { Helmet } from 'react-helmet-async'
 import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 
 import { CommonModal } from '../components'
 import {
@@ -15,7 +15,7 @@ import {
 
 export function AttestationTemplatesPage() {
     const {
-        data: attestationTemplates,
+        data: templates,
         isLoading,
         isFetching,
         isError,
@@ -30,9 +30,7 @@ export function AttestationTemplatesPage() {
     const {
         register,
         handleSubmit,
-        watch,
         reset,
-        control,
         formState: { isDirty, errors },
     } = useForm()
 
@@ -40,15 +38,28 @@ export function AttestationTemplatesPage() {
     const [isDeleteWarningVisible, setIsDeleteWarningVisible] = useState(false)
     const [discardWarningData, setDiscardWarningData] = useState({ isVisible: false })
 
-    const templates = attestationTemplates
+    const fileName = useMemo(
+        () => templates.find(({ uuid }) => uuid === selectedTemplateUuid)?.fileOriginalName,
+        [templates, selectedTemplateUuid]
+    )
 
-    const checkIsTemplateChanged = () =>
-        selectedTemplateUuid !== null &&
-        templates != null &&
-        !equals(
-            templates.find(({ uuid }) => uuid === selectedTemplateUuid),
-            selectedTemplateUuid
-        )
+    const onApplyButtonClick = handleSubmit(async ({ title, description, file }) => {
+        const uploadedFile = file[0]
+        const formData = new FormData()
+        formData.append('file', uploadedFile)
+        formData.append('title', title)
+        formData.append('description', description)
+
+        const { error } = await updateAttestation({ uuid: selectedTemplateUuid, formData })
+
+        if (error == null) {
+            toast.success("Modèle d'attestation modifiée")
+        } else {
+            toast.error("Erreur de modification du modèle d'attestation")
+        }
+
+        await refetch()
+    })
 
     return (
         <>
@@ -69,35 +80,23 @@ export function AttestationTemplatesPage() {
                             ) : (
                                 <ListGroup>
                                     {templates.length > 0 &&
-                                        templates.map(({ path, title, description, filename, uuid }) => (
+                                        templates.map(({ title, description, uuid }) => (
                                             <ListGroup.Item
                                                 key={uuid}
                                                 onClick={() => {
-                                                    if (checkIsTemplateChanged()) {
+                                                    if (isDirty) {
                                                         setDiscardWarningData({
                                                             isVisible: true,
                                                             selectNewTemplate: () => {
                                                                 setSelectedTemplateUuid(uuid)
 
-                                                                reset({
-                                                                    path,
-                                                                    filename,
-                                                                    uuid,
-                                                                    title,
-                                                                    description,
-                                                                })
+                                                                reset({ uuid, title, description })
                                                             },
                                                         })
                                                     } else {
                                                         setSelectedTemplateUuid(uuid)
 
-                                                        reset({
-                                                            path,
-                                                            filename,
-                                                            uuid,
-                                                            title,
-                                                            description,
-                                                        })
+                                                        reset({ uuid, title, description })
                                                     }
                                                 }}
                                                 className={classNames({
@@ -116,7 +115,13 @@ export function AttestationTemplatesPage() {
                                 variant="success"
                                 disabled={isFetching || isCreating}
                                 onClick={async () => {
-                                    await createAttestation()
+                                    const { error } = await createAttestation()
+
+                                    if (error == null) {
+                                        toast.success("Modèle d'attestation créée")
+                                    } else {
+                                        toast.error("Erreur de création du modèle d'attestation")
+                                    }
 
                                     await refetch()
                                 }}
@@ -133,10 +138,6 @@ export function AttestationTemplatesPage() {
                                             type="text"
                                             placeholder="Titre de la séance"
                                             {...register('title')}
-                                            // value={selectedTemplateUuid.title}
-                                            // onChange={({ target: { value } }) =>
-                                            //     setSelectedTemplateUuid({ ...selectedTemplateUuid, title: value })
-                                            // }
                                         />
                                     </FloatingLabel>
                                     <FloatingLabel controlId="description" label="Description" className="mb-2">
@@ -145,44 +146,31 @@ export function AttestationTemplatesPage() {
                                             placeholder="Description de la séance"
                                             style={{ height: '100px' }}
                                             {...register('description')}
-                                            // value={selectedTemplateUuid.description}
-                                            // onChange={({ target: { value } }) =>
-                                            //     setSelectedTemplateUuid({
-                                            //         ...selectedTemplateUuid,
-                                            //         description: value,
-                                            //     })
-                                            // }
                                         />
                                     </FloatingLabel>
                                     <Form.Group controlId="formFile" className="mb-3">
                                         <Form.Label>Fichier Word (.docx):</Form.Label>
                                         <Form.Control
                                             type="file"
-                                            accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                                            onChange={({ target: { value } }) => {
-                                                const formData = new FormData()
-                                                formData.append('file', value)
-                                                setSelectedTemplateUuid({ ...selectedTemplateUuid, filename: formData })
-                                            }}
+                                            {...register('file')}
+                                            // accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                            // onChange={({ target: { value } }) => {
+                                            //     const formData = new FormData()
+                                            //     formData.append('file', value)
+                                            //     setSelectedTemplateUuid({ ...selectedTemplateUuid, filename: formData })
+                                            // }}
                                         />
+                                        <Form.Text className="text-muted">Fichier actuel : {fileName ?? ' '}</Form.Text>
                                     </Form.Group>
                                     <div className="d-flex justify-content-between mb-2">
                                         <div>
                                             <Button
                                                 variant="primary"
                                                 onClick={async () => {
-                                                    handleSubmit(async ({ title, description }) => {
-                                                        await updateAttestation({
-                                                            uuid: selectedTemplateUuid,
-                                                            title,
-                                                            description,
-                                                        })
-
-                                                        await refetch()
-                                                    })()
+                                                    onApplyButtonClick()
                                                 }}
                                                 className="mt-2 me-2"
-                                                disabled={!checkIsTemplateChanged() || isUpdating || isFetching}
+                                                disabled={!isDirty || isUpdating || isFetching}
                                             >
                                                 {isUpdating ? 'Sauvegarde en cours...' : 'Appliquer'}
                                             </Button>
@@ -202,13 +190,21 @@ export function AttestationTemplatesPage() {
                                                     variant="danger"
                                                     disabled={isDeleting}
                                                     onClick={async () => {
-                                                        await deleteAttestation({ uuid: selectedTemplateUuid })
+                                                        const { error } = await deleteAttestation({
+                                                            uuid: selectedTemplateUuid,
+                                                        })
 
-                                                        await refetch()
+                                                        if (error == null) {
+                                                            toast.success("Modèle d'attestation supprimée")
 
-                                                        setSelectedTemplateUuid(null)
+                                                            setSelectedTemplateUuid(null)
 
-                                                        setIsDeleteWarningVisible(false)
+                                                            setIsDeleteWarningVisible(false)
+
+                                                            await refetch()
+                                                        } else {
+                                                            toast.error("Erreur de suppression du modèle d'attestation")
+                                                        }
                                                     }}
                                                 >
                                                     {isDeleting ? 'Supprimer en cours...' : 'Supprimer'}
@@ -225,7 +221,8 @@ export function AttestationTemplatesPage() {
                                                     <Button
                                                         variant="primary"
                                                         onClick={() => {
-                                                            console.log('update attestation')
+                                                            onApplyButtonClick()
+
                                                             discardWarningData.selectNewTemplate()
                                                             setDiscardWarningData({ isVisible: false })
                                                         }}

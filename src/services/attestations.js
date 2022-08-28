@@ -17,10 +17,10 @@ export const attestationsApi = createApi({
             }),
         }),
         updateAttestation: builder.mutation({
-            query: ({ uuid, title, description }) => ({
+            query: ({ uuid, formData }) => ({
                 url: uuid,
                 method: 'PUT',
-                body: { title, description },
+                body: formData,
             }),
         }),
         deleteAttestation: builder.mutation({
