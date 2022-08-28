@@ -39,7 +39,7 @@ export function AttestationTemplatesPage() {
     const [discardWarningData, setDiscardWarningData] = useState({ isVisible: false })
 
     const fileName = useMemo(
-        () => templates.find(({ uuid }) => uuid === selectedTemplateUuid)?.fileOriginalName,
+        () => templates?.find(({ uuid }) => uuid === selectedTemplateUuid)?.fileOriginalName,
         [templates, selectedTemplateUuid]
     )
 
