@@ -13,7 +13,6 @@ export const attestationsApi = createApi({
             query: () => ({
                 url: '',
                 method: 'POST',
-                // body: { ...attestationData },
             }),
         }),
         updateAttestation: builder.mutation({

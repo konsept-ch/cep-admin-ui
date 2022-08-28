@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { ListGroup, Row, Col, Container, Button, FloatingLabel, Form, Badge } from 'react-bootstrap'
+import { ListGroup, Row, Col, Container, Button, FloatingLabel, Form } from 'react-bootstrap'
 import classNames from 'classnames'
 import { Helmet } from 'react-helmet-async'
 import { useForm } from 'react-hook-form'
@@ -20,9 +20,7 @@ export function AttestationTemplatesPage() {
         isFetching,
         isError,
         refetch,
-    } = useGetAttestationsQuery(null, {
-        refetchOnMountOrArgChange: true,
-    })
+    } = useGetAttestationsQuery(null, { refetchOnMountOrArgChange: true })
     const [createAttestation, { isLoading: isCreating }] = useCreateAttestationMutation()
     const [updateAttestation, { isLoading: isUpdating }] = useUpdateAttestationMutation()
     const [deleteAttestation, { isLoading: isDeleting }] = useDeleteAttestationMutation()
@@ -43,6 +41,18 @@ export function AttestationTemplatesPage() {
         [templates, selectedTemplateUuid]
     )
 
+    const onAddButtonClick = async () => {
+        const { error } = await createAttestation()
+
+        if (error == null) {
+            toast.success("Modèle d'attestation créée")
+        } else {
+            toast.error("Erreur de création du modèle d'attestation")
+        }
+
+        await refetch()
+    }
+
     const onApplyButtonClick = handleSubmit(async ({ title, description, file }) => {
         const uploadedFile = file[0]
         const formData = new FormData()
@@ -60,6 +70,22 @@ export function AttestationTemplatesPage() {
 
         await refetch()
     })
+
+    const onDeleteButtonClick = async () => {
+        const { error } = await deleteAttestation({ uuid: selectedTemplateUuid })
+
+        if (error == null) {
+            toast.success("Modèle d'attestation supprimée")
+
+            setSelectedTemplateUuid(null)
+
+            setIsDeleteWarningVisible(false)
+
+            await refetch()
+        } else {
+            toast.error("Erreur de suppression du modèle d'attestation")
+        }
+    }
 
     return (
         <>
@@ -114,17 +140,7 @@ export function AttestationTemplatesPage() {
                             <Button
                                 variant="success"
                                 disabled={isFetching || isCreating}
-                                onClick={async () => {
-                                    const { error } = await createAttestation()
-
-                                    if (error == null) {
-                                        toast.success("Modèle d'attestation créée")
-                                    } else {
-                                        toast.error("Erreur de création du modèle d'attestation")
-                                    }
-
-                                    await refetch()
-                                }}
+                                onClick={onAddButtonClick}
                                 className="mt-2"
                             >
                                 {isCreating ? 'Ajout en cours...' : isFetching ? 'Un instant...' : 'Ajouter'}
@@ -137,8 +153,14 @@ export function AttestationTemplatesPage() {
                                         <Form.Control
                                             type="text"
                                             placeholder="Titre de la séance"
-                                            {...register('title')}
+                                            isInvalid={errors.title}
+                                            {...register('title', {
+                                                required: { value: true, message: 'Le titre est requis' },
+                                            })}
                                         />
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors.title?.message}
+                                        </Form.Control.Feedback>
                                     </FloatingLabel>
                                     <FloatingLabel controlId="description" label="Description" className="mb-2">
                                         <Form.Control
@@ -150,25 +172,14 @@ export function AttestationTemplatesPage() {
                                     </FloatingLabel>
                                     <Form.Group controlId="formFile" className="mb-3">
                                         <Form.Label>Fichier Word (.docx):</Form.Label>
-                                        <Form.Control
-                                            type="file"
-                                            {...register('file')}
-                                            // accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                                            // onChange={({ target: { value } }) => {
-                                            //     const formData = new FormData()
-                                            //     formData.append('file', value)
-                                            //     setSelectedTemplateUuid({ ...selectedTemplateUuid, filename: formData })
-                                            // }}
-                                        />
+                                        <Form.Control type="file" {...register('file')} />
                                         <Form.Text className="text-muted">Fichier actuel : {fileName ?? ' '}</Form.Text>
                                     </Form.Group>
                                     <div className="d-flex justify-content-between mb-2">
                                         <div>
                                             <Button
                                                 variant="primary"
-                                                onClick={async () => {
-                                                    onApplyButtonClick()
-                                                }}
+                                                onClick={onApplyButtonClick}
                                                 className="mt-2 me-2"
                                                 disabled={!isDirty || isUpdating || isFetching}
                                             >
@@ -189,23 +200,7 @@ export function AttestationTemplatesPage() {
                                                 <Button
                                                     variant="danger"
                                                     disabled={isDeleting}
-                                                    onClick={async () => {
-                                                        const { error } = await deleteAttestation({
-                                                            uuid: selectedTemplateUuid,
-                                                        })
-
-                                                        if (error == null) {
-                                                            toast.success("Modèle d'attestation supprimée")
-
-                                                            setSelectedTemplateUuid(null)
-
-                                                            setIsDeleteWarningVisible(false)
-
-                                                            await refetch()
-                                                        } else {
-                                                            toast.error("Erreur de suppression du modèle d'attestation")
-                                                        }
-                                                    }}
+                                                    onClick={onDeleteButtonClick}
                                                 >
                                                     {isDeleting ? 'Supprimer en cours...' : 'Supprimer'}
                                                 </Button>

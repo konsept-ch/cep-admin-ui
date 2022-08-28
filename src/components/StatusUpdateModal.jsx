@@ -8,8 +8,19 @@ import { parametersSelector, loadingSelector, templatePreviewsSelector, template
 import { statusWarnings, formatDate } from '../utils'
 import { EmailTemplateBodyInput } from './EmailTemplateBodyInput'
 import { ConfirmInscriptionChangeButton } from '.'
+import { useGetAttestationsQuery } from '../services/attestations'
 
 export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }) => {
+    const {
+        data: attestationTemplates,
+        isLoading,
+        isFetching,
+        isError,
+        refetch,
+    } = useGetAttestationsQuery(null, {
+        refetchOnMountOrArgChange: true,
+    })
+
     const [selectedTemplateData, setSelectedTemplateData] = useState(null)
     const parameters = useSelector(parametersSelector)
     const isSagaLoading = useSelector(loadingSelector)
@@ -39,18 +50,18 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
           )
         : []
 
-    const attestationTemplates = [
-        {
-            templateId: '1',
-            title: 'Modèle attestation 1',
-            descriptionText: 'Description du modèle attestation 1',
-        },
-        {
-            templateId: '2',
-            title: 'Modèle attestation 2',
-            descriptionText: 'Description du modèle attestation 2',
-        },
-    ]
+    // const attestationTemplates = [
+    //     {
+    //         templateId: '1',
+    //         title: 'Modèle attestation 1',
+    //         description: 'Description du modèle attestation 1',
+    //     },
+    //     {
+    //         templateId: '2',
+    //         title: 'Modèle attestation 2',
+    //         description: 'Description du modèle attestation 2',
+    //     },
+    // ]
 
     return (
         <Modal
@@ -144,23 +155,21 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
                                 <p>Aucun e-mail ne sera envoyé</p>
                             </ListGroup.Item>
                             {emailTemplates.length > 0 &&
-                                emailTemplates.map(
-                                    ({ title, descriptionText, emailBody, templateId, emailSubject }) => (
-                                        <ListGroup.Item
-                                            key={templateId}
-                                            onClick={() => {
-                                                setSelectedTemplateData({ emailBody, templateId, emailSubject })
-                                                fetchTemplatePreviews({ templateId })
-                                            }}
-                                            className={classNames({
-                                                'active-template': selectedTemplateData?.templateId === templateId,
-                                            })}
-                                        >
-                                            <h4>{title}</h4>
-                                            <p>{descriptionText}</p>
-                                        </ListGroup.Item>
-                                    )
-                                )}
+                                emailTemplates.map(({ title, description, emailBody, templateId, emailSubject }) => (
+                                    <ListGroup.Item
+                                        key={templateId}
+                                        onClick={() => {
+                                            setSelectedTemplateData({ emailBody, templateId, emailSubject })
+                                            fetchTemplatePreviews({ templateId })
+                                        }}
+                                        className={classNames({
+                                            'active-template': selectedTemplateData?.templateId === templateId,
+                                        })}
+                                    >
+                                        <h4>{title}</h4>
+                                        <p>{description}</p>
+                                    </ListGroup.Item>
+                                ))}
                         </ListGroup>
                     </div>
                     <div className="col template-preview">
@@ -229,13 +238,13 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
                             <h6>Choix de modèle d'attestation</h6>
                             <ListGroup>
                                 <ListGroup.Item
-                                    onClick={() =>
-                                        setSelectedTemplateData({
-                                            templateId: 'no-attestation',
-                                            emailBody: 'Aucun e-mail ne sera envoyé',
-                                            emailSubject: null,
-                                        })
-                                    }
+                                    onClick={() => {
+                                        // setSelectedTemplateData({
+                                        //     templateId: 'no-attestation',
+                                        //     emailBody: 'Aucun e-mail ne sera envoyé',
+                                        //     emailSubject: null,
+                                        // })
+                                    }}
                                     className={classNames({
                                         'active-template': selectedTemplateData?.templateId === 'no-attestation',
                                     })}
@@ -244,23 +253,21 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
                                     <p>Aucun attestation ne sera déposé dans l'espace personnel</p>
                                 </ListGroup.Item>
                                 {attestationTemplates.length > 0 &&
-                                    attestationTemplates.map(
-                                        ({ title, descriptionText, emailBody, templateId, emailSubject }) => (
-                                            <ListGroup.Item
-                                                key={templateId}
-                                                onClick={() => {
-                                                    // setSelectedTemplateData({ emailBody, templateId, emailSubject })
-                                                    // fetchTemplatePreviews({ templateId })
-                                                }}
-                                                className={classNames({
-                                                    'active-template': selectedTemplateData?.templateId === templateId,
-                                                })}
-                                            >
-                                                <h4>{title}</h4>
-                                                <p>{descriptionText}</p>
-                                            </ListGroup.Item>
-                                        )
-                                    )}
+                                    attestationTemplates.map(({ title, description, uuid }) => (
+                                        <ListGroup.Item
+                                            key={uuid}
+                                            onClick={() => {
+                                                // setSelectedTemplateData({ emailBody, uuid, emailSubject })
+                                                // fetchTemplatePreviews({ uuid })
+                                            }}
+                                            className={classNames({
+                                                'active-template': selectedTemplateData?.uuid === uuid,
+                                            })}
+                                        >
+                                            <h4>{title}</h4>
+                                            <p>{description}</p>
+                                        </ListGroup.Item>
+                                    ))}
                             </ListGroup>
                         </div>
                         {/*  <div className="col template-preview">
