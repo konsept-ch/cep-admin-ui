@@ -130,7 +130,7 @@ export const Navigation = ({ isLoggedIn }) => {
                                 href={`/${PATH_TEMPLATES}/${PATH_EMAIL_TEMPLATES}`}
                                 onClick={goTo(`${PATH_TEMPLATES}/${PATH_EMAIL_TEMPLATES}`)}
                             >
-                                <FontAwesomeIcon icon={faEnvelopeOpenText} /> E-mail
+                                <FontAwesomeIcon icon={faEnvelopeOpenText} /> E-mails
                             </Nav.Link>
                             <Nav.Link
                                 href={`/${PATH_TEMPLATES}/${PATH_ATTESTATION_TEMPLATES}`}

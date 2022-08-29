@@ -1,295 +1,259 @@
-import { useState } from 'react'
-import { ListGroup, Row, Col, Container, Button, FloatingLabel, Form, Badge } from 'react-bootstrap'
+import { useState, useMemo } from 'react'
+import { ListGroup, Row, Col, Container, Button, FloatingLabel, Form } from 'react-bootstrap'
 import classNames from 'classnames'
-import { equals } from 'ramda'
 import { Helmet } from 'react-helmet-async'
+import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 
 import { CommonModal } from '../components'
-import { addTemplateAction, deleteTemplateAction, updateTemplateAction } from '../actions/templates.ts'
-import { getUniqueId, inscriptionStatuses } from '../utils'
+import {
+    useGetAttestationsQuery,
+    useCreateAttestationMutation,
+    useUpdateAttestationMutation,
+    useDeleteAttestationMutation,
+} from '../services/attestations'
 
 export function AttestationTemplatesPage() {
-    const [selectedTemplateData, setSelectedTemplateData] = useState(null)
-    const [isSessionInvitesModalVisible, setIsSessionInvitesModalVisible] = useState(false)
+    const {
+        data: templates,
+        isLoading,
+        isFetching,
+        isError,
+        refetch,
+    } = useGetAttestationsQuery(null, { refetchOnMountOrArgChange: true })
+    const [createAttestation, { isLoading: isCreating }] = useCreateAttestationMutation()
+    const [updateAttestation, { isLoading: isUpdating }] = useUpdateAttestationMutation()
+    const [deleteAttestation, { isLoading: isDeleting }] = useDeleteAttestationMutation()
+
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { isDirty, errors },
+    } = useForm()
+
+    const [selectedTemplateUuid, setSelectedTemplateUuid] = useState(null)
     const [isDeleteWarningVisible, setIsDeleteWarningVisible] = useState(false)
     const [discardWarningData, setDiscardWarningData] = useState({ isVisible: false })
 
-    const templates = [
-        {
-            id: '1',
-            title: 'Modèle attestation 1',
-            descriptionText: 'Description du modèle attestation 1',
-        },
-        {
-            id: '2',
-            title: 'Modèle attestation 2',
-            descriptionText: 'Description du modèle attestation 2',
-        },
-    ]
+    const fileName = useMemo(
+        () => templates?.find(({ uuid }) => uuid === selectedTemplateUuid)?.fileOriginalName,
+        [templates, selectedTemplateUuid]
+    )
 
-    const generateNewTemplate = () => ({
-        title: 'Nouveau modèle',
-        descriptionText: '',
-        emailBody: '',
-        emailSubject: '',
-        smsBody: '',
-        statuses: inscriptionStatuses.map((current) => ({ value: current, label: current })),
-        id: getUniqueId(),
-        isUsedForSessionInvites: false,
+    const onAddButtonClick = async () => {
+        const { error } = await createAttestation()
+
+        if (error == null) {
+            toast.success("Modèle d'attestation créée")
+        } else {
+            toast.error("Erreur de création du modèle d'attestation")
+        }
+
+        await refetch()
+    }
+
+    const onApplyButtonClick = handleSubmit(async ({ title, description, file }) => {
+        const uploadedFile = file[0]
+        const formData = new FormData()
+
+        formData.append('title', title)
+
+        if (description != null) {
+            formData.append('description', description)
+        }
+
+        if (uploadedFile != null) {
+            formData.append('file', uploadedFile)
+        }
+
+        const { error } = await updateAttestation({ uuid: selectedTemplateUuid, formData })
+
+        if (error == null) {
+            toast.success("Modèle d'attestation modifiée")
+        } else {
+            toast.error("Erreur de modification du modèle d'attestation")
+        }
+
+        reset({ title, description, file: {} })
+
+        await refetch()
     })
 
-    const checkIsTemplateChanged = () => {
-        return (
-            selectedTemplateData !== null &&
-            templates != null &&
-            !equals(
-                templates.find(({ id }) => id === selectedTemplateData.id),
-                selectedTemplateData
-            )
-        )
+    const onDeleteButtonClick = async () => {
+        const { error } = await deleteAttestation({ uuid: selectedTemplateUuid })
+
+        if (error == null) {
+            toast.success("Modèle d'attestation supprimée")
+
+            setSelectedTemplateUuid(null)
+
+            setIsDeleteWarningVisible(false)
+
+            await refetch()
+        } else {
+            toast.error("Erreur de suppression du modèle d'attestation")
+        }
     }
 
     return (
         <>
             <Helmet>
-                <title>Modèles Attestations - Former22</title>
+                <title>Modèles d'attestations - Former22</title>
             </Helmet>
             <Container fluid className="templates-page">
-                <h1>Modèles Attestations</h1>
-                <Row>
-                    <Col>
-                        <ListGroup>
-                            {templates.length > 0 &&
-                                templates.map(
-                                    ({
-                                        title,
-                                        descriptionText,
-                                        emailBody,
-                                        statuses,
-                                        id,
-                                        isUsedForSessionInvites,
-                                        emailSubject,
-                                        smsBody,
-                                    }) => (
-                                        <ListGroup.Item
-                                            key={id}
-                                            onClick={() => {
-                                                checkIsTemplateChanged()
-                                                    ? setDiscardWarningData({
-                                                          isVisible: true,
-                                                          selectNewTemplate: () =>
-                                                              setSelectedTemplateData({
-                                                                  title,
-                                                                  descriptionText,
-                                                                  emailSubject,
-                                                                  smsBody,
-                                                                  emailBody,
-                                                                  statuses,
-                                                                  id,
-                                                                  isUsedForSessionInvites,
-                                                              }),
-                                                      })
-                                                    : setSelectedTemplateData({
-                                                          title,
-                                                          descriptionText,
-                                                          emailSubject,
-                                                          smsBody,
-                                                          emailBody,
-                                                          statuses,
-                                                          id,
-                                                          isUsedForSessionInvites,
-                                                      })
-                                            }}
-                                            className={classNames({
-                                                'active-template': selectedTemplateData?.id === id,
-                                            })}
-                                        >
-                                            <div className="d-flex align-items-start justify-content-between">
-                                                <h4 className="d-inline-block">{title}</h4>
-                                                {isUsedForSessionInvites && (
-                                                    <Badge bg="warning" text="dark">
-                                                        Sessions invitées
-                                                    </Badge>
-                                                )}
-                                            </div>
-                                            {descriptionText && <p>{descriptionText}</p>}
-                                        </ListGroup.Item>
-                                    )
-                                )}
-                        </ListGroup>
-                        <Button
-                            variant="success"
-                            onClick={() => {
-                                if (checkIsTemplateChanged()) {
-                                    setDiscardWarningData({
-                                        isVisible: true,
-                                        selectNewTemplate: () => {
-                                            const newTemplateData = generateNewTemplate()
-
-                                            dispatch(addTemplateAction({ templateData: newTemplateData }))
-                                            setSelectedTemplateData(newTemplateData)
-                                        },
-                                    })
-                                } else {
-                                    const newTemplateData = generateNewTemplate()
-
-                                    dispatch(addTemplateAction({ templateData: newTemplateData }))
-                                    setSelectedTemplateData(newTemplateData)
-                                }
-                            }}
-                            className="mt-2"
-                        >
-                            Ajouter
-                        </Button>
-                    </Col>
-                    <Col className="template-preview">
-                        {selectedTemplateData && (
-                            <>
-                                <FloatingLabel controlId="title" label="Titre" className="mb-2">
-                                    <Form.Control
-                                        type="text"
-                                        placeholder="Titre de la séance"
-                                        value={selectedTemplateData.title}
-                                        onChange={({ target: { value } }) =>
-                                            setSelectedTemplateData({ ...selectedTemplateData, title: value })
-                                        }
-                                    />
-                                </FloatingLabel>
-                                <FloatingLabel controlId="description" label="Description" className="mb-2">
-                                    <Form.Control
-                                        as="textarea"
-                                        placeholder="Description de la séance"
-                                        style={{ height: '100px' }}
-                                        value={selectedTemplateData.descriptionText}
-                                        onChange={({ target: { value } }) =>
-                                            setSelectedTemplateData({ ...selectedTemplateData, descriptionText: value })
-                                        }
-                                    />
-                                </FloatingLabel>
-                                <Form.Group controlId="formFile" className="mb-3">
-                                    <Form.Label>Fichier Word (.docx):</Form.Label>
-                                    <Form.Control type="file" />
-                                </Form.Group>
-                                <div className="d-flex justify-content-between mb-2">
-                                    <div>
-                                        <Button
-                                            variant="primary"
-                                            onClick={() => {
-                                                dispatch(updateTemplateAction({ templateData: selectedTemplateData }))
-                                            }}
-                                            className="mt-2 me-2"
-                                            disabled={!checkIsTemplateChanged()}
-                                        >
-                                            Appliquer
-                                        </Button>
-                                        <Button
-                                            variant="danger"
-                                            onClick={() => setIsDeleteWarningVisible(true)}
-                                            className="mt-2"
-                                        >
-                                            Supprimer
-                                        </Button>
-                                    </div>
-                                    <CommonModal
-                                        title="User autre modèle pour sessions invitées"
-                                        content={
-                                            <>
-                                                <p>Il existe déjà un modèle pour les invitations à une session.</p>
-                                                <p>Êtes-vous sûr de vouloir mettre à jour le modèle ?</p>
-                                            </>
-                                        }
-                                        footer={
-                                            <Button
-                                                variant="secondary"
+                <h1>Modèles d'attestations</h1>
+                {isLoading ? (
+                    'Chargement...'
+                ) : isError ? (
+                    'Erreur de chargement des modèles.'
+                ) : (
+                    <Row>
+                        <Col>
+                            {templates.length === 0 ? (
+                                <p>Aucun modèle, vous pouvez créer un nouveau</p>
+                            ) : (
+                                <ListGroup>
+                                    {templates.length > 0 &&
+                                        templates.map(({ title, description, uuid }) => (
+                                            <ListGroup.Item
+                                                key={uuid}
                                                 onClick={() => {
-                                                    dispatch(
-                                                        updateTemplateAction({
-                                                            templateData: {
-                                                                ...templateForInvites,
-                                                                isUsedForSessionInvites: false,
+                                                    if (isDirty) {
+                                                        setDiscardWarningData({
+                                                            isVisible: true,
+                                                            selectNewTemplate: () => {
+                                                                setSelectedTemplateUuid(uuid)
+
+                                                                reset({ uuid, title, description, file: {} })
                                                             },
                                                         })
-                                                    )
-                                                    dispatch(
-                                                        updateTemplateAction({
-                                                            templateData: {
-                                                                ...selectedTemplateData,
-                                                                isUsedForSessionInvites: true,
-                                                            },
-                                                        })
-                                                    )
-                                                    setSelectedTemplateData({
-                                                        ...selectedTemplateData,
-                                                        isUsedForSessionInvites: true,
-                                                    })
-                                                    setIsSessionInvitesModalVisible(false)
+                                                    } else {
+                                                        setSelectedTemplateUuid(uuid)
+
+                                                        reset({ uuid, title, description, file: {} })
+                                                    }
                                                 }}
+                                                className={classNames({
+                                                    'active-template': selectedTemplateUuid === uuid,
+                                                })}
                                             >
-                                                Utiliser
+                                                <div className="d-flex align-items-start justify-content-between">
+                                                    <h4 className="d-inline-block">{title}</h4>
+                                                </div>
+                                                {description && <p>{description}</p>}
+                                            </ListGroup.Item>
+                                        ))}
+                                </ListGroup>
+                            )}
+                            <Button
+                                variant="success"
+                                disabled={isFetching || isCreating}
+                                onClick={onAddButtonClick}
+                                className="mt-2"
+                            >
+                                {isCreating ? 'Ajout en cours...' : isFetching ? 'Un instant...' : 'Ajouter'}
+                            </Button>
+                        </Col>
+                        <Col className="template-preview">
+                            {selectedTemplateUuid !== null && (
+                                <>
+                                    <FloatingLabel controlId="title" label="Titre" className="mb-2">
+                                        <Form.Control
+                                            type="text"
+                                            placeholder="Titre de la séance"
+                                            isInvalid={errors.title}
+                                            {...register('title', {
+                                                required: { value: true, message: 'Le titre est requis' },
+                                            })}
+                                        />
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors.title?.message}
+                                        </Form.Control.Feedback>
+                                    </FloatingLabel>
+                                    <FloatingLabel controlId="description" label="Description" className="mb-2">
+                                        <Form.Control
+                                            as="textarea"
+                                            placeholder="Description de la séance"
+                                            style={{ height: '100px' }}
+                                            {...register('description')}
+                                        />
+                                    </FloatingLabel>
+                                    <Form.Group controlId="formFile" className="mb-3">
+                                        <Form.Label>Fichier Word (.docx):</Form.Label>
+                                        <Form.Control type="file" {...register('file')} />
+                                        <Form.Text className="text-muted">Fichier actuel : {fileName ?? ' '}</Form.Text>
+                                    </Form.Group>
+                                    <div className="d-flex justify-content-between mb-2">
+                                        <div>
+                                            <Button
+                                                variant="primary"
+                                                onClick={onApplyButtonClick}
+                                                className="mt-2 me-2"
+                                                disabled={!isDirty || isUpdating || isFetching}
+                                            >
+                                                {isUpdating ? 'Sauvegarde en cours...' : 'Appliquer'}
                                             </Button>
-                                        }
-                                        isVisible={isSessionInvitesModalVisible}
-                                        onHide={() => setIsSessionInvitesModalVisible(false)}
-                                    />
-                                    <CommonModal
-                                        title="Avertissement"
-                                        content={<p>Êtes-vous sûr de vouloir supprimer ce modèle?</p>}
-                                        footer={
                                             <Button
                                                 variant="danger"
-                                                onClick={() => {
-                                                    dispatch(
-                                                        deleteTemplateAction({
-                                                            id: selectedTemplateData.id,
-                                                        })
-                                                    )
-                                                    setSelectedTemplateData(null)
-                                                    setIsDeleteWarningVisible(false)
-                                                }}
+                                                onClick={() => setIsDeleteWarningVisible(true)}
+                                                className="mt-2"
                                             >
                                                 Supprimer
                                             </Button>
-                                        }
-                                        isVisible={isDeleteWarningVisible}
-                                        onHide={() => setIsDeleteWarningVisible(false)}
-                                    />
-                                    <CommonModal
-                                        title="Avertissement"
-                                        content={<p>Êtes-vous sûr de vouloir écarter vos modifications ?</p>}
-                                        footer={
-                                            <>
-                                                <Button
-                                                    variant="primary"
-                                                    onClick={() => {
-                                                        dispatch(
-                                                            updateTemplateAction({ templateData: selectedTemplateData })
-                                                        )
-                                                        discardWarningData.selectNewTemplate()
-                                                        setDiscardWarningData({ isVisible: false })
-                                                    }}
-                                                    className="me-2"
-                                                >
-                                                    Appliquer
-                                                </Button>
+                                        </div>
+                                        <CommonModal
+                                            title="Avertissement"
+                                            content={<p>Êtes-vous sûr de vouloir supprimer ce modèle?</p>}
+                                            footer={
                                                 <Button
                                                     variant="danger"
-                                                    onClick={() => {
-                                                        discardWarningData.selectNewTemplate()
-                                                        setDiscardWarningData({ isVisible: false })
-                                                    }}
+                                                    disabled={isDeleting}
+                                                    onClick={onDeleteButtonClick}
                                                 >
-                                                    Écarter modifications
+                                                    {isDeleting ? 'Supprimer en cours...' : 'Supprimer'}
                                                 </Button>
-                                            </>
-                                        }
-                                        isVisible={discardWarningData.isVisible}
-                                        onHide={() => setDiscardWarningData({ isVisible: false })}
-                                    />
-                                </div>
-                            </>
-                        )}
-                    </Col>
-                </Row>
+                                            }
+                                            isVisible={isDeleteWarningVisible}
+                                            onHide={() => setIsDeleteWarningVisible(false)}
+                                        />
+                                        <CommonModal
+                                            title="Avertissement"
+                                            content={<p>Êtes-vous sûr de vouloir écarter vos modifications ?</p>}
+                                            footer={
+                                                <>
+                                                    <Button
+                                                        variant="primary"
+                                                        onClick={() => {
+                                                            onApplyButtonClick()
+
+                                                            discardWarningData.selectNewTemplate()
+                                                            setDiscardWarningData({ isVisible: false })
+                                                        }}
+                                                        className="me-2"
+                                                    >
+                                                        Appliquer
+                                                    </Button>
+                                                    <Button
+                                                        variant="danger"
+                                                        onClick={() => {
+                                                            discardWarningData.selectNewTemplate()
+                                                            setDiscardWarningData({ isVisible: false })
+                                                        }}
+                                                    >
+                                                        Écarter modifications
+                                                    </Button>
+                                                </>
+                                            }
+                                            isVisible={discardWarningData.isVisible}
+                                            onHide={() => setDiscardWarningData({ isVisible: false })}
+                                        />
+                                    </div>
+                                </>
+                            )}
+                        </Col>
+                    </Row>
+                )}
             </Container>
         </>
     )

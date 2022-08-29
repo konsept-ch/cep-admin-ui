@@ -8,9 +8,21 @@ import { parametersSelector, loadingSelector, templatePreviewsSelector, template
 import { statusWarnings, formatDate } from '../utils'
 import { EmailTemplateBodyInput } from './EmailTemplateBodyInput'
 import { ConfirmInscriptionChangeButton } from '.'
+import { useGetAttestationsQuery } from '../services/attestations'
 
 export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }) => {
+    const {
+        data: attestationTemplates,
+        isLoading,
+        isFetching,
+        isError,
+        refetch,
+    } = useGetAttestationsQuery(null, {
+        refetchOnMountOrArgChange: true,
+    })
+
     const [selectedTemplateData, setSelectedTemplateData] = useState(null)
+    const [selectedAttestationTemplateUuid, setSelectedAttestationTemplateUuid] = useState(null)
     const parameters = useSelector(parametersSelector)
     const isSagaLoading = useSelector(loadingSelector)
     const areTemplatesLoading = useSelector(templatesLoadingSelector)
@@ -39,18 +51,18 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
           )
         : []
 
-    const attestationTemplates = [
-        {
-            templateId: '1',
-            title: 'Modèle attestation 1',
-            descriptionText: 'Description du modèle attestation 1',
-        },
-        {
-            templateId: '2',
-            title: 'Modèle attestation 2',
-            descriptionText: 'Description du modèle attestation 2',
-        },
-    ]
+    // const attestationTemplates = [
+    //     {
+    //         templateId: '1',
+    //         title: 'Modèle attestation 1',
+    //         description: 'Description du modèle attestation 1',
+    //     },
+    //     {
+    //         templateId: '2',
+    //         title: 'Modèle attestation 2',
+    //         description: 'Description du modèle attestation 2',
+    //     },
+    // ]
 
     return (
         <Modal
@@ -144,23 +156,21 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
                                 <p>Aucun e-mail ne sera envoyé</p>
                             </ListGroup.Item>
                             {emailTemplates.length > 0 &&
-                                emailTemplates.map(
-                                    ({ title, descriptionText, emailBody, templateId, emailSubject }) => (
-                                        <ListGroup.Item
-                                            key={templateId}
-                                            onClick={() => {
-                                                setSelectedTemplateData({ emailBody, templateId, emailSubject })
-                                                fetchTemplatePreviews({ templateId })
-                                            }}
-                                            className={classNames({
-                                                'active-template': selectedTemplateData?.templateId === templateId,
-                                            })}
-                                        >
-                                            <h4>{title}</h4>
-                                            <p>{descriptionText}</p>
-                                        </ListGroup.Item>
-                                    )
-                                )}
+                                emailTemplates.map(({ title, description, emailBody, templateId, emailSubject }) => (
+                                    <ListGroup.Item
+                                        key={templateId}
+                                        onClick={() => {
+                                            setSelectedTemplateData({ emailBody, templateId, emailSubject })
+                                            fetchTemplatePreviews({ templateId })
+                                        }}
+                                        className={classNames({
+                                            'active-template': selectedTemplateData?.templateId === templateId,
+                                        })}
+                                    >
+                                        <h4>{title}</h4>
+                                        <p>{description}</p>
+                                    </ListGroup.Item>
+                                ))}
                         </ListGroup>
                     </div>
                     <div className="col template-preview">
@@ -223,107 +233,47 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
                         )}
                     </div>
                 </Row>
-                {statusUpdateData.newStatus === 'Participation' && (
-                    <Row>
-                        <div className="col-sm-4">
-                            <h6>Choix de modèle d'attestation</h6>
-                            <ListGroup>
-                                <ListGroup.Item
-                                    onClick={() =>
-                                        setSelectedTemplateData({
-                                            templateId: 'no-attestation',
-                                            emailBody: 'Aucun e-mail ne sera envoyé',
-                                            emailSubject: null,
-                                        })
-                                    }
-                                    className={classNames({
-                                        'active-template': selectedTemplateData?.templateId === 'no-attestation',
-                                    })}
-                                >
-                                    <h4>Aucune attestation</h4>
-                                    <p>Aucun attestation ne sera déposé dans l'espace personnel</p>
-                                </ListGroup.Item>
-                                {attestationTemplates.length > 0 &&
-                                    attestationTemplates.map(
-                                        ({ title, descriptionText, emailBody, templateId, emailSubject }) => (
+                {(statusUpdateData.newStatus === 'Participation' || statusUpdateData.isCreatingAttestation) &&
+                    (isLoading ? (
+                        'Chargement...'
+                    ) : isError ? (
+                        'Erreur de chargement des modèles.'
+                    ) : (
+                        <Row>
+                            <div className="col-sm-4">
+                                <h6>Choix de modèle d'attestation</h6>
+                                <ListGroup>
+                                    <ListGroup.Item
+                                        onClick={() => {
+                                            setSelectedAttestationTemplateUuid('no-attestation')
+                                        }}
+                                        className={classNames({
+                                            'active-template': selectedAttestationTemplateUuid === 'no-attestation',
+                                        })}
+                                    >
+                                        <h4>Aucune attestation</h4>
+                                        <p>Aucun attestation ne sera déposé dans l'espace personnel</p>
+                                    </ListGroup.Item>
+                                    {attestationTemplates.length > 0 &&
+                                        attestationTemplates.map(({ title, description, uuid }) => (
                                             <ListGroup.Item
-                                                key={templateId}
+                                                key={uuid}
                                                 onClick={() => {
-                                                    // setSelectedTemplateData({ emailBody, templateId, emailSubject })
-                                                    // fetchTemplatePreviews({ templateId })
+                                                    setSelectedAttestationTemplateUuid(uuid)
+                                                    // fetchTemplatePreviews({ uuid })
                                                 }}
                                                 className={classNames({
-                                                    'active-template': selectedTemplateData?.templateId === templateId,
+                                                    'active-template': selectedAttestationTemplateUuid === uuid,
                                                 })}
                                             >
                                                 <h4>{title}</h4>
-                                                <p>{descriptionText}</p>
+                                                <p>{description}</p>
                                             </ListGroup.Item>
-                                        )
-                                    )}
-                            </ListGroup>
-                        </div>
-                        {/*  <div className="col template-preview">
-                        <h6>Aperçu de l'attestation</h6>
-                        {isEmailTemplateSelected ? (
-                            <dl>
-                                <dt>Sujet de l'email</dt>
-                                <dd>
-                                    {!areTemplatesLoading ? (
-                                        <EmailTemplateBodyInput
-                                            className="email-preview"
-                                            onChange={() => {}}
-                                            value={{
-                                                value: templatePreviews.emailSubject,
-                                                templateId: selectedTemplateData.templateId,
-                                            }}
-                                            readOnly
-                                        />
-                                    ) : (
-                                        <Spinner animation="grow" size="sm" />
-                                    )}
-                                </dd>
-                                <dt>Corps de l'e-mail</dt>
-                                <dd>
-                                    {!areTemplatesLoading ? (
-                                        <EmailTemplateBodyInput
-                                            className="email-preview"
-                                            onChange={() => {}}
-                                            value={{
-                                                value: templatePreviews.emailContent,
-                                                templateId: selectedTemplateData.templateId,
-                                            }}
-                                            readOnly
-                                        />
-                                    ) : (
-                                        <Spinner animation="grow" size="sm" />
-                                    )}
-                                </dd>
-                                <dt>Corps de l'SMS</dt>
-                                <dd>
-                                    {!areTemplatesLoading ? (
-                                        <EmailTemplateBodyInput
-                                            className="email-preview"
-                                            onChange={() => {}}
-                                            value={{
-                                                value: templatePreviews.smsContent,
-                                                templateId: selectedTemplateData.templateId,
-                                            }}
-                                            readOnly
-                                        />
-                                    ) : (
-                                        <Spinner animation="grow" size="sm" />
-                                    )}
-                                </dd>
-                            </dl>
-                        ) : selectedTemplateData?.templateId === 'no-email' ? (
-                            'Aucun e-mail ne sera envoyé'
-                        ) : (
-                            'Sélectionnez un modèle'
-                        )}
-                    </div> */}
-                    </Row>
-                )}
+                                        ))}
+                                </ListGroup>
+                            </div>
+                        </Row>
+                    ))}
             </Modal.Body>
             <Modal.Footer>
                 <ConfirmInscriptionChangeButton
@@ -334,7 +284,14 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
                         const templateId =
                             selectedTemplateData?.templateId === 'no-email' ? null : selectedTemplateData.templateId
 
-                        updateStatus({ emailTemplateId: templateId, shouldSendSms: false })
+                        updateStatus({
+                            emailTemplateId: templateId,
+                            shouldSendSms: false,
+                            selectedAttestationTemplateUuid:
+                                selectedAttestationTemplateUuid === 'no-attestation'
+                                    ? null
+                                    : selectedAttestationTemplateUuid,
+                        })
                     }}
                 >
                     Confirmer
@@ -347,7 +304,14 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
                         const templateId =
                             selectedTemplateData?.templateId === 'no-email' ? null : selectedTemplateData.templateId
 
-                        updateStatus({ emailTemplateId: templateId, shouldSendSms: true })
+                        updateStatus({
+                            emailTemplateId: templateId,
+                            shouldSendSms: true,
+                            selectedAttestationTemplateUuid:
+                                selectedAttestationTemplateUuid === 'no-attestation'
+                                    ? null
+                                    : selectedAttestationTemplateUuid,
+                        })
                     }}
                 >
                     Confirmer avec SMS

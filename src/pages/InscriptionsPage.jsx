@@ -138,6 +138,12 @@ export function InscriptionsPage() {
                 headerTooltip: "Le statut de l'utilisateur",
             },
             {
+                field: 'attestationTitle',
+                headerName: 'Attestation',
+                filter: 'agTextColumnFilter',
+                headerTooltip: "Le modèle choisi pour l'attestation de l'utilisateur",
+            },
+            {
                 field: 'organization',
                 headerName: 'Organisation',
                 filter: 'agTextColumnFilter',
@@ -199,7 +205,7 @@ export function InscriptionsPage() {
 
     const rowData = inscriptions
         .filter((current) => current != null)
-        .map(({ id, user, session, status, inscriptionDate, type, coordinator, isPending }) => ({
+        .map(({ id, user, session, status, attestationTitle, inscriptionDate, type, coordinator, isPending }) => ({
             id,
             participant: `${user.lastName} ${user.firstName}`,
             profession: user.profession,
@@ -208,6 +214,7 @@ export function InscriptionsPage() {
             quotaDays: session.quotaDays,
             isUsedForQuota: session.isUsedForQuota,
             status,
+            attestationTitle,
             startDate: session.startDate,
             inscriptionDate,
             organizationCode: user.organizationCode,
@@ -259,32 +266,32 @@ export function InscriptionsPage() {
                         action: () => {
                             setIsUpdateModalVisible(true)
                             setStatusUpdateData({
-                                ...inscriptions.find(({ id }) => id === data.id),
-                                newStatus: data.status,
+                                ...inscriptions.find(({ id }) => id === data?.id),
+                                newStatus: data?.status,
                             })
                         },
                     },
                     selectedRowsData.length <= 1 && {
                         name: 'Modifier statut',
-                        disabled: !checkIsSingleUpdatePossible({ status: data.status }),
-                        tooltip: FINAL_STATUSES.includes(data.status) ? 'Statut final (non modifiable)' : '',
+                        disabled: !checkIsSingleUpdatePossible({ status: data?.status }),
+                        tooltip: FINAL_STATUSES.includes(data?.status) ? 'Statut final (non modifiable)' : '',
                         subMenu: inscriptionStatuses.map((currentStatus) => ({
                             name: currentStatus,
                             action: () => {
                                 setIsUpdateModalVisible(true)
                                 setStatusUpdateData({
-                                    ...inscriptions.find(({ id }) => id === data.id),
+                                    ...inscriptions.find(({ id }) => id === data?.id),
                                     newStatus: currentStatus,
                                 })
                             },
-                            disabled: currentStatus === data.status || UNSELECTABLE_STATUSES.includes(currentStatus),
-                            checked: currentStatus === data.status,
+                            disabled: currentStatus === data?.status || UNSELECTABLE_STATUSES.includes(currentStatus),
+                            checked: currentStatus === data?.status,
                             icon:
                                 FINAL_STATUSES.includes(currentStatus) && !UNSELECTABLE_STATUSES.includes(currentStatus)
                                     ? '!'
                                     : '',
                             tooltip:
-                                currentStatus === data.status
+                                currentStatus === data?.status
                                     ? 'Statut actuel de la sélection'
                                     : UNSELECTABLE_STATUSES.includes(currentStatus)
                                     ? 'Statut dérivé (non sélectionnable)'
@@ -327,6 +334,7 @@ export function InscriptionsPage() {
                             setStatusUpdateData({
                                 ...inscriptions.find(({ id }) => id === data.id),
                                 newStatus: data.status,
+                                isCreatingAttestation: true,
                             })
                         },
                     },
@@ -361,12 +369,13 @@ export function InscriptionsPage() {
                         dispatch(fetchInscriptionsAction())
                     }}
                     statusUpdateData={statusUpdateData}
-                    updateStatus={({ emailTemplateId, shouldSendSms }) =>
+                    updateStatus={({ emailTemplateId, shouldSendSms, selectedAttestationTemplateUuid }) =>
                         dispatch(
                             updateInscriptionStatusAction({
                                 inscriptionId: statusUpdateData.id,
                                 newStatus: statusUpdateData.newStatus,
                                 emailTemplateId,
+                                selectedAttestationTemplateUuid,
                                 shouldSendSms,
                                 successCallback: () => {
                                     setIsUpdateModalVisible(false)

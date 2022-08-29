@@ -19,7 +19,14 @@ function* fetchInscriptionsSaga(action) {
 
 function* updateInscriptionsSaga(action) {
     const {
-        payload: { inscriptionId, newStatus, emailTemplateId, shouldSendSms, successCallback },
+        payload: {
+            inscriptionId,
+            newStatus,
+            emailTemplateId,
+            selectedAttestationTemplateUuid,
+            shouldSendSms,
+            successCallback,
+        },
     } = action
 
     yield put(setLoadingAction({ loading: true }))
@@ -31,7 +38,12 @@ function* updateInscriptionsSaga(action) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ status: newStatus, emailTemplateId, shouldSendSms }),
+            body: JSON.stringify({
+                status: newStatus,
+                emailTemplateId,
+                selectedAttestationTemplateUuid,
+                shouldSendSms,
+            }),
         },
         action,
         successCallback,
@@ -50,7 +62,7 @@ function* updateInscriptionsSaga(action) {
 
 function* massUpdateInscriptionsSaga(action) {
     const {
-        payload: { inscriptionsIds, newStatus, emailTemplateId, successCallback },
+        payload: { inscriptionsIds, newStatus, emailTemplateId, selectedAttestationTemplateUuid, successCallback },
     } = action
 
     yield put(setLoadingAction({ loading: true }))
@@ -62,7 +74,12 @@ function* massUpdateInscriptionsSaga(action) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ status: newStatus, emailTemplateId, inscriptionsIds }),
+            body: JSON.stringify({
+                status: newStatus,
+                emailTemplateId,
+                selectedAttestationTemplateUuid,
+                inscriptionsIds,
+            }),
         },
         action,
         successCallback,
