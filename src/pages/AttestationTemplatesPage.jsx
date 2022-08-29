@@ -58,7 +58,7 @@ export function AttestationTemplatesPage() {
         const formData = new FormData()
         formData.append('file', uploadedFile)
         formData.append('title', title)
-        formData.append('description', description)
+        formData.append('description', description ?? '')
 
         const { error } = await updateAttestation({ uuid: selectedTemplateUuid, formData })
 
@@ -67,6 +67,8 @@ export function AttestationTemplatesPage() {
         } else {
             toast.error("Erreur de modification du modèle d'attestation")
         }
+
+        reset({ title, description, file: null })
 
         await refetch()
     })
@@ -116,13 +118,13 @@ export function AttestationTemplatesPage() {
                                                             selectNewTemplate: () => {
                                                                 setSelectedTemplateUuid(uuid)
 
-                                                                reset({ uuid, title, description })
+                                                                reset({ uuid, title, description, file: null })
                                                             },
                                                         })
                                                     } else {
                                                         setSelectedTemplateUuid(uuid)
 
-                                                        reset({ uuid, title, description })
+                                                        reset({ uuid, title, description, file: null })
                                                     }
                                                 }}
                                                 className={classNames({
