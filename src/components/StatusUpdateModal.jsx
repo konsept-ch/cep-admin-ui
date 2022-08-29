@@ -287,7 +287,10 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
                         updateStatus({
                             emailTemplateId: templateId,
                             shouldSendSms: false,
-                            selectedAttestationTemplateUuid,
+                            selectedAttestationTemplateUuid:
+                                selectedAttestationTemplateUuid === 'no-attestation'
+                                    ? null
+                                    : selectedAttestationTemplateUuid,
                         })
                     }}
                 >
@@ -301,7 +304,14 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
                         const templateId =
                             selectedTemplateData?.templateId === 'no-email' ? null : selectedTemplateData.templateId
 
-                        updateStatus({ emailTemplateId: templateId, shouldSendSms: true })
+                        updateStatus({
+                            emailTemplateId: templateId,
+                            shouldSendSms: true,
+                            selectedAttestationTemplateUuid:
+                                selectedAttestationTemplateUuid === 'no-attestation'
+                                    ? null
+                                    : selectedAttestationTemplateUuid,
+                        })
                     }}
                 >
                     Confirmer avec SMS
