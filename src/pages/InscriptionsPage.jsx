@@ -259,32 +259,32 @@ export function InscriptionsPage() {
                         action: () => {
                             setIsUpdateModalVisible(true)
                             setStatusUpdateData({
-                                ...inscriptions.find(({ id }) => id === data.id),
-                                newStatus: data.status,
+                                ...inscriptions.find(({ id }) => id === data?.id),
+                                newStatus: data?.status,
                             })
                         },
                     },
                     selectedRowsData.length <= 1 && {
                         name: 'Modifier statut',
-                        disabled: !checkIsSingleUpdatePossible({ status: data.status }),
-                        tooltip: FINAL_STATUSES.includes(data.status) ? 'Statut final (non modifiable)' : '',
+                        disabled: !checkIsSingleUpdatePossible({ status: data?.status }),
+                        tooltip: FINAL_STATUSES.includes(data?.status) ? 'Statut final (non modifiable)' : '',
                         subMenu: inscriptionStatuses.map((currentStatus) => ({
                             name: currentStatus,
                             action: () => {
                                 setIsUpdateModalVisible(true)
                                 setStatusUpdateData({
-                                    ...inscriptions.find(({ id }) => id === data.id),
+                                    ...inscriptions.find(({ id }) => id === data?.id),
                                     newStatus: currentStatus,
                                 })
                             },
-                            disabled: currentStatus === data.status || UNSELECTABLE_STATUSES.includes(currentStatus),
-                            checked: currentStatus === data.status,
+                            disabled: currentStatus === data?.status || UNSELECTABLE_STATUSES.includes(currentStatus),
+                            checked: currentStatus === data?.status,
                             icon:
                                 FINAL_STATUSES.includes(currentStatus) && !UNSELECTABLE_STATUSES.includes(currentStatus)
                                     ? '!'
                                     : '',
                             tooltip:
-                                currentStatus === data.status
+                                currentStatus === data?.status
                                     ? 'Statut actuel de la sélection'
                                     : UNSELECTABLE_STATUSES.includes(currentStatus)
                                     ? 'Statut dérivé (non sélectionnable)'
@@ -327,6 +327,7 @@ export function InscriptionsPage() {
                             setStatusUpdateData({
                                 ...inscriptions.find(({ id }) => id === data.id),
                                 newStatus: data.status,
+                                isCreatingAttestation: true,
                             })
                         },
                     },
@@ -361,12 +362,13 @@ export function InscriptionsPage() {
                         dispatch(fetchInscriptionsAction())
                     }}
                     statusUpdateData={statusUpdateData}
-                    updateStatus={({ emailTemplateId, shouldSendSms }) =>
+                    updateStatus={({ emailTemplateId, shouldSendSms, selectedAttestationTemplateUuid }) =>
                         dispatch(
                             updateInscriptionStatusAction({
                                 inscriptionId: statusUpdateData.id,
                                 newStatus: statusUpdateData.newStatus,
                                 emailTemplateId,
+                                selectedAttestationTemplateUuid,
                                 shouldSendSms,
                                 successCallback: () => {
                                     setIsUpdateModalVisible(false)

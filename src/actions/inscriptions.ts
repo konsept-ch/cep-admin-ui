@@ -19,30 +19,41 @@ export const updateInscriptionStatusAction = ({
     inscriptionId,
     newStatus,
     emailTemplateId,
+    selectedAttestationTemplateUuid,
     shouldSendSms,
     successCallback,
 }: {
     inscriptionId: any
     newStatus: any
     emailTemplateId: any
+    selectedAttestationTemplateUuid: any
     shouldSendSms: any
     successCallback: any
 }) => ({
     type: UPDATE_INSCRIPTIONS,
-    payload: { inscriptionId, newStatus, emailTemplateId, shouldSendSms, successCallback },
+    payload: {
+        inscriptionId,
+        newStatus,
+        emailTemplateId,
+        selectedAttestationTemplateUuid,
+        shouldSendSms,
+        successCallback,
+    },
 })
 
 export const massUpdateInscriptionStatusesAction = ({
     inscriptionsIds,
     newStatus,
     emailTemplateId,
+    selectedAttestationTemplateUuid,
     successCallback,
 }: {
     inscriptionsIds: any
     newStatus: any
     emailTemplateId: any
+    selectedAttestationTemplateUuid: any
     successCallback: any
 }) => ({
     type: MASS_UPDATE_INSCRIPTIONS,
-    payload: { inscriptionsIds, newStatus, emailTemplateId, successCallback },
+    payload: { inscriptionsIds, newStatus, emailTemplateId, selectedAttestationTemplateUuid, successCallback },
 })
