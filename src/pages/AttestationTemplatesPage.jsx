@@ -56,9 +56,16 @@ export function AttestationTemplatesPage() {
     const onApplyButtonClick = handleSubmit(async ({ title, description, file }) => {
         const uploadedFile = file[0]
         const formData = new FormData()
-        formData.append('file', uploadedFile)
+
         formData.append('title', title)
-        formData.append('description', description ?? '')
+
+        if (description != null) {
+            formData.append('description', description)
+        }
+
+        if (uploadedFile != null) {
+            formData.append('file', uploadedFile)
+        }
 
         const { error } = await updateAttestation({ uuid: selectedTemplateUuid, formData })
 
@@ -68,7 +75,7 @@ export function AttestationTemplatesPage() {
             toast.error("Erreur de modification du modèle d'attestation")
         }
 
-        reset({ title, description, file: null })
+        reset({ title, description, file: {} })
 
         await refetch()
     })
@@ -118,13 +125,13 @@ export function AttestationTemplatesPage() {
                                                             selectNewTemplate: () => {
                                                                 setSelectedTemplateUuid(uuid)
 
-                                                                reset({ uuid, title, description, file: null })
+                                                                reset({ uuid, title, description, file: {} })
                                                             },
                                                         })
                                                     } else {
                                                         setSelectedTemplateUuid(uuid)
 
-                                                        reset({ uuid, title, description, file: null })
+                                                        reset({ uuid, title, description, file: {} })
                                                     }
                                                 }}
                                                 className={classNames({
