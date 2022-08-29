@@ -138,6 +138,12 @@ export function InscriptionsPage() {
                 headerTooltip: "Le statut de l'utilisateur",
             },
             {
+                field: 'attestationTitle',
+                headerName: 'Attestation',
+                filter: 'agTextColumnFilter',
+                headerTooltip: "Le modèle choisi pour l'attestation de l'utilisateur",
+            },
+            {
                 field: 'organization',
                 headerName: 'Organisation',
                 filter: 'agTextColumnFilter',
@@ -199,7 +205,7 @@ export function InscriptionsPage() {
 
     const rowData = inscriptions
         .filter((current) => current != null)
-        .map(({ id, user, session, status, inscriptionDate, type, coordinator, isPending }) => ({
+        .map(({ id, user, session, status, attestationTitle, inscriptionDate, type, coordinator, isPending }) => ({
             id,
             participant: `${user.lastName} ${user.firstName}`,
             profession: user.profession,
@@ -208,6 +214,7 @@ export function InscriptionsPage() {
             quotaDays: session.quotaDays,
             isUsedForQuota: session.isUsedForQuota,
             status,
+            attestationTitle,
             startDate: session.startDate,
             inscriptionDate,
             organizationCode: user.organizationCode,
