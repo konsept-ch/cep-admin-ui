@@ -42,10 +42,12 @@ export function AttestationTemplatesPage() {
     )
 
     const onAddButtonClick = async () => {
-        const { error } = await createAttestation()
+        const { data, error } = await createAttestation()
 
         if (error == null) {
             toast.success("Modèle d'attestation créée")
+
+            setSelectedTemplateUuid(data.uuid)
         } else {
             toast.error("Erreur de création du modèle d'attestation")
         }
@@ -89,11 +91,11 @@ export function AttestationTemplatesPage() {
             setSelectedTemplateUuid(null)
 
             setIsDeleteWarningVisible(false)
-
-            await refetch()
         } else {
             toast.error("Erreur de suppression du modèle d'attestation")
         }
+
+        await refetch()
     }
 
     return (

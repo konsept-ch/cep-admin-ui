@@ -2,6 +2,7 @@ import createSagaMiddleware from 'redux-saga'
 import { configureStore } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query/react'
 
+import { rtkQueryErrorLogger } from './rtkQueryErrorLogger'
 import { rootSaga } from './saga'
 import { notificationsReducer } from './reducers/notifications'
 import { agendaReducer } from './reducers/agenda'
@@ -48,6 +49,7 @@ export const store = configureStore({
             invoicesApi.middleware,
             inscriptionsApi.middleware,
             attestationsApi.middleware,
+            rtkQueryErrorLogger,
         ]),
 })
 
