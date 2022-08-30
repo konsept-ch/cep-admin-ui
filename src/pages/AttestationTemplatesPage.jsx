@@ -1,11 +1,10 @@
 import { useState, useMemo } from 'react'
 import { ListGroup, Row, Col, Container, Button, FloatingLabel, Form } from 'react-bootstrap'
-import classNames from 'classnames'
 import { Helmet } from 'react-helmet-async'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
-import { CommonModal } from '../components'
+import { AttestationModelItem, CommonModal } from '../components'
 import {
     useGetAttestationsQuery,
     useCreateAttestationMutation,
@@ -117,34 +116,31 @@ export function AttestationTemplatesPage() {
                             ) : (
                                 <ListGroup>
                                     {templates.length > 0 &&
-                                        templates.map(({ title, description, uuid }) => (
-                                            <ListGroup.Item
-                                                key={uuid}
-                                                onClick={() => {
-                                                    if (isDirty) {
-                                                        setDiscardWarningData({
-                                                            isVisible: true,
-                                                            selectNewTemplate: () => {
-                                                                setSelectedTemplateUuid(uuid)
+                                        templates.map(({ uuid, title, description }) => (
+                                            <AttestationModelItem
+                                                {...{
+                                                    uuid,
+                                                    title,
+                                                    description,
+                                                    isActive: selectedTemplateUuid === uuid,
+                                                    onClick: () => {
+                                                        if (isDirty) {
+                                                            setDiscardWarningData({
+                                                                isVisible: true,
+                                                                selectNewTemplate: () => {
+                                                                    setSelectedTemplateUuid(uuid)
 
-                                                                reset({ uuid, title, description, file: {} })
-                                                            },
-                                                        })
-                                                    } else {
-                                                        setSelectedTemplateUuid(uuid)
+                                                                    reset({ uuid, title, description, file: {} })
+                                                                },
+                                                            })
+                                                        } else {
+                                                            setSelectedTemplateUuid(uuid)
 
-                                                        reset({ uuid, title, description, file: {} })
-                                                    }
+                                                            reset({ uuid, title, description, file: {} })
+                                                        }
+                                                    },
                                                 }}
-                                                className={classNames({
-                                                    'active-template': selectedTemplateUuid === uuid,
-                                                })}
-                                            >
-                                                <div className="d-flex align-items-start justify-content-between">
-                                                    <h4 className="d-inline-block">{title}</h4>
-                                                </div>
-                                                {description && <p>{description}</p>}
-                                            </ListGroup.Item>
+                                            />
                                         ))}
                                 </ListGroup>
                             )}
