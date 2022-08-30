@@ -330,12 +330,14 @@ export function InscriptionsPage() {
                     {
                         name: 'Créer attestation',
                         action: () => {
-                            setIsUpdateModalVisible(true)
-                            setStatusUpdateData({
-                                ...inscriptions.find(({ id }) => id === data.id),
-                                newStatus: data.status,
-                                isCreatingAttestation: true,
-                            })
+                            if (data != null) {
+                                setIsUpdateModalVisible(true)
+                                setStatusUpdateData({
+                                    ...inscriptions.find(({ id }) => id === data?.id),
+                                    newStatus: data?.status,
+                                    isCreatingAttestation: true,
+                                })
+                            }
                         },
                     },
                     'separator',
