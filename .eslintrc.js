@@ -16,7 +16,6 @@ module.exports = {
         'no-useless-concat': 'error',
         'no-console': 'warn',
         'no-unused-vars': 'warn',
-        'no-duplicate-imports': 'error',
         'no-param-reassign': 'error',
         'no-shadow': 'error',
         'no-unsafe-optional-chaining': ['error', { disallowArithmeticOperators: true }],
