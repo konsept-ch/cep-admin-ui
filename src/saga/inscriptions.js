@@ -31,33 +31,37 @@ function* updateInscriptionsSaga(action) {
 
     yield put(setLoadingAction({ loading: true }))
 
-    const { isInvoiceCreated } = yield call(callService, {
-        endpoint: `inscriptions/${inscriptionId}`,
-        options: {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
+    try {
+        const { isInvoiceCreated } = yield call(callService, {
+            endpoint: `inscriptions/${inscriptionId}`,
+            options: {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    status: newStatus,
+                    emailTemplateId,
+                    selectedAttestationTemplateUuid,
+                    shouldSendSms,
+                }),
             },
-            body: JSON.stringify({
-                status: newStatus,
-                emailTemplateId,
-                selectedAttestationTemplateUuid,
-                shouldSendSms,
-            }),
-        },
-        action,
-        successCallback,
-    })
+            action,
+            successCallback,
+        })
 
-    if (INVOICE_STATUSES.includes(newStatus)) {
-        if (isInvoiceCreated) {
-            toast.success('Une facture a été créée')
-        } else {
-            toast.info(`Aucune facture n'a été créée`)
+        if (INVOICE_STATUSES.includes(newStatus)) {
+            if (isInvoiceCreated) {
+                toast.success('Une facture a été créée')
+            } else {
+                toast.info(`Aucune facture n'a été créée`)
+            }
         }
+    } catch (error) {
+        console.error(error)
+    } finally {
+        yield put(setLoadingAction({ loading: false }))
     }
-
-    yield put(setLoadingAction({ loading: false }))
 }
 
 function* massUpdateInscriptionsSaga(action) {
