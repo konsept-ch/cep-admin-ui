@@ -207,6 +207,7 @@ export function CoursesPage() {
                     pricingType,
                     baseRate,
                     isRecurrent,
+                    goals,
                 }) => ({
                     id,
                     name,
@@ -227,6 +228,7 @@ export function CoursesPage() {
                     pricingType,
                     baseRate,
                     isRecurrent,
+                    goals,
                 })
             ),
         [courses]

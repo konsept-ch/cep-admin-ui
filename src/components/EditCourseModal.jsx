@@ -79,6 +79,7 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, setSelecte
                 pricingType: selectedCourseData?.pricingType,
                 baseRate: selectedCourseData?.baseRate,
                 isRecurrent: selectedCourseData?.isRecurrent,
+                goals: selectedCourseData?.goals,
             })
             setIsModalVisible(true)
         }
@@ -245,6 +246,14 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, setSelecte
                                         </Form.Control.Feedback>
                                     </InputGroup>
                                     <Form.Text>Si tarif de base négocié pour l'ensemble des cours</Form.Text>
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                <Form.Group className="mb-3" controlId="goals">
+                                    <Form.Label>Objectifs</Form.Label>
+                                    <Form.Control as="textarea" rows={3} {...register('goals')} />
                                 </Form.Group>
                             </Col>
                         </Row>
