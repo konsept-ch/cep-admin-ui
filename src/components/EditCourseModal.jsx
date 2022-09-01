@@ -253,7 +253,7 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, setSelecte
                             <Col>
                                 <Form.Group className="mb-3" controlId="goals">
                                     <Form.Label>Objectifs</Form.Label>
-                                    <Form.Control as="textarea" rows={3} {...register('goals')} />
+                                    <Form.Control as="textarea" rows={5} {...register('goals')} />
                                 </Form.Group>
                             </Col>
                         </Row>
