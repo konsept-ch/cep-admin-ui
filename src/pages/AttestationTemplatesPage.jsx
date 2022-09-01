@@ -47,6 +47,8 @@ export function AttestationTemplatesPage() {
             toast.success("Modèle d'attestation créée")
 
             setSelectedTemplateUuid(data.uuid)
+
+            reset({ title: data.title, description: data.description, file: {} })
         } else {
             toast.error("Erreur de création du modèle d'attestation")
         }
