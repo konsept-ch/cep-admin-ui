@@ -186,7 +186,7 @@ export const callApi = async ({ path = '', method = 'GET', headers, body, succes
         const RetryToast = ({ closeToast }) => {
             return (
                 <div>
-                    Retry the action
+                    Réessayer l'action
                     <Button
                         className="d-block mb-1"
                         variant="primary"
@@ -195,7 +195,7 @@ export const callApi = async ({ path = '', method = 'GET', headers, body, succes
                             closeToast()
                         }}
                     >
-                        <FontAwesomeIcon icon={faRotateRight} /> Retry
+                        <FontAwesomeIcon icon={faRotateRight} /> Réessayer
                     </Button>
                 </div>
             )

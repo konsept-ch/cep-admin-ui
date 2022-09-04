@@ -3,6 +3,8 @@ import { ListGroup, Row, Col, Container, Button, FloatingLabel, Form } from 'rea
 import { Helmet } from 'react-helmet-async'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faFloppyDisk, faTrash } from '@fortawesome/pro-regular-svg-icons'
 
 import { AttestationModelItem, CommonModal } from '../components'
 import {
@@ -83,13 +85,57 @@ export function AttestationTemplatesPage() {
         await refetch()
     })
 
-    const onDeleteButtonClick = async () => {
-        const { error } = await deleteAttestation({ uuid: selectedTemplateUuid })
+    const onDeleteButtonClick = async ({ shouldForceDelete }) => {
+        const { error } = await deleteAttestation({ uuid: selectedTemplateUuid, shouldForceDelete })
 
         if (error.status === 400) {
             toast.error("Ce modèle d'attestation a déjà été utilisé et ne peut plus être supprimé.", {
                 autoClose: false,
             })
+
+            // const RetryToast = ({ closeToast }) => (
+            //     <div>
+            //         <p>Ce modèle d'attestation a déjà été utilisé.</p>
+            //         <p>Si vous le supprimez, il n'y aura plus de trâce dans les inscriptions qui l'ont utilisés.</p>
+            //         <Button
+            //             className="d-block mb-1"
+            //             variant="primary"
+            //             onClick={async () => {
+            //                 const { error: forceDeleteError } = await deleteAttestation({
+            //                     uuid: selectedTemplateUuid,
+            //                 })
+
+            //                 closeToast()
+            //             }}
+            //         >
+            //             <FontAwesomeIcon icon={faTrash} /> Forcer la suppression ?
+            //         </Button>
+            //     </div>
+            // )
+
+            toast(
+                ({ closeToast }) => (
+                    <div>
+                        <p>Ce modèle d'attestation a déjà été utilisé.</p>
+                        <p>Si vous le supprimez, il n'y aura plus de trâce dans les inscriptions qui l'ont utilisé.</p>
+                        <Button
+                            className="d-block mb-1"
+                            variant="danger"
+                            onClick={async () => {
+                                await onDeleteButtonClick({ shouldForceDelete: true })
+
+                                closeToast()
+                            }}
+                        >
+                            <FontAwesomeIcon icon={faTrash} /> Forcer la suppression ?
+                        </Button>
+                    </div>
+                ),
+                {
+                    autoClose: false,
+                    toastId: `retry-delete`,
+                }
+            )
         } else if (error) {
             console.error(error)
 
@@ -198,6 +244,7 @@ export function AttestationTemplatesPage() {
                                                 className="mt-2 me-2"
                                                 disabled={!isDirty || isUpdating || isFetching}
                                             >
+                                                <FontAwesomeIcon icon={faFloppyDisk} />{' '}
                                                 {isUpdating ? 'Sauvegarde en cours...' : 'Appliquer'}
                                             </Button>
                                             <Button
@@ -205,7 +252,7 @@ export function AttestationTemplatesPage() {
                                                 onClick={() => setIsDeleteWarningVisible(true)}
                                                 className="mt-2"
                                             >
-                                                Supprimer
+                                                <FontAwesomeIcon icon={faTrash} /> Supprimer
                                             </Button>
                                         </div>
                                         <CommonModal
@@ -217,6 +264,7 @@ export function AttestationTemplatesPage() {
                                                     disabled={isDeleting}
                                                     onClick={onDeleteButtonClick}
                                                 >
+                                                    <FontAwesomeIcon icon={faTrash} />{' '}
                                                     {isDeleting ? 'Supprimer en cours...' : 'Supprimer'}
                                                 </Button>
                                             }

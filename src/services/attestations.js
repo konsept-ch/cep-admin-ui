@@ -23,8 +23,9 @@ export const attestationsApi = createApi({
             }),
         }),
         deleteAttestation: builder.mutation({
-            query: ({ uuid }) => ({
+            query: ({ uuid, shouldForceDelete }) => ({
                 url: uuid,
+                params: { shouldForceDelete },
                 method: 'DELETE',
             }),
         }),
