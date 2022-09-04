@@ -50,7 +50,7 @@ export function AttestationTemplatesPage() {
 
             reset({ title: data.title, description: data.description, file: {} })
         } else {
-            toast.error("Erreur de création du modèle d'attestation")
+            toast.error("Erreur de création du modèle d'attestation", { autoClose: false })
         }
 
         await refetch()
@@ -75,7 +75,7 @@ export function AttestationTemplatesPage() {
         if (error == null) {
             toast.success("Modèle d'attestation modifiée")
         } else {
-            toast.error("Erreur de modification du modèle d'attestation")
+            toast.error("Erreur de modification du modèle d'attestation", { autoClose: false })
         }
 
         reset({ title, description, file: {} })
@@ -86,14 +86,20 @@ export function AttestationTemplatesPage() {
     const onDeleteButtonClick = async () => {
         const { error } = await deleteAttestation({ uuid: selectedTemplateUuid })
 
-        if (error == null) {
+        if (error.status === 400) {
+            toast.error("Ce modèle d'attestation a déjà été utilisé et ne peut plus être supprimé.", {
+                autoClose: false,
+            })
+        } else if (error) {
+            console.error(error)
+
+            toast.error("Erreur de suppression du modèle d'attestation", { autoClose: false })
+        } else {
             toast.success("Modèle d'attestation supprimée")
 
             setSelectedTemplateUuid(null)
 
             setIsDeleteWarningVisible(false)
-        } else {
-            toast.error("Erreur de suppression du modèle d'attestation")
         }
 
         await refetch()
