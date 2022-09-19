@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 import { Helmet } from 'react-helmet-async'
-import { useGetInscriptionsAnnulationsQuery } from '../services/inscriptions'
+import { useGetInscriptionCancellationsQuery } from '../services/inscriptions'
 import { formatDate } from '../utils'
 import { Grid } from '../components'
 
-export function InscriptionsAnnulationsPage() {
-    const { data: annulationsData, isFetching } = useGetInscriptionsAnnulationsQuery(null, {
+export function InscriptionCancellationsPage() {
+    const { data: annulationsData, isFetching } = useGetInscriptionCancellationsQuery(null, {
         refetchOnMountOrArgChange: true,
     })
 

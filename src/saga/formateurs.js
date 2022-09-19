@@ -7,7 +7,7 @@ import { setGridLoadingAction } from '../actions/loading'
 
 function* fetchFormateursSaga(action) {
     yield put(setGridLoadingAction({ loading: true }))
-    const formateurs = yield call(callService, { endpoint: 'formateurs', action })
+    const formateurs = yield call(callService, { endpoint: 'inscriptions/formateurs', action })
 
     yield put(setFormateursAction({ formateurs }))
     yield put(setGridLoadingAction({ loading: false }))

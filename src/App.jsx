@@ -5,7 +5,7 @@ import { ToastContainer } from 'react-toastify'
 import { Container } from 'react-bootstrap'
 
 import { InscriptionsPage } from './pages/InscriptionsPage'
-import { InscriptionsAnnulationsPage } from './pages/InscriptionsAnnulationsPage'
+import { InscriptionCancellationsPage } from './pages/InscriptionCancellationsPage'
 import { SurveyPage } from './pages/SurveyPage'
 import { SessionsPage } from './pages/SessionsPage'
 import { CoursesPage } from './pages/CoursesPage'
@@ -80,13 +80,13 @@ export function App() {
                             />
                             <Route
                                 exact
-                                path={`${PATH_INSCRIPTIONS}/${PATH_INSCRIPTIONS}/${PATH_ANNULATIONS}`}
-                                element={<InscriptionsAnnulationsPage />}
+                                path={`${PATH_INSCRIPTIONS}/${PATH_FORMATEURS}`}
+                                element={<FormateursPage />}
                             />
                             <Route
                                 exact
-                                path={`${PATH_INSCRIPTIONS}/${PATH_FORMATEURS}`}
-                                element={<FormateursPage />}
+                                path={`${PATH_INSCRIPTIONS}/${PATH_ANNULATIONS}`}
+                                element={<InscriptionCancellationsPage />}
                             />
                             <Route exact path={`${PATH_CATALOGUE}/${PATH_FORMATIONS}`} element={<CoursesPage />} />
                             <Route exact path={`${PATH_CATALOGUE}/${PATH_SESSIONS}`} element={<SessionsPage />} />

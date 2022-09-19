@@ -83,8 +83,8 @@ export const Navigation = ({ isLoggedIn }) => {
                                 <FontAwesomeIcon icon={faChalkboardTeacher} /> Formateurs
                             </Nav.Link>
                             <Nav.Link
-                                href={`/${PATH_INSCRIPTIONS}/${PATH_INSCRIPTIONS}/${PATH_ANNULATIONS}`}
-                                onClick={goTo(`${PATH_INSCRIPTIONS}/${PATH_INSCRIPTIONS}/${PATH_ANNULATIONS}`)}
+                                href={`/${PATH_INSCRIPTIONS}/${PATH_ANNULATIONS}`}
+                                onClick={goTo(`${PATH_INSCRIPTIONS}/${PATH_ANNULATIONS}`)}
                             >
                                 <FontAwesomeIcon icon={faBan} /> Annulations
                             </Nav.Link>

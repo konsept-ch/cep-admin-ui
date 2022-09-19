@@ -6,10 +6,10 @@ export const inscriptionsApi = createApi({
     reducerPath: 'inscriptionsApi',
     baseQuery: prepareBaseQuery({ servicePath: 'inscriptions' }),
     endpoints: (builder) => ({
-        getInscriptionsAnnulations: builder.query({
-            query: () => 'annulations',
+        getInscriptionCancellations: builder.query({
+            query: () => 'cancellations',
         }),
     }),
 })
 
-export const { useGetInscriptionsAnnulationsQuery } = inscriptionsApi
+export const { useGetInscriptionCancellationsQuery } = inscriptionsApi
