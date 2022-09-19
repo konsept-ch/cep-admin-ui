@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet-async'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFloppyDisk, faTrash } from '@fortawesome/pro-regular-svg-icons'
+import { faFloppyDisk, faTrash, faPlusLarge } from '@fortawesome/pro-regular-svg-icons'
 
 import { AttestationModelItem, CommonModal } from '../components'
 import {
@@ -204,6 +204,7 @@ export function AttestationTemplatesPage() {
                                 onClick={onAddButtonClick}
                                 className="mt-2"
                             >
+                                <FontAwesomeIcon icon={faPlusLarge} />{' '}
                                 {isCreating ? 'Ajout en cours...' : isFetching ? 'Un instant...' : 'Ajouter'}
                             </Button>
                         </Col>

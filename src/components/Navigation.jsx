@@ -9,6 +9,7 @@ import {
     faCalendarStar,
     faArrowRightFromBracket,
     faEnvelopeOpenText,
+    faFileCertificate,
     faChalkboardTeacher,
     faUsers,
     faBook,
@@ -136,7 +137,7 @@ export const Navigation = ({ isLoggedIn }) => {
                                 href={`/${PATH_TEMPLATES}/${PATH_ATTESTATION_TEMPLATES}`}
                                 onClick={goTo(`${PATH_TEMPLATES}/${PATH_ATTESTATION_TEMPLATES}`)}
                             >
-                                <FontAwesomeIcon icon={faEnvelopeOpenText} /> Attestations
+                                <FontAwesomeIcon icon={faFileCertificate} /> Attestations
                             </Nav.Link>
                         </NavDropdown>
                         <NavDropdown
