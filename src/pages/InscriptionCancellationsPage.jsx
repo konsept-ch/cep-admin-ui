@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { Helmet } from 'react-helmet-async'
+
 import { useGetInscriptionCancellationsQuery } from '../services/inscriptions'
 import { formatDate } from '../utils'
 import { Grid } from '../components'
