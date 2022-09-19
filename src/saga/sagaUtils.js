@@ -55,7 +55,7 @@ export function* callService({ endpoint, action, successCallback = () => {}, opt
 
         toast.error(
             <>
-                <p>Middleware is down or being redeployed. Please, retry in a minute.</p>
+                <p>Middleware hors service ou en redéploiement.</p>
                 <p>Message: {error.message}</p>
             </>,
             { autoClose: false, toastId: 'middleware-is-down' }
