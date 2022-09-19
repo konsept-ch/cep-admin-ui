@@ -78,9 +78,9 @@ export function FormateursPage() {
 
     const rowData = formateurs
         .filter((current) => current != null)
-        .map(({ id, user, session, status }) => ({
+        .map(({ id, user = {}, session, status }) => ({
             id,
-            participant: `${user.lastName} ${user.firstName}`,
+            participant: user.lastName != null ? `${user.lastName} ${user.firstName}` : 'Aucun formateur',
             profession: user.profession,
             session: session.name,
             status,

@@ -114,9 +114,9 @@ export function InscriptionCancellationsPage() {
 
     const rowData = annulationsData
         ?.filter((current) => current != null)
-        .map(({ id, user, session, status, inscriptionDate, type }) => ({
+        .map(({ id, user = {}, session, status, inscriptionDate, type }) => ({
             id,
-            participant: `${user.lastName} ${user.firstName}`,
+            participant: user.lastName != null ? `${user.lastName} ${user.firstName}` : 'Aucune annulation',
             profession: user.profession,
             type,
             sessionName: session.name,
