@@ -23,6 +23,7 @@ export const PATH_INVOICE_DIRECT = 'direct'
 export const PATH_INVOICE_GROUPED = 'grouped'
 export const PATH_INVOICE_MANUAL = 'manual'
 export const PATH_ANNULATIONS = 'annulations'
+export const PATH_REFUSED_BY_HR = 'refused-by-hr'
 export const PATH_SEANCES = 'seances'
 
 export const splitComment = '<!-- AUTO -->'

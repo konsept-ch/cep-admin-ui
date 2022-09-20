@@ -5,6 +5,7 @@ import { ToastContainer } from 'react-toastify'
 import { Container } from 'react-bootstrap'
 
 import { InscriptionsPage } from './pages/InscriptionsPage'
+import { InscriptionsRefusedByHrPage } from './pages/InscriptionsRefusedByHrPage'
 import { InscriptionCancellationsPage } from './pages/InscriptionCancellationsPage'
 import { SurveyPage } from './pages/SurveyPage'
 import { SessionsPage } from './pages/SessionsPage'
@@ -44,6 +45,7 @@ import {
     PATH_INVOICE_MANUAL,
     PATH_ANNULATIONS,
     PATH_SEANCES,
+    PATH_REFUSED_BY_HR,
 } from './constants/constants'
 import { AuthWrapper } from './AuthWrapper'
 import { cookies } from './utils'
@@ -87,6 +89,11 @@ export function App() {
                                 exact
                                 path={`${PATH_INSCRIPTIONS}/${PATH_ANNULATIONS}`}
                                 element={<InscriptionCancellationsPage />}
+                            />
+                            <Route
+                                exact
+                                path={`${PATH_INSCRIPTIONS}/${PATH_REFUSED_BY_HR}`}
+                                element={<InscriptionsRefusedByHrPage />}
                             />
                             <Route exact path={`${PATH_CATALOGUE}/${PATH_FORMATIONS}`} element={<CoursesPage />} />
                             <Route exact path={`${PATH_CATALOGUE}/${PATH_SESSIONS}`} element={<SessionsPage />} />

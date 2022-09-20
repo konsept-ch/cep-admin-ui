@@ -18,6 +18,7 @@ import {
     faBookOpenCover,
     faObjectGroup,
     faHandHoldingDollar,
+    faUserSlash,
 } from '@fortawesome/pro-light-svg-icons'
 import {
     PATH_AGENDA,
@@ -38,6 +39,7 @@ import {
     PATH_INVOICE_MANUAL,
     PATH_ANNULATIONS,
     PATH_SEANCES,
+    PATH_REFUSED_BY_HR,
 } from '../constants/constants'
 import { clearAllAuthCookies } from '../utils'
 
@@ -87,6 +89,12 @@ export const Navigation = ({ isLoggedIn }) => {
                                 onClick={goTo(`${PATH_INSCRIPTIONS}/${PATH_ANNULATIONS}`)}
                             >
                                 <FontAwesomeIcon icon={faBan} /> Annulations
+                            </Nav.Link>
+                            <Nav.Link
+                                href={`/${PATH_INSCRIPTIONS}/${PATH_REFUSED_BY_HR}`}
+                                onClick={goTo(`${PATH_INSCRIPTIONS}/${PATH_REFUSED_BY_HR}`)}
+                            >
+                                <FontAwesomeIcon icon={faUserSlash} /> Refusée par RH
                             </Nav.Link>
                         </NavDropdown>
                         <NavDropdown

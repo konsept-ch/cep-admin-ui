@@ -9,7 +9,10 @@ export const inscriptionsApi = createApi({
         getInscriptionCancellations: builder.query({
             query: () => 'cancellations',
         }),
+        getInscriptionsRefusedByHr: builder.query({
+            query: () => 'refused-by-hr',
+        }),
     }),
 })
 
-export const { useGetInscriptionCancellationsQuery } = inscriptionsApi
+export const { useGetInscriptionCancellationsQuery, useGetInscriptionsRefusedByHrQuery } = inscriptionsApi
