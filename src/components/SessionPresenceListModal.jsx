@@ -38,6 +38,7 @@ export function SessionPresenceListModal({ sessionId, closeModal, isModalOpen })
 
     const learnersCount = presenceList?.learners.length ?? 0
 
+    // TODO: should this happen on the backend instead?
     const generateDocx = () => {
         const doc = new Document({
             sections: [
