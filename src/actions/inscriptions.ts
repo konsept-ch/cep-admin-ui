@@ -2,7 +2,7 @@ import {
     FETCH_INSCRIPTIONS,
     SET_INSCRIPTIONS,
     UPDATE_INSCRIPTIONS,
-    MASS_UPDATE_INSCRIPTIONS,
+    // MASS_UPDATE_INSCRIPTIONS,
 } from '../constants/inscriptions'
 
 export const fetchInscriptionsAction = () => ({
@@ -41,19 +41,19 @@ export const updateInscriptionStatusAction = ({
     },
 })
 
-export const massUpdateInscriptionStatusesAction = ({
-    inscriptionsIds,
-    newStatus,
-    emailTemplateId,
-    selectedAttestationTemplateUuid,
-    successCallback,
-}: {
-    inscriptionsIds: any
-    newStatus: any
-    emailTemplateId: any
-    selectedAttestationTemplateUuid: any
-    successCallback: any
-}) => ({
-    type: MASS_UPDATE_INSCRIPTIONS,
-    payload: { inscriptionsIds, newStatus, emailTemplateId, selectedAttestationTemplateUuid, successCallback },
-})
+// export const massUpdateInscriptionStatusesAction = ({
+//     inscriptionsIds,
+//     newStatus,
+//     emailTemplateId,
+//     selectedAttestationTemplateUuid,
+//     successCallback,
+// }: {
+//     inscriptionsIds: any
+//     newStatus: any
+//     emailTemplateId: any
+//     selectedAttestationTemplateUuid: any
+//     successCallback: any
+// }) => ({
+//     type: MASS_UPDATE_INSCRIPTIONS,
+//     payload: { inscriptionsIds, newStatus, emailTemplateId, selectedAttestationTemplateUuid, successCallback },
+// })

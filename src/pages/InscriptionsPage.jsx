@@ -7,7 +7,7 @@ import { Grid, StatusUpdateModal, MassStatusUpdateModal } from '../components'
 import {
     fetchInscriptionsAction,
     updateInscriptionStatusAction,
-    massUpdateInscriptionStatusesAction,
+    // massUpdateInscriptionStatusesAction,
 } from '../actions/inscriptions.ts'
 import { inscriptionsSelector } from '../reducers'
 import {
@@ -402,23 +402,24 @@ export function InscriptionsPage() {
                     }}
                     inscriptionsData={statusMassUpdateData}
                     selectedRowsData={selectedRowsData}
-                    updateStatus={({ emailTemplateId }) =>
-                        dispatch(
-                            massUpdateInscriptionStatusesAction({
-                                inscriptionsIds: selectedRowsData.map(({ id }) => id),
-                                newStatus: statusMassUpdateData.newStatus,
-                                emailTemplateId,
-                                successCallback: () => {
-                                    setIsMassUpdateModalVisible(false)
-                                    setStatusMassUpdateData(null)
-                                    dispatch(fetchInscriptionsAction())
-                                    toast.success(
-                                        `Plusieurs statuts d'inscription changés de "${statusMassUpdateData.status}" à "${statusMassUpdateData.newStatus}"`
-                                    )
-                                },
-                            })
-                        )
-                    }
+                    updateStatus={({ emailTemplateId }) => {
+                        // dispatch(
+                        //     massUpdateInscriptionStatusesAction({
+                        //         inscriptionsIds: selectedRowsData.map(({ id }) => id),
+                        //         newStatus: statusMassUpdateData.newStatus,
+                        //         emailTemplateId,
+                        //         successCallback: () => {
+                        //             setIsMassUpdateModalVisible(false)
+                        //             setStatusMassUpdateData(null)
+                        //             dispatch(fetchInscriptionsAction())
+                        //             toast.success(
+                        //                 `Plusieurs statuts d'inscription changés de "${statusMassUpdateData.status}" à "${statusMassUpdateData.newStatus}"`
+                        //             )
+                        //         },
+                        //     })
+                        // )
+                        // TODO: for-of: await updateInscriptionStatus() mutation for each selected row
+                    }}
                 />
             )}
         </>
