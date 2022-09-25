@@ -35,7 +35,7 @@ function* updateInscriptionsSaga(action) {
         const { isInvoiceCreated } = yield call(callService, {
             endpoint: `inscriptions/${inscriptionId}`,
             options: {
-                method: 'POST',
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },

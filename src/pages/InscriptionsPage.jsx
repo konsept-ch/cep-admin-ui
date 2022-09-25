@@ -19,6 +19,7 @@ import {
     STATUSES,
     UNSELECTABLE_STATUSES,
 } from '../utils'
+import { useUpdateInscriptionStatusMutation } from '../services/inscriptions'
 
 export function InscriptionsPage() {
     const dispatch = useDispatch()
@@ -29,6 +30,8 @@ export function InscriptionsPage() {
     const [isMassUpdateModalVisible, setIsMassUpdateModalVisible] = useState(false)
     const inscriptions = useSelector(inscriptionsSelector)
     const [activePredefinedFiltersById, setActivePredefinedFiltersById] = useState({ onlyWebEntries: true })
+
+    const [updateInscriptionStatus, { isLoading: isUpdatingInscriptionStatus }] = useUpdateInscriptionStatusMutation()
 
     const predefinedFilters = [
         { id: 'onlyWebEntries', label: [STATUSES.ENTREE_WEB, STATUSES.VALIDE_PAR_RH].join('; ') },
@@ -402,7 +405,7 @@ export function InscriptionsPage() {
                     }}
                     inscriptionsData={statusMassUpdateData}
                     selectedRowsData={selectedRowsData}
-                    updateStatus={({ emailTemplateId }) => {
+                    updateStatus={async ({ emailTemplateId, selectedAttestationTemplateUuid }) => {
                         // dispatch(
                         //     massUpdateInscriptionStatusesAction({
                         //         inscriptionsIds: selectedRowsData.map(({ id }) => id),
@@ -418,7 +421,46 @@ export function InscriptionsPage() {
                         //         },
                         //     })
                         // )
-                        // TODO: for-of: await updateInscriptionStatus() mutation for each selected row
+                        // TODO: for-of:
+                        // await updateInscriptionStatus() mutation for each selected row
+                        // display toast with done/total
+
+                        for (const [index, { id, participant }] of selectedRowsData.entries()) {
+                            const response = await updateInscriptionStatus({
+                                inscriptionId: id,
+                                newStatus: statusMassUpdateData.newStatus,
+                                emailTemplateId,
+                                selectedAttestationTemplateUuid,
+                                shouldSendSms: false,
+                            })
+
+                            console.log(response)
+
+                            if (response.error) {
+                                toast.error(
+                                    `${index + 1}/${
+                                        selectedRowsData.length
+                                    } Erreur: Impossible de modifier le statut d'inscription de "${participant}" de "${
+                                        statusMassUpdateData.status
+                                    }" à "${statusMassUpdateData.newStatus}"`
+                                )
+                            } else {
+                            }
+                            toast.success(
+                                `${index + 1}/${
+                                    selectedRowsData.length
+                                } Statut d'inscription de "${participant}" modifié de "${
+                                    statusMassUpdateData.status
+                                }" à "${statusMassUpdateData.newStatus}"`
+                            )
+                        }
+
+                        setIsMassUpdateModalVisible(false)
+                        setStatusMassUpdateData(null)
+                        dispatch(fetchInscriptionsAction()) // TODO: use RTK Query service instead
+                        toast.success(
+                            `Plusieurs statuts d'inscription changés de "${statusMassUpdateData.status}" à "${statusMassUpdateData.newStatus}"`
+                        )
                     }}
                 />
             )}

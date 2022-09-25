@@ -6,6 +6,18 @@ export const inscriptionsApi = createApi({
     reducerPath: 'inscriptionsApi',
     baseQuery: prepareBaseQuery({ servicePath: 'inscriptions' }),
     endpoints: (builder) => ({
+        updateInscriptionStatus: builder.mutation({
+            query: ({ inscriptionId, newStatus, emailTemplateId, selectedAttestationTemplateUuid, shouldSendSms }) => ({
+                url: inscriptionId,
+                method: 'PUT',
+                body: {
+                    status: newStatus,
+                    emailTemplateId,
+                    selectedAttestationTemplateUuid,
+                    shouldSendSms,
+                },
+            }),
+        }),
         getInscriptionCancellations: builder.query({
             query: () => 'cancellations',
         }),
@@ -15,4 +27,8 @@ export const inscriptionsApi = createApi({
     }),
 })
 
-export const { useGetInscriptionCancellationsQuery, useGetInscriptionsRefusedByHrQuery } = inscriptionsApi
+export const {
+    useGetInscriptionCancellationsQuery,
+    useGetInscriptionsRefusedByHrQuery,
+    useUpdateInscriptionStatusMutation,
+} = inscriptionsApi
