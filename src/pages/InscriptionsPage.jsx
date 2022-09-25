@@ -330,13 +330,26 @@ export function InscriptionsPage() {
                                     : '',
                         })),
                     },
-                    {
+                    selectedRowsData.length <= 1 && {
                         name: 'Créer attestation',
                         action: () => {
                             if (data != null) {
                                 setIsUpdateModalVisible(true)
                                 setStatusUpdateData({
                                     ...inscriptions.find(({ id }) => id === data?.id),
+                                    newStatus: data?.status,
+                                    isCreatingAttestation: true,
+                                })
+                            }
+                        },
+                    },
+                    selectedRowsData.length > 1 && {
+                        name: 'Créer attestation en masse',
+                        action: () => {
+                            if (data != null) {
+                                setIsMassUpdateModalVisible(true)
+                                setStatusMassUpdateData({
+                                    status: data?.status,
                                     newStatus: data?.status,
                                     isCreatingAttestation: true,
                                 })
@@ -405,6 +418,7 @@ export function InscriptionsPage() {
                     }}
                     inscriptionsData={statusMassUpdateData}
                     selectedRowsData={selectedRowsData}
+                    isUpdating={isUpdatingInscriptionStatus}
                     updateStatus={async ({ emailTemplateId, selectedAttestationTemplateUuid }) => {
                         // dispatch(
                         //     massUpdateInscriptionStatusesAction({
@@ -425,6 +439,8 @@ export function InscriptionsPage() {
                         // await updateInscriptionStatus() mutation for each selected row
                         // display toast with done/total
 
+                        let hasErrors = false
+
                         for (const [index, { id, participant }] of selectedRowsData.entries()) {
                             const response = await updateInscriptionStatus({
                                 inscriptionId: id,
@@ -437,6 +453,8 @@ export function InscriptionsPage() {
                             console.log(response)
 
                             if (response.error) {
+                                hasErrors = true
+
                                 toast.error(
                                     `${index + 1}/${
                                         selectedRowsData.length
@@ -445,22 +463,27 @@ export function InscriptionsPage() {
                                     }" à "${statusMassUpdateData.newStatus}"`
                                 )
                             } else {
+                                toast.success(
+                                    `${index + 1}/${
+                                        selectedRowsData.length
+                                    } Statut d'inscription de "${participant}" modifié de "${
+                                        statusMassUpdateData.status
+                                    }" à "${statusMassUpdateData.newStatus}"`
+                                )
                             }
+                        }
+
+                        if (hasErrors) {
+                            toast.error('Erreurs lors de la modification des statuts en masse.')
+                        } else {
                             toast.success(
-                                `${index + 1}/${
-                                    selectedRowsData.length
-                                } Statut d'inscription de "${participant}" modifié de "${
-                                    statusMassUpdateData.status
-                                }" à "${statusMassUpdateData.newStatus}"`
+                                `Plusieurs statuts d'inscription changés de "${statusMassUpdateData.status}" à "${statusMassUpdateData.newStatus}"`
                             )
                         }
 
                         setIsMassUpdateModalVisible(false)
                         setStatusMassUpdateData(null)
                         dispatch(fetchInscriptionsAction()) // TODO: use RTK Query service instead
-                        toast.success(
-                            `Plusieurs statuts d'inscription changés de "${statusMassUpdateData.status}" à "${statusMassUpdateData.newStatus}"`
-                        )
                     }}
                 />
             )}

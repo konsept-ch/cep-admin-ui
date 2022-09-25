@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Modal, Button, ListGroup, Alert, Spinner, Tooltip, OverlayTrigger } from 'react-bootstrap'
+import { Row, Modal, Button, ListGroup, Alert, Spinner, Tooltip, OverlayTrigger } from 'react-bootstrap'
 import { useSelector, useDispatch } from 'react-redux'
 import { AgGridReact } from 'ag-grid-react'
 import classNames from 'classnames'
@@ -8,8 +8,9 @@ import { fetchTemplateRawPreviewAction } from '../actions/templates.ts'
 import { parametersSelector, loadingSelector, templatesLoadingSelector } from '../reducers'
 import { statusWarnings, inscriptionsGridRowClassRules, formatDate } from '../utils'
 import { EmailTemplateBodyInput } from './EmailTemplateBodyInput'
+import { useGetAttestationsQuery } from '../services/attestations'
 
-export const MassStatusUpdateModal = ({ closeModal, inscriptionsData, updateStatus, selectedRowsData }) => {
+export const MassStatusUpdateModal = ({ closeModal, inscriptionsData, updateStatus, selectedRowsData, isUpdating }) => {
     const [selectedTemplateData, setSelectedTemplateData] = useState(null)
     const [gridApi, setGridApi] = useState(null)
 
@@ -21,6 +22,18 @@ export const MassStatusUpdateModal = ({ closeModal, inscriptionsData, updateStat
     useEffect(() => {
         dispatch(fetchParametersAction())
     }, [])
+
+    const {
+        data: attestationTemplates,
+        isLoading,
+        isFetching,
+        isError,
+        refetch,
+    } = useGetAttestationsQuery(null, {
+        refetchOnMountOrArgChange: true,
+    })
+
+    const [selectedAttestationTemplateUuid, setSelectedAttestationTemplateUuid] = useState(null)
 
     useEffect(() => {
         gridApi?.sizeColumnsToFit()
@@ -266,6 +279,47 @@ export const MassStatusUpdateModal = ({ closeModal, inscriptionsData, updateStat
                         onGridReady={({ api }) => setGridApi(api)}
                     />
                 </div>
+                {(inscriptionsData.newStatus === 'Participation' || inscriptionsData.isCreatingAttestation) &&
+                    (isLoading ? (
+                        'Chargement...'
+                    ) : isError ? (
+                        'Erreur de chargement des modèles.'
+                    ) : (
+                        <Row>
+                            <div className="col-sm-4">
+                                <h6>Choix de modèle d'attestation</h6>
+                                <ListGroup>
+                                    <ListGroup.Item
+                                        onClick={() => {
+                                            setSelectedAttestationTemplateUuid('no-attestation')
+                                        }}
+                                        className={classNames({
+                                            'active-template': selectedAttestationTemplateUuid === 'no-attestation',
+                                        })}
+                                    >
+                                        <h4>Aucune attestation</h4>
+                                        <p>Aucun attestation ne sera déposé dans l'espace personnel</p>
+                                    </ListGroup.Item>
+                                    {attestationTemplates.length > 0 &&
+                                        attestationTemplates.map(({ title, description, uuid }) => (
+                                            <ListGroup.Item
+                                                key={uuid}
+                                                onClick={() => {
+                                                    setSelectedAttestationTemplateUuid(uuid)
+                                                    // fetchTemplatePreviews({ uuid })
+                                                }}
+                                                className={classNames({
+                                                    'active-template': selectedAttestationTemplateUuid === uuid,
+                                                })}
+                                            >
+                                                <h4>{title}</h4>
+                                                <p>{description}</p>
+                                            </ListGroup.Item>
+                                        ))}
+                                </ListGroup>
+                            </div>
+                        </Row>
+                    ))}
             </Modal.Body>
             <Modal.Footer>
                 <OverlayTrigger
@@ -288,10 +342,10 @@ export const MassStatusUpdateModal = ({ closeModal, inscriptionsData, updateStat
                                         ? null
                                         : selectedTemplateData.templateId
 
-                                updateStatus({ emailTemplateId: templateId })
+                                updateStatus({ emailTemplateId: templateId, selectedAttestationTemplateUuid })
                             }}
                         >
-                            {isSagaLoading ? (
+                            {isSagaLoading || isUpdating ? (
                                 <>
                                     <Spinner animation="grow" size="sm" /> Confirmer...
                                 </>

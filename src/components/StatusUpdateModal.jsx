@@ -233,7 +233,7 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
                         )}
                     </div>
                 </Row>
-                {(statusUpdateData.newStatus === 'Participation' || statusUpdateData.isCreatingAttestation) &&
+                {/* {(statusUpdateData.newStatus === 'Participation' || statusUpdateData.isCreatingAttestation) &&
                     (isLoading ? (
                         'Chargement...'
                     ) : isError ? (
@@ -273,7 +273,7 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
                                 </ListGroup>
                             </div>
                         </Row>
-                    ))}
+                    ))} */}
             </Modal.Body>
             <Modal.Footer>
                 <ConfirmInscriptionChangeButton
