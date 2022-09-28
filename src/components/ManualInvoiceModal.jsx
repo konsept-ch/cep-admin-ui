@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { Button, Spinner, Row, Form, Col, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { useForm, useFieldArray, Controller } from 'react-hook-form'
 import { toast } from 'react-toastify'
@@ -13,7 +13,7 @@ import { formatToFlatObject } from '../utils'
 const getInvoiceNumber = ({ courseYear, userCode, invoiceNumberForCurrentYear }) =>
     ` ${`${courseYear}`.slice(-2)}${`${userCode}`.padStart(2, 0)}${`${invoiceNumberForCurrentYear}`.padStart(4, 0)}`
 
-const defaultEmptyItem = { designation: '', unit: '', amount: 0, price: 0 }
+const defaultEmptyItem = { designation: '', unit: {}, amount: 0, price: 0 }
 
 const tvaOptions = [
     { value: '0', label: 'EXONERE' },
@@ -43,14 +43,27 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
         refetchOnMountOrArgChange: true,
     })
 
-    // console.log(organizations)
+    console.log(organizations)
+
+    const unitValues = useMemo(
+        () => [
+            { value: 'jours', label: 'jours' },
+            { value: 'heures', label: 'heures' },
+            { value: 'forfait', label: 'forfait' },
+            { value: 'frais effectifs', label: 'frais effectifs' },
+        ],
+        []
+    )
+
+    const clientOptions = organizations?.map(({ id, code, name }) => ({
+        value: code,
+        label: `${code} - ${name}`,
+        id,
+    }))
 
     useEffect(() => {
         if (selectedInvoiceData != null) {
-            const { customClientAddress, invoiceReason, courseYear, invoiceDate, vatCode, items, customClientEmail } =
-                selectedInvoiceData
-
-            reset({
+            const {
                 customClientAddress,
                 invoiceReason,
                 courseYear,
@@ -58,15 +71,31 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                 vatCode,
                 items,
                 customClientEmail,
+                organizationUuid,
+            } = selectedInvoiceData
+
+            reset({
+                client: clientOptions.find(({ id }) => id === organizationUuid),
+                customClientAddress,
+                invoiceReason,
+                courseYear: new Date(String(courseYear)),
+                invoiceDate,
+                vatCode,
+                items: items.map(({ unit, ...restProps }) => ({
+                    ...restProps,
+                    unit: unitValues.find(({ label }) => label === unit),
+                })),
+                customClientEmail,
             })
         } else {
             reset({
+                client: '',
                 customClientAddress: '',
                 customClientEmail: '',
                 invoiceReason: '',
                 courseYear: '',
                 invoiceDate: '',
-                vatCode: '',
+                vatCode: defaultTvaOption,
                 items: [defaultEmptyItem],
             })
         }
@@ -107,12 +136,10 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                             <Col />
                             <Col>
                                 <Form.Label>Client</Form.Label>
-                                <Select
-                                    options={organizations?.map(({ code, name }) => ({
-                                        value: code,
-                                        label: `${code} - ${name}`,
-                                    }))}
-                                    isClearable
+                                <Controller
+                                    name="client"
+                                    control={control}
+                                    render={({ field }) => <Select {...field} options={clientOptions} isClearable />}
                                 />
                                 <Form.Label>Adresse postale</Form.Label>
                                 <Form.Control as="textarea" {...register('customClientAddress')} />
@@ -131,17 +158,17 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                             <Col>
                                 <Form.Label>Année formation</Form.Label> {/* +-1 */}
                                 <Controller
+                                    name="courseYear"
                                     control={control}
-                                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                                    render={({ field: { value, onChange } }) => (
                                         <DatePicker
-                                            selected={startDate}
-                                            onChange={(date) => setStartDate(date)}
+                                            selected={value}
+                                            onChange={onChange}
                                             showYearPicker
                                             dateFormat="yyyy"
                                             className="form-control"
                                         />
                                     )}
-                                    name="courseYear"
                                 />
                                 <Form.Label>Numéro facture: </Form.Label>
                                 {getInvoiceNumber({
@@ -199,14 +226,10 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                                         />
                                     </Col>
                                     <Col>
-                                        <Select
-                                            options={[
-                                                { value: 'jours', label: 'jours' },
-                                                { value: 'heures', label: 'heures' },
-                                                { value: 'forfait', label: 'forfait' },
-                                                { value: 'frais effectifs', label: 'frais effectifs' },
-                                            ]}
-                                            defaultValue={{ value: '', label: '' }}
+                                        <Controller
+                                            name={`items.${index}.unit`}
+                                            control={control}
+                                            render={({ field }) => <Select {...field} options={unitValues} />}
                                         />
                                     </Col>
                                     <Col>
@@ -233,7 +256,11 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                             <Col />
                             <Col>
                                 <Form.Label>TVA</Form.Label>
-                                <Select options={tvaOptions} defaultValue={defaultTvaOption} />
+                                <Controller
+                                    name="vatCode"
+                                    control={control}
+                                    render={({ field }) => <Select {...field} options={tvaOptions} />}
+                                />
                             </Col>
                         </Row>
                     </>
@@ -254,8 +281,11 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                                     disabled={!isDirty}
                                     onClick={handleSubmit(async (formData) => {
                                         const { error: mutationError } = await updateInvoice({
-                                            id: selectedInvoiceData.id,
-                                            body: formatToFlatObject(formData),
+                                            id: isEditModal ? selectedInvoiceData.id : null,
+                                            body: {
+                                                ...formatToFlatObject(formData),
+                                                items: formData.items.map(formatToFlatObject),
+                                            },
                                         })
                                         if (typeof mutationError === 'undefined') {
                                             closeInvoiceModal()
