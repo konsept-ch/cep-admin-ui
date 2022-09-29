@@ -18,6 +18,7 @@ const defaultEmptyItem = { designation: '', unit: {}, amount: 0, price: 0 }
 const tvaOptions = [
     { value: '0', label: 'EXONERE' },
     { value: '7.7', label: 'TVA 7.7%' },
+    { value: '8.1', label: 'TVA 8.1%' },
 ]
 const defaultTvaOption = tvaOptions[1]
 
@@ -264,7 +265,21 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                                         <Form.Control {...register(`items.${index}.amount`)} type="number" />
                                     </Col>
                                     <Col>
-                                        <Form.Control {...register(`items.${index}.price`)} type="number" />
+                                        <Form.Group className="mb-3" controlId="priceInput">
+                                            <Form.Control {...register(`items.${index}.price`)} type="number" />
+                                        </Form.Group>
+                                        <Form.Group className="mb-3" controlId="vatInput">
+                                            <Form.Label>TVA</Form.Label>
+                                            <Controller
+                                                name="vatCode"
+                                                control={control}
+                                                render={({ field }) => <Select {...field} options={tvaOptions} />}
+                                                // TODO: exonere par defaut
+                                            />
+                                        </Form.Group>
+                                        <Row>
+                                            <Col xs={{ offset: 6, span: 2 }}></Col>
+                                        </Row>
                                     </Col>
                                 </Row>
                                 <hr />
@@ -277,18 +292,6 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                                 <Button variant="success" onClick={() => append(defaultEmptyItem)}>
                                     Ajouter
                                 </Button>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col xs={{ offset: 6, span: 2 }}>
-                                <Form.Group className="mb-3" controlId="vatInput">
-                                    <Form.Label>TVA</Form.Label>
-                                    <Controller
-                                        name="vatCode"
-                                        control={control}
-                                        render={({ field }) => <Select {...field} options={tvaOptions} />}
-                                    />
-                                </Form.Group>
                             </Col>
                         </Row>
                     </>
