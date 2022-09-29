@@ -124,52 +124,58 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
     return (
         <>
             <CommonModal
-                title="Ajouter une facture"
+                title={isEditModal ? 'Modifier la facture' : 'Ajouter une facture'}
                 content={
                     <>
                         <Row>
-                            <Col>
-                                <h6>Modifier la facture</h6>
+                            <Col xs={{ offset: 6 }}>
+                                <Form.Group className="mb-3" controlId="clientSelect">
+                                    <Form.Label>Client</Form.Label>
+                                    <Controller
+                                        name="client"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Select {...field} options={clientOptions} isClearable />
+                                        )}
+                                    />
+                                </Form.Group>
+                                <Form.Group className="mb-3" controlId="addressTextarea">
+                                    <Form.Label>Adresse postale</Form.Label>
+                                    <Form.Control as="textarea" {...register('customClientAddress')} />
+                                </Form.Group>
+                                <Form.Group className="mb-3" controlId="emailInput">
+                                    <Form.Label>E-mail</Form.Label>
+                                    <Form.Control {...register('customClientEmail')} type="email" />
+                                </Form.Group>
                             </Col>
                         </Row>
                         <Row>
+                            <Col>
+                                <Form.Group className="mb-3" controlId="reasonInput">
+                                    <Form.Label>Concerne</Form.Label>
+                                    <Form.Control {...register('invoiceReason')} />
+                                </Form.Group>
+                            </Col>
                             <Col />
-                            <Col>
-                                <Form.Label>Client</Form.Label>
-                                <Controller
-                                    name="client"
-                                    control={control}
-                                    render={({ field }) => <Select {...field} options={clientOptions} isClearable />}
-                                />
-                                <Form.Label>Adresse postale</Form.Label>
-                                <Form.Control as="textarea" {...register('customClientAddress')} />
-                                <Form.Label>E-mail</Form.Label>
-                                <Form.Control {...register('customClientEmail')} type="email" />
-                            </Col>
                         </Row>
                         <Row>
                             <Col>
-                                <Form.Label>Concerne</Form.Label>
-                                <Form.Control {...register('invoiceReason')} />
-                            </Col>
-                            <Col />
-                        </Row>
-                        <Row>
-                            <Col>
-                                <Form.Label>Année formation</Form.Label> {/* +-1 */}
-                                <Controller
-                                    name="courseYear"
-                                    control={control}
-                                    render={({ field: { value, onChange } }) => (
-                                        <DatePicker
-                                            selected={value}
-                                            onChange={onChange}
-                                            showYearPicker
-                                            dateFormat="yyyy"
-                                            className="form-control"
-                                        />
-                                    )}
-                                />
+                                <Form.Group className="mb-3" controlId="courseYearInput">
+                                    <Form.Label>Année formation</Form.Label> {/* +-1 */}
+                                    <Controller
+                                        name="courseYear"
+                                        control={control}
+                                        render={({ field: { value, onChange } }) => (
+                                            <DatePicker
+                                                selected={value}
+                                                onChange={onChange}
+                                                showYearPicker
+                                                dateFormat="yyyy"
+                                                className="form-control"
+                                            />
+                                        )}
+                                    />
+                                </Form.Group>
                                 <Form.Label>Numéro facture: </Form.Label>
                                 {getInvoiceNumber({
                                     courseYear: courseYearWatched,
@@ -178,21 +184,39 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                                 })}
                             </Col>
                             <Col>
-                                <Form.Label>Date de facture</Form.Label>
-                                <Form.Control {...register('invoiceDate')} />
+                                <Form.Group className="mb-3" controlId="dateInput">
+                                    <Form.Label>Date</Form.Label>
+                                    <Controller
+                                        name="invoiceDate"
+                                        control={control}
+                                        render={({ field: { value, onChange } }) => (
+                                            <DatePicker
+                                                // selected={value}
+                                                // onChange={onChange}
+                                                // showYearPicker
+                                                // dateFormat="yyyy"
+                                                // TODO: controlled
+                                                className="form-control"
+                                            />
+                                        )}
+                                    />
+                                </Form.Group>
                             </Col>
                         </Row>
-                        <h6>Articles</h6>
                         <Row>
-                            <Col xs={1}>
-                                <Form.Label>
-                                    <strong>Actions</strong>
-                                </Form.Label>
-                            </Col>
-                            <Col>
-                                <Form.Label>
-                                    <strong>Designation</strong>
-                                </Form.Label>
+                            <Col xs={6}>
+                                <Row>
+                                    <Col xs={2}>
+                                        <Form.Label>
+                                            <strong>Actions</strong>
+                                        </Form.Label>
+                                    </Col>
+                                    <Col>
+                                        <Form.Label>
+                                            <strong>Designation</strong>
+                                        </Form.Label>
+                                    </Col>
+                                </Row>
                             </Col>
                             <Col>
                                 <Form.Label>
@@ -213,17 +237,21 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                         {fields.map(({ id }, index) => (
                             <div key={id}>
                                 <Row>
-                                    <Col xs={1}>
-                                        <Button variant="danger" onClick={() => remove(index)}>
-                                            Supprimer
-                                        </Button>
-                                    </Col>
-                                    <Col>
-                                        <Form.Control
-                                            as="textarea"
-                                            rows="4"
-                                            {...register(`items.${index}.designation`)}
-                                        />
+                                    <Col xs={6}>
+                                        <Row>
+                                            <Col xs={2}>
+                                                <Button variant="danger" onClick={() => remove(index)}>
+                                                    Supprimer
+                                                </Button>
+                                            </Col>
+                                            <Col>
+                                                <Form.Control
+                                                    as="textarea"
+                                                    rows="4"
+                                                    {...register(`items.${index}.designation`)}
+                                                />
+                                            </Col>
+                                        </Row>
                                     </Col>
                                     <Col>
                                         <Controller
@@ -251,16 +279,16 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                                 </Button>
                             </Col>
                         </Row>
-                        <h6>Autres</h6>
                         <Row>
-                            <Col />
-                            <Col>
-                                <Form.Label>TVA</Form.Label>
-                                <Controller
-                                    name="vatCode"
-                                    control={control}
-                                    render={({ field }) => <Select {...field} options={tvaOptions} />}
-                                />
+                            <Col xs={{ offset: 6, span: 2 }}>
+                                <Form.Group className="mb-3" controlId="vatInput">
+                                    <Form.Label>TVA</Form.Label>
+                                    <Controller
+                                        name="vatCode"
+                                        control={control}
+                                        render={({ field }) => <Select {...field} options={tvaOptions} />}
+                                    />
+                                </Form.Group>
                             </Col>
                         </Row>
                     </>
