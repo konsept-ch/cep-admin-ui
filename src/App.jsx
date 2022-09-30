@@ -12,6 +12,7 @@ import { SessionsPage } from './pages/SessionsPage'
 import { CoursesPage } from './pages/CoursesPage'
 import { TemplatesPage } from './pages/TemplatesPage'
 import { AttestationTemplatesPage } from './pages/AttestationTemplatesPage'
+import { ContractTemplatesPage } from './pages/ContractTemplatesPage'
 import { AgendaPage } from './pages/AgendaPage'
 import { TypographyPage } from './pages/TypographyPage'
 import { NotificationsPage } from './pages/NotificationsPage'
@@ -34,6 +35,7 @@ import {
     PATH_TEMPLATES,
     PATH_EMAIL_TEMPLATES,
     PATH_ATTESTATION_TEMPLATES,
+    PATH_CONTRACT_TEMPLATES,
     PATH_ORGANIZATIONS,
     PATH_FORMATEURS,
     PATH_USERS,
@@ -107,6 +109,11 @@ export function App() {
                                 exact
                                 path={`${PATH_TEMPLATES}/${PATH_ATTESTATION_TEMPLATES}`}
                                 element={<AttestationTemplatesPage />}
+                            />
+                            <Route
+                                exact
+                                path={`${PATH_TEMPLATES}/${PATH_CONTRACT_TEMPLATES}`}
+                                element={<ContractTemplatesPage />}
                             />
                             <Route exact path={PATH_TEMPLATES} element={<TemplatesPage />} />
                             <Route exact path={`${PATH_COMMUNITY}/${PATH_USERS}`} element={<UsersPage />} />

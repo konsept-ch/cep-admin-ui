@@ -10,6 +10,7 @@ import {
     faArrowRightFromBracket,
     faEnvelopeOpenText,
     faFileCertificate,
+    faFileContract,
     faChalkboardTeacher,
     faUsers,
     faBook,
@@ -30,6 +31,7 @@ import {
     PATH_TEMPLATES,
     PATH_EMAIL_TEMPLATES,
     PATH_ATTESTATION_TEMPLATES,
+    PATH_CONTRACT_TEMPLATES,
     PATH_COMMUNITY,
     PATH_USERS,
     PATH_ORGANIZATIONS,
@@ -146,6 +148,12 @@ export const Navigation = ({ isLoggedIn }) => {
                                 onClick={goTo(`${PATH_TEMPLATES}/${PATH_ATTESTATION_TEMPLATES}`)}
                             >
                                 <FontAwesomeIcon icon={faFileCertificate} /> Attestations
+                            </Nav.Link>
+                            <Nav.Link
+                                href={`/${PATH_TEMPLATES}/${PATH_CONTRACT_TEMPLATES}`}
+                                onClick={goTo(`${PATH_TEMPLATES}/${PATH_CONTRACT_TEMPLATES}`)}
+                            >
+                                <FontAwesomeIcon icon={faFileContract} /> Contrats
                             </Nav.Link>
                         </NavDropdown>
                         <NavDropdown
