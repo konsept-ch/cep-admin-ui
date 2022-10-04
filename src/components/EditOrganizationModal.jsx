@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Button, Spinner, Row, Form, Col, OverlayTrigger, Tooltip, InputGroup } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
@@ -20,6 +20,7 @@ export function EditOrganizationModal({ refetchOrganizations, selectedOrganizati
             reset({
                 billingMode: selectedOrganizationData?.billingMode,
                 dailyRate: selectedOrganizationData?.dailyRate,
+                clientNumber: selectedOrganizationData?.clientNumber,
                 flyersCount: selectedOrganizationData?.flyersCount,
                 phone: selectedOrganizationData?.phone,
                 addressTitle: selectedOrganizationData?.addressTitle,
@@ -154,6 +155,31 @@ export function EditOrganizationModal({ refetchOrganizations, selectedOrganizati
                                         </Form.Control.Feedback>
                                     </InputGroup>
                                     <Form.Text>Si tarif journalier négocié pour l'ensemble des cours</Form.Text>
+                                </Form.Group>
+                            </Col>
+                            <Col sm={4} className="pe-0">
+                                <Form.Group className="mb-3" controlId="clientNumber">
+                                    <Form.Label>Numéro de client</Form.Label>
+                                    <InputGroup className="mb-3" hasValidation>
+                                        <Form.Control
+                                            type="number"
+                                            isInvalid={errors?.clientNumber}
+                                            min={0}
+                                            aria-describedby="clientNumberPrepend"
+                                            {...register('clientNumber', {
+                                                valueAsNumber: true,
+                                                min: { value: 0, message: 'Un nombre positif est nécessaire' },
+                                                max: {
+                                                    value: 9999,
+                                                    message: 'Un nombre entre 1 et 4 chiffres est nécessaire',
+                                                },
+                                            })}
+                                        />
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors?.clientNumber?.message}
+                                        </Form.Control.Feedback>
+                                    </InputGroup>
+                                    <Form.Text>Utilisé pour le numéro de facture</Form.Text>
                                 </Form.Group>
                             </Col>
                         </Row>
