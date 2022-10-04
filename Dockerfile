@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1 - the build process
-FROM node:16.17-alpine as build-deps
+FROM node:18-alpine as build-deps
 ARG FONTAWESOME_NPM_AUTH_TOKEN
 ARG REACT_APP_SERVICES_URL
 WORKDIR /usr/src/app
