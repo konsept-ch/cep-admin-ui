@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Button, Container, Spinner } from 'react-bootstrap'
 import { Helmet } from 'react-helmet-async'
 import { toast } from 'react-toastify'
@@ -8,6 +8,59 @@ import { faPen } from '@fortawesome/pro-light-svg-icons'
 import { Grid, CommonModal, EditOrganizationModal } from '../components'
 import { useGetOrganizationsHierarchyQuery } from '../services/organizations'
 import { useAddOrganizationsMutation, useRemoveOrganizationsMutation } from '../services/courses'
+
+const flattenOrganizations = (
+    {
+        id,
+        name,
+        code,
+        type,
+        children,
+        email,
+        billingMode,
+        dailyRate,
+        clientNumber,
+        flyersCount,
+        phone,
+        addressTitle,
+        postalAddressCountry,
+        postalAddressCountryCode,
+        postalAddressCode,
+        postalAddressStreet,
+        postalAddressDepartment,
+        postalAddressDepartmentCode,
+        postalAddressLocality,
+    },
+    parentName
+) =>
+    [
+        {
+            id,
+            name,
+            code,
+            email,
+            type,
+            billingMode,
+            dailyRate,
+            clientNumber,
+            flyersCount,
+            phone,
+            addressTitle,
+            postalAddressCountry,
+            postalAddressCountryCode,
+            postalAddressCode,
+            postalAddressStreet,
+            postalAddressDepartment,
+            postalAddressDepartmentCode,
+            postalAddressLocality,
+            orgHierarchy: parentName ? [...parentName, name] : [name],
+        },
+        ...(children?.length > 0
+            ? children.flatMap((childOrg) =>
+                  flattenOrganizations(childOrg, parentName ? [...parentName, name] : [name])
+              )
+            : [false]),
+    ].filter(Boolean)
 
 export function OrganizationsPage() {
     const [isOrganizationModalOpen, setIsOrganizationModalOpen] = useState(false)
@@ -28,216 +81,169 @@ export function OrganizationsPage() {
         setIsOrganizationModalOpen(true)
     }
 
-    const columnDefs = [
-        {
-            field: 'edit',
-            headerName: '',
-            cellRenderer: ({ data }) => (
-                <Button
-                    variant="primary"
-                    onClick={() => openOrganizationEditModal({ data })}
-                    size="sm"
-                    className="edit-button-style"
-                >
-                    <FontAwesomeIcon icon={faPen} />
-                </Button>
-            ),
-            headerTooltip: "Modifier l'organisation",
-            cellClass: 'edit-column',
-            pinned: 'left',
-            maxWidth: 60,
-            filter: false,
-            sortable: false,
-        },
-        {
-            field: 'name',
-            headerName: "Titre de l'organisation",
-            filter: 'agTextColumnFilter',
-            headerTooltip: "Le nom de l'organisation",
-            hide: true,
-        },
-        {
-            field: 'code',
-            headerName: 'Code',
-            filter: 'agTextColumnFilter',
-            headerTooltip: "Le code de l'organisation",
-        },
-        {
-            field: 'email',
-            headerName: 'E-mail',
-            filter: 'agTextColumnFilter',
-            headerTooltip: "L'e-mail de l'organisation",
-        },
-        {
-            field: 'type',
-            headerName: 'Type',
-            filter: 'agSetColumnFilter',
-            headerTooltip: "Le type de l'organisation",
-            hide: true,
-        },
-        {
-            field: 'billingMode',
-            headerName: 'Mode de facturation',
-            filter: 'agSetColumnFilter',
-            headerTooltip: "Le mode de facturation de l'organisation",
-            hide: true,
-        },
-        {
-            field: 'dailyRate',
-            headerName: 'Tarif journalier',
-            filter: 'agNumberColumnFilter',
-            headerTooltip: "Si tarif journalier négocié pour l'ensemble des cours",
-            type: 'numericColumn',
-            hide: true,
-        },
-        {
-            field: 'clientNumber',
-            headerName: 'Numéro client',
-            filter: 'agNumberColumnFilter',
-            headerTooltip: 'Utilisé pour le numéro de facture',
-            type: 'numericColumn',
-            hide: true,
-        },
-        {
-            field: 'flyersCount',
-            headerName: 'Nb flyers',
-            filter: 'agNumberColumnFilter',
-            headerTooltip: "Le nombre de flyers de l'organisation",
-            type: 'numericColumn',
-            hide: true,
-        },
-        {
-            field: 'fullAddress',
-            headerName: 'Adresse',
-            filter: 'agTextColumnFilter',
-            headerTooltip: "L'adresse de l'organisation",
-            valueGetter: ({
-                data: { postalAddressCountry, postalAddressCode, postalAddressStreet, postalAddressLocality },
-            }) =>
-                postalAddressStreet || postalAddressCode || postalAddressLocality || postalAddressCountry
-                    ? `${postalAddressStreet ?? ''}, ${postalAddressCode ?? ''} ${postalAddressLocality ?? ''}, ${
-                          postalAddressCountry ?? ''
-                      }`
-                    : '',
-        },
-        {
-            field: 'phone',
-            headerName: 'Téléphone',
-            filter: 'agTextColumnFilter',
-            headerTooltip: "Le téléphone de l'organisation",
-        },
-        {
-            field: 'addressTitle',
-            headerName: 'Intitulé adresse',
-            filter: 'agTextColumnFilter',
-            headerTooltip: "L'intitulé adresse de l'organisation",
-            hide: true,
-        },
-        {
-            field: 'postalAddressCountry',
-            headerName: 'Pays',
-            filter: 'agSetColumnFilter',
-            headerTooltip: "Le pays de l'organisation",
-            hide: true,
-        },
-        {
-            field: 'postalAddressCountryCode',
-            headerName: 'Code pays',
-            filter: 'agSetColumnFilter',
-            headerTooltip: "Le code pays de l'organisation",
-            hide: true,
-        },
-        {
-            field: 'postalAddressCode',
-            headerName: 'Code postal',
-            filter: 'agSetColumnFilter',
-            headerTooltip: "Le code postal de l'organisation",
-            hide: true,
-        },
-        {
-            field: 'postalAddressStreet',
-            headerName: 'Rue et numéro',
-            filter: 'agTextColumnFilter',
-            headerTooltip: "La rue et numéro de l'organisation",
-            hide: true,
-        },
-        {
-            field: 'postalAddressDepartment',
-            headerName: 'Département',
-            filter: 'agTextColumnFilter',
-            headerTooltip: "Le département de l'organisation",
-            hide: true,
-        },
-        {
-            field: 'postalAddressDepartmentCode',
-            headerName: 'Code département',
-            filter: 'agTextColumnFilter',
-            headerTooltip: "Le code département de l'organisation",
-            hide: true,
-        },
-        {
-            field: 'postalAddressLocality',
-            headerName: 'Localité',
-            filter: 'agSetColumnFilter',
-            headerTooltip: "La localité de l'organisation",
-            hide: true,
-        },
-    ]
-
-    const flattenOrganizations = (
-        {
-            id,
-            name,
-            code,
-            type,
-            children,
-            email,
-            billingMode,
-            dailyRate,
-            clientNumber,
-            flyersCount,
-            phone,
-            addressTitle,
-            postalAddressCountry,
-            postalAddressCountryCode,
-            postalAddressCode,
-            postalAddressStreet,
-            postalAddressDepartment,
-            postalAddressDepartmentCode,
-            postalAddressLocality,
-        },
-        parentName
-    ) =>
-        [
+    const columnDefs = useMemo(
+        () => [
             {
-                id,
-                name,
-                code,
-                email,
-                type,
-                billingMode,
-                dailyRate,
-                clientNumber,
-                flyersCount,
-                phone,
-                addressTitle,
-                postalAddressCountry,
-                postalAddressCountryCode,
-                postalAddressCode,
-                postalAddressStreet,
-                postalAddressDepartment,
-                postalAddressDepartmentCode,
-                postalAddressLocality,
-                orgHierarchy: parentName ? [...parentName, name] : [name],
+                field: 'edit',
+                headerName: '',
+                cellRenderer: ({ data }) => (
+                    <Button
+                        variant="primary"
+                        onClick={() => openOrganizationEditModal({ data })}
+                        size="sm"
+                        className="edit-button-style"
+                    >
+                        <FontAwesomeIcon icon={faPen} />
+                    </Button>
+                ),
+                headerTooltip: "Modifier l'organisation",
+                cellClass: 'edit-column',
+                pinned: 'left',
+                maxWidth: 60,
+                filter: false,
+                sortable: false,
             },
-            ...(children?.length > 0
-                ? children.flatMap((childOrg) =>
-                      flattenOrganizations(childOrg, parentName ? [...parentName, name] : [name])
-                  )
-                : [false]),
-        ].filter(Boolean)
+            {
+                field: 'name',
+                headerName: "Titre de l'organisation",
+                filter: 'agTextColumnFilter',
+                headerTooltip: "Le nom de l'organisation",
+                hide: true,
+            },
+            {
+                field: 'code',
+                headerName: 'Code',
+                filter: 'agTextColumnFilter',
+                headerTooltip: "Le code de l'organisation",
+            },
+            {
+                field: 'email',
+                headerName: 'E-mail',
+                filter: 'agTextColumnFilter',
+                headerTooltip: "L'e-mail de l'organisation",
+            },
+            {
+                field: 'type',
+                headerName: 'Type',
+                filter: 'agSetColumnFilter',
+                headerTooltip: "Le type de l'organisation",
+                hide: true,
+            },
+            {
+                field: 'billingMode',
+                headerName: 'Mode de facturation',
+                filter: 'agSetColumnFilter',
+                headerTooltip: "Le mode de facturation de l'organisation",
+                hide: true,
+            },
+            {
+                field: 'dailyRate',
+                headerName: 'Tarif journalier',
+                filter: 'agNumberColumnFilter',
+                headerTooltip: "Si tarif journalier négocié pour l'ensemble des cours",
+                type: 'numericColumn',
+                hide: true,
+            },
+            {
+                field: 'clientNumber',
+                headerName: 'Numéro client',
+                filter: 'agNumberColumnFilter',
+                headerTooltip: 'Utilisé pour le numéro de facture',
+                type: 'numericColumn',
+                hide: true,
+            },
+            {
+                field: 'flyersCount',
+                headerName: 'Nb flyers',
+                filter: 'agNumberColumnFilter',
+                headerTooltip: "Le nombre de flyers de l'organisation",
+                type: 'numericColumn',
+                hide: true,
+            },
+            {
+                field: 'fullAddress',
+                headerName: 'Adresse',
+                filter: 'agTextColumnFilter',
+                headerTooltip: "L'adresse de l'organisation",
+                valueGetter: ({
+                    data: { postalAddressCountry, postalAddressCode, postalAddressStreet, postalAddressLocality },
+                }) =>
+                    postalAddressStreet || postalAddressCode || postalAddressLocality || postalAddressCountry
+                        ? `${postalAddressStreet ?? ''}, ${postalAddressCode ?? ''} ${postalAddressLocality ?? ''}, ${
+                              postalAddressCountry ?? ''
+                          }`
+                        : '',
+            },
+            {
+                field: 'phone',
+                headerName: 'Téléphone',
+                filter: 'agTextColumnFilter',
+                headerTooltip: "Le téléphone de l'organisation",
+            },
+            {
+                field: 'addressTitle',
+                headerName: 'Intitulé adresse',
+                filter: 'agTextColumnFilter',
+                headerTooltip: "L'intitulé adresse de l'organisation",
+                hide: true,
+            },
+            {
+                field: 'postalAddressCountry',
+                headerName: 'Pays',
+                filter: 'agSetColumnFilter',
+                headerTooltip: "Le pays de l'organisation",
+                hide: true,
+            },
+            {
+                field: 'postalAddressCountryCode',
+                headerName: 'Code pays',
+                filter: 'agSetColumnFilter',
+                headerTooltip: "Le code pays de l'organisation",
+                hide: true,
+            },
+            {
+                field: 'postalAddressCode',
+                headerName: 'Code postal',
+                filter: 'agSetColumnFilter',
+                headerTooltip: "Le code postal de l'organisation",
+                hide: true,
+            },
+            {
+                field: 'postalAddressStreet',
+                headerName: 'Rue et numéro',
+                filter: 'agTextColumnFilter',
+                headerTooltip: "La rue et numéro de l'organisation",
+                hide: true,
+            },
+            {
+                field: 'postalAddressDepartment',
+                headerName: 'Département',
+                filter: 'agTextColumnFilter',
+                headerTooltip: "Le département de l'organisation",
+                hide: true,
+            },
+            {
+                field: 'postalAddressDepartmentCode',
+                headerName: 'Code département',
+                filter: 'agTextColumnFilter',
+                headerTooltip: "Le code département de l'organisation",
+                hide: true,
+            },
+            {
+                field: 'postalAddressLocality',
+                headerName: 'Localité',
+                filter: 'agSetColumnFilter',
+                headerTooltip: "La localité de l'organisation",
+                hide: true,
+            },
+        ],
+        []
+    )
 
-    const rowData = organizations?.flatMap((organization) => flattenOrganizations(organization))
+    const rowData = useMemo(
+        () => organizations?.flatMap((organization) => flattenOrganizations(organization)),
+        [organizations]
+    )
 
     return (
         <>
