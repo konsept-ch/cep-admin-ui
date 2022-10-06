@@ -144,8 +144,8 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData = {}, onAfter
                                                 onChange={onChangeEventField({ fieldName: 'type', id })}
                                             >
                                                 <option value="f2f">En salle</option>
-                                                <option value="sync">En ligne - Synchronne (en salle virtuelle)</option>
-                                                <option value="async">En ligne - Asynchronne (à son rythme)</option>
+                                                <option value="sync">À distance (ensemble) (en salle virtuelle)</option>
+                                                <option value="async">À distance (individuel) (à son rythme)</option>
                                             </Form.Select>
                                         </FloatingLabel>
                                     </Col>
@@ -170,19 +170,19 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData = {}, onAfter
                                 <h6>dont</h6>
                                 <div className="course-durations">
                                     <div className="duration-holder">
-                                        <p className="dur-first-label">Présentiel:&nbsp;</p>
+                                        <p className="dur-first-label">En salle:&nbsp;</p>
                                         <p className="dur-info">
                                             {events.filter(({ type }) => type === 'f2f').length} étape(s) &nbsp;
                                         </p>
                                     </div>
                                     <div className="duration-holder">
-                                        <p className="dur-label">Synchrone:&nbsp;</p>
+                                        <p className="dur-label">À distance (ensemble):&nbsp;</p>
                                         <p className="dur-info">
                                             {events.filter(({ type }) => type === 'sync').length} étape(s) &nbsp;
                                         </p>
                                     </div>
                                     <div className="duration-holder">
-                                        <p className="dur-label">Asynchrone:&nbsp;</p>
+                                        <p className="dur-label">À distance (individuel):&nbsp;</p>
                                         <p className="dur-info">
                                             {events.filter(({ type }) => type === 'async').length} étape(s) &nbsp;
                                         </p>
@@ -192,7 +192,7 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData = {}, onAfter
                         </div>
                         <div className="course-type">
                             <h3>En salle</h3>
-                            <h3>En ligne</h3>
+                            <h3>À distance</h3>
                         </div>
                         <div className="courses-list">
                             {events.map(({ type, title, description }, eventOrder) => (
@@ -239,19 +239,19 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData = {}, onAfter
                                 <h6>dont</h6>
                                 <div class="course-durations">
                                   <div class="duration-holder">
-                                    <p class="dur-first-label">Présentiel:&nbsp;</p>
+                                    <p class="dur-first-label">En salle:&nbsp;</p>
                                     <p class="dur-info">${
                                         events.filter(({ type }) => type === 'f2f').length
                                     } étapes &nbsp;</p>
                                   </div>
                                   <div class="duration-holder">
-                                    <p class="dur-label">Synchrone:&nbsp;</p>
+                                    <p class="dur-label">À distance (ensemble):&nbsp;</p>
                                     <p class="dur-info">${
                                         events.filter(({ type }) => type === 'sync').length
                                     } étapes &nbsp;</p>
                                   </div>
                                   <div class="duration-holder">
-                                    <p class="dur-label">Asynchrone:&nbsp;</p>
+                                    <p class="dur-label">À distance (individuel):&nbsp;</p>
                                     <p class="dur-info">${
                                         events.filter(({ type }) => type === 'async').length
                                     } étapes &nbsp;</p>
@@ -262,7 +262,7 @@ export const CourseDetailsModal = ({ closeModal, courseDetailsData = {}, onAfter
                             <!-- END Resume section-->
                             <div class="course-type">
                               <h3>En salle</h3>
-                              <h3>En ligne</h3>
+                              <h3>À distance</h3>
                             </div>
                             <div class="courses-list">
                                 ${events
