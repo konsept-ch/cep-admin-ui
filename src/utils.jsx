@@ -273,9 +273,7 @@ const escapeIfValidUri = ({ possiblyValidUri }) => {
     try {
         return decodeURIComponent(JSON.parse(`"${escape(possiblyValidUri) ?? ''}"`))
     } catch (e) {
-        // No need to handle this, just make sure it fails silently
-        // TODO check if this can be returned, doesn't seem to work:
-        // return decodeURIComponent(JSON.parse(`"${possiblyValidUri ?? ''}"`))
+        return decodeURIComponent(JSON.parse(`"${possiblyValidUri ?? ''}"`))
     }
 }
 
