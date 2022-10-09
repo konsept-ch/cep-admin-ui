@@ -18,6 +18,7 @@ import {
     FINAL_STATUSES,
     STATUSES,
     UNSELECTABLE_STATUSES,
+    specialCharsDecodingFormatter,
 } from '../utils'
 import { useUpdateInscriptionStatusMutation } from '../services/inscriptions'
 
@@ -395,6 +396,7 @@ export function InscriptionsPage() {
                 }}
                 defaultColDef={{
                     aggFunc: false,
+                    valueFormatter: specialCharsDecodingFormatter,
                 }}
                 defaultSortModel={[
                     { colId: 'coordinator', sort: 'asc', sortIndex: 0 },
