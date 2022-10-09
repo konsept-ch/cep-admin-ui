@@ -130,6 +130,13 @@ export function InscriptionsPage() {
                 headerTooltip: "Le statut de l'utilisateur",
             },
             {
+                field: 'civility',
+                headerName: 'Civilité',
+                filter: 'agSetColumnFilter',
+                filterParams: { excelMode: 'windows' },
+                headerTooltip: "La civilité de l'utilisateur qui est inscrit à la session",
+            },
+            {
                 field: 'lastName',
                 headerName: 'Nom',
                 filter: 'agSetColumnFilter',
@@ -222,6 +229,7 @@ export function InscriptionsPage() {
             ({
                 id,
                 user: {
+                    civility,
                     lastName = 'Aucune inscription',
                     firstName = 'Aucune inscription',
                     organizationCode,
@@ -238,6 +246,7 @@ export function InscriptionsPage() {
                 isPending,
             }) => ({
                 id,
+                civility,
                 lastName,
                 firstName,
                 type,
