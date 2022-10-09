@@ -124,20 +124,27 @@ export function InscriptionsPage() {
                         : formatDate({ dateString: data?.startDate, isDateVisible: true }),
             },
             {
-                field: 'participant',
-                headerName: 'Participant',
+                field: 'status',
+                headerName: 'Statut',
+                filter: 'agSetColumnFilter',
+                headerTooltip: "Le statut de l'utilisateur",
+            },
+            {
+                field: 'lastName',
+                headerName: 'Nom',
                 filter: 'agSetColumnFilter',
                 filterParams: { excelMode: 'windows' },
-                headerTooltip: "L'utilisateur qui est inscrit à la session",
+                headerTooltip: "Le nom de l'utilisateur qui est inscrit à la session",
                 checkboxSelection: true,
                 headerCheckboxSelection: true,
                 aggFunc: 'count',
             },
             {
-                field: 'status',
-                headerName: 'Statut',
+                field: 'firstName',
+                headerName: 'Prenom',
                 filter: 'agSetColumnFilter',
-                headerTooltip: "Le statut de l'utilisateur",
+                filterParams: { excelMode: 'windows' },
+                headerTooltip: "Le prenom de l'utilisateur qui est inscrit à la session",
             },
             {
                 field: 'attestationTitle',
@@ -150,6 +157,7 @@ export function InscriptionsPage() {
                 headerName: 'Organisation',
                 filter: 'agTextColumnFilter',
                 headerTooltip: "L'organisation de l'utilisateur",
+                initialHide: true,
             },
             {
                 field: 'organizationCode',
@@ -175,6 +183,7 @@ export function InscriptionsPage() {
                 field: 'type',
                 headerName: "Type d'inscription",
                 filter: 'agSetColumnFilter',
+                initialHide: true,
                 // setting default value for data resolves an uncaught type error
                 valueGetter: ({ data: { type } = {} }) =>
                     ({
@@ -192,12 +201,14 @@ export function InscriptionsPage() {
                 filter: 'agNumberColumnFilter',
                 headerTooltip: 'Les jours de quota de la session',
                 type: 'numericColumn',
+                initialHide: true,
             },
             {
                 field: 'isUsedForQuota',
                 headerName: 'Utilisé pour quotas',
                 filter: 'agSetColumnFilter',
                 headerTooltip: 'Les quotas de la session',
+                initialHide: true,
                 valueGetter: ({ data }) =>
                     typeof data === 'undefined' ? '' : data.isUsedForQuota ? 'Utilisé' : 'Non-utilisé',
             },
@@ -207,26 +218,46 @@ export function InscriptionsPage() {
 
     const rowData = inscriptions
         .filter((current) => current != null)
-        .map(({ id, user = {}, session, status, attestationTitle, inscriptionDate, type, coordinator, isPending }) => ({
-            id,
-            participant: user.lastName != null ? `${user.lastName} ${user.firstName}` : 'Aucune inscription',
-            type,
-            sessionName: session.name,
-            quotaDays: session.quotaDays,
-            isUsedForQuota: session.isUsedForQuota,
-            status,
-            attestationTitle,
-            startDate: session.startDate,
-            inscriptionDate,
-            organizationCode: user.organizationCode,
-            hierarchy: user.hierarchy,
-            organization: user.organization,
-            email: user.email,
-            coordinator,
-            courseName: session.courseName,
-            startYear: session.startYear,
-            isPending,
-        }))
+        .map(
+            ({
+                id,
+                user: {
+                    lastName = 'Aucune inscription',
+                    firstName = 'Aucune inscription',
+                    organizationCode,
+                    hierarchy,
+                    organization,
+                    email,
+                } = {},
+                session,
+                status,
+                attestationTitle,
+                inscriptionDate,
+                type,
+                coordinator,
+                isPending,
+            }) => ({
+                id,
+                lastName,
+                firstName,
+                type,
+                sessionName: session.name,
+                quotaDays: session.quotaDays,
+                isUsedForQuota: session.isUsedForQuota,
+                status,
+                attestationTitle,
+                startDate: session.startDate,
+                inscriptionDate,
+                organizationCode,
+                hierarchy,
+                organization,
+                email,
+                coordinator,
+                courseName: session.courseName,
+                startYear: session.startYear,
+                isPending,
+            })
+        )
 
     return (
         <>
