@@ -60,7 +60,6 @@ export const MassStatusUpdateModal = ({ closeModal, inscriptionsData, updateStat
             headerTooltip: "L'utilisateur qui est inscrit à la session",
             aggFunc: 'count',
         },
-        { field: 'profession', headerName: 'Fonction/Profession' },
         {
             field: 'sessionName',
             headerName: 'Session',

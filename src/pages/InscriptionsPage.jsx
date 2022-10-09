@@ -133,7 +133,6 @@ export function InscriptionsPage() {
                 headerCheckboxSelection: true,
                 aggFunc: 'count',
             },
-            { field: 'profession', headerName: 'Fonction/Profession' },
             {
                 field: 'status',
                 headerName: 'Statut',
@@ -211,7 +210,6 @@ export function InscriptionsPage() {
         .map(({ id, user = {}, session, status, attestationTitle, inscriptionDate, type, coordinator, isPending }) => ({
             id,
             participant: user.lastName != null ? `${user.lastName} ${user.firstName}` : 'Aucune inscription',
-            profession: user.profession,
             type,
             sessionName: session.name,
             quotaDays: session.quotaDays,

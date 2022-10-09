@@ -100,8 +100,6 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
                             <dd>
                                 <a href={`mailto:${statusUpdateData.user.email}`}>{statusUpdateData.user.email}</a>
                             </dd>
-                            <dt>Fonction professionnelle</dt>
-                            <dd>{statusUpdateData.user.profession ?? '(Aucune profession choisie)'}</dd>
                             <dt>Numéro de téléphone du participant</dt>
                             <dd>
                                 {statusUpdateData.user.phone ? (

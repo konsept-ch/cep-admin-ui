@@ -24,7 +24,6 @@ export function FormateursPage() {
                 filterParams: { excelMode: 'windows' },
                 headerTooltip: 'Le formateur de la session',
             },
-            { field: 'profession', headerName: 'Fonction/Profession' },
             {
                 field: 'session',
                 headerName: 'Session',
@@ -81,7 +80,6 @@ export function FormateursPage() {
         .map(({ id, user = {}, session, status }) => ({
             id,
             participant: user.lastName != null ? `${user.lastName} ${user.firstName}` : 'Aucun formateur',
-            profession: user.profession,
             session: session.name,
             status,
             organization: user.organization,

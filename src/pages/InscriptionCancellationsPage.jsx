@@ -31,7 +31,6 @@ export function InscriptionCancellationsPage() {
                 headerCheckboxSelection: true,
                 aggFunc: 'count',
             },
-            { field: 'profession', headerName: 'Fonction/Profession' },
             {
                 field: 'sessionName',
                 headerName: 'Session',
@@ -117,7 +116,6 @@ export function InscriptionCancellationsPage() {
         .map(({ id, user = {}, session, status, inscriptionDate, type }) => ({
             id,
             participant: user.lastName != null ? `${user.lastName} ${user.firstName}` : 'Aucune annulation',
-            profession: user.profession,
             type,
             sessionName: session.name,
             quotaDays: session.quotaDays,

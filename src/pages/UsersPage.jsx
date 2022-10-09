@@ -76,15 +76,6 @@ export function UsersPage() {
         },
         // TODO org hierarchy and org code
         {
-            field: 'profession',
-            tooltipField: 'profession',
-            headerName: 'Fonction/Profession',
-            filter: 'agTextColumnFilter',
-            headerTooltip: "La fonction/profession de l'utilisateur",
-
-            width: 180,
-        },
-        {
             field: 'shouldReceiveSms',
             headerName: 'SMS ?',
             filter: 'agSetColumnFilter',
@@ -135,7 +126,6 @@ export function UsersPage() {
         telephone: user.phone,
         phoneForSms: user.phoneForSms,
         roles: user.roles,
-        profession: user.profession,
     }))
 
     return (
