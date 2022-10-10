@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
 import { toast } from 'react-toastify'
+import { DateTime } from 'luxon'
 
 import { Grid, StatusUpdateModal, MassStatusUpdateModal } from '../components'
 import {
@@ -21,6 +22,8 @@ import {
     specialCharsDecodingFormatter,
 } from '../utils'
 import { useUpdateInscriptionStatusMutation } from '../services/inscriptions'
+
+const formatDateTime = ({ value }) => DateTime.fromJSDate(value).setLocale('fr-CH').toLocaleString(DateTime.DATE_SHORT)
 
 export function InscriptionsPage() {
     const dispatch = useDispatch()
@@ -171,6 +174,21 @@ export function InscriptionsPage() {
                 headerName: 'Date de naissance',
                 filter: 'agDateColumnFilter',
                 headerTooltip: "La date de naissance de l'utilisateur",
+                valueFormatter: ({ value }) => {
+                    const date = new Date(specialCharsDecodingFormatter({ value }))
+
+                    if (`${date}` === 'Invalid Date') {
+                        // const valueAsString = `${value}`
+                        const dateSplit =
+                            value.length === 8
+                                ? [...value.slice(4, 8), ...value.slice(2, 4), ...value.slice(0, 2)]
+                                : value.split('.')
+
+                        return formatDateTime({ value: new Date(dateSplit[2], dateSplit[1] - 1, dateSplit[0]) })
+                    } else {
+                        return formatDateTime({ value: date })
+                    }
+                },
             },
             {
                 field: 'avsNumber',
@@ -403,7 +421,7 @@ export function InscriptionsPage() {
                     { colId: 'startYear', sort: 'asc', sortIndex: 1 },
                     { colId: 'courseName', sort: 'asc', sortIndex: 2 },
                     { colId: 'sessionName', sort: 'asc', sortIndex: 3 },
-                    { colId: 'participant', sort: 'asc', sortIndex: 4 },
+                    { colId: 'lastName', sort: 'asc', sortIndex: 4 },
                 ]}
                 groupDefaultExpanded={1}
                 groupDisplayType="groupRows"
