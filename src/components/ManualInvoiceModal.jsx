@@ -141,7 +141,7 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                                     />
                                 </Form.Group>
                                 <Form.Group className="mb-3" controlId="addressTextarea">
-                                    <Form.Label>Adresse postale</Form.Label>
+                                    <Form.Label>Adresse de facturation</Form.Label>
                                     <Form.Control as="textarea" {...register('customClientAddress')} />
                                 </Form.Group>
                                 <Form.Group className="mb-3" controlId="emailInput">
@@ -149,15 +149,6 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                                     <Form.Control {...register('customClientEmail')} type="email" />
                                 </Form.Group>
                             </Col>
-                        </Row>
-                        <Row>
-                            <Col>
-                                <Form.Group className="mb-3" controlId="reasonInput">
-                                    <Form.Label>Concerne</Form.Label>
-                                    <Form.Control {...register('invoiceReason')} />
-                                </Form.Group>
-                            </Col>
-                            <Col />
                         </Row>
                         <Row>
                             <Col>
@@ -226,7 +217,7 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                             </Col>
                             <Col>
                                 <Form.Label>
-                                    <strong>Nombre</strong> {/* positiv */}
+                                    <strong>Quantité</strong> {/* positiv */}
                                 </Form.Label>
                             </Col>
                             <Col>
