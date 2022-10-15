@@ -6,8 +6,8 @@
   "license": "SEE LICENSE IN LICENSE.txt",
   "private": true,
   "engines": {
-    "node": ">=16.17.0",
-    "npm": ">=8.15.0"
+    "node": ">=18.11.0",
+    "npm": ">=8.19.2"
   },
   "scripts": {
     "start": "cross-env TSC_COMPILE_ON_ERROR=true DISABLE_ESLINT_PLUGIN=true react-scripts start",
@@ -24,7 +24,7 @@
     "ci:check": "npm run prettier:check && npm run eslint:check && npm run stylelint:check && npm run markdownlint:check && npm run test"
   },
   "dependencies": {
-    "@ag-grid-community/client-side-row-model": "28.2.0",
+    "@ag-grid-community/client-side-row-model": "28.1.0",
     "@fortawesome/fontawesome-svg-core": "6.2.0",
     "@fortawesome/free-regular-svg-icons": "6.2.0",
     "@fortawesome/free-solid-svg-icons": "6.2.0",
@@ -48,12 +48,12 @@
     "@testing-library/react": "13.4.0",
     "@testing-library/user-event": "14.4.3",
     "@types/jest": "27.5.2",
-    "@types/node": "16.11.65",
+    "@types/node": "18.11.0",
     "@types/react": "18.0.21",
     "@types/react-dom": "18.0.6",
-    "ag-grid-community": "28.2.0",
-    "ag-grid-enterprise": "28.2.0",
-    "ag-grid-react": "28.2.0",
+    "ag-grid-community": "28.1.0",
+    "ag-grid-enterprise": "28.1.0",
+    "ag-grid-react": "28.1.0",
     "bootstrap": "5.2.2",
     "classnames": "2.3.2",
     "cross-env": "7.0.3",
