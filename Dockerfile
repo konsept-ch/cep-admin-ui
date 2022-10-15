@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1 - the build process
-FROM node:18-alpine as build-deps
+FROM node:18-slim as build-deps
 ARG FONTAWESOME_NPM_AUTH_TOKEN
 ARG REACT_APP_SERVICES_URL
 WORKDIR /usr/src/app
@@ -13,7 +13,7 @@ RUN npm run build
 RUN rm .npmrc
 
 # Stage 2 - the static server
-FROM nginx:1.23-alpine
+FROM nginx:1.23
 COPY --from=build-deps /usr/src/app/build /var/www
 COPY nginx.conf /etc/nginx/nginx.conf
 EXPOSE 80
