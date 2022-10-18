@@ -18,18 +18,31 @@ export function FormateursPage() {
     const columnDefs = useMemo(
         () => [
             {
-                field: 'participant',
-                headerName: 'Participant',
+                field: 'teacher',
+                headerName: 'Formateur',
                 filter: 'agSetColumnFilter',
                 filterParams: { excelMode: 'windows' },
                 headerTooltip: 'Le formateur de la session',
+                rowGroup: true,
             },
             { field: 'profession', headerName: 'Fonction/Profession' },
+            {
+                field: 'course',
+                headerName: 'Formation',
+                filter: 'agTextColumnFilter',
+                headerTooltip: 'Le nom de la formation',
+                rowGroup: true,
+                // TODO: sort ignoring accents
+                comparator: (_valueA, _valueB, nodeA, nodeB) => {
+                    return nodeA.key?.localeCompare(nodeB.key)
+                },
+            },
             {
                 field: 'session',
                 headerName: 'Session',
                 filter: 'agTextColumnFilter',
                 headerTooltip: 'Le nom de la session que le formateur donne',
+                rowGroup: true,
             },
             {
                 field: 'status',
@@ -72,18 +85,26 @@ export function FormateursPage() {
                 valueFormatter: ({ value }) => formatDate({ dateString: value, isDateVisible: true }),
                 type: 'numericColumn',
             },
+            {
+                field: 'contract',
+                headerName: 'Contrat',
+                filter: 'agTextColumnFilter',
+                headerTooltip: "Le modèle choisi pour le contrat",
+            },
         ],
         []
     )
 
     const rowData = formateurs
         .filter((current) => current != null)
-        .map(({ id, user = {}, session, status }) => ({
+        .map(({ id, user = {}, session, status, contract }) => ({
             id,
-            participant: user.lastName != null ? `${user.lastName} ${user.firstName}` : 'Aucun formateur',
+            teacher: user.lastName != null ? `${user.lastName} ${user.firstName}` : 'Aucun formateur',
             profession: user.profession,
+            course: session.courseName,
             session: session.name,
             status,
+            contract,
             organization: user.organization,
             organizationCode: user.organizationCode,
             hierarchy: user.hierarchy,
@@ -96,7 +117,11 @@ export function FormateursPage() {
             <Helmet>
                 <title>Formateurs - Former22</title>
             </Helmet>
-            <Grid name="Formateurs" columnDefs={columnDefs} rowData={rowData} />
+            <Grid
+                name="Formateurs"
+                columnDefs={columnDefs}
+                rowData={rowData}
+            />
         </>
     )
 }

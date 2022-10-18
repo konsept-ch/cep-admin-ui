@@ -18,6 +18,7 @@ import { sessionsApi } from './services/sessions'
 import { invoicesApi } from './services/invoices'
 import { inscriptionsApi } from './services/inscriptions'
 import { attestationsApi } from './services/attestations'
+import { contractsApi } from './services/contracts'
 
 const sagaMiddleware = createSagaMiddleware()
 
@@ -38,6 +39,7 @@ export const store = configureStore({
         [invoicesApi.reducerPath]: invoicesApi.reducer,
         [inscriptionsApi.reducerPath]: inscriptionsApi.reducer,
         [attestationsApi.reducerPath]: attestationsApi.reducer,
+        [contractsApi.reducerPath]: contractsApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat([
@@ -49,6 +51,7 @@ export const store = configureStore({
             invoicesApi.middleware,
             inscriptionsApi.middleware,
             attestationsApi.middleware,
+            contractsApi.middleware,
             rtkQueryErrorLogger,
         ]),
 })

@@ -31,7 +31,7 @@ import {
     PATH_TEMPLATES,
     PATH_EMAIL_TEMPLATES,
     PATH_ATTESTATION_TEMPLATES,
-    PATH_CONTRACT_TEMPLATES,
+    PATH_CONTRACTS,
     PATH_COMMUNITY,
     PATH_USERS,
     PATH_ORGANIZATIONS,
@@ -125,6 +125,12 @@ export const Navigation = ({ isLoggedIn }) => {
                             >
                                 <FontAwesomeIcon icon={faBookOpenCover} /> Séances
                             </Nav.Link>
+                            <Nav.Link
+                                href={`/${PATH_CATALOGUE}/${PATH_CONTRACTS}`}
+                                onClick={goTo(`${PATH_CATALOGUE}/${PATH_CONTRACTS}`)}
+                            >
+                                <FontAwesomeIcon icon={faFileContract} /> Contrats
+                            </Nav.Link>
                         </NavDropdown>
                         {/* <Nav.Link href={`/${PATH_TEMPLATES}`} onClick={goTo(PATH_TEMPLATES)}>
                             <FontAwesomeIcon icon={faEnvelopeOpenText} /> Modèles
@@ -150,8 +156,8 @@ export const Navigation = ({ isLoggedIn }) => {
                                 <FontAwesomeIcon icon={faFileCertificate} /> Attestations
                             </Nav.Link>
                             <Nav.Link
-                                href={`/${PATH_TEMPLATES}/${PATH_CONTRACT_TEMPLATES}`}
-                                onClick={goTo(`${PATH_TEMPLATES}/${PATH_CONTRACT_TEMPLATES}`)}
+                                href={`/${PATH_TEMPLATES}/${PATH_CONTRACTS}`}
+                                onClick={goTo(`${PATH_TEMPLATES}/${PATH_CONTRACTS}`)}
                             >
                                 <FontAwesomeIcon icon={faFileContract} /> Contrats
                             </Nav.Link>
