@@ -6,7 +6,7 @@ import Select from 'react-select'
 import DatePicker from 'react-datepicker'
 
 import { CommonModal } from '../components'
-import { useUpdateManualInvoiceMutation } from '../services/invoices'
+import { useCreateManualInvoiceMutation, useUpdateManualInvoiceMutation } from '../services/invoices'
 import { useGetOrganizationsFlatWithAddressQuery } from '../services/organizations'
 import { formatToFlatObject } from '../utils'
 
@@ -44,8 +44,6 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
         refetchOnMountOrArgChange: true,
     })
 
-    console.log(organizations)
-
     const unitValues = useMemo(
         () => [
             { value: 'jours', label: 'jours' },
@@ -70,22 +68,24 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                 courseYear,
                 invoiceDate,
                 vatCode,
-                items,
+                // items,
                 customClientEmail,
-                organizationUuid,
+                // organizationUuid,
             } = selectedInvoiceData
 
             reset({
-                client: clientOptions.find(({ id }) => id === organizationUuid),
+                client: '',
+                // client: clientOptions.find(({ id }) => id === organizationUuid),
                 customClientAddress,
                 invoiceReason,
                 courseYear: new Date(String(courseYear)),
                 invoiceDate,
                 vatCode,
-                items: items.map(({ unit, ...restProps }) => ({
-                    ...restProps,
-                    unit: unitValues.find(({ label }) => label === unit),
-                })),
+                items: [defaultEmptyItem],
+                // items: items.map(({ unit, ...restProps }) => ({
+                //     ...restProps,
+                //     unit: unitValues.find(({ label }) => label === unit),
+                // })),
                 customClientEmail,
             })
         } else {
@@ -109,6 +109,7 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
     }, [isModalOpen])
 
     const [updateInvoice, { isLoading: isInvoiceUpdating }] = useUpdateManualInvoiceMutation()
+    const [createInvoice, { isLoading: isInvoiceCreating }] = useCreateManualInvoiceMutation()
 
     const closeInvoiceModal = () => {
         closeModal()
@@ -302,13 +303,27 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                                     variant="primary"
                                     disabled={!isDirty}
                                     onClick={handleSubmit(async (formData) => {
-                                        const { error: mutationError } = await updateInvoice({
-                                            id: isEditModal ? selectedInvoiceData.id : null,
-                                            body: {
-                                                ...formatToFlatObject(formData),
-                                                items: formData.items.map(formatToFlatObject),
-                                            },
-                                        })
+                                        let mutationError
+                                        if (isEditModal) {
+                                            const { error: updateError } = await updateInvoice({
+                                                id: isEditModal ? selectedInvoiceData.id : null,
+                                                body: {
+                                                    ...formatToFlatObject(formData),
+                                                    items: formData.items.map(formatToFlatObject),
+                                                },
+                                            })
+
+                                            mutationError = updateError
+                                        } else {
+                                            const { error: updateError } = await createInvoice({
+                                                body: {
+                                                    ...formatToFlatObject(formData),
+                                                    items: formData.items.map(formatToFlatObject),
+                                                },
+                                            })
+
+                                            mutationError = updateError
+                                        }
                                         if (typeof mutationError === 'undefined') {
                                             closeInvoiceModal()
                                         } else {
@@ -322,7 +337,7 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                                         }
                                     })}
                                 >
-                                    {isInvoiceUpdating ? (
+                                    {isInvoiceUpdating || isInvoiceCreating ? (
                                         <>
                                             <Spinner animation="grow" size="sm" /> Confirmer...
                                         </>

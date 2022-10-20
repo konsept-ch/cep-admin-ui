@@ -26,7 +26,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
     const [isLoginLoading, setLoginLoading] = useState(false)
     const [shouldRememberMe, setShouldRememberMe] = useState(true)
 
-    const maxAge = authCookiesMaxAgeSeconds[shouldRememberMe]
+    const maxAge = process.env.NODE_ENV === 'development' ? 999999 : authCookiesMaxAgeSeconds[shouldRememberMe]
     const path = '/'
 
     useEffect(() => {

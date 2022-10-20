@@ -12,6 +12,13 @@ export const invoicesApi = createApi({
         getManualInvoices: builder.query({
             query: () => 'manual',
         }),
+        createManualInvoice: builder.mutation({
+            query: ({ body }) => ({
+                url: `manual`,
+                method: 'POST',
+                body,
+            }),
+        }),
         updateInvoice: builder.mutation({
             query: ({ id, body }) => ({
                 url: id,
@@ -50,6 +57,7 @@ export const invoicesApi = createApi({
 export const {
     useGetInvoicesQuery,
     useGetManualInvoicesQuery,
+    useCreateManualInvoiceMutation,
     useUpdateInvoiceMutation,
     useUpdateManualInvoiceMutation,
     useRemoveInvoiceMutation,
