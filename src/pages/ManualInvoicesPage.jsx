@@ -6,8 +6,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPen } from '@fortawesome/pro-light-svg-icons'
 
 import { Grid, ManualInvoiceModal } from '../components'
-import { useGetManualInvoicesQuery } from '../services/invoices'
-import { gridContextMenu, downloadCsvFile, formatDate } from '../utils'
+import { useGetManualInvoicesQuery } from '../services/manual-invoices'
+import { gridContextMenu, downloadCsvFile } from '../utils'
 
 export function ManualInvoicesPage() {
     const [isManualInvoiceModalOpen, setIsManualInvoiceModalOpen] = useState(false)
@@ -46,6 +46,14 @@ export function ManualInvoicesPage() {
             ),
         },
         {
+            field: 'invoiceNumber',
+            headerName: 'Numéro de facture',
+            tooltipField: 'invoiceNumber',
+            headerTooltip: 'Numéro de facture',
+            filter: 'agNumberColumnFilter',
+            valueGetter: ({ data }) => `${data?.courseYear}${'1'.padStart(2, '0')}${data?.clientNumber}`,
+        },
+        {
             field: 'invoiceDate',
             headerName: 'Date de facture',
             tooltipField: 'invoiceDate',
@@ -53,18 +61,25 @@ export function ManualInvoicesPage() {
             filter: 'agDateColumnFilter',
         },
         {
-            field: 'courseYear',
-            headerName: 'Année de formation',
-            tooltipField: 'courseYear',
-            headerTooltip: 'Année de formation',
-            filter: 'agNumberColumnFilter',
-        },
-        {
             field: 'organizationName',
             headerName: 'Organisation',
             tooltipField: 'organizationName',
             headerTooltip: 'Organisation',
             filter: 'agSetColumnFilter',
+        },
+        {
+            field: 'statut',
+            headerName: 'Statut',
+            tooltipField: 'statut',
+            headerTooltip: 'Statut',
+            filter: 'agSetColumnFilter',
+        },
+        {
+            field: 'courseYear',
+            headerName: 'Année de formation',
+            tooltipField: 'courseYear',
+            headerTooltip: 'Année de formation',
+            filter: 'agNumberColumnFilter',
         },
         {
             field: 'userFullName',
@@ -86,58 +101,6 @@ export function ManualInvoicesPage() {
                     .reduce((a, b) => Number(a) + Number(b))
                     .toFixed(2),
         },
-        // TODO display organization name, hierarchy, etc...
-        // {
-        //     field: 'customClientAddress',
-        //     headerName: 'Address client',
-        //     tooltipField: 'customClientAddress',
-        //     // headerTooltip: 'Le nom de la formation',
-        //     filter: 'agTextColumnFilter',
-        // },
-        // {
-        //     field: 'vatCode',
-        //     headerName: 'Code TVA',
-        //     tooltipField: 'vatCode',
-        //     // headerTooltip: 'Le nom de la session',
-        //     filter: 'agTextColumnFilter',
-        // },
-        // {
-        //     field: 'invoiceDate',
-        //     headerName: 'Date de facture',
-        //     tooltipField: 'invoiceDate',
-        //     // headerTooltip: 'Date de création de facture',
-        //     filter: 'agTextColumnFilter',
-        //     valueGetter: ({ data }) => formatDate({ dateString: data?.createdAt, isDateVisible: true }),
-        // },
-        // {
-        //     field: 'courseYear',
-        //     headerName: 'Année de formation',
-        //     tooltipField: 'courseYear',
-        //     // headerTooltip: "Statut de l'inscription",
-        //     filter: 'agTextColumnFilter',
-        // },
-        // {
-        //     field: 'creatorCode',
-        //     headerName: 'Code créateur',
-        //     tooltipField: 'creatorCode',
-        //     // headerTooltip: "Statut de l'inscription",
-        //     filter: 'agTextColumnFilter',
-        // },
-        // {
-        //     field: 'invoiceNumberForCurrentYear',
-        //     headerName: 'Numéro annuel facture',
-        //     tooltipField: 'invoiceNumberForCurrentYear',
-        //     // headerTooltip: "Statut de l'inscription",
-        //     filter: 'agNumberColumnFilter',
-        //     type: 'numericColumn',
-        // },
-        // {
-        //     field: 'invoiceReason',
-        //     headerName: 'Concerne',
-        //     tooltipField: 'invoiceReason',
-        //     // headerTooltip: "Statut de l'inscription",
-        //     filter: 'agTextColumnFilter',
-        // },
     ]
 
     return (

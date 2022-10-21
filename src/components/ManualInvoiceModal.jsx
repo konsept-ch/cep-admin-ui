@@ -6,7 +6,7 @@ import Select from 'react-select'
 import DatePicker from 'react-datepicker'
 
 import { CommonModal } from '../components'
-import { useCreateManualInvoiceMutation, useUpdateManualInvoiceMutation } from '../services/invoices'
+import { useCreateManualInvoiceMutation, useUpdateManualInvoiceMutation } from '../services/manual-invoices'
 import { useGetOrganizationsFlatWithAddressQuery } from '../services/organizations'
 import { formatToFlatObject } from '../utils'
 
