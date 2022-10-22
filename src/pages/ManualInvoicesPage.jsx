@@ -118,7 +118,7 @@ export function ManualInvoicesPage() {
             width: 170,
             valueGetter: ({ data }) =>
                 data?.itemAmounts
-                    .split('\\')
+                    ?.split('\\')
                     .reduce((a, b) => Number(a) + Number(b))
                     .toFixed(2),
         },

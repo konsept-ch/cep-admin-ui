@@ -11,6 +11,9 @@ import { useCreateManualInvoiceMutation, useUpdateManualInvoiceMutation } from '
 import { useLazyGetOrganizationsFlatWithAddressQuery } from '../services/organizations'
 import { formatToFlatObject } from '../utils'
 
+const getYearFromJsDate = ({ date }) =>
+    DateTime.fromJSDate(date, { zone: 'UTC' }).setLocale('fr-CH').toLocaleString({ year: 'numeric' })
+
 const getInvoiceNumber = ({ courseYear, userCode, invoiceNumberForCurrentYear }) =>
     ` ${`${courseYear}`.slice(-2)}${`${userCode}`.padStart(2, 0)}${`${invoiceNumberForCurrentYear}`.padStart(4, 0)}`
 
@@ -65,7 +68,7 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
         if (selectedInvoiceData != null && clientOptions?.length > 0) {
             const {
                 organizationUuid,
-                invoiceNumberForCurrentYear,
+                // invoiceNumberForCurrentYear,
                 customClientEmail,
                 customClientAddress,
                 invoiceDate,
@@ -173,9 +176,7 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                                     <>
                                         <Form.Label>Numéro facture: </Form.Label>
                                         {getInvoiceNumber({
-                                            courseYear: DateTime.fromJSDate(courseYearWatched, { zone: 'UTC' })
-                                                .setLocale('fr-CH')
-                                                .toLocaleString({ year: 'numeric' }),
+                                            courseYear: getYearFromJsDate({ date: courseYearWatched }),
                                             userCode: `${selectedInvoiceData?.user.cfNumber}`.padStart(2, '0'),
                                             invoiceNumberForCurrentYear:
                                                 selectedInvoiceData?.invoiceNumberForCurrentYear,
@@ -228,12 +229,12 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                             </Col>
                             <Col>
                                 <Form.Label>
-                                    <strong>Quantité</strong> {/* positiv */}
+                                    <strong>Quantité</strong> {/* TODO: positiv */}
                                 </Form.Label>
                             </Col>
                             <Col>
                                 <Form.Label>
-                                    <strong>Prix</strong> {/* peut etre negatif */}
+                                    <strong>Prix</strong> {/* TODO: peut etre negatif */}
                                 </Form.Label>
                             </Col>
                         </Row>
@@ -314,6 +315,7 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                                     disabled={!isDirty}
                                     onClick={handleSubmit(async (formData) => {
                                         let mutationError
+
                                         if (isEditModal) {
                                             const { error: updateError } = await updateInvoice({
                                                 id: isEditModal ? selectedInvoiceData.id : null,
@@ -325,15 +327,19 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
 
                                             mutationError = updateError
                                         } else {
+                                            console.info(formData)
                                             const { error: updateError } = await createInvoice({
                                                 body: {
-                                                    ...formatToFlatObject(formData),
-                                                    items: formData.items.map(formatToFlatObject),
+                                                    ...formData,
+                                                    courseYear: Number(
+                                                        getYearFromJsDate({ date: formData.courseYear })
+                                                    ),
                                                 },
                                             })
 
                                             mutationError = updateError
                                         }
+
                                         if (typeof mutationError === 'undefined') {
                                             closeInvoiceModal()
                                         } else {
