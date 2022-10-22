@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { Container, Button } from 'react-bootstrap'
 import { Helmet } from 'react-helmet-async'
 import Papa from 'papaparse'
@@ -9,6 +9,12 @@ import { faPen } from '@fortawesome/pro-light-svg-icons'
 import { Grid, ManualInvoiceModal } from '../components'
 import { useGetManualInvoicesQuery } from '../services/manual-invoices'
 import { gridContextMenu, downloadCsvFile } from '../utils'
+
+const deriveInvoiceNumber = ({ data }) =>
+    `${data?.courseYear}${`${data?.user.cfNumber}`.padStart(2, '0')}${`${data?.invoiceNumberForCurrentYear}`.padStart(
+        4,
+        '0'
+    )}`
 
 export function ManualInvoicesPage() {
     const [isManualInvoiceModalOpen, setIsManualInvoiceModalOpen] = useState(false)
@@ -53,11 +59,7 @@ export function ManualInvoicesPage() {
             headerTooltip: 'Numéro de facture',
             filter: 'agNumberColumnFilter',
             width: 190,
-            valueGetter: ({ data }) =>
-                `${data?.courseYear}${`${data?.user.cfNumber}`.padStart(
-                    2,
-                    '0'
-                )}${`${data?.invoiceNumberForCurrentYear}`.padStart(4, '0')}`,
+            valueGetter: deriveInvoiceNumber,
         },
         {
             field: 'invoiceDate',
@@ -135,7 +137,7 @@ export function ManualInvoicesPage() {
                 rowData={invoicesData}
                 isDataLoading={isFetchingInvoices}
                 getContextMenuItems={({
-                    node: { data: rowData },
+                    node: { data },
                     columnApi: {
                         columnModel: { columnDefs: gridColumnDefs },
                     },
@@ -143,16 +145,46 @@ export function ManualInvoicesPage() {
                     {
                         name: 'Exporter pour Crésus',
                         action: () => {
-                            const fieldsData = gridColumnDefs
-                                .filter(({ field }) => field !== columnDefs[0].field)
-                                .map(({ headerName, field }) => ({ headerName, field }))
+                            const csvClient = Papa.unparse({
+                                fields: [
+                                    'Numéro',
+                                    'Firme',
+                                    'Titre',
+                                    'Nom',
+                                    'Prénom',
+                                    'Adresse 1',
+                                    'Adresse 2',
+                                    'NPA',
+                                    'Localité',
+                                    'Pays',
+                                    'Tel Prof',
+                                    'E-mail',
+                                ],
+                                data: [
+                                    [
+                                        deriveInvoiceNumber({ data }),
+                                        data.organizationName,
+                                        '',
+                                        '',
+                                        '',
+                                        'Adresse 1',
+                                        'Adresse 2',
+                                        'NPA',
+                                        'Localité',
+                                        'Pays',
+                                        'Tel Prof',
+                                        'E-mail',
+                                    ],
+                                ],
+                            })
+                            console.log(
+                                '🚀 ~ file: ManualInvoicesPage.jsx ~ line 185 ~ ManualInvoicesPage ~ csvClient',
+                                csvClient
+                            )
+                            const csvFacture = Papa.unparse({ fields: [], data: [] })
 
-                            const fields = fieldsData.map(({ headerName }) => headerName)
-                            const data = fieldsData.map(({ field }) => rowData[field])
-
-                            const csv = Papa.unparse({ fields, data })
-
-                            downloadCsvFile({ csv, fileName: 'CSV pour Crésus' })
+                            downloadCsvFile({ csv: csvClient, fileName: 'CSV Client pour Crésus' })
+                            downloadCsvFile({ csv: csvFacture, fileName: 'CSV Facture pour Crésus' })
                         },
                     },
                     'separator',
