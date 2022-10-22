@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Container, Button } from 'react-bootstrap'
 import { Helmet } from 'react-helmet-async'
 import Papa from 'papaparse'
+import { DateTime } from 'luxon'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPen } from '@fortawesome/pro-light-svg-icons'
 
@@ -51,7 +52,9 @@ export function ManualInvoicesPage() {
             tooltipField: 'invoiceNumber',
             headerTooltip: 'Numéro de facture',
             filter: 'agNumberColumnFilter',
-            valueGetter: ({ data }) => `${data?.courseYear}${'1'.padStart(2, '0')}${data?.clientNumber}`,
+            width: 190,
+            valueGetter: ({ data }) =>
+                `${data?.courseYear}${'1'.padStart(2, '0')}${`${data?.invoiceNumberForCurrentYear}`.padStart(4, '0')}`,
         },
         {
             field: 'invoiceDate',
@@ -59,6 +62,9 @@ export function ManualInvoicesPage() {
             tooltipField: 'invoiceDate',
             headerTooltip: 'Date de facture',
             filter: 'agDateColumnFilter',
+            width: 170,
+            valueFormatter: ({ value }) =>
+                DateTime.fromISO(value, { zone: 'UTC' }).setLocale('fr-CH').toLocaleString(DateTime.DATE_SHORT),
         },
         {
             field: 'organizationName',
@@ -73,13 +79,15 @@ export function ManualInvoicesPage() {
             tooltipField: 'statut',
             headerTooltip: 'Statut',
             filter: 'agSetColumnFilter',
+            width: 150,
         },
         {
             field: 'courseYear',
-            headerName: 'Année de formation',
+            headerName: 'Année',
             tooltipField: 'courseYear',
             headerTooltip: 'Année de formation',
             filter: 'agNumberColumnFilter',
+            width: 120,
         },
         {
             field: 'userFullName',
@@ -87,16 +95,17 @@ export function ManualInvoicesPage() {
             tooltipField: 'userFullName',
             headerTooltip: "Le nom complet de l'utilisateur qui a créé la facture",
             filter: 'agTextColumnFilter',
-            valueGetter: ({ data }) => `${data.user.lastName} ${data.user.firstName}`,
+            valueGetter: ({ data }) => `${data?.user.lastName} ${data?.user.firstName}`,
         },
         {
             field: 'itemAmounts',
             headerName: 'Total hors TVA',
-            tooltipField: 'userFullName',
+            tooltipField: 'itemAmounts',
             headerTooltip: 'La somme des montants des articles, hors TVA',
             filter: 'agTextColumnFilter',
+            width: 170,
             valueGetter: ({ data }) =>
-                data.itemAmounts
+                data?.itemAmounts
                     .split('\\')
                     .reduce((a, b) => Number(a) + Number(b))
                     .toFixed(2),

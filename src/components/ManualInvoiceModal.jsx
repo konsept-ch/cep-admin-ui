@@ -40,6 +40,8 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
 
     const courseYearWatched = watch('courseYear')
 
+    console.log(courseYearWatched)
+
     const { data: organizations, refetch: refetchOrganizations } = useGetOrganizationsFlatWithAddressQuery(null, {
         refetchOnMountOrArgChange: true,
     })
@@ -63,24 +65,25 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
     useEffect(() => {
         if (selectedInvoiceData != null) {
             const {
-                customClientAddress,
-                invoiceReason,
-                courseYear,
-                invoiceDate,
-                vatCode,
-                // items,
+                organizationUuid,
+                invoiceNumberForCurrentYear,
                 customClientEmail,
-                // organizationUuid,
+                customClientAddress,
+                invoiceDate,
+                courseYear,
+                itemDesignations,
+                itemUnits,
+                itemAmounts,
+                itemPrices,
+                itemVatCodes,
             } = selectedInvoiceData
 
             reset({
-                client: '',
-                // client: clientOptions.find(({ id }) => id === organizationUuid),
+                // client: '',
+                client: clientOptions.find(({ id }) => id === organizationUuid),
                 customClientAddress,
-                invoiceReason,
                 courseYear: new Date(String(courseYear)),
                 invoiceDate,
-                vatCode,
                 items: [defaultEmptyItem],
                 // items: items.map(({ unit, ...restProps }) => ({
                 //     ...restProps,
@@ -93,7 +96,6 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                 client: '',
                 customClientAddress: '',
                 customClientEmail: '',
-                invoiceReason: '',
                 courseYear: '',
                 invoiceDate: '',
                 vatCode: defaultTvaOption,
@@ -118,10 +120,10 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
 
     const isEditModal = selectedInvoiceData !== undefined
 
-    const invoiceCourseYear = {
-        value: selectedInvoiceData?.courseYear,
-        label: selectedInvoiceData?.courseYear,
-    }
+    // const invoiceCourseYear = {
+    //     value: selectedInvoiceData?.courseYear,
+    //     label: selectedInvoiceData?.courseYear,
+    // }
 
     return (
         <>
@@ -172,7 +174,7 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                                 <Form.Label>Numéro facture: </Form.Label>
                                 {getInvoiceNumber({
                                     courseYear: courseYearWatched,
-                                    userCode: '1',
+                                    userCode: '1'.padStart(2, '0'),
                                     invoiceNumberForCurrentYear: selectedInvoiceData?.invoiceNumberForCurrentYear,
                                 })}
                             </Col>
