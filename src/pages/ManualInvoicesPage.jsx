@@ -16,6 +16,10 @@ const deriveInvoiceNumber = ({ data }) =>
         '0'
     )}`
 
+const formatInvoiceDate = ({ value }) =>
+    console.log(value) ||
+    DateTime.fromISO(value, { zone: 'UTC' }).setLocale('fr-CH').toLocaleString(DateTime.DATE_SHORT)
+
 export function ManualInvoicesPage() {
     const [isManualInvoiceModalOpen, setIsManualInvoiceModalOpen] = useState(false)
     const [selectedInvoiceId, setSelectedInvoiceId] = useState()
@@ -68,8 +72,7 @@ export function ManualInvoicesPage() {
             headerTooltip: 'Date de facture',
             filter: 'agDateColumnFilter',
             width: 170,
-            valueFormatter: ({ value }) =>
-                DateTime.fromISO(value, { zone: 'UTC' }).setLocale('fr-CH').toLocaleString(DateTime.DATE_SHORT),
+            valueFormatter: formatInvoiceDate,
         },
         {
             field: 'client',
@@ -102,6 +105,7 @@ export function ManualInvoicesPage() {
             headerTooltip: 'Année de formation',
             filter: 'agNumberColumnFilter',
             width: 120,
+            hide: true,
         },
         {
             field: 'userFullName',
@@ -162,18 +166,18 @@ export function ManualInvoicesPage() {
                                 ],
                                 data: [
                                     [
-                                        deriveInvoiceNumber({ data }),
+                                        data.clientNumber,
                                         data.organizationName,
-                                        '',
-                                        '',
-                                        '',
-                                        'Adresse 1',
-                                        'Adresse 2',
-                                        'NPA',
-                                        'Localité',
-                                        'Pays',
-                                        'Tel Prof',
-                                        'E-mail',
+                                        'TODO: Titre',
+                                        'TODO: Nom',
+                                        'TODO: Prénom',
+                                        'TODO: Adresse 1',
+                                        'TODO: Adresse 2',
+                                        'TODO: NPA',
+                                        'TODO: Localité',
+                                        'TODO: Pays',
+                                        'TODO: Tel Prof',
+                                        data.customClientEmail,
                                     ],
                                 ],
                             })
@@ -181,7 +185,34 @@ export function ManualInvoicesPage() {
                                 '🚀 ~ file: ManualInvoicesPage.jsx ~ line 185 ~ ManualInvoicesPage ~ csvClient',
                                 csvClient
                             )
-                            const csvFacture = Papa.unparse({ fields: [], data: [] })
+                            const csvFacture = Papa.unparse({
+                                fields: [
+                                    'Numéro',
+                                    'ACodeTVA',
+                                    'ADésignation',
+                                    'APrix',
+                                    'AQuantité',
+                                    'AUnité',
+                                    'Client',
+                                    'DateFacture',
+                                    'RefArticles',
+                                    'RefClient',
+                                ],
+                                data: [
+                                    [
+                                        deriveInvoiceNumber({ data }),
+                                        'TODO: ACodeTVA',
+                                        'TODO: ADésignation',
+                                        'TODO: APrix',
+                                        'TODO: AQuantité',
+                                        'TODO: AUnité',
+                                        data.customClientAddress,
+                                        formatInvoiceDate({ value: data.invoiceDate }),
+                                        1000,
+                                        data.clientNumber,
+                                    ],
+                                ],
+                            })
 
                             downloadCsvFile({ csv: csvClient, fileName: 'CSV Client pour Crésus' })
                             downloadCsvFile({ csv: csvFacture, fileName: 'CSV Facture pour Crésus' })
