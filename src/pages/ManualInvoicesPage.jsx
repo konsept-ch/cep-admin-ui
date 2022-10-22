@@ -20,12 +20,12 @@ export function ManualInvoicesPage() {
         refetch: refetchInvoices,
     } = useGetManualInvoicesQuery(null, { refetchOnMountOrArgChange: true })
 
-    const openInvoiceEditModal = ({ data: { id } }) => {
-        setSelectedInvoiceId(id)
+    const openInvoiceEditModal = ({ uuid }) => {
+        setSelectedInvoiceId(uuid)
         setIsManualInvoiceModalOpen(true)
     }
 
-    const columnDefs = [
+    const [columnDefs] = useState([
         {
             field: 'edit',
             headerName: '',
@@ -38,7 +38,7 @@ export function ManualInvoicesPage() {
             cellRenderer: ({ data }) => (
                 <Button
                     variant="primary"
-                    onClick={() => openInvoiceEditModal({ data })}
+                    onClick={() => openInvoiceEditModal({ uuid: data.uuid })}
                     size="sm"
                     className="edit-button-style"
                 >
@@ -54,7 +54,10 @@ export function ManualInvoicesPage() {
             filter: 'agNumberColumnFilter',
             width: 190,
             valueGetter: ({ data }) =>
-                `${data?.courseYear}${'1'.padStart(2, '0')}${`${data?.invoiceNumberForCurrentYear}`.padStart(4, '0')}`,
+                `${data?.courseYear}${`${data?.user.cfNumber}`.padStart(
+                    2,
+                    '0'
+                )}${`${data?.invoiceNumberForCurrentYear}`.padStart(4, '0')}`,
         },
         {
             field: 'invoiceDate',
@@ -67,11 +70,20 @@ export function ManualInvoicesPage() {
                 DateTime.fromISO(value, { zone: 'UTC' }).setLocale('fr-CH').toLocaleString(DateTime.DATE_SHORT),
         },
         {
+            field: 'client',
+            headerName: 'Client',
+            tooltipField: 'client',
+            headerTooltip: 'Organisation/Utilisateur',
+            filter: 'agTextColumnFilter',
+            valueGetter: ({ data }) => (data?.organizationCode !== 'NREF' ? data?.organizationName : 'Nom+Prénom'),
+        },
+        {
             field: 'organizationName',
             headerName: 'Organisation',
             tooltipField: 'organizationName',
             headerTooltip: 'Organisation',
             filter: 'agSetColumnFilter',
+            hide: true,
         },
         {
             field: 'statut',
@@ -110,7 +122,7 @@ export function ManualInvoicesPage() {
                     .reduce((a, b) => Number(a) + Number(b))
                     .toFixed(2),
         },
-    ]
+    ])
 
     return (
         <>
@@ -154,7 +166,7 @@ export function ManualInvoicesPage() {
             </Container>
             <ManualInvoiceModal
                 refetchInvoices={refetchInvoices}
-                selectedInvoiceData={invoicesData?.find(({ id }) => id === selectedInvoiceId)}
+                selectedInvoiceData={invoicesData?.find(({ uuid }) => uuid === selectedInvoiceId)}
                 closeModal={() => {
                     setIsManualInvoiceModalOpen(false)
                     setSelectedInvoiceId()

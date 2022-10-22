@@ -16,7 +16,6 @@ export function EditUserModal({ refetchUsers, selectedUserData, closeModal, isMo
 
     useEffect(() => {
         if (selectedUserData != null) {
-            console.log(selectedUserData?.cfNumber)
             reset({
                 shouldReceiveSms: Boolean(selectedUserData?.shouldReceiveSms),
                 colorCode: selectedUserData?.colorCode ?? '',

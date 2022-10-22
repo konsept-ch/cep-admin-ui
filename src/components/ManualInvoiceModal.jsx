@@ -1,13 +1,14 @@
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { Button, Spinner, Row, Form, Col, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { useForm, useFieldArray, Controller } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import Select from 'react-select'
 import DatePicker from 'react-datepicker'
+import { DateTime } from 'luxon'
 
 import { CommonModal } from '../components'
 import { useCreateManualInvoiceMutation, useUpdateManualInvoiceMutation } from '../services/manual-invoices'
-import { useGetOrganizationsFlatWithAddressQuery } from '../services/organizations'
+import { useLazyGetOrganizationsFlatWithAddressQuery } from '../services/organizations'
 import { formatToFlatObject } from '../utils'
 
 const getInvoiceNumber = ({ courseYear, userCode, invoiceNumberForCurrentYear }) =>
@@ -34,17 +35,11 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
         watch,
     } = useForm()
 
-    const [startDate, setStartDate] = useState(new Date())
-
     const { fields, append, remove } = useFieldArray({ control, name: 'items' })
 
     const courseYearWatched = watch('courseYear')
 
-    console.log(courseYearWatched)
-
-    const { data: organizations, refetch: refetchOrganizations } = useGetOrganizationsFlatWithAddressQuery(null, {
-        refetchOnMountOrArgChange: true,
-    })
+    const [fetchOrganizations, { data: organizations }] = useLazyGetOrganizationsFlatWithAddressQuery()
 
     const unitValues = useMemo(
         () => [
@@ -56,14 +51,18 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
         []
     )
 
-    const clientOptions = organizations?.map(({ id, code, name }) => ({
-        value: code,
-        label: `${code} - ${name}`,
-        id,
-    }))
+    const clientOptions = useMemo(
+        () =>
+            organizations?.map(({ uuid, code, name }) => ({
+                value: code,
+                label: `${code} - ${name}`,
+                uuid,
+            })),
+        [organizations]
+    )
 
     useEffect(() => {
-        if (selectedInvoiceData != null) {
+        if (selectedInvoiceData != null && clientOptions?.length > 0) {
             const {
                 organizationUuid,
                 invoiceNumberForCurrentYear,
@@ -79,11 +78,10 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
             } = selectedInvoiceData
 
             reset({
-                // client: '',
-                client: clientOptions.find(({ id }) => id === organizationUuid),
+                client: clientOptions.find(({ uuid }) => uuid === organizationUuid),
                 customClientAddress,
                 courseYear: new Date(String(courseYear)),
-                invoiceDate,
+                invoiceDate: new Date(String(invoiceDate)),
                 items: [defaultEmptyItem],
                 // items: items.map(({ unit, ...restProps }) => ({
                 //     ...restProps,
@@ -102,11 +100,11 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                 items: [defaultEmptyItem],
             })
         }
-    }, [selectedInvoiceData])
+    }, [selectedInvoiceData, clientOptions])
 
     useEffect(() => {
         if (isModalOpen) {
-            refetchOrganizations()
+            fetchOrganizations()
         }
     }, [isModalOpen])
 
@@ -171,12 +169,19 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                                         )}
                                     />
                                 </Form.Group>
-                                <Form.Label>Numéro facture: </Form.Label>
-                                {getInvoiceNumber({
-                                    courseYear: courseYearWatched,
-                                    userCode: '1'.padStart(2, '0'),
-                                    invoiceNumberForCurrentYear: selectedInvoiceData?.invoiceNumberForCurrentYear,
-                                })}
+                                {isEditModal && (
+                                    <>
+                                        <Form.Label>Numéro facture: </Form.Label>
+                                        {getInvoiceNumber({
+                                            courseYear: DateTime.fromJSDate(courseYearWatched, { zone: 'UTC' })
+                                                .setLocale('fr-CH')
+                                                .toLocaleString({ year: 'numeric' }),
+                                            userCode: `${selectedInvoiceData?.user.cfNumber}`.padStart(2, '0'),
+                                            invoiceNumberForCurrentYear:
+                                                selectedInvoiceData?.invoiceNumberForCurrentYear,
+                                        })}
+                                    </>
+                                )}
                             </Col>
                             <Col>
                                 <Form.Group className="mb-3" controlId="dateInput">
@@ -191,6 +196,9 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                                                 // showYearPicker
                                                 // dateFormat="yyyy"
                                                 // TODO: controlled
+
+                                                selected={value}
+                                                onChange={onChange}
                                                 className="form-control"
                                             />
                                         )}
