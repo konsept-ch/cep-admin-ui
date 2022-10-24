@@ -16,6 +16,7 @@ import { organizationsApi } from './services/organizations'
 import { coursesApi } from './services/courses'
 import { sessionsApi } from './services/sessions'
 import { invoicesApi } from './services/invoices'
+import { manualInvoicesApi } from './services/manual-invoices'
 import { inscriptionsApi } from './services/inscriptions'
 import { attestationsApi } from './services/attestations'
 
@@ -36,6 +37,7 @@ export const store = configureStore({
         [coursesApi.reducerPath]: coursesApi.reducer,
         [sessionsApi.reducerPath]: sessionsApi.reducer,
         [invoicesApi.reducerPath]: invoicesApi.reducer,
+        [manualInvoicesApi.reducerPath]: manualInvoicesApi.reducer,
         [inscriptionsApi.reducerPath]: inscriptionsApi.reducer,
         [attestationsApi.reducerPath]: attestationsApi.reducer,
     },
@@ -47,6 +49,7 @@ export const store = configureStore({
             coursesApi.middleware,
             sessionsApi.middleware,
             invoicesApi.middleware,
+            manualInvoicesApi.middleware,
             inscriptionsApi.middleware,
             attestationsApi.middleware,
             rtkQueryErrorLogger,

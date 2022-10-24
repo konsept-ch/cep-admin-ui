@@ -23,7 +23,7 @@ export const organizationsApi = createApi({
 })
 
 export const {
-    useGetOrganizationsFlatWithAddressQuery,
+    useLazyGetOrganizationsFlatWithAddressQuery,
     useGetOrganizationsHierarchyQuery,
     useUpdateOrganizationMutation,
 } = organizationsApi
