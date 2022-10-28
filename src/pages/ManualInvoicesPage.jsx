@@ -11,10 +11,10 @@ import { useGetManualInvoicesQuery } from '../services/manual-invoices'
 import { gridContextMenu, downloadCsvFile } from '../utils'
 
 const deriveInvoiceNumber = ({ data }) =>
-    `${data?.courseYear}${`${data?.user.cfNumber}`.padStart(2, '0')}${`${data?.invoiceNumberForCurrentYear}`.padStart(
-        4,
+    `${`${data?.courseYear}`.slice(-2)}${`${data?.user.cfNumber}`.padStart(
+        2,
         '0'
-    )}`
+    )}${`${data?.invoiceNumberForCurrentYear}`.padStart(4, '0')}`
 
 const formatInvoiceDate = ({ value }) =>
     console.log(value) ||
@@ -26,7 +26,7 @@ export function ManualInvoicesPage() {
 
     const {
         data: invoicesData,
-        isFetchingInvoices,
+        isFetching: isFetchingInvoices,
         refetch: refetchInvoices,
     } = useGetManualInvoicesQuery(null, { refetchOnMountOrArgChange: true })
 
@@ -149,70 +149,82 @@ export function ManualInvoicesPage() {
                     {
                         name: 'Exporter pour Crésus',
                         action: () => {
-                            const csvClient = Papa.unparse({
-                                fields: [
-                                    'Numéro',
-                                    'Firme',
-                                    'Titre',
-                                    'Nom',
-                                    'Prénom',
-                                    'Adresse 1',
-                                    'Adresse 2',
-                                    'NPA',
-                                    'Localité',
-                                    'Pays',
-                                    'Tel Prof',
-                                    'E-mail',
-                                ],
-                                data: [
-                                    [
-                                        data.clientNumber,
-                                        data.organizationName,
-                                        'TODO: Titre',
-                                        'TODO: Nom',
-                                        'TODO: Prénom',
-                                        'TODO: Adresse 1',
-                                        'TODO: Adresse 2',
-                                        'TODO: NPA',
-                                        'TODO: Localité',
-                                        'TODO: Pays',
-                                        'TODO: Tel Prof',
-                                        data.customClientEmail,
+                            const csvClient = Papa.unparse(
+                                {
+                                    fields: [
+                                        '`Numéro',
+                                        '`Firme',
+                                        '`Titre',
+                                        '`Nom',
+                                        '`Prénom',
+                                        '`Adresse',
+                                        '`AdresseFacturation',
+                                        '`NPA',
+                                        '`Localité',
+                                        '`Pays',
+                                        '`TélProf',
+                                        '`TélEmail',
                                     ],
-                                ],
-                            })
+                                    data: [
+                                        [
+                                            data.clientNumber,
+                                            data.organizationName,
+                                            'TODO: Titre',
+                                            'TODO: Nom',
+                                            'TODO: Prénom',
+                                            'TODO: Adresse 1',
+                                            'TODO: Adresse 2',
+                                            'TODO: NPA',
+                                            'TODO: Localité',
+                                            'TODO: Pays',
+                                            'TODO: Tel Prof',
+                                            data.customClientEmail,
+                                        ],
+                                    ],
+                                },
+                                {
+                                    delimiter: ';',
+                                    quotes: true,
+                                }
+                            )
                             console.log(
                                 '🚀 ~ file: ManualInvoicesPage.jsx ~ line 185 ~ ManualInvoicesPage ~ csvClient',
                                 csvClient
                             )
-                            const csvFacture = Papa.unparse({
-                                fields: [
-                                    'Numéro',
-                                    'ACodeTVA',
-                                    'ADésignation',
-                                    'APrix',
-                                    'AQuantité',
-                                    'AUnité',
-                                    'Client',
-                                    'DateFacture',
-                                    'RefArticles',
-                                    'RefClient',
-                                ],
-                                data: [
-                                    [
-                                        deriveInvoiceNumber({ data }),
-                                        'TODO: ACodeTVA',
-                                        'TODO: ADésignation',
-                                        'TODO: APrix',
-                                        'TODO: AQuantité',
-                                        'TODO: AUnité',
-                                        data.customClientAddress,
-                                        formatInvoiceDate({ value: data.invoiceDate }),
-                                        1000,
-                                        data.clientNumber,
+                            const csvFacture = Papa.unparse(
+                                {
+                                    fields: [
+                                        '`Numéro',
+                                        '`ACodeTVA',
+                                        '`ADésignation',
+                                        '`APrix',
+                                        '`AQuantité',
+                                        '`AUnité',
+                                        '`Client',
+                                        '`DateFacture',
+                                        // '`RefArticles',
+                                        '`RefClient',
                                     ],
-                                ],
-                            })
+                                    data: [
+                                        [
+                                            deriveInvoiceNumber({ data }),
+                                            'TVA', // TVA ou EXONERE
+                                            'TODO: ADésignation', // avec \ pour les nouvelles lignes
+                                            '123.00', // avec | autour des ""
+                                            '42',
+                                            'jours',
+                                            data.customClientAddress,
+                                            formatInvoiceDate({ value: data.invoiceDate }),
+                                            // 1000,
+                                            data.clientNumber,
+                                        ],
+                                    ],
+                                },
+                                {
+                                    delimiter: ';',
+                                    quotes: true,
+                                }
+                            )
 
                             downloadCsvFile({ csv: csvClient, fileName: 'CSV Client pour Crésus' })
                             downloadCsvFile({ csv: csvFacture, fileName: 'CSV Facture pour Crésus' })
@@ -229,7 +241,7 @@ export function ManualInvoicesPage() {
             </Container>
             <ManualInvoiceModal
                 refetchInvoices={refetchInvoices}
-                selectedInvoiceData={invoicesData?.find(({ uuid }) => uuid === selectedInvoiceId)}
+                selectedInvoiceData={invoicesData?.find(({ id }) => id === selectedInvoiceId)}
                 closeModal={() => {
                     setIsManualInvoiceModalOpen(false)
                     setSelectedInvoiceId()
