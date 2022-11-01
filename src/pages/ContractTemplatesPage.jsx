@@ -12,7 +12,7 @@ import {
     useCreateContractMutation,
     useUpdateContractMutation,
     useDeleteContractMutation,
-} from '../services/contracts'
+} from '../services/contractTemplates'
 
 export function ContractTemplatesPage() {
     const {
@@ -46,13 +46,13 @@ export function ContractTemplatesPage() {
         const { data, error } = await createContract()
 
         if (error == null) {
-            toast.success("Modèle de contrat créée")
+            toast.success('Modèle de contrat créée')
 
             setSelectedTemplateUuid(data.uuid)
 
             reset({ title: data.title, description: data.description, file: {} })
         } else {
-            toast.error("Erreur de création du modèle de contrat", { autoClose: false })
+            toast.error('Erreur de création du modèle de contrat', { autoClose: false })
         }
 
         await refetch()
@@ -75,9 +75,9 @@ export function ContractTemplatesPage() {
         const { error } = await updateContract({ uuid: selectedTemplateUuid, formData })
 
         if (error == null) {
-            toast.success("Modèle de contrat modifiée")
+            toast.success('Modèle de contrat modifiée')
         } else {
-            toast.error("Erreur de modification du modèle de contrat", { autoClose: false })
+            toast.error('Erreur de modification du modèle de contrat', { autoClose: false })
         }
 
         reset({ title, description, file: {} })
@@ -89,7 +89,7 @@ export function ContractTemplatesPage() {
         const { error } = await deleteContract({ uuid: selectedTemplateUuid, shouldForceDelete })
 
         if (error.status === 400) {
-            toast.error("Ce modèle de contrat a déjà été utilisé et ne peut plus être supprimé.", {
+            toast.error('Ce modèle de contrat a déjà été utilisé et ne peut plus être supprimé.', {
                 autoClose: false,
             })
 
@@ -139,9 +139,9 @@ export function ContractTemplatesPage() {
         } else if (error) {
             console.error(error)
 
-            toast.error("Erreur de suppression du modèle de contrat", { autoClose: false })
+            toast.error('Erreur de suppression du modèle de contrat', { autoClose: false })
         } else {
-            toast.success("Modèle de contrat supprimée")
+            toast.success('Modèle de contrat supprimée')
 
             setSelectedTemplateUuid(null)
 

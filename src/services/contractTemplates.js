@@ -2,9 +2,9 @@ import { createApi } from '@reduxjs/toolkit/query/react'
 
 import { prepareBaseQuery } from './serviceUtils'
 
-export const contractsApi = createApi({
-    reducerPath: 'contractsApi',
-    baseQuery: prepareBaseQuery({ servicePath: 'contracts' }),
+export const contractTemplatesApi = createApi({
+    reducerPath: 'contractTemplatesApi',
+    baseQuery: prepareBaseQuery({ servicePath: 'contract-templates' }),
     endpoints: (builder) => ({
         getContracts: builder.query({
             query: () => '',
@@ -32,9 +32,5 @@ export const contractsApi = createApi({
     }),
 })
 
-export const {
-    useGetContractsQuery,
-    useCreateContractMutation,
-    useUpdateContractMutation,
-    useDeleteContractMutation,
-} = contractsApi
+export const { useGetContractsQuery, useCreateContractMutation, useUpdateContractMutation, useDeleteContractMutation } =
+    contractTemplatesApi
