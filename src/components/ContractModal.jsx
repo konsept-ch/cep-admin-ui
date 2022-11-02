@@ -8,7 +8,7 @@ import { useGetContractsQuery } from '../services/contractTemplates'
 
 import classNames from 'classnames'
 
-export const ContractModal = ({ closeModal, selectedCourse, isVisible }) => {
+export const ContractModal = ({ closeModal, selectedCourse, isVisible, createContract }) => {
     const {
         data: contractTemplates,
         isLoading,
@@ -78,7 +78,7 @@ export const ContractModal = ({ closeModal, selectedCourse, isVisible }) => {
                         <h6>Données du contrat</h6>
                         <p>
                             <strong>Formateur&middot;trice: </strong>
-                            {selectedCourse?.user}
+                            {selectedCourse?.user.name}
                         </p>
                         <div className="my-4 contract-sessions">
                             {selectedCourse?.sessions.map((session) => (
@@ -109,9 +109,7 @@ export const ContractModal = ({ closeModal, selectedCourse, isVisible }) => {
                     isSelectedTemplateDataNull={selectedContractTemplateUuid === null}
                     isLoading={isSagaLoading}
                     variant="primary"
-                    onClick={() => {
-                        console.log('CREER CONTRAT')
-                    }}
+                    onClick={() => createContract(selectedContractTemplateUuid)}
                 >
                     Créer contrat
                 </ConfirmInscriptionChangeButton>

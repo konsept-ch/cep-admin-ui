@@ -5,16 +5,18 @@ import { Button } from 'react-bootstrap'
 import { Grid, ContractModal, FloatCellEditor } from '../components'
 import { useGetEventsQuery, useUpdateEventMutation } from '../services/events'
 import { useUpdateSessionMutation } from '../services/sessions'
+import { useUpdateContractMutation } from '../services/contracts'
 import { gridContextMenu } from '../utils'
 
 export function ContractsPage() {
     const {
         data: eventsData,
-        isFetchingEvents,
+        isFetching: isFetchingEvents,
         refetch: refetchEvents,
     } = useGetEventsQuery(null, { refetchOnMountOrArgChange: true })
     const [updateEvent, { isLoading: isUpdatingEvent }] = useUpdateEventMutation()
     const [updateSession, { isLoading: isUpdatingSession }] = useUpdateSessionMutation()
+    const [updateContract, { isLoading: isUpdatingContract }] = useUpdateContractMutation()
 
     const [contractModalVisible, setContractModalVisible] = useState(false)
     const [selectedCourse, setSelectedCourse] = useState(null)
@@ -25,7 +27,11 @@ export function ContractsPage() {
         return {
             uuid: course.courseUuid,
             name: course.courseName,
-            user: course.userName,
+            contract: course.contract,
+            user: {
+                uuid: course.userUuid,
+                name: course.userName,
+            },
             sessions: node.childrenAfterGroup.map(({ key: name, childrenAfterGroup: events }) => {
                 return {
                     name,
@@ -168,6 +174,7 @@ export function ContractsPage() {
                 rowGroupPanelShow={false}
                 autoGroupColumnDef={{
                     headerName: 'Formateurs/Cours/Sessions',
+                    minWidth: 400,
                     cellRendererParams: {
                         suppressCount: true,
                     },
@@ -200,6 +207,13 @@ export function ContractsPage() {
                 }}
                 selectedCourse={selectedCourse}
                 isVisible={contractModalVisible}
+                createContract={(templateId) => {
+                    updateContract({
+                        userId: selectedCourse.user.uuid,
+                        courseId: selectedCourse.uuid,
+                        templateId,
+                    })
+                }}
             />
         </>
     )
