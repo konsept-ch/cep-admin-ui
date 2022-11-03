@@ -104,26 +104,17 @@ export function ContractsPage() {
                     ),
             },
             {
-                field: 'sessionFees',
+                field: 'eventFees',
                 headerName: 'Honoraires',
                 filter: 'agTextColumnFilter',
                 headerTooltip: 'les honoraires de la session',
-                editable: (params) => params.node.level === 2,
-                cellEditor: FloatCellEditor,
-                aggFunc: (params) => (params.values.length > 0 ? params.values[0].sessionFees : 0),
-                valueGetter: ({ node }) => (node.level === 2 ? node.childrenAfterGroup[0].data.sessionFees : ''),
-                valueSetter: async (params) => {
-                    if (params.node.level === 2) {
-                        const data = params.node.allLeafChildren[0].data
-                        await updateSession({
-                            sessionId: data.sessionUuid,
-                            fees: params.newValue,
-                            onlyUpdate: true,
-                        })
-                        await refetchEvents()
-                    }
-                    return true
+                valueGetter: ({ node, data }) => {
+                    if (node.level === 2) return data.eventFees
                 },
+                aggFunc: ({ rowNode }) =>
+                    rowNode.level === 2
+                        ? rowNode.allLeafChildren.reduce((sum, leaf) => sum + leaf.data.eventFees, 0)
+                        : '',
             },
             {
                 field: 'isFeesPaid',
@@ -135,7 +126,9 @@ export function ContractsPage() {
                 cellEditorParams: {
                     values: ['Payé', 'Non payé'],
                 },
-                valueGetter: ({ node, data }) => (node.level === 3 ? (data.isFeesPaid ? 'Payé' : 'Non payé') : ''),
+                valueGetter: ({ node, data }) => {
+                    if (node.level === 3) return data.isFeesPaid ? 'Payé' : 'Non payé'
+                },
                 valueSetter: async (params) => {
                     await updateEvent({ uuid: params.data.eventUuid, isFeesPaid: params.newValue[0] === 'P' })
                     await refetchEvents()
@@ -149,7 +142,9 @@ export function ContractsPage() {
                 headerTooltip: 'les honoraires de la séance',
                 editable: (params) => params.node.level === 3,
                 cellEditor: FloatCellEditor,
-                valueGetter: ({ data }) => (data ? data.eventFees : ''),
+                valueGetter: ({ data }) => {
+                    if (data) return data.eventFees
+                },
                 valueSetter: async (params) => {
                     await updateEvent({ uuid: params.data.eventUuid, fees: params.newValue })
                     await refetchEvents()
