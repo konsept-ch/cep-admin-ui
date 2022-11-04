@@ -1,11 +1,9 @@
 import { useState, useMemo } from 'react'
 import { Helmet } from 'react-helmet-async'
-import { Button } from 'react-bootstrap'
 
+import { MIDDLEWARE_URL } from '../constants/config'
 import { Grid, ContractModal, FloatCellEditor } from '../components'
 import { useGetEventsQuery, useUpdateEventMutation } from '../services/events'
-import { useUpdateSessionMutation } from '../services/sessions'
-import { useUpdateContractMutation } from '../services/contracts'
 import { gridContextMenu } from '../utils'
 
 export function ContractsPage() {
@@ -14,9 +12,7 @@ export function ContractsPage() {
         isFetching: isFetchingEvents,
         refetch: refetchEvents,
     } = useGetEventsQuery(null, { refetchOnMountOrArgChange: true })
-    const [updateEvent, { isLoading: isUpdatingEvent }] = useUpdateEventMutation()
-    const [updateSession, { isLoading: isUpdatingSession }] = useUpdateSessionMutation()
-    const [updateContract, { isLoading: isUpdatingContract }] = useUpdateContractMutation()
+    const [updateEvent] = useUpdateEventMutation()
 
     const [contractModalVisible, setContractModalVisible] = useState(false)
     const [selectedCourse, setSelectedCourse] = useState(null)
@@ -90,12 +86,17 @@ export function ContractsPage() {
                 headerName: 'Contrat',
                 filter: 'agTextColumnFilter',
                 headerTooltip: 'Le contrat lié au formateur/trice',
+                aggFunc: ({ rowNode }) => (rowNode.level === 1 ? rowNode.allLeafChildren[0].data.contract : ''),
                 cellRenderer: ({ node }) =>
                     node.level === 1 ? (
-                        node.childrenAfterGroup[0].childrenAfterGroup[0].data.contract ? (
-                            <Button variant="primary" onClick={() => ''} size="sm" className="edit-button-style">
-                                Contract
-                            </Button>
+                        node.allLeafChildren[0].data.contract ? (
+                            <a
+                                href={
+                                    new URL(`/contracts/${node.allLeafChildren[0].data.contract}`, MIDDLEWARE_URL).href
+                                }
+                            >
+                                Télécharger contrat
+                            </a>
                         ) : (
                             <span>Aucun contract</span>
                         )
@@ -131,7 +132,7 @@ export function ContractsPage() {
                 },
                 valueSetter: async (params) => {
                     await updateEvent({ uuid: params.data.eventUuid, isFeesPaid: params.newValue[0] === 'P' })
-                    await refetchEvents()
+                    refetchEvents()
                     return true
                 },
             },
@@ -147,7 +148,7 @@ export function ContractsPage() {
                 },
                 valueSetter: async (params) => {
                     await updateEvent({ uuid: params.data.eventUuid, fees: params.newValue })
-                    await refetchEvents()
+                    refetchEvents()
                     return true
                 },
             },
@@ -202,13 +203,7 @@ export function ContractsPage() {
                 }}
                 selectedCourse={selectedCourse}
                 isVisible={contractModalVisible}
-                createContract={(templateId) => {
-                    updateContract({
-                        userId: selectedCourse.user.uuid,
-                        courseId: selectedCourse.uuid,
-                        templateId,
-                    })
-                }}
+                refetchEvents={refetchEvents}
             />
         </>
     )

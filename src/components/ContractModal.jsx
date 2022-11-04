@@ -1,28 +1,24 @@
 import { useState } from 'react'
-import { useSelector } from 'react-redux'
 import { Button, ListGroup, Modal, Row } from 'react-bootstrap'
 import { ConfirmInscriptionChangeButton } from '.'
-
-import { loadingSelector } from '../reducers'
-import { useGetContractsQuery } from '../services/contractTemplates'
-
+import { toast } from 'react-toastify'
 import classNames from 'classnames'
 
-export const ContractModal = ({ closeModal, selectedCourse, isVisible, createContract }) => {
+import { useGetContractsQuery } from '../services/contractTemplates'
+import { useUpdateContractMutation } from '../services/contracts'
+
+export const ContractModal = ({ closeModal, selectedCourse, isVisible, refetchEvents }) => {
     const {
         data: contractTemplates,
         isLoading,
-        isFetching,
+        isFetching: isFetchingTemplates,
         isError,
-        refetch,
     } = useGetContractsQuery(null, {
         refetchOnMountOrArgChange: true,
     })
-
-    //console.log(contractTemplates)
+    const [updateContract, { isLoading: isUpdatingContract }] = useUpdateContractMutation()
 
     const [selectedContractTemplateUuid, setSelectedContractTemplateUuid] = useState(null)
-    const isSagaLoading = useSelector(loadingSelector)
 
     return (
         <Modal
@@ -106,10 +102,23 @@ export const ContractModal = ({ closeModal, selectedCourse, isVisible, createCon
             </Modal.Body>
             <Modal.Footer>
                 <ConfirmInscriptionChangeButton
-                    isSelectedTemplateDataNull={selectedContractTemplateUuid === null}
-                    isLoading={isSagaLoading}
+                    isSelectedTemplateDataNull={selectedContractTemplateUuid === null || isUpdatingContract}
+                    isLoading={isFetchingTemplates || isUpdatingContract}
                     variant="primary"
-                    onClick={() => createContract(selectedContractTemplateUuid)}
+                    onClick={async () => {
+                        try {
+                            await updateContract({
+                                userId: selectedCourse.user.uuid,
+                                courseId: selectedCourse.uuid,
+                                templateId: selectedContractTemplateUuid,
+                            })
+                            toast.success('Le contrat a été généré avec succès.')
+                            refetchEvents()
+                            closeModal()
+                        } catch (error) {
+                            toast.error(error, { autoClose: false })
+                        }
+                    }}
                 >
                     Créer contrat
                 </ConfirmInscriptionChangeButton>

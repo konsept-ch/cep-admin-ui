@@ -6,6 +6,18 @@ export const contractsApi = createApi({
     reducerPath: 'contractsApi',
     baseQuery: prepareBaseQuery({ servicePath: 'contracts' }),
     endpoints: (builder) => ({
+        downloadContract: builder.query({
+            async queryFn({ contractId }, _queryApi, _extraOptions, fetchWithBQ) {
+                await fetchWithBQ({
+                    url: contractId,
+                    method: 'get',
+                    responseHandler: () => {},
+                })
+                return {
+                    data: undefined,
+                }
+            },
+        }),
         updateContract: builder.mutation({
             query: ({ userId, courseId, templateId }) => ({
                 url: '',
@@ -20,4 +32,4 @@ export const contractsApi = createApi({
     }),
 })
 
-export const { useCreateContractMutation, useUpdateContractMutation } = contractsApi
+export const { useLazyDownloadContractQuery, useCreateContractMutation, useUpdateContractMutation } = contractsApi
