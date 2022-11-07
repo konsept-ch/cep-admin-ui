@@ -89,7 +89,7 @@ export function FormateursPage() {
                 field: 'contract',
                 headerName: 'Contrat',
                 filter: 'agTextColumnFilter',
-                headerTooltip: "Le modèle choisi pour le contrat",
+                headerTooltip: 'Le modèle choisi pour le contrat',
             },
         ],
         []
@@ -117,11 +117,7 @@ export function FormateursPage() {
             <Helmet>
                 <title>Formateurs - Former22</title>
             </Helmet>
-            <Grid
-                name="Formateurs"
-                columnDefs={columnDefs}
-                rowData={rowData}
-            />
+            <Grid name="Formateurs" columnDefs={columnDefs} rowData={rowData} />
         </>
     )
 }
