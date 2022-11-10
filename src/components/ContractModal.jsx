@@ -10,7 +10,7 @@ import { useUpdateContractMutation } from '../services/contracts'
 export const ContractModal = ({ closeModal, selectedCourse, isVisible, refetchEvents }) => {
     const {
         data: contractTemplates,
-        isLoading,
+        isLoading: isLoadingTemplates,
         isFetching: isFetchingTemplates,
         isError,
     } = useGetContractsQuery(null, {
@@ -35,7 +35,7 @@ export const ContractModal = ({ closeModal, selectedCourse, isVisible, refetchEv
                 <Row>
                     <div className="col">
                         <h6>Choix de modèle d'attestation</h6>
-                        {isLoading ? (
+                        {isLoadingTemplates ? (
                             'Chargement...'
                         ) : isError ? (
                             'Erreur de chargement des modèles.'
@@ -102,20 +102,21 @@ export const ContractModal = ({ closeModal, selectedCourse, isVisible, refetchEv
             </Modal.Body>
             <Modal.Footer>
                 <ConfirmInscriptionChangeButton
-                    isSelectedTemplateDataNull={selectedContractTemplateUuid === null || isUpdatingContract}
+                    isSelectedTemplateDataNull={selectedContractTemplateUuid === null}
                     isLoading={isFetchingTemplates || isUpdatingContract}
                     variant="primary"
                     onClick={async () => {
-                        try {
-                            await updateContract({
-                                userId: selectedCourse.user.uuid,
-                                courseId: selectedCourse.uuid,
-                                templateId: selectedContractTemplateUuid,
-                            })
-                            toast.success('Le contrat a été généré avec succès.')
+                        const { error } = await updateContract({
+                            userId: selectedCourse.user.uuid,
+                            courseId: selectedCourse.uuid,
+                            templateId: selectedContractTemplateUuid,
+                        })
+
+                        if (error == null) {
                             refetchEvents()
                             closeModal()
-                        } catch (error) {
+                            toast.success('Le contrat a été généré avec succès.')
+                        } else {
                             toast.error(error, { autoClose: false })
                         }
                     }}
