@@ -7,6 +7,10 @@ import { useGetEventsQuery, useUpdateEventMutation } from '../services/events'
 import { gridContextMenu } from '../utils'
 
 export function ContractsPage() {
+    const LEVEL_COURSE = 2
+    const LEVEL_SESSION = 3
+    const LEVEL_EVENT = 4
+
     const {
         data: eventsData,
         isFetching: isFetchingEvents,
@@ -44,6 +48,15 @@ export function ContractsPage() {
                 headerName: 'Formateur',
                 filter: 'agTextColumnFilter',
                 headerTooltip: 'Le nom du formateur',
+                rowGroup: true,
+                hide: true,
+                sort: 'asc',
+            },
+            {
+                field: 'year',
+                headerName: 'Année',
+                filter: 'agNumberColumnFilter',
+                headerTooltip: "L'année de la formation",
                 rowGroup: true,
                 hide: true,
             },
@@ -86,9 +99,10 @@ export function ContractsPage() {
                 headerName: 'Contrat',
                 filter: 'agTextColumnFilter',
                 headerTooltip: 'Le contrat lié au formateur/trice',
-                aggFunc: ({ rowNode }) => (rowNode.level === 1 ? rowNode.allLeafChildren[0].data.contract : ''),
+                aggFunc: ({ rowNode }) =>
+                    rowNode.level === LEVEL_COURSE ? rowNode.allLeafChildren[0].data.contract : '',
                 cellRenderer: ({ node }) =>
-                    node.level === 1 ? (
+                    node.level === LEVEL_COURSE ? (
                         node.allLeafChildren[0].data.contract ? (
                             <a
                                 href={
@@ -110,10 +124,10 @@ export function ContractsPage() {
                 filter: 'agTextColumnFilter',
                 headerTooltip: 'les honoraires de la session',
                 valueGetter: ({ node, data }) => {
-                    if (node.level === 2) return data.eventFees
+                    if (node.level === LEVEL_SESSION) return data.eventFees
                 },
                 aggFunc: ({ rowNode }) =>
-                    rowNode.level === 2
+                    rowNode.level === LEVEL_SESSION
                         ? rowNode.allLeafChildren.reduce((sum, leaf) => sum + leaf.data.eventFees, 0)
                         : '',
             },
@@ -122,13 +136,13 @@ export function ContractsPage() {
                 headerName: 'Honoraires payé',
                 filter: 'agTextColumnFilter',
                 headerTooltip: 'Les honoraires de la séance (payé ou non)',
-                editable: (params) => params.node.level === 3,
+                editable: (params) => params.node.level === LEVEL_EVENT,
                 cellEditor: 'agSelectCellEditor',
                 cellEditorParams: {
                     values: ['Payé', 'Non payé'],
                 },
                 valueGetter: ({ node, data }) => {
-                    if (node.level === 3) return data.isFeesPaid ? 'Payé' : 'Non payé'
+                    if (node.level === LEVEL_EVENT) return data.isFeesPaid ? 'Payé' : 'Non payé'
                 },
                 valueSetter: async (params) => {
                     await updateEvent({ uuid: params.data.eventUuid, isFeesPaid: params.newValue[0] === 'P' })
@@ -141,7 +155,7 @@ export function ContractsPage() {
                 headerName: 'Honoraires séance',
                 filter: 'agNumberColumnFilter',
                 headerTooltip: 'les honoraires de la séance',
-                editable: (params) => params.node.level === 3,
+                editable: (params) => params.node.level === LEVEL_EVENT,
                 cellEditor: FloatCellEditor,
                 valueGetter: ({ data }) => {
                     if (data) return data.eventFees
@@ -169,7 +183,7 @@ export function ContractsPage() {
                 groupDisplayType={'singleColumn'}
                 rowGroupPanelShow={false}
                 autoGroupColumnDef={{
-                    headerName: 'Formateurs/Cours/Sessions',
+                    headerName: 'Formateurs/Années/Cours/Sessions',
                     minWidth: 400,
                     cellRendererParams: {
                         suppressCount: true,
@@ -180,8 +194,13 @@ export function ContractsPage() {
                     aggFunc: false,
                 }}
                 enableGroupEdit={true}
+                sideBar={{
+                    toolPanels: ['filters'],
+                    defaultToolPanel: false,
+                    hiddenByDefault: false,
+                }}
                 getContextMenuItems={({ node }) => [
-                    ...(node.level === 1
+                    ...(node.level === LEVEL_COURSE
                         ? [
                               {
                                   name: 'Créer contrat',
