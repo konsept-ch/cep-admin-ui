@@ -36,6 +36,7 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
         reset,
         formState: { isDirty },
         watch,
+        setValue,
     } = useForm()
 
     const { fields, append, remove } = useFieldArray({ control, name: 'items' })
@@ -43,6 +44,27 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
     const courseYearWatched = watch('courseYear')
 
     const [fetchOrganizations, { data: organizations }] = useLazyGetOrganizationsFlatWithAddressQuery()
+
+    const clientWatched = watch('client')
+
+    useEffect(() => {
+        const {
+            addressTitle,
+            postalAddressStreet,
+            postalAddressCode,
+            postalAddressCountry,
+            postalAddressCountryCode,
+            postalAddressDepartment,
+            postalAddressDepartmentCode,
+            postalAddressLocality,
+        } = organizations?.find(({ uuid }) => uuid === clientWatched.uuid).former22_organization ?? {}
+        setValue(
+            'customClientAddress',
+            `${addressTitle ? `${addressTitle}\n` : ''}${postalAddressStreet}
+${postalAddressCode} ${postalAddressLocality}
+${postalAddressCountry}`
+        )
+    }, [clientWatched])
 
     const unitValues = useMemo(
         () => [
@@ -139,14 +161,12 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                                     <Controller
                                         name="client"
                                         control={control}
-                                        render={({ field }) => (
-                                            <Select {...field} options={clientOptions} isClearable />
-                                        )}
+                                        render={({ field }) => <Select {...field} options={clientOptions} />}
                                     />
                                 </Form.Group>
                                 <Form.Group className="mb-3" controlId="addressTextarea">
                                     <Form.Label>Adresse de facturation</Form.Label>
-                                    <Form.Control as="textarea" {...register('customClientAddress')} />
+                                    <Form.Control as="textarea" rows={3} {...register('customClientAddress')} />
                                 </Form.Group>
                                 <Form.Group className="mb-3" controlId="emailInput">
                                     <Form.Label>E-mail</Form.Label>
