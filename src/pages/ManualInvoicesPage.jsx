@@ -124,7 +124,7 @@ export function ManualInvoicesPage() {
             width: 170,
             valueGetter: ({ data }) =>
                 data?.items
-                    ?.map(({ amount }) => amount)
+                    ?.map(({ price }) => price)
                     .reduce((a, b) => Number(a) + Number(b), 0)
                     .toFixed(2),
         },

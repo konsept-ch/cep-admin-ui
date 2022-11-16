@@ -12,8 +12,7 @@ import { useCreateManualInvoiceMutation, useUpdateManualInvoiceMutation } from '
 import { useLazyGetOrganizationsFlatWithAddressQuery } from '../services/organizations'
 import { formatToFlatObject } from '../utils'
 
-const getYearFromJsDate = ({ date }) =>
-    DateTime.fromJSDate(date, { zone: 'UTC' }).setLocale('fr-CH').toLocaleString({ year: 'numeric' })
+const getYearFromJsDate = ({ date }) => DateTime.fromJSDate(date).setLocale('fr-CH').toLocaleString({ year: 'numeric' })
 
 const getInvoiceNumber = ({ courseYear, userCode, invoiceNumberForCurrentYear }) =>
     ` ${`${courseYear}`.slice(-2)}${`${userCode}`.padStart(2, 0)}${`${invoiceNumberForCurrentYear}`.padStart(4, 0)}`
@@ -396,7 +395,11 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
 
                                             mutationError = updateError
                                         } else {
-                                            console.info(formData)
+                                            console.error(
+                                                formData,
+                                                Number(getYearFromJsDate({ date: formData.courseYear })),
+                                                getYearFromJsDate({ date: formData.courseYear })
+                                            )
                                             const { error: updateError } = await createInvoice({
                                                 body: {
                                                     ...formData,
