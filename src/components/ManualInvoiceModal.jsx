@@ -342,7 +342,7 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                                         <Form.Group className="mb-3" controlId="vatInput">
                                             <Form.Label>TVA</Form.Label>
                                             <Controller
-                                                name="vatCode"
+                                                name={`items.${index}.vatCode`}
                                                 control={control}
                                                 render={({ field }) => <Select {...field} options={tvaOptions} />}
                                                 // TODO: exonere par defaut
