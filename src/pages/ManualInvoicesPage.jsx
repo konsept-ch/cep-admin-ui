@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState } from 'react'
 import { Container, Button } from 'react-bootstrap'
 import { Helmet } from 'react-helmet-async'
 import Papa from 'papaparse'
@@ -30,8 +30,8 @@ export function ManualInvoicesPage() {
         refetch: refetchInvoices,
     } = useGetManualInvoicesQuery(null, { refetchOnMountOrArgChange: true })
 
-    const openInvoiceEditModal = ({ uuid }) => {
-        setSelectedInvoiceId(uuid)
+    const openInvoiceEditModal = ({ id }) => {
+        setSelectedInvoiceId(id)
         setIsManualInvoiceModalOpen(true)
     }
 
@@ -48,7 +48,7 @@ export function ManualInvoicesPage() {
             cellRenderer: ({ data }) => (
                 <Button
                     variant="primary"
-                    onClick={() => openInvoiceEditModal({ uuid: data.uuid })}
+                    onClick={() => openInvoiceEditModal({ id: data.id })}
                     size="sm"
                     className="edit-button-style"
                 >
@@ -123,9 +123,9 @@ export function ManualInvoicesPage() {
             filter: 'agTextColumnFilter',
             width: 170,
             valueGetter: ({ data }) =>
-                data?.itemAmounts
-                    ?.split('\\')
-                    .reduce((a, b) => Number(a) + Number(b))
+                data?.items
+                    ?.map(({ amount }) => amount)
+                    .reduce((a, b) => Number(a) + Number(b), 0)
                     .toFixed(2),
         },
     ])

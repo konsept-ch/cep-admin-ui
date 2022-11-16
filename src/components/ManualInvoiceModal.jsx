@@ -1,10 +1,11 @@
 import { useEffect, useMemo } from 'react'
-import { Button, Spinner, Row, Form, Col, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { Button, Spinner, Row, Form, Col, OverlayTrigger, Tooltip, InputGroup } from 'react-bootstrap'
 import { useForm, useFieldArray, Controller } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import Select from 'react-select'
 import DatePicker from 'react-datepicker'
 import { DateTime } from 'luxon'
+import classNames from 'classnames'
 
 import { CommonModal } from '../components'
 import { useCreateManualInvoiceMutation, useUpdateManualInvoiceMutation } from '../services/manual-invoices'
@@ -34,8 +35,9 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
         register,
         handleSubmit,
         reset,
-        formState: { isDirty },
+        formState: { isDirty, errors, touchedFields, isSubmitted },
         watch,
+        setValue,
     } = useForm()
 
     const { fields, append, remove } = useFieldArray({ control, name: 'items' })
@@ -43,6 +45,29 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
     const courseYearWatched = watch('courseYear')
 
     const [fetchOrganizations, { data: organizations }] = useLazyGetOrganizationsFlatWithAddressQuery()
+
+    const clientWatched = watch('client')
+
+    useEffect(() => {
+        const {
+            addressTitle,
+            postalAddressStreet,
+            postalAddressCode,
+            postalAddressCountry,
+            // postalAddressCountryCode,
+            postalAddressDepartment,
+            // postalAddressDepartmentCode,
+            postalAddressLocality,
+        } = organizations?.find(({ uuid }) => uuid === clientWatched.uuid)?.former22_organization ?? {}
+        setValue(
+            'customClientAddress',
+            `${addressTitle ? `${addressTitle}\n` : ''}${
+                postalAddressDepartment ? `${postalAddressDepartment}\n` : ''
+            }${postalAddressStreet ? `${postalAddressStreet}\n` : ''}${
+                postalAddressCode ? `${postalAddressCode} ` : ''
+            }${postalAddressLocality ? `${postalAddressLocality}\n` : ''}${postalAddressCountry ?? ''}`
+        )
+    }, [clientWatched])
 
     const unitValues = useMemo(
         () => [
@@ -126,12 +151,14 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
     //     label: selectedInvoiceData?.courseYear,
     // }
 
+    console.log(touchedFields)
+
     return (
         <>
             <CommonModal
                 title={isEditModal ? 'Modifier la facture' : 'Ajouter une facture'}
                 content={
-                    <>
+                    <Form noValidate>
                         <Row>
                             <Col xs={{ offset: 6 }}>
                                 <Form.Group className="mb-3" controlId="clientSelect">
@@ -139,18 +166,38 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                                     <Controller
                                         name="client"
                                         control={control}
-                                        render={({ field }) => (
-                                            <Select {...field} options={clientOptions} isClearable />
-                                        )}
+                                        render={({ field }) => <Select {...field} options={clientOptions} />}
                                     />
                                 </Form.Group>
                                 <Form.Group className="mb-3" controlId="addressTextarea">
                                     <Form.Label>Adresse de facturation</Form.Label>
-                                    <Form.Control as="textarea" {...register('customClientAddress')} />
+                                    <Form.Control as="textarea" rows={5} {...register('customClientAddress')} />
                                 </Form.Group>
                                 <Form.Group className="mb-3" controlId="emailInput">
                                     <Form.Label>E-mail</Form.Label>
-                                    <Form.Control {...register('customClientEmail')} type="email" />
+                                    <InputGroup hasValidation>
+                                        <InputGroup.Text id="inputGroupPrepend">@</InputGroup.Text>
+                                        <Form.Control
+                                            aria-describedby="inputGroupPrepend"
+                                            {...register('customClientEmail', {
+                                                required: "L'e-mail est requis",
+                                                pattern: {
+                                                    value: /\S+@\S+\.\S+/,
+                                                    message: "L'e-mail n'est pas valide",
+                                                },
+                                            })}
+                                            type="email"
+                                            isInvalid={Boolean(errors.customClientEmail)}
+                                            isValid={
+                                                isSubmitted &&
+                                                touchedFields.customClientEmail &&
+                                                !Boolean(errors.customClientEmail)
+                                            }
+                                        />
+                                        <Form.Control.Feedback type="invalid" tooltip>
+                                            {errors.customClientEmail?.message}
+                                        </Form.Control.Feedback>
+                                    </InputGroup>
                                 </Form.Group>
                             </Col>
                         </Row>
@@ -158,19 +205,30 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                             <Col>
                                 <Form.Group className="mb-3" controlId="courseYearInput">
                                     <Form.Label>Année formation</Form.Label> {/* +-1 */}
-                                    <Controller
-                                        name="courseYear"
-                                        control={control}
-                                        render={({ field: { value, onChange } }) => (
-                                            <DatePicker
-                                                selected={value}
-                                                onChange={onChange}
-                                                showYearPicker
-                                                dateFormat="yyyy"
-                                                className="form-control"
-                                            />
-                                        )}
-                                    />
+                                    <InputGroup hasValidation>
+                                        <Controller
+                                            name="courseYear"
+                                            control={control}
+                                            render={({ field: { value, onChange } }) => (
+                                                <DatePicker
+                                                    selected={value}
+                                                    onChange={onChange}
+                                                    showYearPicker
+                                                    dateFormat="yyyy"
+                                                    className={classNames('form-control', {
+                                                        'is-invalid': Boolean(errors.courseYear),
+                                                    })}
+                                                />
+                                            )}
+                                            rules={{
+                                                required: "L'année de formation est requise",
+                                            }}
+                                        />
+                                        <Form.Control type="hidden" isInvalid={Boolean(errors.courseYear)} />
+                                        <Form.Control.Feedback type="invalid" tooltip>
+                                            {errors.courseYear?.message}
+                                        </Form.Control.Feedback>
+                                    </InputGroup>
                                 </Form.Group>
                                 {isEditModal && (
                                     <>
@@ -187,23 +245,34 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                             <Col>
                                 <Form.Group className="mb-3" controlId="dateInput">
                                     <Form.Label>Date</Form.Label>
-                                    <Controller
-                                        name="invoiceDate"
-                                        control={control}
-                                        render={({ field: { value, onChange } }) => (
-                                            <DatePicker
-                                                // selected={value}
-                                                // onChange={onChange}
-                                                // showYearPicker
-                                                // dateFormat="yyyy"
-                                                // TODO: controlled
+                                    <InputGroup hasValidation>
+                                        <Controller
+                                            name="invoiceDate"
+                                            control={control}
+                                            render={({ field: { value, onChange } }) => (
+                                                <DatePicker
+                                                    // selected={value}
+                                                    // onChange={onChange}
+                                                    // showYearPicker
+                                                    // dateFormat="yyyy"
+                                                    // TODO: controlled
 
-                                                selected={value}
-                                                onChange={onChange}
-                                                className="form-control"
-                                            />
-                                        )}
-                                    />
+                                                    selected={value}
+                                                    onChange={onChange}
+                                                    className={classNames('form-control', {
+                                                        'is-invalid': Boolean(errors.courseYear),
+                                                    })}
+                                                />
+                                            )}
+                                            rules={{
+                                                required: 'La date de facture est requise',
+                                            }}
+                                        />
+                                        <Form.Control type="hidden" isInvalid={Boolean(errors.invoiceDate)} />
+                                        <Form.Control.Feedback type="invalid" tooltip>
+                                            {errors.invoiceDate?.message}
+                                        </Form.Control.Feedback>
+                                    </InputGroup>
                                 </Form.Group>
                             </Col>
                         </Row>
@@ -297,7 +366,7 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                                 </Button>
                             </Col>
                         </Row>
-                    </>
+                    </Form>
                 }
                 footer={
                     <>
