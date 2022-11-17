@@ -9,11 +9,8 @@ import classNames from 'classnames'
 
 import { CommonModal } from '../components'
 import { useCreateManualInvoiceMutation, useUpdateManualInvoiceMutation } from '../services/manual-invoices'
-import { useLazyGetOrganizationsFlatWithAddressQuery } from '../services/organizations'
-import { formatToFlatObject } from '../utils'
 
-const getYearFromJsDate = ({ date }) =>
-    DateTime.fromJSDate(date, { zone: 'UTC' }).setLocale('fr-CH').toLocaleString({ year: 'numeric' })
+const getYearFromJsDate = ({ date }) => DateTime.fromJSDate(date).setLocale('fr-CH').toLocaleString({ year: 'numeric' })
 
 const getInvoiceNumber = ({ courseYear, userCode, invoiceNumberForCurrentYear }) =>
     ` ${`${courseYear}`.slice(-2)}${`${userCode}`.padStart(2, 0)}${`${invoiceNumberForCurrentYear}`.padStart(4, 0)}`
@@ -25,11 +22,23 @@ const tvaOptions = [
     { value: '7.7', label: 'TVA 7.7%' },
     { value: '8.1', label: 'TVA 8.1%' },
 ]
-const defaultTvaOption = tvaOptions[1]
+// const defaultTvaOption = tvaOptions[1]
 
-// const currentYear = new Date().getFullYear()
+const unitValues = [
+    { value: 'jours', label: 'jours' },
+    { value: 'heures', label: 'heures' },
+    { value: 'forfait', label: 'forfait' },
+    { value: 'frais effectifs', label: 'frais effectifs' },
+]
 
-export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, closeModal, isModalOpen }) {
+export function ManualInvoiceModal({
+    refetchInvoices,
+    selectedInvoiceData,
+    closeModal,
+    isModalOpen,
+    fetchOrganizations,
+    organizations,
+}) {
     const {
         control,
         register,
@@ -44,11 +53,11 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
 
     const courseYearWatched = watch('courseYear')
 
-    const [fetchOrganizations, { data: organizations }] = useLazyGetOrganizationsFlatWithAddressQuery()
-
     const clientWatched = watch('client')
 
     useEffect(() => {
+        const { email, former22_organization } = organizations?.find(({ uuid }) => uuid === clientWatched.uuid) ?? {}
+
         const {
             addressTitle,
             postalAddressStreet,
@@ -58,7 +67,8 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
             postalAddressDepartment,
             // postalAddressDepartmentCode,
             postalAddressLocality,
-        } = organizations?.find(({ uuid }) => uuid === clientWatched.uuid)?.former22_organization ?? {}
+        } = former22_organization ?? {}
+
         setValue(
             'customClientAddress',
             `${addressTitle ? `${addressTitle}\n` : ''}${
@@ -67,17 +77,9 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                 postalAddressCode ? `${postalAddressCode} ` : ''
             }${postalAddressLocality ? `${postalAddressLocality}\n` : ''}${postalAddressCountry ?? ''}`
         )
-    }, [clientWatched])
 
-    const unitValues = useMemo(
-        () => [
-            { value: 'jours', label: 'jours' },
-            { value: 'heures', label: 'heures' },
-            { value: 'forfait', label: 'forfait' },
-            { value: 'frais effectifs', label: 'frais effectifs' },
-        ],
-        []
-    )
+        setValue('customClientEmail', email)
+    }, [clientWatched])
 
     const clientOptions = useMemo(
         () =>
@@ -98,24 +100,16 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                 customClientAddress,
                 invoiceDate,
                 courseYear,
-                itemDesignations,
-                itemUnits,
-                itemAmounts,
-                itemPrices,
-                itemVatCodes,
+                items,
             } = selectedInvoiceData
 
             reset({
                 client: clientOptions.find(({ uuid }) => uuid === organizationUuid),
                 customClientAddress,
+                customClientEmail,
                 courseYear: new Date(String(courseYear)),
                 invoiceDate: new Date(String(invoiceDate)),
-                items: [defaultEmptyItem],
-                // items: items.map(({ unit, ...restProps }) => ({
-                //     ...restProps,
-                //     unit: unitValues.find(({ label }) => label === unit),
-                // })),
-                customClientEmail,
+                items,
             })
         } else {
             reset({
@@ -124,7 +118,6 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                 customClientEmail: '',
                 courseYear: '',
                 invoiceDate: '',
-                vatCode: defaultTvaOption,
                 items: [defaultEmptyItem],
             })
         }
@@ -145,13 +138,6 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
     }
 
     const isEditModal = selectedInvoiceData !== undefined
-
-    // const invoiceCourseYear = {
-    //     value: selectedInvoiceData?.courseYear,
-    //     label: selectedInvoiceData?.courseYear,
-    // }
-
-    console.log(touchedFields)
 
     return (
         <>
@@ -251,12 +237,6 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                                             control={control}
                                             render={({ field: { value, onChange } }) => (
                                                 <DatePicker
-                                                    // selected={value}
-                                                    // onChange={onChange}
-                                                    // showYearPicker
-                                                    // dateFormat="yyyy"
-                                                    // TODO: controlled
-
                                                     selected={value}
                                                     onChange={onChange}
                                                     className={classNames('form-control', {
@@ -343,7 +323,7 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                                         <Form.Group className="mb-3" controlId="vatInput">
                                             <Form.Label>TVA</Form.Label>
                                             <Controller
-                                                name="vatCode"
+                                                name={`items.${index}.vatCode`}
                                                 control={control}
                                                 render={({ field }) => <Select {...field} options={tvaOptions} />}
                                                 // TODO: exonere par defaut
@@ -385,28 +365,24 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                                     onClick={handleSubmit(async (formData) => {
                                         let mutationError
 
+                                        const requestBody = {
+                                            ...formData,
+                                            courseYear: Number(getYearFromJsDate({ date: formData.courseYear })),
+                                        }
+
                                         if (isEditModal) {
                                             const { error: updateError } = await updateInvoice({
-                                                id: isEditModal ? selectedInvoiceData.id : null,
-                                                body: {
-                                                    ...formatToFlatObject(formData),
-                                                    items: formData.items.map(formatToFlatObject),
-                                                },
+                                                id: selectedInvoiceData.id,
+                                                body: requestBody,
                                             })
 
                                             mutationError = updateError
                                         } else {
-                                            console.info(formData)
-                                            const { error: updateError } = await createInvoice({
-                                                body: {
-                                                    ...formData,
-                                                    courseYear: Number(
-                                                        getYearFromJsDate({ date: formData.courseYear })
-                                                    ),
-                                                },
+                                            const { error: createError } = await createInvoice({
+                                                body: requestBody,
                                             })
 
-                                            mutationError = updateError
+                                            mutationError = createError
                                         }
 
                                         if (typeof mutationError === 'undefined') {
