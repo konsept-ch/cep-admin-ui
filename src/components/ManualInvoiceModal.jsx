@@ -24,9 +24,14 @@ const tvaOptions = [
     { value: '7.7', label: 'TVA 7.7%' },
     { value: '8.1', label: 'TVA 8.1%' },
 ]
-const defaultTvaOption = tvaOptions[1]
+// const defaultTvaOption = tvaOptions[1]
 
-// const currentYear = new Date().getFullYear()
+const unitValues = [
+    { value: 'jours', label: 'jours' },
+    { value: 'heures', label: 'heures' },
+    { value: 'forfait', label: 'forfait' },
+    { value: 'frais effectifs', label: 'frais effectifs' },
+]
 
 export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, closeModal, isModalOpen }) {
     const {
@@ -68,16 +73,6 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
         )
     }, [clientWatched])
 
-    const unitValues = useMemo(
-        () => [
-            { value: 'jours', label: 'jours' },
-            { value: 'heures', label: 'heures' },
-            { value: 'forfait', label: 'forfait' },
-            { value: 'frais effectifs', label: 'frais effectifs' },
-        ],
-        []
-    )
-
     const clientOptions = useMemo(
         () =>
             organizations?.map(({ uuid, code, name }) => ({
@@ -97,24 +92,16 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                 customClientAddress,
                 invoiceDate,
                 courseYear,
-                itemDesignations,
-                itemUnits,
-                itemAmounts,
-                itemPrices,
-                itemVatCodes,
+                items,
             } = selectedInvoiceData
 
             reset({
                 client: clientOptions.find(({ uuid }) => uuid === organizationUuid),
                 customClientAddress,
+                customClientEmail,
                 courseYear: new Date(String(courseYear)),
                 invoiceDate: new Date(String(invoiceDate)),
-                items: [defaultEmptyItem],
-                // items: items.map(({ unit, ...restProps }) => ({
-                //     ...restProps,
-                //     unit: unitValues.find(({ label }) => label === unit),
-                // })),
-                customClientEmail,
+                items,
             })
         } else {
             reset({
@@ -123,7 +110,6 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                 customClientEmail: '',
                 courseYear: '',
                 invoiceDate: '',
-                vatCode: defaultTvaOption,
                 items: [defaultEmptyItem],
             })
         }
@@ -144,13 +130,6 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
     }
 
     const isEditModal = selectedInvoiceData !== undefined
-
-    // const invoiceCourseYear = {
-    //     value: selectedInvoiceData?.courseYear,
-    //     label: selectedInvoiceData?.courseYear,
-    // }
-
-    console.log(touchedFields)
 
     return (
         <>
@@ -250,12 +229,6 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                                             control={control}
                                             render={({ field: { value, onChange } }) => (
                                                 <DatePicker
-                                                    // selected={value}
-                                                    // onChange={onChange}
-                                                    // showYearPicker
-                                                    // dateFormat="yyyy"
-                                                    // TODO: controlled
-
                                                     selected={value}
                                                     onChange={onChange}
                                                     className={classNames('form-control', {
@@ -384,32 +357,24 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                                     onClick={handleSubmit(async (formData) => {
                                         let mutationError
 
+                                        const requestBody = {
+                                            ...formData,
+                                            courseYear: Number(getYearFromJsDate({ date: formData.courseYear })),
+                                        }
+
                                         if (isEditModal) {
                                             const { error: updateError } = await updateInvoice({
-                                                id: isEditModal ? selectedInvoiceData.id : null,
-                                                body: {
-                                                    ...formatToFlatObject(formData),
-                                                    items: formData.items.map(formatToFlatObject),
-                                                },
+                                                id: selectedInvoiceData.id,
+                                                body: requestBody,
                                             })
 
                                             mutationError = updateError
                                         } else {
-                                            console.error(
-                                                formData,
-                                                Number(getYearFromJsDate({ date: formData.courseYear })),
-                                                getYearFromJsDate({ date: formData.courseYear })
-                                            )
-                                            const { error: updateError } = await createInvoice({
-                                                body: {
-                                                    ...formData,
-                                                    courseYear: Number(
-                                                        getYearFromJsDate({ date: formData.courseYear })
-                                                    ),
-                                                },
+                                            const { error: createError } = await createInvoice({
+                                                body: requestBody,
                                             })
 
-                                            mutationError = updateError
+                                            mutationError = createError
                                         }
 
                                         if (typeof mutationError === 'undefined') {
