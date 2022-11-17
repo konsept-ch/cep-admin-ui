@@ -8,6 +8,7 @@ import { faPen } from '@fortawesome/pro-light-svg-icons'
 
 import { Grid, ManualInvoiceModal } from '../components'
 import { useGetManualInvoicesQuery } from '../services/manual-invoices'
+import { useLazyGetOrganizationsFlatWithAddressQuery } from '../services/organizations'
 import { gridContextMenu, downloadCsvFile } from '../utils'
 
 const deriveInvoiceNumber = ({ data }) =>
@@ -17,12 +18,13 @@ const deriveInvoiceNumber = ({ data }) =>
     )}${`${data?.invoiceNumberForCurrentYear}`.padStart(4, '0')}`
 
 const formatInvoiceDate = ({ value }) =>
-    console.log(value) ||
     DateTime.fromISO(value, { zone: 'UTC' }).setLocale('fr-CH').toLocaleString(DateTime.DATE_SHORT)
 
 export function ManualInvoicesPage() {
     const [isManualInvoiceModalOpen, setIsManualInvoiceModalOpen] = useState(false)
     const [selectedInvoiceId, setSelectedInvoiceId] = useState()
+
+    const [fetchOrganizations, { data: organizations }] = useLazyGetOrganizationsFlatWithAddressQuery()
 
     const {
         data: invoicesData,
@@ -149,6 +151,21 @@ export function ManualInvoicesPage() {
                     {
                         name: 'Exporter pour Crésus',
                         action: () => {
+                            const { former22_organization } =
+                                organizations?.find(({ uuid }) => uuid === data.organizationUuid) ?? {}
+
+                            const {
+                                addressTitle,
+                                postalAddressStreet,
+                                postalAddressCode,
+                                postalAddressLocality,
+                                postalAddressCountry,
+                                // postalAddressCountryCode,
+                                postalAddressDepartment,
+                                // postalAddressDepartmentCode,
+                                phone,
+                            } = former22_organization ?? {}
+
                             const csvClient = Papa.unparse(
                                 {
                                     fields: [
@@ -169,15 +186,15 @@ export function ManualInvoicesPage() {
                                         [
                                             data.clientNumber,
                                             data.organizationName,
-                                            'TODO: Titre',
-                                            'TODO: Nom',
+                                            addressTitle,
+                                            postalAddressDepartment,
                                             'TODO: Prénom',
-                                            'TODO: Adresse 1',
+                                            postalAddressStreet,
                                             'TODO: Adresse 2',
-                                            'TODO: NPA',
-                                            'TODO: Localité',
-                                            'TODO: Pays',
-                                            'TODO: Tel Prof',
+                                            postalAddressCode,
+                                            postalAddressLocality,
+                                            postalAddressCountry,
+                                            phone,
                                             data.customClientEmail,
                                         ],
                                     ],
@@ -187,10 +204,7 @@ export function ManualInvoicesPage() {
                                     quotes: true,
                                 }
                             )
-                            console.log(
-                                '🚀 ~ file: ManualInvoicesPage.jsx ~ line 185 ~ ManualInvoicesPage ~ csvClient',
-                                csvClient
-                            )
+
                             const csvFacture = Papa.unparse(
                                 {
                                     fields: [
@@ -208,12 +222,14 @@ export function ManualInvoicesPage() {
                                     data: [
                                         [
                                             deriveInvoiceNumber({ data }),
-                                            'TVA', // TVA ou EXONERE
-                                            'TODO: ADésignation', // avec \ pour les nouvelles lignes
-                                            '123.00', // avec | autour des ""
-                                            '42',
-                                            'jours',
-                                            data.customClientAddress,
+                                            data.items.map(({ vatCode }) => vatCode.value).join('|'), // TVA ou EXONERE vatCode
+                                            data.items
+                                                .map(({ designation }) => designation.replaceAll('\n', '\\'))
+                                                .join('|'), // avec \ pour les nouvelles lignes designation
+                                            data.items.map(({ price }) => price).join('|'), // avec | autour des ""
+                                            data.items.map(({ amount }) => amount).join('|'), // amount
+                                            data.items.map(({ unit }) => unit.value).join('|'), // unit
+                                            data.customClientAddress.replaceAll('\n', '\\'),
                                             formatInvoiceDate({ value: data.invoiceDate }),
                                             // 1000,
                                             data.clientNumber,
@@ -247,6 +263,8 @@ export function ManualInvoicesPage() {
                     setSelectedInvoiceId()
                 }}
                 isModalOpen={isManualInvoiceModalOpen}
+                fetchOrganizations={fetchOrganizations}
+                organizations={organizations}
             />
         </>
     )

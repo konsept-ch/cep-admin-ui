@@ -9,8 +9,6 @@ import classNames from 'classnames'
 
 import { CommonModal } from '../components'
 import { useCreateManualInvoiceMutation, useUpdateManualInvoiceMutation } from '../services/manual-invoices'
-import { useLazyGetOrganizationsFlatWithAddressQuery } from '../services/organizations'
-import { formatToFlatObject } from '../utils'
 
 const getYearFromJsDate = ({ date }) => DateTime.fromJSDate(date).setLocale('fr-CH').toLocaleString({ year: 'numeric' })
 
@@ -33,7 +31,14 @@ const unitValues = [
     { value: 'frais effectifs', label: 'frais effectifs' },
 ]
 
-export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, closeModal, isModalOpen }) {
+export function ManualInvoiceModal({
+    refetchInvoices,
+    selectedInvoiceData,
+    closeModal,
+    isModalOpen,
+    fetchOrganizations,
+    organizations,
+}) {
     const {
         control,
         register,
@@ -48,11 +53,11 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
 
     const courseYearWatched = watch('courseYear')
 
-    const [fetchOrganizations, { data: organizations }] = useLazyGetOrganizationsFlatWithAddressQuery()
-
     const clientWatched = watch('client')
 
     useEffect(() => {
+        const { email, former22_organization } = organizations?.find(({ uuid }) => uuid === clientWatched.uuid) ?? {}
+
         const {
             addressTitle,
             postalAddressStreet,
@@ -62,7 +67,8 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
             postalAddressDepartment,
             // postalAddressDepartmentCode,
             postalAddressLocality,
-        } = organizations?.find(({ uuid }) => uuid === clientWatched.uuid)?.former22_organization ?? {}
+        } = former22_organization ?? {}
+
         setValue(
             'customClientAddress',
             `${addressTitle ? `${addressTitle}\n` : ''}${
@@ -71,6 +77,8 @@ export function ManualInvoiceModal({ refetchInvoices, selectedInvoiceData, close
                 postalAddressCode ? `${postalAddressCode} ` : ''
             }${postalAddressLocality ? `${postalAddressLocality}\n` : ''}${postalAddressCountry ?? ''}`
         )
+
+        setValue('customClientEmail', email)
     }, [clientWatched])
 
     const clientOptions = useMemo(
