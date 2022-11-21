@@ -56,29 +56,33 @@ export function ManualInvoiceModal({
     const clientWatched = watch('client')
 
     useEffect(() => {
-        const { email, former22_organization } = organizations?.find(({ uuid }) => uuid === clientWatched.uuid) ?? {}
+        // don't reset if we just opened edit mode
+        if (isDirty) {
+            const { email, former22_organization } =
+                organizations?.find(({ uuid }) => uuid === clientWatched.uuid) ?? {}
 
-        const {
-            addressTitle,
-            postalAddressStreet,
-            postalAddressCode,
-            postalAddressCountry,
-            // postalAddressCountryCode,
-            postalAddressDepartment,
-            // postalAddressDepartmentCode,
-            postalAddressLocality,
-        } = former22_organization ?? {}
+            const {
+                addressTitle,
+                postalAddressStreet,
+                postalAddressCode,
+                postalAddressCountry,
+                // postalAddressCountryCode,
+                postalAddressDepartment,
+                // postalAddressDepartmentCode,
+                postalAddressLocality,
+            } = former22_organization ?? {}
 
-        setValue(
-            'customClientAddress',
-            `${addressTitle ? `${addressTitle}\n` : ''}${
-                postalAddressDepartment ? `${postalAddressDepartment}\n` : ''
-            }${postalAddressStreet ? `${postalAddressStreet}\n` : ''}${
-                postalAddressCode ? `${postalAddressCode} ` : ''
-            }${postalAddressLocality ? `${postalAddressLocality}\n` : ''}${postalAddressCountry ?? ''}`
-        )
+            setValue(
+                'customClientAddress',
+                `${addressTitle ? `${addressTitle}\n` : ''}${
+                    postalAddressDepartment ? `${postalAddressDepartment}\n` : ''
+                }${postalAddressStreet ? `${postalAddressStreet}\n` : ''}${
+                    postalAddressCode ? `${postalAddressCode} ` : ''
+                }${postalAddressLocality ? `${postalAddressLocality}\n` : ''}${postalAddressCountry ?? ''}`
+            )
 
-        setValue('customClientEmail', email)
+            setValue('customClientEmail', email)
+        }
     }, [clientWatched])
 
     const clientOptions = useMemo(
