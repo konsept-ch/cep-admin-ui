@@ -5,6 +5,7 @@ import { toast } from 'react-toastify'
 import Select from 'react-select'
 import DatePicker from 'react-datepicker'
 import { DateTime } from 'luxon'
+// import { addYears, parseISO } from 'date-fns'
 import classNames from 'classnames'
 
 import { CommonModal } from '../components'
@@ -205,6 +206,7 @@ export function ManualInvoiceModal({
                                                     onChange={onChange}
                                                     showYearPicker
                                                     dateFormat="yyyy"
+                                                    // includeDates={[new Date(), addYears(new Date(), 1)]}
                                                     className={classNames('form-control', {
                                                         'is-invalid': Boolean(errors.courseYear),
                                                     })}
