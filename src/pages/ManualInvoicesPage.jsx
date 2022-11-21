@@ -222,7 +222,7 @@ export function ManualInvoicesPage() {
                                     data: [
                                         [
                                             deriveInvoiceNumber({ data }),
-                                            data.items.map(({ vatCode }) => vatCode.value).join('|'), // TVA ou EXONERE vatCode
+                                            data.items.map(({ vatCode }) => vatCode?.value).join('|'), // TVA ou EXONERE vatCode
                                             data.items
                                                 .map(({ designation }) => designation.replaceAll('\n', '\\'))
                                                 .join('|'), // avec \ pour les nouvelles lignes designation
