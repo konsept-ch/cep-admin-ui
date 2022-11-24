@@ -130,6 +130,24 @@ export function ManualInvoicesPage() {
                     .reduce((a, b) => Number(a) + Number(b), 0)
                     .toFixed(2),
         },
+        {
+            field: 'itemAmountsWithVat',
+            headerName: 'Total avec TVA',
+            tooltipField: 'itemAmountsWithVat',
+            headerTooltip: 'La somme des montants des articles, avec TVA',
+            filter: 'agTextColumnFilter',
+            width: 170,
+            valueGetter: ({ data }) =>
+                data?.items
+                    ?.map(
+                        ({ price, vatCode, amount }) =>
+                            Number(amount) *
+                            (vatCode?.value === 'TVA' ? Number(price) + (Number(price) * 7.7) / 100 : Number(price))
+                    )
+                    // .forEach(console.log)
+                    .reduce((a, b) => Number(a) + Number(b), 0)
+                    .toFixed(2),
+        },
     ])
 
     return (
@@ -186,11 +204,11 @@ export function ManualInvoicesPage() {
                                         [
                                             data.clientNumber,
                                             data.organizationName,
-                                            addressTitle,
-                                            postalAddressDepartment,
-                                            'TODO: Prénom',
+                                            '', // only if private
+                                            '', // only if private
+                                            '', // only if private
                                             postalAddressStreet,
-                                            'TODO: Adresse 2',
+                                            data.customClientAddress.replaceAll('\n', '\\'),
                                             postalAddressCode,
                                             postalAddressLocality,
                                             postalAddressCountry,
@@ -222,13 +240,13 @@ export function ManualInvoicesPage() {
                                     data: [
                                         [
                                             deriveInvoiceNumber({ data }),
-                                            data.items.map(({ vatCode }) => vatCode?.value).join('|'), // TVA ou EXONERE vatCode
+                                            data.items.map(({ vatCode }) => vatCode?.value).join('/'), // TVA ou EXONERE vatCode
                                             data.items
                                                 .map(({ designation }) => designation.replaceAll('\n', '\\'))
-                                                .join('|'), // avec \ pour les nouvelles lignes designation
-                                            data.items.map(({ price }) => price).join('|'), // avec | autour des ""
-                                            data.items.map(({ amount }) => amount).join('|'), // amount
-                                            data.items.map(({ unit }) => unit.value).join('|'), // unit
+                                                .join('/'), // avec \ pour les nouvelles lignes designation
+                                            data.items.map(({ price }) => price).join('/'), // avec | autour des ""
+                                            data.items.map(({ amount }) => amount).join('/'), // amount
+                                            data.items.map(({ unit }) => unit.value).join('/'), // unit
                                             data.customClientAddress.replaceAll('\n', '\\'),
                                             formatInvoiceDate({ value: data.invoiceDate }),
                                             // 1000,

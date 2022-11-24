@@ -19,9 +19,9 @@ const getInvoiceNumber = ({ courseYear, userCode, invoiceNumberForCurrentYear })
 const defaultEmptyItem = { designation: '', unit: {}, amount: 0, price: 0 }
 
 const tvaOptions = [
-    { value: '0', label: 'EXONERE' },
-    { value: '7.7', label: 'TVA 7.7%' },
-    { value: '8.1', label: 'TVA 8.1%' },
+    { value: 'EXONERE', label: 'EXONERE' },
+    { value: 'TVA', label: 'TVA 7.7%' },
+    { value: 'TAUX1', label: 'TVA incluse' },
 ]
 // const defaultTvaOption = tvaOptions[1]
 
@@ -59,7 +59,7 @@ export function ManualInvoiceModal({
     useEffect(() => {
         // don't reset if we just opened edit mode
         if (isDirty) {
-            const { email, former22_organization } =
+            const { name, email, former22_organization } =
                 organizations?.find(({ uuid }) => uuid === clientWatched.uuid) ?? {}
 
             const {
@@ -75,7 +75,7 @@ export function ManualInvoiceModal({
 
             setValue(
                 'customClientAddress',
-                `${addressTitle ? `${addressTitle}\n` : ''}${
+                `${name}\n${addressTitle ? `${addressTitle}\n` : ''}${
                     postalAddressDepartment ? `${postalAddressDepartment}\n` : ''
                 }${postalAddressStreet ? `${postalAddressStreet}\n` : ''}${
                     postalAddressCode ? `${postalAddressCode} ` : ''
