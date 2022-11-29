@@ -39,6 +39,8 @@ export function ManualInvoiceModal({
     isModalOpen,
     fetchOrganizations,
     organizations,
+    fetchUsers,
+    users,
 }) {
     const {
         control,
@@ -84,6 +86,10 @@ export function ManualInvoiceModal({
 
             setValue('customClientEmail', email)
         }
+
+        if (clientWatched?.value === 'DEFAUT-PRIVÉ') {
+            fetchUsers()
+        }
     }, [clientWatched])
 
     const clientOptions = useMemo(
@@ -94,6 +100,15 @@ export function ManualInvoiceModal({
                 uuid,
             })),
         [organizations]
+    )
+
+    const userOptions = useMemo(
+        () =>
+            users?.map(({ id, email, firstName, lastName }) => ({
+                value: id,
+                label: `${firstName} ${lastName} <${email}>`,
+            })),
+        [users]
     )
 
     useEffect(() => {
@@ -158,6 +173,14 @@ export function ManualInvoiceModal({
                                         name="client"
                                         control={control}
                                         render={({ field }) => <Select {...field} options={clientOptions} />}
+                                    />
+                                </Form.Group>
+                                <Form.Group className="mb-3" controlId="userSelect">
+                                    <Form.Label>Utilisateur</Form.Label>
+                                    <Controller
+                                        name="selectedUser"
+                                        control={control}
+                                        render={({ field }) => <Select {...field} options={userOptions} />}
                                     />
                                 </Form.Group>
                                 <Form.Group className="mb-3" controlId="addressTextarea">

@@ -9,6 +9,7 @@ import { faPen } from '@fortawesome/pro-light-svg-icons'
 import { Grid, ManualInvoiceModal } from '../components'
 import { useGetManualInvoicesQuery } from '../services/manual-invoices'
 import { useLazyGetOrganizationsFlatWithAddressQuery } from '../services/organizations'
+import { useLazyGetUsersQuery } from '../services/users'
 import { gridContextMenu, downloadCsvFile } from '../utils'
 
 const deriveInvoiceNumber = ({ data }) =>
@@ -25,6 +26,7 @@ export function ManualInvoicesPage() {
     const [selectedInvoiceId, setSelectedInvoiceId] = useState()
 
     const [fetchOrganizations, { data: organizations }] = useLazyGetOrganizationsFlatWithAddressQuery()
+    const [fetchUsers, { data: users }] = useLazyGetUsersQuery()
 
     const {
         data: invoicesData,
@@ -283,6 +285,8 @@ export function ManualInvoicesPage() {
                 isModalOpen={isManualInvoiceModalOpen}
                 fetchOrganizations={fetchOrganizations}
                 organizations={organizations}
+                fetchUsers={fetchUsers}
+                users={users}
             />
         </>
     )

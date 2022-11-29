@@ -22,4 +22,4 @@ export const usersApi = createApi({
     }),
 })
 
-export const { useGetUsersQuery, useUpdateUserMutation, useGetAdminsQuery } = usersApi
+export const { useGetUsersQuery, useLazyGetUsersQuery, useUpdateUserMutation, useGetAdminsQuery } = usersApi
