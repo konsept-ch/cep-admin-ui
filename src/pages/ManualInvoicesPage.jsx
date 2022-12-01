@@ -209,7 +209,7 @@ export function ManualInvoicesPage() {
                                             '', // only if private
                                             '', // only if private
                                             '', // only if private
-                                            postalAddressStreet,
+                                            data.customClientAddress.replaceAll('\n', '\\'), // postalAddressStreet,
                                             data.customClientAddress.replaceAll('\n', '\\'),
                                             postalAddressCode,
                                             postalAddressLocality,
