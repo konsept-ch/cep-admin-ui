@@ -44,6 +44,14 @@ export function ContractsPage() {
     const columnDefs = useMemo(
         () => [
             {
+                field: 'year',
+                headerName: 'Année',
+                filter: 'agNumberColumnFilter',
+                headerTooltip: "L'année de la formation",
+                rowGroup: true,
+                hide: true,
+            },
+            {
                 field: 'userName',
                 headerName: 'Formateur',
                 filter: 'agTextColumnFilter',
@@ -51,14 +59,6 @@ export function ContractsPage() {
                 rowGroup: true,
                 hide: true,
                 sort: 'asc',
-            },
-            {
-                field: 'year',
-                headerName: 'Année',
-                filter: 'agNumberColumnFilter',
-                headerTooltip: "L'année de la formation",
-                rowGroup: true,
-                hide: true,
             },
             {
                 field: 'courseName',
@@ -183,7 +183,7 @@ export function ContractsPage() {
                 groupDisplayType={'singleColumn'}
                 rowGroupPanelShow={false}
                 autoGroupColumnDef={{
-                    headerName: 'Formateurs/Années/Cours/Sessions',
+                    headerName: 'Années/Formateurs/Cours/Sessions',
                     minWidth: 400,
                     cellRendererParams: {
                         suppressCount: true,
