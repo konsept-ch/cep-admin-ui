@@ -9,6 +9,7 @@ import { faPen } from '@fortawesome/pro-light-svg-icons'
 import { Grid, ManualInvoiceModal } from '../components'
 import { useGetManualInvoicesQuery } from '../services/manual-invoices'
 import { useLazyGetOrganizationsFlatWithAddressQuery } from '../services/organizations'
+import { useLazyGetUsersQuery } from '../services/users'
 import { gridContextMenu, downloadCsvFile } from '../utils'
 
 const deriveInvoiceNumber = ({ data }) =>
@@ -25,6 +26,7 @@ export function ManualInvoicesPage() {
     const [selectedInvoiceId, setSelectedInvoiceId] = useState()
 
     const [fetchOrganizations, { data: organizations }] = useLazyGetOrganizationsFlatWithAddressQuery()
+    const [fetchUsers, { data: users }] = useLazyGetUsersQuery()
 
     const {
         data: invoicesData,
@@ -207,7 +209,7 @@ export function ManualInvoicesPage() {
                                             '', // only if private
                                             '', // only if private
                                             '', // only if private
-                                            postalAddressStreet,
+                                            data.customClientAddress.replaceAll('\n', '\\'), // postalAddressStreet,
                                             data.customClientAddress.replaceAll('\n', '\\'),
                                             postalAddressCode,
                                             postalAddressLocality,
@@ -261,7 +263,10 @@ export function ManualInvoicesPage() {
                             )
 
                             downloadCsvFile({ csv: csvClient, fileName: 'CSV Client pour Crésus' })
-                            downloadCsvFile({ csv: csvFacture, fileName: 'CSV Facture pour Crésus' })
+                            downloadCsvFile({
+                                csv: csvFacture.replaceAll('/', '"/"'),
+                                fileName: 'CSV Facture pour Crésus',
+                            })
                         },
                     },
                     'separator',
@@ -283,6 +288,8 @@ export function ManualInvoicesPage() {
                 isModalOpen={isManualInvoiceModalOpen}
                 fetchOrganizations={fetchOrganizations}
                 organizations={organizations}
+                fetchUsers={fetchUsers}
+                users={users}
             />
         </>
     )
