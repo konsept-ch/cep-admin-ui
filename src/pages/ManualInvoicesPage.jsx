@@ -263,7 +263,10 @@ export function ManualInvoicesPage() {
                             )
 
                             downloadCsvFile({ csv: csvClient, fileName: 'CSV Client pour Crésus' })
-                            downloadCsvFile({ csv: csvFacture, fileName: 'CSV Facture pour Crésus' })
+                            downloadCsvFile({
+                                csv: csvFacture.replaceAll('/', '"/"'),
+                                fileName: 'CSV Facture pour Crésus',
+                            })
                         },
                     },
                     'separator',
