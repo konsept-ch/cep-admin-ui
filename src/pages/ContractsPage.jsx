@@ -182,6 +182,7 @@ export function ContractsPage() {
                 rowData={eventsData}
                 groupDisplayType={'singleColumn'}
                 rowGroupPanelShow={false}
+                groupDefaultExpanded={0}
                 autoGroupColumnDef={{
                     headerName: 'Années/Formateurs/Cours/Sessions',
                     minWidth: 400,
