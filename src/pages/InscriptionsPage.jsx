@@ -202,33 +202,53 @@ export function InscriptionsPage() {
                 valueGetter: ({ data }) =>
                     typeof data === 'undefined' ? '' : data.isUsedForQuota ? 'Utilisé' : 'Non-utilisé',
             },
+            {
+                field: 'validationType',
+                headerName: 'Type de validation par RH',
+                filter: 'agSetColumnFilter',
+                headerTooltip: 'Type de validation par RH',
+            },
         ],
         []
     )
 
     const rowData = inscriptions
         .filter((current) => current != null)
-        .map(({ id, user = {}, session, status, attestationTitle, inscriptionDate, type, coordinator, isPending }) => ({
-            id,
-            participant: user.lastName != null ? `${user.lastName} ${user.firstName}` : 'Aucune inscription',
-            profession: user.profession,
-            type,
-            sessionName: session.name,
-            quotaDays: session.quotaDays,
-            isUsedForQuota: session.isUsedForQuota,
-            status,
-            attestationTitle,
-            startDate: session.startDate,
-            inscriptionDate,
-            organizationCode: user.organizationCode,
-            hierarchy: user.hierarchy,
-            organization: user.organization,
-            email: user.email,
-            coordinator,
-            courseName: session.courseName,
-            startYear: session.startYear,
-            isPending,
-        }))
+        .map(
+            ({
+                id,
+                user = {},
+                session,
+                status,
+                attestationTitle,
+                inscriptionDate,
+                type,
+                coordinator,
+                isPending,
+                validationType,
+            }) => ({
+                id,
+                participant: user.lastName != null ? `${user.lastName} ${user.firstName}` : 'Aucune inscription',
+                profession: user.profession,
+                type,
+                sessionName: session.name,
+                quotaDays: session.quotaDays,
+                isUsedForQuota: session.isUsedForQuota,
+                status,
+                attestationTitle,
+                startDate: session.startDate,
+                inscriptionDate,
+                organizationCode: user.organizationCode,
+                hierarchy: user.hierarchy,
+                organization: user.organization,
+                email: user.email,
+                coordinator,
+                courseName: session.courseName,
+                startYear: session.startYear,
+                isPending,
+                validationType,
+            })
+        )
 
     return (
         <>

@@ -26,10 +26,10 @@ const tvaOptions = [
 // const defaultTvaOption = tvaOptions[1]
 
 const unitValues = [
-    { value: 'jours', label: 'jours' },
-    { value: 'heures', label: 'heures' },
-    { value: 'forfait', label: 'forfait' },
-    { value: 'frais effectifs', label: 'frais effectifs' },
+    { value: 'jour(s)', label: 'jour(s)' },
+    { value: 'heure(s)', label: 'heure(s)' },
+    { value: 'forfait(s)', label: 'forfait(s)' },
+    { value: 'part.', label: 'part.' },
 ]
 
 export function ManualInvoiceModal({
@@ -169,7 +169,29 @@ export function ManualInvoiceModal({
                 content={
                     <Form noValidate>
                         <Row>
-                            <Col xs={{ offset: 6 }}>
+                            <Col>
+                                <Form.Group className="mb-3" controlId="statut">
+                                    <Form.Label>Statut</Form.Label>
+                                    <Controller
+                                        name="statut"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Select
+                                                {...field}
+                                                options={[
+                                                    { value: 'En préparation', label: 'En préparation' },
+                                                    { value: 'A traiter', label: 'A traiter' },
+                                                    { value: 'Exporté', label: 'Exporté' },
+                                                    { value: 'Non transmissible', label: 'Non transmissible' },
+                                                    { value: 'Annulée', label: 'Annulée' },
+                                                    { value: 'Envoyée', label: 'Envoyée' },
+                                                ]}
+                                            />
+                                        )}
+                                    />
+                                </Form.Group>
+                            </Col>
+                            <Col>
                                 <Form.Group className="mb-3" controlId="clientSelect">
                                     <Form.Label>Client</Form.Label>
                                     <Controller
@@ -301,6 +323,14 @@ export function ManualInvoiceModal({
                                             {errors.invoiceDate?.message}
                                         </Form.Control.Feedback>
                                     </InputGroup>
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                <Form.Group className="mb-3" controlId="concerns">
+                                    <Form.Label>Concerne</Form.Label>
+                                    <Form.Control {...register('concerns')} />
                                 </Form.Group>
                             </Col>
                         </Row>
