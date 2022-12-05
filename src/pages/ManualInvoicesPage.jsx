@@ -62,12 +62,14 @@ export function ManualInvoicesPage() {
         },
         {
             field: 'invoiceNumber',
-            headerName: 'Numéro de facture',
+            headerName: 'Numéro',
             tooltipField: 'invoiceNumber',
             headerTooltip: 'Numéro de facture',
             filter: 'agNumberColumnFilter',
-            width: 190,
+            width: 160,
             valueGetter: deriveInvoiceNumber,
+            checkboxSelection: true,
+            headerCheckboxSelection: true,
         },
         {
             field: 'invoiceDate',

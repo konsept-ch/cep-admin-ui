@@ -107,12 +107,13 @@ export function ManualInvoiceModal({
             users?.map(({ id, email, firstName, lastName }) => ({
                 value: id,
                 label: `${firstName} ${lastName} <${email}>`,
+                uuid: id,
             })),
         [users]
     )
 
     useEffect(() => {
-        if (selectedInvoiceData != null && clientOptions?.length > 0) {
+        if (selectedInvoiceData != null) {
             const {
                 organizationUuid,
                 // invoiceNumberForCurrentYear,
@@ -121,10 +122,12 @@ export function ManualInvoiceModal({
                 invoiceDate,
                 courseYear,
                 items,
+                selectedUserUuid,
             } = selectedInvoiceData
 
             reset({
-                client: clientOptions.find(({ uuid }) => uuid === organizationUuid),
+                client: clientOptions?.find(({ uuid }) => uuid === organizationUuid),
+                selectedUser: userOptions?.find(({ uuid }) => uuid === selectedUserUuid),
                 customClientAddress,
                 customClientEmail,
                 courseYear: new Date(String(courseYear)),
@@ -141,7 +144,7 @@ export function ManualInvoiceModal({
                 items: [defaultEmptyItem],
             })
         }
-    }, [selectedInvoiceData, clientOptions])
+    }, [selectedInvoiceData, clientOptions, userOptions])
 
     useEffect(() => {
         if (isModalOpen) {
@@ -175,14 +178,30 @@ export function ManualInvoiceModal({
                                         render={({ field }) => <Select {...field} options={clientOptions} />}
                                     />
                                 </Form.Group>
-                                <Form.Group className="mb-3" controlId="userSelect">
-                                    <Form.Label>Utilisateur</Form.Label>
-                                    <Controller
-                                        name="selectedUser"
-                                        control={control}
-                                        render={({ field }) => <Select {...field} options={userOptions} />}
-                                    />
-                                </Form.Group>
+                                {clientWatched?.value === 'DEFAUT-PRIVÉ' && (
+                                    <>
+                                        <Form.Group className="mb-3" controlId="userSelect">
+                                            <Form.Label>Utilisateur</Form.Label>
+                                            <Controller
+                                                name="selectedUser"
+                                                control={control}
+                                                render={({ field }) => <Select {...field} options={userOptions} />}
+                                            />
+                                        </Form.Group>
+                                        <Form.Group className="mb-3" controlId="selectedUserTitle">
+                                            <Form.Label>Titre</Form.Label>
+                                            <Form.Control {...register('selectedUserTitle')} />
+                                        </Form.Group>
+                                        <Form.Group className="mb-3" controlId="selectedUserFirstName">
+                                            <Form.Label>Prénom</Form.Label>
+                                            <Form.Control {...register('selectedUserFirstName')} />
+                                        </Form.Group>
+                                        <Form.Group className="mb-3" controlId="selectedUserLastName">
+                                            <Form.Label>Nom</Form.Label>
+                                            <Form.Control {...register('selectedUserLastName')} />
+                                        </Form.Group>
+                                    </>
+                                )}
                                 <Form.Group className="mb-3" controlId="addressTextarea">
                                     <Form.Label>Adresse de facturation</Form.Label>
                                     <Form.Control as="textarea" rows={5} {...register('customClientAddress')} />
@@ -397,6 +416,7 @@ export function ManualInvoiceModal({
                                         const requestBody = {
                                             ...formData,
                                             courseYear: Number(getYearFromJsDate({ date: formData.courseYear })),
+                                            selectedUserUuid: formData.selectedUser?.value,
                                         }
 
                                         if (isEditModal) {
