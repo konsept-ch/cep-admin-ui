@@ -264,7 +264,7 @@ export const downloadCsvFile = ({ csv, fileName }) => {
 
     a.setAttribute('href', url)
 
-    a.setAttribute('download', `${fileName}.txt`)
+    a.setAttribute('download', `${fileName}.csv`)
 
     a.click()
     a.remove()
