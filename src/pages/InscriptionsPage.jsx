@@ -208,6 +208,12 @@ export function InscriptionsPage() {
                 filter: 'agSetColumnFilter',
                 headerTooltip: 'Type de validation par RH',
             },
+            {
+                field: 'organizationClientNumber',
+                headerName: 'Numéro de Client',
+                filter: 'agSetColumnFilter',
+                headerTooltip: 'Numéro de Client',
+            },
         ],
         []
     )
@@ -226,6 +232,7 @@ export function InscriptionsPage() {
                 coordinator,
                 isPending,
                 validationType,
+                organizationClientNumber,
             }) => ({
                 id,
                 participant: user.lastName != null ? `${user.lastName} ${user.firstName}` : 'Aucune inscription',
@@ -247,6 +254,7 @@ export function InscriptionsPage() {
                 startYear: session.startYear,
                 isPending,
                 validationType,
+                organizationClientNumber,
             })
         )
 
