@@ -214,6 +214,20 @@ export function InscriptionsPage() {
                 filter: 'agSetColumnFilter',
                 headerTooltip: 'Numéro de Client',
             },
+            {
+                field: 'coursePrice',
+                headerName: 'Prix de la formation',
+                filter: 'agNumberColumnFilter',
+                headerTooltip: 'Prix de la formation',
+                type: 'numericColumn',
+            },
+            {
+                field: 'courseDuration',
+                headerName: 'Durée de la formation',
+                filter: 'agNumberColumnFilter',
+                headerTooltip: 'Durée de la formation',
+                type: 'numericColumn',
+            },
         ],
         []
     )
@@ -251,6 +265,8 @@ export function InscriptionsPage() {
                 email: user.email,
                 coordinator,
                 courseName: session.courseName,
+                coursePrice: session.coursePrice,
+                courseDuration: session.courseDuration,
                 startYear: session.startYear,
                 isPending,
                 validationType,
