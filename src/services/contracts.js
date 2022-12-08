@@ -19,13 +19,14 @@ export const contractsApi = createApi({
             },
         }),
         updateContract: builder.mutation({
-            query: ({ userId, courseId, templateId }) => ({
+            query: ({ userId, courseId, templateId, year }) => ({
                 url: '',
                 method: 'PUT',
                 body: {
                     userId,
                     courseId,
                     templateId,
+                    year,
                 },
             }),
         }),

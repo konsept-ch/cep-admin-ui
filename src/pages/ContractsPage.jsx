@@ -27,6 +27,7 @@ export function ContractsPage() {
         return {
             uuid: course.courseUuid,
             name: course.courseName,
+            year: Number(node.parent.parent.key),
             contract: course.contract,
             user: {
                 uuid: course.userUuid,
