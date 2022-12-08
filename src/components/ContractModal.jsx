@@ -110,6 +110,7 @@ export const ContractModal = ({ closeModal, selectedCourse, isVisible, refetchEv
                             userId: selectedCourse.user.uuid,
                             courseId: selectedCourse.uuid,
                             templateId: selectedContractTemplateUuid,
+                            year: selectedCourse.year,
                         })
 
                         if (error == null) {
