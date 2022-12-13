@@ -12,6 +12,11 @@ import { useLazyGetOrganizationsFlatWithAddressQuery } from '../services/organiz
 import { useLazyGetUsersQuery } from '../services/users'
 import { gridContextMenu, downloadCsvFile } from '../utils'
 
+const csvOptions = {
+    delimiter: ';',
+    quotes: true,
+}
+
 const deriveInvoiceNumber = ({ data }) =>
     `${`${data?.courseYear}`.slice(-2)}${`${data?.user.cfNumber}`.padStart(
         2,
@@ -24,6 +29,7 @@ const formatInvoiceDate = ({ value }) =>
 export function ManualInvoicesPage() {
     const [isManualInvoiceModalOpen, setIsManualInvoiceModalOpen] = useState(false)
     const [selectedInvoiceId, setSelectedInvoiceId] = useState()
+    const [selectedRowsIds, setSelectedRowsIds] = useState([])
 
     const [fetchOrganizations, { data: organizations }] = useLazyGetOrganizationsFlatWithAddressQuery()
     const [fetchUsers, { data: users }] = useLazyGetUsersQuery()
@@ -148,7 +154,6 @@ export function ManualInvoicesPage() {
                             Number(amount) *
                             (vatCode?.value === 'TVA' ? Number(price) + (Number(price) * 7.7) / 100 : Number(price))
                     )
-                    // .forEach(console.log)
                     .reduce((a, b) => Number(a) + Number(b), 0)
                     .toFixed(2),
         },
@@ -164,29 +169,14 @@ export function ManualInvoicesPage() {
                 columnDefs={columnDefs}
                 rowData={invoicesData}
                 isDataLoading={isFetchingInvoices}
-                getContextMenuItems={({
-                    node: { data },
-                    columnApi: {
-                        columnModel: { columnDefs: gridColumnDefs },
-                    },
-                }) => [
+                getContextMenuItems={({ node: { data } }) => [
                     {
                         name: 'Exporter pour Crésus',
                         action: () => {
-                            const { former22_organization } =
-                                organizations?.find(({ uuid }) => uuid === data.organizationUuid) ?? {}
-
-                            const {
-                                addressTitle,
-                                postalAddressStreet,
-                                postalAddressCode,
-                                postalAddressLocality,
-                                postalAddressCountry,
-                                // postalAddressCountryCode,
-                                postalAddressDepartment,
-                                // postalAddressDepartmentCode,
-                                phone,
-                            } = former22_organization ?? {}
+                            const invoicesToExport =
+                                selectedRowsIds.length > 0
+                                    ? invoicesData.filter(({ id }) => selectedRowsIds.includes(id))
+                                    : [data]
 
                             const csvClient = Papa.unparse(
                                 {
@@ -204,27 +194,35 @@ export function ManualInvoicesPage() {
                                         '`TélProf',
                                         '`TélEmail',
                                     ],
-                                    data: [
-                                        [
-                                            data.clientNumber,
-                                            data.organizationName,
-                                            '', // only if private
-                                            '', // only if private
-                                            '', // only if private
-                                            data.customClientAddress.replaceAll('\n', '\\'), // postalAddressStreet,
-                                            data.customClientAddress.replaceAll('\n', '\\'),
+                                    data: invoicesToExport.map((invoiceData) => {
+                                        const { former22_organization } =
+                                            organizations?.find(({ uuid }) => uuid === invoiceData.organizationUuid) ??
+                                            {}
+
+                                        const {
                                             postalAddressCode,
                                             postalAddressLocality,
                                             postalAddressCountry,
                                             phone,
-                                            data.customClientEmail,
-                                        ],
-                                    ],
+                                        } = former22_organization ?? {}
+
+                                        return [
+                                            invoiceData.clientNumber,
+                                            invoiceData.organizationName,
+                                            '', // only if private
+                                            '', // only if private
+                                            '', // only if private
+                                            invoiceData.customClientAddress.replaceAll('\n', '\\'),
+                                            invoiceData.customClientAddress.replaceAll('\n', '\\'),
+                                            postalAddressCode,
+                                            postalAddressLocality,
+                                            postalAddressCountry,
+                                            phone,
+                                            invoiceData.customClientEmail,
+                                        ]
+                                    }),
                                 },
-                                {
-                                    delimiter: ';',
-                                    quotes: true,
-                                }
+                                csvOptions
                             )
 
                             const csvFacture = Papa.unparse(
@@ -238,30 +236,23 @@ export function ManualInvoicesPage() {
                                         '`AUnité',
                                         '`Client',
                                         '`DateFacture',
-                                        // '`RefArticles',
                                         '`RefClient',
                                     ],
-                                    data: [
-                                        [
-                                            deriveInvoiceNumber({ data }),
-                                            data.items.map(({ vatCode }) => vatCode?.value).join('/'), // TVA ou EXONERE vatCode
-                                            data.items
-                                                .map(({ designation }) => designation.replaceAll('\n', '\\'))
-                                                .join('/'), // avec \ pour les nouvelles lignes designation
-                                            data.items.map(({ price }) => price).join('/'), // avec | autour des ""
-                                            data.items.map(({ amount }) => amount).join('/'), // amount
-                                            data.items.map(({ unit }) => unit.value).join('/'), // unit
-                                            data.customClientAddress.replaceAll('\n', '\\'),
-                                            formatInvoiceDate({ value: data.invoiceDate }),
-                                            // 1000,
-                                            data.clientNumber,
-                                        ],
-                                    ],
+                                    data: invoicesToExport.map((invoiceData) => [
+                                        deriveInvoiceNumber({ data: invoiceData }),
+                                        invoiceData.items.map(({ vatCode }) => vatCode?.value).join('/'),
+                                        invoiceData.items
+                                            .map(({ designation }) => designation.replaceAll('\n', '\\'))
+                                            .join('/'),
+                                        invoiceData.items.map(({ price }) => price).join('/'),
+                                        invoiceData.items.map(({ amount }) => amount).join('/'),
+                                        invoiceData.items.map(({ unit }) => unit.value).join('/'),
+                                        invoiceData.customClientAddress.replaceAll('\n', '\\'),
+                                        formatInvoiceDate({ value: invoiceData.invoiceDate }),
+                                        invoiceData.clientNumber,
+                                    ]),
                                 },
-                                {
-                                    delimiter: ';',
-                                    quotes: true,
-                                }
+                                csvOptions
                             )
 
                             downloadCsvFile({ csv: csvClient, fileName: 'CSV Client pour Crésus' })
@@ -274,6 +265,24 @@ export function ManualInvoicesPage() {
                     'separator',
                     ...gridContextMenu,
                 ]}
+                onRowSelected={({
+                    api: {
+                        selectionService: { selectedNodes },
+                    },
+                }) => {
+                    const filteredSelectedRowsIds =
+                        Object.values(selectedNodes).reduce(
+                            (previous, current) => [
+                                ...previous,
+                                ...(typeof current !== 'undefined' && typeof previous !== 'undefined'
+                                    ? [current.data.id]
+                                    : []),
+                            ],
+                            []
+                        ) || []
+
+                    setSelectedRowsIds(filteredSelectedRowsIds)
+                }}
             />
             <Container fluid className="mb-2">
                 <Button variant="success" className="me-2" onClick={() => setIsManualInvoiceModalOpen(true)}>
