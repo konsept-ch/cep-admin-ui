@@ -53,16 +53,19 @@ export const Calendar = ({ resources, events, calendarRef, refreshCallback }) =>
                 height="100%"
                 schedulerLicenseKey="CC-Attribution-NonCommercial-NoDerivatives"
                 initialView="dayGridWeek"
+                themeSystem="bootstrap5"
                 customButtons={{
                     myCustomButton: {
-                        text: (
-                            <div>
-                                <FontAwesomeIcon
-                                    className={classNames('refresh-agenda', { 'is-loader': isSagaLoading })}
-                                    icon={faRefresh}
-                                />
-                            </div>
-                        ),
+                        text: '↺',
+                        // icon: 'arrow-clockwise',
+                        // text: (
+                        //     <div>
+                        //         <FontAwesomeIcon
+                        //             className={classNames('refresh-agenda', { 'is-loader': isSagaLoading })}
+                        //             icon={faRefresh}
+                        //         />
+                        //     </div>
+                        // ),
                         click: refreshCallback,
                         hint: 'Rafraîchir données de Claroline',
                     },

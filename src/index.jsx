@@ -8,6 +8,9 @@ import { store } from './store'
 import { App } from './App'
 // import { register } from './serviceWorker'
 // import { reportWebVitals } from './reportWebVitals'
+// import the third-party stylesheets directly from your JS
+// import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-icons/font/bootstrap-icons.css' // needs additional webpack config!
 import './scss/index.scss'
 
 const container = document.getElementById('root')
