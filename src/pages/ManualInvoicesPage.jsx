@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPen } from '@fortawesome/pro-light-svg-icons'
 
 import { Grid, ManualInvoiceModal } from '../components'
-import { useGetManualInvoicesQuery } from '../services/manual-invoices'
+import { useGetManualInvoicesQuery, useLazyGetStatusesQuery } from '../services/manual-invoices'
 import { useLazyGetOrganizationsFlatWithAddressQuery } from '../services/organizations'
 import { useLazyGetUsersQuery } from '../services/users'
 import { gridContextMenu, downloadCsvFile } from '../utils'
@@ -33,6 +33,7 @@ export function ManualInvoicesPage() {
 
     const [fetchOrganizations, { data: organizations }] = useLazyGetOrganizationsFlatWithAddressQuery()
     const [fetchUsers, { data: users }] = useLazyGetUsersQuery()
+    const [fetchStatuses, { data: statuses }] = useLazyGetStatusesQuery()
 
     const {
         data: invoicesData,
@@ -103,7 +104,7 @@ export function ManualInvoicesPage() {
             hide: true,
         },
         {
-            field: 'statut',
+            field: 'status',
             headerName: 'Statut',
             tooltipField: 'statut',
             headerTooltip: 'Statut',
@@ -301,6 +302,8 @@ export function ManualInvoicesPage() {
                 organizations={organizations}
                 fetchUsers={fetchUsers}
                 users={users}
+                fetchStatuses={fetchStatuses}
+                statuses={statuses}
             />
         </>
     )

@@ -41,6 +41,8 @@ export function ManualInvoiceModal({
     organizations,
     fetchUsers,
     users,
+    fetchStatuses,
+    statuses,
 }) {
     const {
         control,
@@ -102,6 +104,16 @@ export function ManualInvoiceModal({
         [organizations]
     )
 
+    const statusesOptions = useMemo(
+        () =>
+            statuses != null &&
+            Object.entries(statuses).map(([prismaStatus, actualStatus]) => ({
+                value: prismaStatus,
+                label: actualStatus,
+            })),
+        [statuses]
+    )
+
     const userOptions = useMemo(
         () =>
             users?.map(({ id, email, firstName, lastName }) => ({
@@ -149,6 +161,7 @@ export function ManualInvoiceModal({
     useEffect(() => {
         if (isModalOpen) {
             fetchOrganizations()
+            fetchStatuses()
         }
     }, [isModalOpen])
 
@@ -175,19 +188,7 @@ export function ManualInvoiceModal({
                                     <Controller
                                         name="statut"
                                         control={control}
-                                        render={({ field }) => (
-                                            <Select
-                                                {...field}
-                                                options={[
-                                                    { value: 'En préparation', label: 'En préparation' },
-                                                    { value: 'A traiter', label: 'A traiter' },
-                                                    { value: 'Exporté', label: 'Exporté' },
-                                                    { value: 'Non transmissible', label: 'Non transmissible' },
-                                                    { value: 'Annulée', label: 'Annulée' },
-                                                    { value: 'Envoyée', label: 'Envoyée' },
-                                                ]}
-                                            />
-                                        )}
+                                        render={({ field }) => <Select {...field} options={statusesOptions} />}
                                     />
                                 </Form.Group>
                             </Col>
