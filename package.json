@@ -11,7 +11,7 @@
   },
   "scripts": {
     "start": "cross-env TSC_COMPILE_ON_ERROR=true DISABLE_ESLINT_PLUGIN=true react-scripts start",
-    "test": "react-scripts test",
+    "test": "react-scripts test --watchAll=false",
     "build": "react-scripts build",
     "markdownlint:check": "markdownlint README.md",
     "markdownlint:fix": "markdownlint README.md --fix",
@@ -21,7 +21,7 @@
     "eslint:fix": "eslint --ext .js,.jsx src --fix",
     "prettier:check": "prettier \"src/**/*\" --ignore-unknown --check",
     "prettier:fix": "prettier \"src/**/*\" --ignore-unknown --write",
-    "ci:check": "npm run prettier:check && npm run eslint:check && npm run stylelint:check && npm run markdownlint:check && npm run test"
+    "ci:check": "npm run prettier:check && npm run eslint:check && npm run stylelint:check && npm run markdownlint:check && cross-env CI=true npm run test"
   },
   "dependencies": {
     "@ag-grid-community/client-side-row-model": "28.2.1",
