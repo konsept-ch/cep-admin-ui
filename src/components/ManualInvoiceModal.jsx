@@ -192,7 +192,7 @@ export function ManualInvoiceModal({
                                 <Form.Group className="mb-3" controlId="statut">
                                     <Form.Label>Statut</Form.Label>
                                     <Controller
-                                        name="statut"
+                                        name="status"
                                         control={control}
                                         render={({ field }) => <Select {...field} options={statusesOptions} />}
                                     />
