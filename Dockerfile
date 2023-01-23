@@ -7,8 +7,8 @@ WORKDIR /usr/src/app
 COPY ["package.json", "package-lock.json*", ".npmrc", "./"]
 RUN npm config set '//npm.fontawesome.com/:_authToken' "$FONTAWESOME_NPM_AUTH_TOKEN"
 RUN npm ci
-RUN npm run ci:check
 COPY . .
+RUN npm run ci:check
 RUN npm run build
 RUN rm .npmrc
 
