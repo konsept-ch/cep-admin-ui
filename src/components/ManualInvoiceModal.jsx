@@ -151,7 +151,7 @@ export function ManualInvoiceModal({
             reset({
                 client: clientOptions?.find(({ uuid }) => uuid === organizationUuid),
                 selectedUser: userOptions?.find(({ uuid }) => uuid === selectedUserUuid),
-                status: statusesOptions?.find(({ value }) => value === status),
+                status: statusesOptions?.find(({ label }) => label === status),
                 // status: { value: status, label: statuses?.[status] },
                 customClientAddress,
                 customClientEmail,
