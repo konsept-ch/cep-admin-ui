@@ -85,8 +85,14 @@ export function ManualInvoiceModal({
                     postalAddressCode ? `${postalAddressCode} ` : ''
                 }${postalAddressLocality ? `${postalAddressLocality}\n` : ''}${postalAddressCountry ?? ''}`
             )
-
             setValue('customClientEmail', email)
+        } else {
+            if (selectedInvoiceData != null) {
+                const { customClientEmail, customClientAddress } = selectedInvoiceData
+
+                setValue('customClientAddress', customClientAddress)
+                setValue('customClientEmail', customClientEmail)
+            }
         }
 
         if (clientWatched?.value === 'DEFAUT-PRIVÉ') {

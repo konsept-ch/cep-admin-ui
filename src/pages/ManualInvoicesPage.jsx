@@ -290,21 +290,23 @@ export function ManualInvoicesPage() {
                     Créer facture manuelle
                 </Button>
             </Container>
-            <ManualInvoiceModal
-                refetchInvoices={refetchInvoices}
-                selectedInvoiceData={invoicesData?.find(({ id }) => id === selectedInvoiceId)}
-                closeModal={() => {
-                    setIsManualInvoiceModalOpen(false)
-                    setSelectedInvoiceId()
-                }}
-                isModalOpen={isManualInvoiceModalOpen}
-                fetchOrganizations={fetchOrganizations}
-                organizations={organizations}
-                fetchUsers={fetchUsers}
-                users={users}
-                fetchStatuses={fetchStatuses}
-                statuses={statuses}
-            />
+            {isManualInvoiceModalOpen && (
+                <ManualInvoiceModal
+                    refetchInvoices={refetchInvoices}
+                    selectedInvoiceData={invoicesData?.find(({ id }) => id === selectedInvoiceId)}
+                    closeModal={() => {
+                        setIsManualInvoiceModalOpen(false)
+                        setSelectedInvoiceId()
+                    }}
+                    isModalOpen={isManualInvoiceModalOpen}
+                    fetchOrganizations={fetchOrganizations}
+                    organizations={organizations}
+                    fetchUsers={fetchUsers}
+                    users={users}
+                    fetchStatuses={fetchStatuses}
+                    statuses={statuses}
+                />
+            )}
         </>
     )
 }
