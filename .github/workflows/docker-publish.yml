@@ -9,6 +9,8 @@ on:
   workflow_dispatch:
   release:
     types: [released]
+  push:
+    branches: [main]
   # push:
   #   branches: [$default-branch]
   #   # Publish semver tags as releases.
@@ -58,8 +60,8 @@ jobs:
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
 
-      - name: (Prod - release) Build and push Docker image
-        if: ${{ github.event_name == 'release' }}
+      - name: Build and push Docker image
+        # if: ${{ github.event_name == 'release' }}
         id: build-and-push-if-release
         uses: docker/build-push-action@v3
         with:
@@ -69,20 +71,19 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             FONTAWESOME_NPM_AUTH_TOKEN=${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}
-            REACT_APP_SERVICES_URL=https://middleware.cep.swiss
           provenance: false
 
-      - name: (Val - workflow_dispatch) Build and push Docker image
-        if: ${{ github.event_name == 'workflow_dispatch' }}
-        # if: ${{ github.event_name == 'release' }}
-        id: build-and-push-if-manual
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}-uat
-          labels: ${{ steps.meta.outputs.labels }}
-          build-args: |
-            FONTAWESOME_NPM_AUTH_TOKEN=${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}
-            REACT_APP_SERVICES_URL=https://middleware.cep-val.ch
-          provenance: false
+      # - name: (Val - workflow_dispatch) Build and push Docker image
+      #   if: ${{ github.event_name == 'workflow_dispatch' }}
+      #   # if: ${{ github.event_name == 'release' }}
+      #   id: build-and-push-if-manual
+      #   uses: docker/build-push-action@v3
+      #   with:
+      #     context: .
+      #     push: ${{ github.event_name != 'pull_request' }}
+      #     tags: ${{ steps.meta.outputs.tags }}-uat
+      #     labels: ${{ steps.meta.outputs.labels }}
+      #     build-args: |
+      #       FONTAWESOME_NPM_AUTH_TOKEN=${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}
+      #       REACT_APP_SERVICES_URL=https://middleware.cep-val.ch
+      #     provenance: false
