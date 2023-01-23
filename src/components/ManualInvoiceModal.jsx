@@ -112,11 +112,12 @@ export function ManualInvoiceModal({
 
     const statusesOptions = useMemo(
         () =>
-            statuses != null &&
-            Object.entries(statuses).map(([prismaStatus, actualStatus]) => ({
-                value: prismaStatus,
-                label: actualStatus,
-            })),
+            statuses != null
+                ? Object.entries(statuses).map(([prismaStatus, actualStatus]) => ({
+                      value: prismaStatus,
+                      label: actualStatus,
+                  }))
+                : undefined,
         [statuses]
     )
 
@@ -141,16 +142,23 @@ export function ManualInvoiceModal({
                 courseYear,
                 items,
                 selectedUserUuid,
+                concerns,
+                status,
             } = selectedInvoiceData
+
+            console.log(statusesOptions)
 
             reset({
                 client: clientOptions?.find(({ uuid }) => uuid === organizationUuid),
                 selectedUser: userOptions?.find(({ uuid }) => uuid === selectedUserUuid),
+                status: statusesOptions?.find(({ value }) => value === status),
+                // status: { value: status, label: statuses?.[status] },
                 customClientAddress,
                 customClientEmail,
                 courseYear: new Date(String(courseYear)),
                 invoiceDate: new Date(String(invoiceDate)),
                 items,
+                concerns,
             })
         } else {
             reset({
@@ -162,7 +170,7 @@ export function ManualInvoiceModal({
                 items: [defaultEmptyItem],
             })
         }
-    }, [selectedInvoiceData, clientOptions, userOptions])
+    }, [selectedInvoiceData, clientOptions, userOptions, statusesOptions])
 
     useEffect(() => {
         if (isModalOpen) {
