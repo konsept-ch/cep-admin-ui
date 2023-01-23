@@ -70,6 +70,7 @@ jobs:
           build-args: |
             FONTAWESOME_NPM_AUTH_TOKEN=${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}
             REACT_APP_SERVICES_URL=https://middleware.cep.swiss
+          provenance: false
 
       - name: (Val - workflow_dispatch) Build and push Docker image
         if: ${{ github.event_name == 'workflow_dispatch' }}
@@ -84,3 +85,4 @@ jobs:
           build-args: |
             FONTAWESOME_NPM_AUTH_TOKEN=${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}
             REACT_APP_SERVICES_URL=https://middleware.cep-val.ch
+          provenance: false
