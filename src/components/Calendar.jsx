@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useSelector } from 'react-redux'
+// import { useSelector } from 'react-redux'
 import { Offcanvas } from 'react-bootstrap'
 import classNames from 'classnames'
 import FullCalendar from '@fullcalendar/react'
@@ -11,16 +11,16 @@ import luxon2Plugin from '@fullcalendar/luxon2'
 import frLocale from '@fullcalendar/core/locales/fr'
 import adaptivePlugin from '@fullcalendar/adaptive'
 import { DateTime } from 'luxon'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faRefresh } from '@fortawesome/pro-solid-svg-icons'
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+// import { faRefresh } from '@fortawesome/pro-solid-svg-icons'
 
-import { loadingSelector } from '../reducers'
+// import { loadingSelector } from '../reducers'
 import { DATE_FORMAT_OPTIONS, DATE_FORMAT_SWISS_FRENCH } from '../constants/constants'
 import { Event } from './Event'
 
 export const Calendar = ({ resources, events, calendarRef, refreshCallback }) => {
     const [selectedEvent, setSelectedEvent] = useState(null)
-    const isSagaLoading = useSelector(loadingSelector)
+    // const isSagaLoading = useSelector(loadingSelector)
 
     return (
         <>
@@ -53,7 +53,7 @@ export const Calendar = ({ resources, events, calendarRef, refreshCallback }) =>
                 height="100%"
                 schedulerLicenseKey="CC-Attribution-NonCommercial-NoDerivatives"
                 initialView="dayGridWeek"
-                themeSystem="bootstrap5"
+                // themeSystem="bootstrap5"
                 customButtons={{
                     myCustomButton: {
                         text: '↺',
