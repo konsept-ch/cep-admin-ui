@@ -21,6 +21,7 @@ import {
     faHandHoldingDollar,
     faUserSlash,
 } from '@fortawesome/pro-light-svg-icons'
+
 import {
     PATH_AGENDA,
     PATH_INSCRIPTIONS,
@@ -44,6 +45,7 @@ import {
     PATH_REFUSED_BY_HR,
 } from '../constants/constants'
 import { clearAllAuthCookies } from '../utils'
+import { currentRunningEnv } from '../constants/config'
 
 export const Navigation = ({ isLoggedIn }) => {
     const navigate = useNavigate()
@@ -55,10 +57,10 @@ export const Navigation = ({ isLoggedIn }) => {
     }
 
     return (
-        <Navbar bg="light" expand="xl">
+        <Navbar bg="light" expand="xl" className={`is-running-in-${currentRunningEnv}`}>
             <Container fluid>
                 <Navbar.Brand href="/" onClick={goTo('/')}>
-                    CEP - Former22
+                    CEP - Former22 ({`${currentRunningEnv[0].toUpperCase()}${currentRunningEnv.slice(1)}`})
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">

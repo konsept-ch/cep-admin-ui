@@ -142,7 +142,7 @@ export const callApi = async ({ path = '', method = 'GET', headers, body, succes
         })
 
         if (response.status !== 200) {
-            const { message, stack } = await response.json()
+            const { message, stack, error } = await response.json()
 
             /* eslint-disable-next-line no-console */
             console.error(stack)
@@ -150,7 +150,7 @@ export const callApi = async ({ path = '', method = 'GET', headers, body, succes
             toast.error(
                 <>
                     <p>{`${response.status} - ${response.statusText}`}</p>
-                    <p>{message}</p>
+                    <p>{message ?? error}</p>
                 </>,
                 { autoClose: false }
             )
@@ -160,7 +160,7 @@ export const callApi = async ({ path = '', method = 'GET', headers, body, succes
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*',
                 },
-                body: JSON.stringify({ errorDescription: message }),
+                body: JSON.stringify({ errorDescription: message ?? error }),
             })
 
             return

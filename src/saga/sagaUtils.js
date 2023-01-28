@@ -20,7 +20,7 @@ export function* callService({ endpoint, action, successCallback = () => {}, opt
         })
 
         if (result.status !== 200) {
-            const { message, stack } = yield result.json()
+            const { message, stack, error } = yield result.json()
 
             /* eslint-disable-next-line no-console */
             console.error(stack)
@@ -28,7 +28,7 @@ export function* callService({ endpoint, action, successCallback = () => {}, opt
             toast.error(
                 <>
                     <p>{`${result.status} - ${result.statusText}`}</p>
-                    <p>{message}</p>
+                    <p>{message ?? error}</p>
                 </>,
                 { autoClose: false }
             )
@@ -38,7 +38,7 @@ export function* callService({ endpoint, action, successCallback = () => {}, opt
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*',
                 },
-                body: JSON.stringify({ errorDescription: message }),
+                body: JSON.stringify({ errorDescription: message ?? error }),
             })
 
             return
