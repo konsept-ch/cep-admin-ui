@@ -13,6 +13,11 @@ import { App } from './App'
 import 'bootstrap-icons/font/bootstrap-icons.css' // needs additional webpack config!
 import './scss/index.scss'
 
+// for UX only - normally handled on the server side
+// if (window.location.protocol !== 'https:') {
+//     window.location.replace(`https:${window.location.href.substring(window.location.protocol.length)}`)
+// }
+
 const container = document.getElementById('root')
 const root = createRoot(container) // createRoot(container!) if you use TypeScript
 

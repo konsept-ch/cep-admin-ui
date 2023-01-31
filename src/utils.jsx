@@ -129,17 +129,45 @@ export const formatDate = ({ dateString, isTimeVisible, isDateVisible }) => {
 
 export const callApi = async ({ path = '', method = 'GET', headers, body, successCallback = () => {} }) => {
     try {
-        const response = await fetch(new URL(path, MIDDLEWARE_URL).href, {
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'x-login-email-address': cookies.get('email'),
-                'x-login-email-code': cookies.get('code'),
-                'x-login-token': cookies.get('token'),
-                ...headers,
-            },
-            method,
-            body,
-        })
+        let response
+        try {
+            response = await fetch(new URL(path, MIDDLEWARE_URL).href, {
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'x-login-email-address': cookies.get('email'),
+                    'x-login-email-code': cookies.get('code'),
+                    'x-login-token': cookies.get('token'),
+                    ...headers,
+                },
+                method,
+                body,
+            })
+        } catch (error) {
+            console.error(error)
+
+            const RetryToast = () => (
+                <div>
+                    Erreur de URL
+                    {window.location.protocol === 'http:' && (
+                        <>
+                            {' '}
+                            - vous devez utiliser HTTPS
+                            <Button
+                                className="d-block mb-1"
+                                variant="primary"
+                                onClick={() => {
+                                    window.location.protocol = 'https:'
+                                }}
+                            >
+                                <FontAwesomeIcon icon={faRotateRight} /> Utiliser HTTPS
+                            </Button>
+                        </>
+                    )}
+                </div>
+            )
+
+            toast(<RetryToast />, { autoClose: false })
+        }
 
         if (response.status !== 200) {
             const { message, stack, error } = await response.json()
@@ -160,7 +188,7 @@ export const callApi = async ({ path = '', method = 'GET', headers, body, succes
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*',
                 },
-                body: JSON.stringify({ errorDescription: `${window.location.origin}${message ?? error}` }),
+                body: JSON.stringify({ errorDescription: `${window.location.href}${message ?? error}` }),
             })
 
             return

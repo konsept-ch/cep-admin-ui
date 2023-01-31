@@ -8,16 +8,50 @@ import { cookies } from '../utils'
 
 export function* callService({ endpoint, action, successCallback = () => {}, options = {} }) {
     try {
-        const result = yield fetch(new URL(endpoint, MIDDLEWARE_URL).href, {
-            ...options,
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'x-login-email-address': cookies.get('email'),
-                'x-login-email-code': cookies.get('code'),
-                'x-login-token': cookies.get('token'),
-                ...options.headers,
-            },
-        })
+        let result
+        try {
+            result = yield fetch(new URL(endpoint, MIDDLEWARE_URL).href, {
+                ...options,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'x-login-email-address': cookies.get('email'),
+                    'x-login-email-code': cookies.get('code'),
+                    'x-login-token': cookies.get('token'),
+                    ...options.headers,
+                },
+            })
+        } catch (error) {
+            console.error(error)
+            toast.error(
+                <>
+                    <p>Erreur de URL - vous devez utiliser HTTPS</p>
+                </>,
+                { autoClose: false }
+            )
+
+            const RetryToast = () => (
+                <div>
+                    Erreur de URL
+                    {window.location.protocol === 'http:' && (
+                        <>
+                            {' '}
+                            - vous devez utiliser HTTPS
+                            <Button
+                                className="d-block mb-1"
+                                variant="primary"
+                                onClick={() => {
+                                    window.location.protocol = 'https:'
+                                }}
+                            >
+                                <FontAwesomeIcon icon={faRotateRight} /> Utiliser HTTPS
+                            </Button>
+                        </>
+                    )}
+                </div>
+            )
+
+            toast(<RetryToast />, { autoClose: false })
+        }
 
         if (result.status !== 200) {
             const { message, stack, error } = yield result.json()
@@ -38,7 +72,7 @@ export function* callService({ endpoint, action, successCallback = () => {}, opt
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*',
                 },
-                body: JSON.stringify({ errorDescription: `${window.location.origin}\n<br/>${message ?? error}` }),
+                body: JSON.stringify({ errorDescription: `${window.location.href}\n<br/>${message ?? error}` }),
             })
 
             return

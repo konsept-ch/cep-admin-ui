@@ -28,7 +28,7 @@ export class ErrorBoundary extends Component {
                     'Access-Control-Allow-Origin': '*',
                 },
                 body: JSON.stringify({
-                    errorDescription: `${window.location.origin}\n<br/>${error?.toString()}\n<br/>${
+                    errorDescription: `${window.location.href}\n<br/>${error?.toString()}\n<br/>${
                         errorInfo?.componentStack
                     }`,
                 }),
