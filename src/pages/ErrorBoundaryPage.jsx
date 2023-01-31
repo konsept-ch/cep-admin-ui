@@ -1,5 +1,5 @@
 import { Component } from 'react'
-import { isDev } from '../constants/config'
+import { isDev, MIDDLEWARE_URL } from '../constants/config'
 
 export class ErrorBoundary extends Component {
     state = { error: undefined, errorInfo: undefined, hasError: false }
@@ -18,6 +18,24 @@ export class ErrorBoundary extends Component {
         })
         // You can also log error messages to an error reporting service here
         console.error('Uncaught error:', error, errorInfo)
+
+        try {
+            // Do we need to await this? We don't care about its response or code
+            fetch(new URL('reportError', MIDDLEWARE_URL).href, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                },
+                body: JSON.stringify({
+                    errorDescription: `${window.location.origin}\n<br/>${error?.toString()}\n<br/>${
+                        errorInfo?.componentStack
+                    }`,
+                }),
+            })
+        } catch (caughtError) {
+            console.error(caughtError)
+        }
     }
 
     render() {

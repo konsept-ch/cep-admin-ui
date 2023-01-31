@@ -160,7 +160,7 @@ export const callApi = async ({ path = '', method = 'GET', headers, body, succes
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*',
                 },
-                body: JSON.stringify({ errorDescription: message ?? error }),
+                body: JSON.stringify({ errorDescription: `${window.location.origin}${message ?? error}` }),
             })
 
             return

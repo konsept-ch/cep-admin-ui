@@ -38,7 +38,7 @@ export function* callService({ endpoint, action, successCallback = () => {}, opt
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*',
                 },
-                body: JSON.stringify({ errorDescription: message ?? error }),
+                body: JSON.stringify({ errorDescription: `${window.location.origin}\n<br/>${message ?? error}` }),
             })
 
             return
