@@ -1,5 +1,7 @@
 import { Component } from 'react'
+
 import { isDev, MIDDLEWARE_URL } from '../constants/config'
+import { cookies } from '../utils'
 
 export class ErrorBoundary extends Component {
     state = { error: undefined, errorInfo: undefined, hasError: false }
@@ -28,9 +30,9 @@ export class ErrorBoundary extends Component {
                     'Access-Control-Allow-Origin': '*',
                 },
                 body: JSON.stringify({
-                    errorDescription: `${window.location.href}\n<br/>${error?.toString()}\n<br/>${
-                        errorInfo?.componentStack
-                    }`,
+                    errorDescription: `${window.location.href}\n<br/>${cookies.get(
+                        'email'
+                    )}\n<br/>${error?.toString()}\n<br/>${errorInfo?.componentStack}`,
                 }),
             })
         } catch (caughtError) {

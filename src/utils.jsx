@@ -188,7 +188,9 @@ export const callApi = async ({ path = '', method = 'GET', headers, body, succes
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*',
                 },
-                body: JSON.stringify({ errorDescription: `${window.location.href}${message ?? error}` }),
+                body: JSON.stringify({
+                    errorDescription: `${window.location.href}\n<br/>${cookies.get('email')}\n<br/>${message ?? error}`,
+                }),
             })
 
             return

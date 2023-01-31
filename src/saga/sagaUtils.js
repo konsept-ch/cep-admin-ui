@@ -72,7 +72,9 @@ export function* callService({ endpoint, action, successCallback = () => {}, opt
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*',
                 },
-                body: JSON.stringify({ errorDescription: `${window.location.href}\n<br/>${message ?? error}` }),
+                body: JSON.stringify({
+                    errorDescription: `${window.location.href}\n<br/>${cookies.get('email')}\n<br/>${message ?? error}`,
+                }),
             })
 
             return
