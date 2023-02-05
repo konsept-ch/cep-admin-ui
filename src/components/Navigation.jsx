@@ -238,6 +238,7 @@ export const Navigation = ({ isLoggedIn }) => {
                     {isLoggedIn && (
                         <Nav>
                             <Nav.Link
+                                href="/"
                                 onClick={() => {
                                     clearAllAuthCookies()
                                 }}
