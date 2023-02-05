@@ -60,7 +60,9 @@ export const STATUSES = {
     PARTICIPATION: 'Participation',
     PARTICIPATION_PARTIELLE: 'Participation Partielle',
     NON_PARTICIPATION: 'Non-participation',
-    ANNULEE: 'Annulée',
+    ANNULEE: 'Annulation à traiter',
+    ANNULEE_FACTURABLE: 'Annulée facturable',
+    ANNULEE_NON_FACTURABLE: 'Annulée non-facturable',
     ECARTEE: 'Écartée',
 }
 
@@ -69,7 +71,12 @@ export const FINAL_STATUSES = [
     STATUSES.REFUSEE_PAR_RH,
     STATUSES.EN_ATTENTE,
     STATUSES.REFUSEE_PAR_CEP,
+    STATUSES.PARTICIPATION,
+    STATUSES.PARTICIPATION_PARTIELLE,
+    STATUSES.NON_PARTICIPATION,
     STATUSES.ANNULEE,
+    STATUSES.ANNULEE_FACTURABLE,
+    STATUSES.ANNULEE_NON_FACTURABLE,
     STATUSES.ECARTEE,
 ]
 
@@ -80,6 +87,17 @@ export const UNSELECTABLE_STATUSES = [
     STATUSES.EN_ATTENTE,
 ]
 
+export const lockGroups = [
+    [
+        STATUSES.PARTICIPATION,
+        STATUSES.PARTICIPATION_PARTIELLE,
+        STATUSES.NON_PARTICIPATION,
+        STATUSES.ANNULEE,
+        STATUSES.ANNULEE_FACTURABLE,
+        STATUSES.ANNULEE_NON_FACTURABLE,
+    ],
+]
+
 export const INVOICE_STATUSES = [STATUSES.PARTICIPATION, STATUSES.PARTICIPATION_PARTIELLE, STATUSES.NON_PARTICIPATION]
 
 export const statusWarnings = {
@@ -88,6 +106,9 @@ export const statusWarnings = {
             "Vous êtes en train de changer le de 'Écartée' à 'Acceptée', mais c'est probablement mieux de créer une nouvelle inscription",
     },
 }
+
+export const checkAreInSameLockGroup = (status1) => (status2) =>
+    lockGroups.some((lockGroup) => lockGroup.includes(status1) && lockGroup.includes(status2))
 
 export const getUniqueId = () => {
     const dateString = Date.now().toString(36)

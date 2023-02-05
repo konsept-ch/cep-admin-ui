@@ -18,6 +18,8 @@ import {
     FINAL_STATUSES,
     STATUSES,
     UNSELECTABLE_STATUSES,
+    lockGroups,
+    checkAreInSameLockGroup,
 } from '../utils'
 import { useUpdateInscriptionStatusMutation } from '../services/inscriptions'
 
@@ -307,102 +309,114 @@ export function InscriptionsPage() {
                 groupDefaultExpanded={1}
                 groupDisplayType="groupRows"
                 groupIncludeFooter={false}
-                getContextMenuItems={({ node: { data } }) => [
-                    {
-                        name: 'Envoyer e-mail',
-                        action: () => {
-                            setIsUpdateModalVisible(true)
-                            setStatusUpdateData({
-                                ...inscriptions.find(({ id }) => id === data?.id),
-                                newStatus: data?.status,
-                            })
-                        },
-                    },
-                    selectedRowsData.length <= 1 && {
-                        name: 'Modifier statut',
-                        disabled: !checkIsSingleUpdatePossible({ status: data?.status }),
-                        tooltip: FINAL_STATUSES.includes(data?.status) ? 'Statut final (non modifiable)' : '',
-                        subMenu: inscriptionStatuses.map((currentStatus) => ({
-                            name: currentStatus,
+                getContextMenuItems={({ node: { data } }) => {
+                    const checkLockGroupForSelectedStatus = checkAreInSameLockGroup(data?.status)
+
+                    return [
+                        {
+                            name: 'Envoyer e-mail',
                             action: () => {
                                 setIsUpdateModalVisible(true)
                                 setStatusUpdateData({
                                     ...inscriptions.find(({ id }) => id === data?.id),
-                                    newStatus: currentStatus,
+                                    newStatus: data?.status,
                                 })
                             },
-                            disabled: currentStatus === data?.status || UNSELECTABLE_STATUSES.includes(currentStatus),
-                            checked: currentStatus === data?.status,
-                            icon:
-                                FINAL_STATUSES.includes(currentStatus) && !UNSELECTABLE_STATUSES.includes(currentStatus)
-                                    ? '!'
-                                    : '',
-                            tooltip:
-                                currentStatus === data?.status
-                                    ? 'Statut actuel de la sélection'
-                                    : UNSELECTABLE_STATUSES.includes(currentStatus)
-                                    ? 'Statut dérivé (non sélectionnable)'
-                                    : FINAL_STATUSES.includes(currentStatus)
-                                    ? 'Statut final !'
-                                    : '',
-                        })),
-                    },
-                    selectedRowsData.length > 1 && {
-                        name: 'Modifier statut en mass',
-                        disabled: !isMassUpdatePossible,
-                        tooltip: !isMassUpdatePossible ? 'Statut final (non modifiable)' : '',
-                        subMenu: inscriptionStatuses.map((currentStatus) => ({
-                            name: currentStatus,
+                        },
+                        selectedRowsData.length <= 1 && {
+                            name: 'Modifier statut',
+                            disabled:
+                                !checkIsSingleUpdatePossible({ status: data?.status }) &&
+                                !lockGroups.some((group) => group.includes(data?.status)),
+                            tooltip: FINAL_STATUSES.includes(data?.status) ? 'Statut final (non modifiable)' : '',
+                            subMenu: inscriptionStatuses.map((currentStatus) => ({
+                                name: currentStatus,
+                                action: () => {
+                                    setIsUpdateModalVisible(true)
+                                    setStatusUpdateData({
+                                        ...inscriptions.find(({ id }) => id === data?.id),
+                                        newStatus: currentStatus,
+                                    })
+                                },
+                                disabled:
+                                    currentStatus === data?.status ||
+                                    UNSELECTABLE_STATUSES.includes(currentStatus) ||
+                                    !checkLockGroupForSelectedStatus(currentStatus),
+                                checked: currentStatus === data?.status,
+                                icon:
+                                    FINAL_STATUSES.includes(currentStatus) &&
+                                    !UNSELECTABLE_STATUSES.includes(currentStatus)
+                                        ? '!'
+                                        : '',
+                                tooltip:
+                                    currentStatus === data?.status
+                                        ? 'Statut actuel de la sélection'
+                                        : UNSELECTABLE_STATUSES.includes(currentStatus)
+                                        ? 'Statut dérivé (non sélectionnable)'
+                                        : FINAL_STATUSES.includes(currentStatus)
+                                        ? 'Statut final !'
+                                        : '',
+                            })),
+                        },
+                        selectedRowsData.length > 1 && {
+                            name: 'Modifier statut en mass',
+                            disabled: !isMassUpdatePossible,
+                            tooltip: !isMassUpdatePossible ? 'Statut final (non modifiable)' : '',
+                            subMenu: inscriptionStatuses.map((currentStatus) => ({
+                                name: currentStatus,
+                                action: () => {
+                                    setIsMassUpdateModalVisible(true)
+                                    setStatusMassUpdateData({
+                                        status: data.status,
+                                        newStatus: currentStatus,
+                                    })
+                                },
+                                disabled:
+                                    currentStatus === data.status || UNSELECTABLE_STATUSES.includes(currentStatus),
+                                checked: currentStatus === data.status,
+                                icon:
+                                    FINAL_STATUSES.includes(currentStatus) &&
+                                    !UNSELECTABLE_STATUSES.includes(currentStatus)
+                                        ? '!'
+                                        : '',
+                                tooltip:
+                                    currentStatus === data.status
+                                        ? 'Statut actuel de la sélection'
+                                        : UNSELECTABLE_STATUSES.includes(currentStatus)
+                                        ? 'Statut dérivé (non sélectionnable)'
+                                        : '',
+                            })),
+                        },
+                        selectedRowsData.length <= 1 && {
+                            name: 'Créer attestation',
                             action: () => {
-                                setIsMassUpdateModalVisible(true)
-                                setStatusMassUpdateData({
-                                    status: data.status,
-                                    newStatus: currentStatus,
-                                })
+                                if (data != null) {
+                                    setIsUpdateModalVisible(true)
+                                    setStatusUpdateData({
+                                        ...inscriptions.find(({ id }) => id === data?.id),
+                                        newStatus: data?.status,
+                                        isCreatingAttestation: true,
+                                    })
+                                }
                             },
-                            disabled: currentStatus === data.status || UNSELECTABLE_STATUSES.includes(currentStatus),
-                            checked: currentStatus === data.status,
-                            icon:
-                                FINAL_STATUSES.includes(currentStatus) && !UNSELECTABLE_STATUSES.includes(currentStatus)
-                                    ? '!'
-                                    : '',
-                            tooltip:
-                                currentStatus === data.status
-                                    ? 'Statut actuel de la sélection'
-                                    : UNSELECTABLE_STATUSES.includes(currentStatus)
-                                    ? 'Statut dérivé (non sélectionnable)'
-                                    : '',
-                        })),
-                    },
-                    selectedRowsData.length <= 1 && {
-                        name: 'Créer attestation',
-                        action: () => {
-                            if (data != null) {
-                                setIsUpdateModalVisible(true)
-                                setStatusUpdateData({
-                                    ...inscriptions.find(({ id }) => id === data?.id),
-                                    newStatus: data?.status,
-                                    isCreatingAttestation: true,
-                                })
-                            }
                         },
-                    },
-                    selectedRowsData.length > 1 && {
-                        name: 'Créer attestation en masse',
-                        action: () => {
-                            if (data != null) {
-                                setIsMassUpdateModalVisible(true)
-                                setStatusMassUpdateData({
-                                    status: data?.status,
-                                    newStatus: data?.status,
-                                    isCreatingAttestation: true,
-                                })
-                            }
+                        selectedRowsData.length > 1 && {
+                            name: 'Créer attestation en masse',
+                            action: () => {
+                                if (data != null) {
+                                    setIsMassUpdateModalVisible(true)
+                                    setStatusMassUpdateData({
+                                        status: data?.status,
+                                        newStatus: data?.status,
+                                        isCreatingAttestation: true,
+                                    })
+                                }
+                            },
                         },
-                    },
-                    'separator',
-                    ...gridContextMenu,
-                ]}
+                        'separator',
+                        ...gridContextMenu,
+                    ]
+                }}
                 onRowSelected={({
                     api: {
                         selectionService: { selectedNodes },
