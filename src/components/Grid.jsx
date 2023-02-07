@@ -30,8 +30,8 @@ export const Grid = ({
     setActivePredefinedFiltersById,
     predefinedFilters = [],
     rowData,
-    isDataLoading,
-    components,
+    isDataLoading = false,
+    components = {},
     defaultColDef,
     defaultSortModel,
     ...gridProps

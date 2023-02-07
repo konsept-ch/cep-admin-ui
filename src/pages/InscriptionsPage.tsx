@@ -4,11 +4,7 @@ import { Helmet } from 'react-helmet-async'
 import { toast } from 'react-toastify'
 
 import { Grid, StatusUpdateModal, MassStatusUpdateModal } from '../components'
-import {
-    fetchInscriptionsAction,
-    updateInscriptionStatusAction,
-    // massUpdateInscriptionStatusesAction,
-} from '../actions/inscriptions.ts'
+import { fetchInscriptionsAction, updateInscriptionStatusAction } from '../actions/inscriptions'
 import { inscriptionsSelector } from '../reducers'
 import {
     inscriptionStatuses,
@@ -20,14 +16,19 @@ import {
     UNSELECTABLE_STATUSES,
     lockGroups,
     checkAreInSameLockGroup,
+    StatusesValues,
 } from '../utils'
 import { useUpdateInscriptionStatusMutation } from '../services/inscriptions'
 
 export function InscriptionsPage() {
     const dispatch = useDispatch()
     const [statusUpdateData, setStatusUpdateData] = useState(null)
-    const [statusMassUpdateData, setStatusMassUpdateData] = useState(null)
-    const [selectedRowsData, setSelectedRowsData] = useState([])
+    const [statusMassUpdateData, setStatusMassUpdateData] = useState<{
+        status: StatusesValues
+        newStatus: StatusesValues
+        isCreatingAttestation?: boolean
+    } | null>(null)
+    const [selectedRowsData, setSelectedRowsData] = useState<any[]>([])
     const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false)
     const [isMassUpdateModalVisible, setIsMassUpdateModalVisible] = useState(false)
     const inscriptions = useSelector(inscriptionsSelector)
@@ -57,7 +58,8 @@ export function InscriptionsPage() {
             return false
         })
 
-    const checkIsSingleUpdatePossible = ({ status }) => selectedRowsData.length <= 1 && !FINAL_STATUSES.includes(status)
+    const checkIsSingleUpdatePossible = ({ status }: { status: StatusesValues }) =>
+        selectedRowsData.length <= 1 && !FINAL_STATUSES.some((finalStatus) => finalStatus === status)
 
     const columnDefs = useMemo(
         () => [
@@ -70,7 +72,7 @@ export function InscriptionsPage() {
                 rowGroup: true,
                 hide: true,
                 // TODO: sort ignoring accents
-                comparator: (_valueA, _valueB, nodeA, nodeB) => {
+                comparator: (_valueA: any, _valueB: any, nodeA: any, nodeB: any) => {
                     return nodeA.key?.localeCompare(nodeB.key)
                 },
             },
@@ -92,7 +94,7 @@ export function InscriptionsPage() {
                 rowGroup: true,
                 hide: true,
                 // TODO: sort ignoring accents
-                comparator: (_valueA, _valueB, nodeA, nodeB) => {
+                comparator: (_valueA: any, _valueB: any, nodeA: any, nodeB: any) => {
                     return nodeA.key?.localeCompare(nodeB.key)
                 },
             },
@@ -104,10 +106,10 @@ export function InscriptionsPage() {
                 rowGroup: true,
                 hide: true,
                 // TODO: sort ignoring accents
-                comparator: (_valueA, _valueB, nodeA, nodeB) => {
+                comparator: (_valueA: any, _valueB: any, nodeA: any, nodeB: any) => {
                     return nodeA.key?.localeCompare(nodeB.key)
                 },
-                valueGetter: ({ data }) =>
+                valueGetter: ({ data }: { data: any }) =>
                     `${data?.sessionName} [${
                         data?.isPending
                             ? data?.startDate
@@ -120,7 +122,7 @@ export function InscriptionsPage() {
                 filter: 'agDateColumnFilter',
                 headerTooltip: 'La date de début de la session',
                 type: 'numericColumn',
-                valueGetter: ({ data }) =>
+                valueGetter: ({ data }: { data: any }) =>
                     data?.isPending
                         ? data?.startDate
                         : formatDate({ dateString: data?.startDate, isDateVisible: true }),
@@ -179,14 +181,16 @@ export function InscriptionsPage() {
                 headerName: "Type d'inscription",
                 filter: 'agSetColumnFilter',
                 // setting default value for data resolves an uncaught type error
-                valueGetter: ({ data: { type } = {} }) =>
-                    ({
-                        cancellation: 'Annulation',
-                        learner: 'Participant',
-                        tutor: 'Formateur',
-                        pending: 'En attente', // ?
-                        group: 'Groupe', // ?
-                    }[type] ?? type),
+                valueGetter: ({ data: { type } = {} }: { data: { type?: any } }) =>
+                    ((
+                        {
+                            cancellation: 'Annulation',
+                            learner: 'Participant',
+                            tutor: 'Formateur',
+                            pending: 'En attente', // ?
+                            group: 'Groupe', // ?
+                        } as any
+                    )[type] ?? type),
             },
 
             {
@@ -201,7 +205,7 @@ export function InscriptionsPage() {
                 headerName: 'Utilisé pour quotas',
                 filter: 'agSetColumnFilter',
                 headerTooltip: 'Les quotas de la session',
-                valueGetter: ({ data }) =>
+                valueGetter: ({ data }: { data: any }) =>
                     typeof data === 'undefined' ? '' : data.isUsedForQuota ? 'Utilisé' : 'Non-utilisé',
             },
             {
@@ -254,7 +258,7 @@ export function InscriptionsPage() {
     )
 
     const rowData = inscriptions
-        .filter((current) => current != null)
+        .filter((current: any) => current != null)
         .map(
             ({
                 id,
@@ -271,7 +275,7 @@ export function InscriptionsPage() {
                 isPending,
                 validationType,
                 organizationClientNumber,
-            }) => ({
+            }: any) => ({
                 id,
                 participant: user.lastName != null ? `${user.lastName} ${user.firstName}` : 'Aucune inscription',
                 profession: user.profession,
@@ -334,7 +338,7 @@ export function InscriptionsPage() {
                 groupDefaultExpanded={1}
                 groupDisplayType="groupRows"
                 groupIncludeFooter={false}
-                getContextMenuItems={({ node: { data } }) => {
+                getContextMenuItems={({ node: { data } }: { node: { data: any } }) => {
                     const checkLockGroupForSelectedStatus = checkAreInSameLockGroup(data?.status)
 
                     return [
@@ -343,7 +347,7 @@ export function InscriptionsPage() {
                             action: () => {
                                 setIsUpdateModalVisible(true)
                                 setStatusUpdateData({
-                                    ...inscriptions.find(({ id }) => id === data?.id),
+                                    ...inscriptions.find(({ id }: { id: string }) => id === data?.id),
                                     newStatus: data?.status,
                                 })
                             },
@@ -359,26 +363,26 @@ export function InscriptionsPage() {
                                 action: () => {
                                     setIsUpdateModalVisible(true)
                                     setStatusUpdateData({
-                                        ...inscriptions.find(({ id }) => id === data?.id),
+                                        ...inscriptions.find(({ id }: { id: string }) => id === data?.id),
                                         newStatus: currentStatus,
                                     })
                                 },
                                 disabled:
                                     currentStatus === data?.status ||
-                                    UNSELECTABLE_STATUSES.includes(currentStatus) ||
+                                    UNSELECTABLE_STATUSES.includes(currentStatus as any) ||
                                     !checkLockGroupForSelectedStatus(currentStatus),
                                 checked: currentStatus === data?.status,
                                 icon:
-                                    FINAL_STATUSES.includes(currentStatus) &&
-                                    !UNSELECTABLE_STATUSES.includes(currentStatus)
+                                    FINAL_STATUSES.includes(currentStatus as any) &&
+                                    !UNSELECTABLE_STATUSES.includes(currentStatus as any)
                                         ? '!'
                                         : '',
                                 tooltip:
                                     currentStatus === data?.status
                                         ? 'Statut actuel de la sélection'
-                                        : UNSELECTABLE_STATUSES.includes(currentStatus)
+                                        : UNSELECTABLE_STATUSES.includes(currentStatus as any)
                                         ? 'Statut dérivé (non sélectionnable)'
-                                        : FINAL_STATUSES.includes(currentStatus)
+                                        : FINAL_STATUSES.includes(currentStatus as any)
                                         ? 'Statut final !'
                                         : '',
                             })),
@@ -397,17 +401,18 @@ export function InscriptionsPage() {
                                     })
                                 },
                                 disabled:
-                                    currentStatus === data.status || UNSELECTABLE_STATUSES.includes(currentStatus),
+                                    currentStatus === data.status ||
+                                    UNSELECTABLE_STATUSES.includes(currentStatus as any),
                                 checked: currentStatus === data.status,
                                 icon:
-                                    FINAL_STATUSES.includes(currentStatus) &&
-                                    !UNSELECTABLE_STATUSES.includes(currentStatus)
+                                    FINAL_STATUSES.includes(currentStatus as any) &&
+                                    !UNSELECTABLE_STATUSES.includes(currentStatus as any)
                                         ? '!'
                                         : '',
                                 tooltip:
                                     currentStatus === data.status
                                         ? 'Statut actuel de la sélection'
-                                        : UNSELECTABLE_STATUSES.includes(currentStatus)
+                                        : UNSELECTABLE_STATUSES.includes(currentStatus as any)
                                         ? 'Statut dérivé (non sélectionnable)'
                                         : '',
                             })),
@@ -418,7 +423,7 @@ export function InscriptionsPage() {
                                 if (data != null) {
                                     setIsUpdateModalVisible(true)
                                     setStatusUpdateData({
-                                        ...inscriptions.find(({ id }) => id === data?.id),
+                                        ...inscriptions.find(({ id }: { id: string }) => id === data?.id),
                                         newStatus: data?.status,
                                         isCreatingAttestation: true,
                                     })
@@ -446,10 +451,10 @@ export function InscriptionsPage() {
                     api: {
                         selectionService: { selectedNodes },
                     },
-                }) => {
+                }: any) => {
                     const filteredSelectedRowsData =
                         Object.values(selectedNodes).reduce(
-                            (previous, current) => [
+                            (previous: any[], current: any) => [
                                 ...previous,
                                 ...(typeof current !== 'undefined' && typeof previous !== 'undefined'
                                     ? [current.data]
@@ -462,7 +467,7 @@ export function InscriptionsPage() {
                 }}
             />
 
-            {isUpdateModalVisible && statusUpdateData && (
+            {isUpdateModalVisible && (statusUpdateData as any) && (
                 <StatusUpdateModal
                     closeModal={() => {
                         setStatusUpdateData(null)
@@ -470,11 +475,11 @@ export function InscriptionsPage() {
                         dispatch(fetchInscriptionsAction())
                     }}
                     statusUpdateData={statusUpdateData}
-                    updateStatus={({ emailTemplateId, shouldSendSms, selectedAttestationTemplateUuid }) =>
+                    updateStatus={({ emailTemplateId, shouldSendSms, selectedAttestationTemplateUuid }: any) =>
                         dispatch(
                             updateInscriptionStatusAction({
-                                inscriptionId: statusUpdateData.id,
-                                newStatus: statusUpdateData.newStatus,
+                                inscriptionId: (statusUpdateData as any)?.id,
+                                newStatus: (statusUpdateData as any)?.newStatus,
                                 emailTemplateId,
                                 selectedAttestationTemplateUuid,
                                 shouldSendSms,
@@ -483,7 +488,9 @@ export function InscriptionsPage() {
                                     setStatusUpdateData(null)
                                     dispatch(fetchInscriptionsAction())
                                     toast.success(
-                                        `Statut d'inscription modifié de "${statusUpdateData.status}" à "${statusUpdateData.newStatus}"`
+                                        `Statut d'inscription modifié de "${(statusUpdateData as any)?.status}" à "${
+                                            (statusUpdateData as any)?.newStatus
+                                        }"`
                                     )
                                 },
                             })
@@ -502,7 +509,13 @@ export function InscriptionsPage() {
                     inscriptionsData={statusMassUpdateData}
                     selectedRowsData={selectedRowsData}
                     isUpdating={isUpdatingInscriptionStatus}
-                    updateStatus={async ({ emailTemplateId, selectedAttestationTemplateUuid }) => {
+                    updateStatus={async ({
+                        emailTemplateId,
+                        selectedAttestationTemplateUuid,
+                    }: {
+                        emailTemplateId: string
+                        selectedAttestationTemplateUuid: string
+                    }) => {
                         // dispatch(
                         //     massUpdateInscriptionStatusesAction({
                         //         inscriptionsIds: selectedRowsData.map(({ id }) => id),
