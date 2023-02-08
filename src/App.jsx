@@ -9,11 +9,13 @@ import { InscriptionsRefusedByHrPage } from './pages/InscriptionsRefusedByHrPage
 import { InscriptionCancellationsPage } from './pages/InscriptionCancellationsPage'
 import { SurveyPage } from './pages/SurveyPage'
 import { ContractsPage } from './pages/ContractsPage'
+import { EvaluationsPage } from './pages/EvaluationsPage'
 import { SessionsPage } from './pages/SessionsPage'
 import { CoursesPage } from './pages/CoursesPage'
 import { TemplatesPage } from './pages/TemplatesPage'
 import { AttestationTemplatesPage } from './pages/AttestationTemplatesPage'
 import { ContractTemplatesPage } from './pages/ContractTemplatesPage'
+import { EvaluationTemplatesPage } from './pages/EvaluationTemplatesPage'
 import { AgendaPage } from './pages/AgendaPage'
 import { TypographyPage } from './pages/TypographyPage'
 import { NotificationsPage } from './pages/NotificationsPage'
@@ -37,6 +39,7 @@ import {
     PATH_EMAIL_TEMPLATES,
     PATH_ATTESTATION_TEMPLATES,
     PATH_CONTRACTS,
+    PATH_EVALUATIONS,
     PATH_ORGANIZATIONS,
     PATH_FORMATEURS,
     PATH_USERS,
@@ -102,6 +105,7 @@ export function App() {
                             <Route exact path={`${PATH_CATALOGUE}/${PATH_SESSIONS}`} element={<SessionsPage />} />
                             <Route exact path={`${PATH_CATALOGUE}/${PATH_SEANCES}`} element={<SeancesPage />} />
                             <Route exact path={`${PATH_CATALOGUE}/${PATH_CONTRACTS}`} element={<ContractsPage />} />
+                            <Route exact path={`${PATH_CATALOGUE}/${PATH_EVALUATIONS}`} element={<EvaluationsPage />} />
                             <Route
                                 exact
                                 path={`${PATH_TEMPLATES}/${PATH_EMAIL_TEMPLATES}`}
@@ -116,6 +120,11 @@ export function App() {
                                 exact
                                 path={`${PATH_TEMPLATES}/${PATH_CONTRACTS}`}
                                 element={<ContractTemplatesPage />}
+                            />
+                            <Route
+                                exact
+                                path={`${PATH_TEMPLATES}/${PATH_EVALUATIONS}`}
+                                element={<EvaluationTemplatesPage />}
                             />
                             <Route exact path={PATH_TEMPLATES} element={<TemplatesPage />} />
                             <Route exact path={`${PATH_COMMUNITY}/${PATH_USERS}`} element={<UsersPage />} />

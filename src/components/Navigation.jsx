@@ -14,6 +14,7 @@ import {
     faChalkboardTeacher,
     faUsers,
     faBook,
+    faDna,
     faFileInvoiceDollar,
     faBan,
     faBookOpenCover,
@@ -33,6 +34,7 @@ import {
     PATH_EMAIL_TEMPLATES,
     PATH_ATTESTATION_TEMPLATES,
     PATH_CONTRACTS,
+    PATH_EVALUATIONS,
     PATH_COMMUNITY,
     PATH_USERS,
     PATH_ORGANIZATIONS,
@@ -133,6 +135,12 @@ export const Navigation = ({ isLoggedIn }) => {
                             >
                                 <FontAwesomeIcon icon={faFileContract} /> Contrats
                             </Nav.Link>
+                            <Nav.Link
+                                href={`/${PATH_CATALOGUE}/${PATH_EVALUATIONS}`}
+                                onClick={goTo(`${PATH_CATALOGUE}/${PATH_EVALUATIONS}`)}
+                            >
+                                <FontAwesomeIcon icon={faDna} /> Évaluations
+                            </Nav.Link>
                         </NavDropdown>
                         {/* <Nav.Link href={`/${PATH_TEMPLATES}`} onClick={goTo(PATH_TEMPLATES)}>
                             <FontAwesomeIcon icon={faEnvelopeOpenText} /> Modèles
@@ -162,6 +170,12 @@ export const Navigation = ({ isLoggedIn }) => {
                                 onClick={goTo(`${PATH_TEMPLATES}/${PATH_CONTRACTS}`)}
                             >
                                 <FontAwesomeIcon icon={faFileContract} /> Contrats
+                            </Nav.Link>
+                            <Nav.Link
+                                href={`/${PATH_TEMPLATES}/${PATH_EVALUATIONS}`}
+                                onClick={goTo(`${PATH_TEMPLATES}/${PATH_EVALUATIONS}`)}
+                            >
+                                <FontAwesomeIcon icon={faDna} /> Évaluations
                             </Nav.Link>
                         </NavDropdown>
                         <NavDropdown
