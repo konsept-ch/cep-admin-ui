@@ -43,11 +43,11 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, setSelecte
 
     const codeCategoryValues = useMemo(
         () => [
-            { value: 'catalogue', label: 'Catalogue' },
+            { value: 'cat', label: 'CAT' },
             { value: 'fsm', label: 'FSM' },
             { value: 'ps', label: 'PS' },
             { value: 'cie', label: 'CIE' },
-            { value: 'cas', label: 'CAS' },
+            { value: 'certif', label: 'CERTIF' },
         ],
         []
     )
@@ -61,6 +61,17 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, setSelecte
             { value: 'Communication & Relations', label: 'Communication & Relations' },
             { value: 'Efficacité personnelle', label: 'Efficacité personnelle' },
             { value: 'Prévention & Santé', label: 'Prévention & Santé' },
+            { value: 'Apprentissage', label: 'Apprentissage' },
+        ],
+        []
+    )
+
+    const targetAudienceValues = useMemo(
+        () => [
+            { value: 'Tout public', label: 'Tout public' },
+            { value: 'Cadres et spécialistes', label: 'Cadres et spécialistes' },
+            { value: 'Apprentis', label: 'Apprentis' },
+            { value: 'Formateurs', label: 'Formateurs' },
         ],
         []
     )
@@ -74,7 +85,7 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, setSelecte
                 teachingMethod: teachingMethodValues.find(({ label }) => label === selectedCourseData.teachingMethod),
                 codeCategory: codeCategoryValues.find(({ label }) => label === selectedCourseData.codeCategory),
                 theme: themeValues.find(({ label }) => label === selectedCourseData.theme),
-                targetAudience: selectedCourseData?.targetAudience,
+                targetAudience: targetAudienceValues.find(({ label }) => label === selectedCourseData.targetAudience),
                 billingMode: selectedCourseData?.billingMode,
                 pricingType: selectedCourseData?.pricingType,
                 baseRate: selectedCourseData?.baseRate,
@@ -191,7 +202,11 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, setSelecte
                             </Col>
                             <Col>
                                 <Form.Label>Public cible</Form.Label>
-                                <Form.Control {...register('targetAudience')} />
+                                <Controller
+                                    name="targetAudience"
+                                    control={control}
+                                    render={({ field }) => <Select {...field} options={targetAudienceValues} />}
+                                />
                             </Col>
                         </Row>
 
