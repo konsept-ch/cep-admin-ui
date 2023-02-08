@@ -338,7 +338,9 @@ export function InscriptionsPage() {
                 groupDefaultExpanded={1}
                 groupDisplayType="groupRows"
                 groupIncludeFooter={false}
-                getContextMenuItems={({ node: { data } }: { node: { data: any } }) => {
+                getContextMenuItems={(
+                    { node: { data } = { data: {} } }: { node: { data: any } } = { node: { data: {} } }
+                ) => {
                     const checkLockGroupForSelectedStatus = checkAreInSameLockGroup(data?.status)
 
                     return [
@@ -396,21 +398,21 @@ export function InscriptionsPage() {
                                 action: () => {
                                     setIsMassUpdateModalVisible(true)
                                     setStatusMassUpdateData({
-                                        status: data.status,
+                                        status: data?.status,
                                         newStatus: currentStatus,
                                     })
                                 },
                                 disabled:
-                                    currentStatus === data.status ||
+                                    currentStatus === data?.status ||
                                     UNSELECTABLE_STATUSES.includes(currentStatus as any),
-                                checked: currentStatus === data.status,
+                                checked: currentStatus === data?.status,
                                 icon:
                                     FINAL_STATUSES.includes(currentStatus as any) &&
                                     !UNSELECTABLE_STATUSES.includes(currentStatus as any)
                                         ? '!'
                                         : '',
                                 tooltip:
-                                    currentStatus === data.status
+                                    currentStatus === data?.status
                                         ? 'Statut actuel de la sélection'
                                         : UNSELECTABLE_STATUSES.includes(currentStatus as any)
                                         ? 'Statut dérivé (non sélectionnable)'

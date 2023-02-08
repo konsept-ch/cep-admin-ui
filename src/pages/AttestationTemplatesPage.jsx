@@ -214,7 +214,7 @@ export function AttestationTemplatesPage() {
                                     <FloatingLabel controlId="title" label="Titre" className="mb-2">
                                         <Form.Control
                                             type="text"
-                                            placeholder="Titre de la séance"
+                                            placeholder="Titre du modèle d'attestation"
                                             isInvalid={errors.title}
                                             {...register('title', {
                                                 required: { value: true, message: 'Le titre est requis' },
@@ -227,7 +227,7 @@ export function AttestationTemplatesPage() {
                                     <FloatingLabel controlId="description" label="Description" className="mb-2">
                                         <Form.Control
                                             as="textarea"
-                                            placeholder="Description de la séance"
+                                            placeholder="Description du modèle d'attestation"
                                             style={{ height: '100px' }}
                                             {...register('description')}
                                         />
