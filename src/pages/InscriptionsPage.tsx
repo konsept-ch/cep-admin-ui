@@ -372,7 +372,8 @@ export function InscriptionsPage() {
                                 disabled:
                                     currentStatus === data?.status ||
                                     UNSELECTABLE_STATUSES.includes(currentStatus as any) ||
-                                    !checkLockGroupForSelectedStatus(currentStatus),
+                                    (FINAL_STATUSES.includes(data?.status as any) &&
+                                        !checkLockGroupForSelectedStatus(currentStatus)),
                                 checked: currentStatus === data?.status,
                                 icon:
                                     FINAL_STATUSES.includes(currentStatus as any) &&
