@@ -274,6 +274,19 @@ export function ManualInvoicesPage() {
                                 csv: csvFacture.replaceAll('/', '"/"'),
                                 fileName: 'CSV Facture pour Crésus',
                             })
+
+                            updateStatuses({
+                                body: {
+                                    uuids: invoicesToExport.map((invoice) => invoice.id),
+                                    status: 'Export_e',
+                                },
+                            })
+                                .then((response) => {
+                                    toast.success(response.data.message)
+                                })
+                                .finally(() => {
+                                    refetchInvoices()
+                                })
                         },
                     },
                     {
@@ -296,7 +309,6 @@ export function ManualInvoicesPage() {
                                         status: statusConvertMap[name],
                                     },
                                 })
-
                                 if (!error) {
                                     toast.success(data.message)
                                 }
