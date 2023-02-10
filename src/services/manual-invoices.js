@@ -9,6 +9,13 @@ export const manualInvoicesApi = createApi({
         getStatuses: builder.query({
             query: () => 'statuses',
         }),
+        updateStatuses: builder.mutation({
+            query: ({ body }) => ({
+                url: 'statuses',
+                method: 'PUT',
+                body,
+            }),
+        }),
         getManualInvoices: builder.query({
             query: () => '',
         }),
@@ -37,6 +44,7 @@ export const manualInvoicesApi = createApi({
 
 export const {
     useLazyGetStatusesQuery,
+    useUpdateStatusesMutation,
     useGetManualInvoicesQuery,
     useCreateManualInvoiceMutation,
     useUpdateManualInvoiceMutation,

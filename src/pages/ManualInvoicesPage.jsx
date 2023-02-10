@@ -1,16 +1,23 @@
 import { useState } from 'react'
 import { Container, Button } from 'react-bootstrap'
 import { Helmet } from 'react-helmet-async'
+import { toast } from 'react-toastify'
 import Papa from 'papaparse'
 import { DateTime } from 'luxon'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPen } from '@fortawesome/pro-light-svg-icons'
 
 import { Grid, ManualInvoiceModal } from '../components'
-import { useGetManualInvoicesQuery, useLazyGetStatusesQuery } from '../services/manual-invoices'
+import {
+    useGetManualInvoicesQuery,
+    useLazyGetStatusesQuery,
+    useUpdateStatusesMutation,
+} from '../services/manual-invoices'
 import { useLazyGetOrganizationsFlatWithAddressQuery } from '../services/organizations'
 import { useLazyGetUsersQuery } from '../services/users'
 import { gridContextMenu, downloadCsvFile } from '../utils'
+
+const INVOICE_STATUSES = ['En préparation', 'A traiter', 'Exportée', 'Non transmissible', 'Annulée', 'Envoyée']
 
 const csvOptions = {
     delimiter: ';',
@@ -34,6 +41,7 @@ export function ManualInvoicesPage() {
     const [fetchOrganizations, { data: organizations }] = useLazyGetOrganizationsFlatWithAddressQuery()
     const [fetchUsers, { data: users }] = useLazyGetUsersQuery()
     const [fetchStatuses, { data: statuses }] = useLazyGetStatusesQuery()
+    const [updateStatuses, { isLoading: isStatusesUpdating }] = useUpdateStatusesMutation()
 
     const {
         data: invoicesData,
@@ -109,6 +117,9 @@ export function ManualInvoicesPage() {
             tooltipField: 'statut',
             headerTooltip: 'Statut',
             filter: 'agSetColumnFilter',
+            filterParams: {
+                newRowAction: 'keep',
+            },
             width: 150,
         },
         {
@@ -265,6 +276,34 @@ export function ManualInvoicesPage() {
                             })
                         },
                     },
+                    {
+                        name: 'Modifier statut',
+                        disabled: selectedRowsIds.length == 0,
+                        subMenu: INVOICE_STATUSES.map((name) => ({
+                            name,
+                            action: async () => {
+                                const statusConvertMap = {
+                                    'En préparation': 'En_pr_paration',
+                                    'A traiter': 'A_traiter',
+                                    Exportée: 'Export_e',
+                                    'Non transmissible': 'Non_transmissible',
+                                    Annulée: 'Annul_e',
+                                    Envoyée: 'Envoy_e',
+                                }
+                                const { error, data } = await updateStatuses({
+                                    body: {
+                                        uuids: selectedRowsIds,
+                                        status: statusConvertMap[name],
+                                    },
+                                })
+
+                                if (!error) {
+                                    toast.success(data.message)
+                                }
+                                refetchInvoices()
+                            },
+                        })),
+                    },
                     'separator',
                     ...gridContextMenu,
                 ]}
@@ -285,6 +324,12 @@ export function ManualInvoicesPage() {
                         ) || []
 
                     setSelectedRowsIds(filteredSelectedRowsIds)
+                }}
+                defaultFilterModel={{
+                    status: {
+                        filterType: 'set',
+                        values: ['A traiter', 'En préparation'],
+                    },
                 }}
             />
             <Container fluid className="mb-2">
