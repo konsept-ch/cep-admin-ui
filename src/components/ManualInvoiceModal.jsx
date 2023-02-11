@@ -197,14 +197,26 @@ export function ManualInvoiceModal({
                     <Form noValidate>
                         <Row>
                             <Col>
-                                <Form.Group className="mb-3" controlId="statut">
-                                    <Form.Label>Statut</Form.Label>
-                                    <Controller
-                                        name="status"
-                                        control={control}
-                                        render={({ field }) => <Select {...field} options={statusesOptions} />}
-                                    />
-                                </Form.Group>
+                                {statusesOptions ? (
+                                    <Form.Group className="mb-3" controlId="statut">
+                                        <Form.Label>Statut</Form.Label>
+                                        <Controller
+                                            name="status"
+                                            control={control}
+                                            render={({ field }) => (
+                                                <Select
+                                                    {...field}
+                                                    options={statusesOptions}
+                                                    defaultValue={statusesOptions.find(
+                                                        ({ label }) => label === 'En préparation'
+                                                    )}
+                                                />
+                                            )}
+                                        />
+                                    </Form.Group>
+                                ) : (
+                                    'Chargement des statuts...'
+                                )}
                             </Col>
                             <Col>
                                 <Form.Group className="mb-3" controlId="clientSelect">

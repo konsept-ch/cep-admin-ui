@@ -87,6 +87,7 @@ export const UNSELECTABLE_STATUSES = [
     STATUSES.VALIDE_PAR_RH,
     STATUSES.REFUSEE_PAR_RH,
     STATUSES.EN_ATTENTE,
+    STATUSES.ANNULEE,
 ] as const
 
 export const lockGroups = [
