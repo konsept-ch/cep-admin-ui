@@ -175,6 +175,7 @@ export function ManualInvoiceModal({
                 courseYear: '',
                 invoiceDate: '',
                 items: [defaultEmptyItem],
+                status: statusesOptions?.find(({ label }) => label === 'En préparation'),
             })
         }
     }, [selectedInvoiceData, clientOptions, userOptions, statusesOptions])

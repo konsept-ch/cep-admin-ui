@@ -277,7 +277,7 @@ export function ManualInvoicesPage() {
                                 fileName: 'CSV Facture pour Crésus',
                             })
 
-                            /*updateStatuses({
+                            updateStatuses({
                                 body: {
                                     uuids: invoicesToExport.map((invoice) => invoice.id),
                                     status: 'Export_e',
@@ -288,7 +288,7 @@ export function ManualInvoicesPage() {
                                 })
                                 .finally(() => {
                                     refetchInvoices()
-                                })*/
+                                })
                         },
                     },
                     {
