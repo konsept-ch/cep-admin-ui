@@ -263,8 +263,6 @@ export function ManualInvoicesPage() {
                                 csv: csvFacture.replaceAll('/', '"/"'),
                                 fileName: 'CSV Facture pour Crésus',
                             })
-
-                            // change status "À trater" -> "Exportée"
                         },
                     },
                     'separator',
