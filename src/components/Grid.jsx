@@ -83,7 +83,7 @@ export const Grid = ({
         if (rowData?.length > 0 && defaultFilterModel !== undefined) {
             gridApi.setFilterModel(defaultFilterModel)
         }
-    }, [rowData])
+    }, [gridApi, rowData])
 
     const onGridReady = ({ api, columnApi }) => {
         setGridApi(api)

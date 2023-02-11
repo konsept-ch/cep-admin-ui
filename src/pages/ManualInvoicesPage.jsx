@@ -192,6 +192,8 @@ export function ManualInvoicesPage() {
                                       )
                                     : [data]
 
+                            console.log(invoicesToExport)
+
                             const csvClient = Papa.unparse(
                                 {
                                     fields: [
@@ -223,9 +225,9 @@ export function ManualInvoicesPage() {
                                         return [
                                             invoiceData.clientNumber,
                                             invoiceData.organizationName,
-                                            '', // only if private
-                                            '', // only if private
-                                            '', // only if private
+                                            invoiceData.customClientTitle,
+                                            invoiceData.customClientFirstname,
+                                            invoiceData.customClientLastname,
                                             invoiceData.customClientAddress.replaceAll('\n', '\\'),
                                             invoiceData.customClientAddress.replaceAll('\n', '\\'),
                                             postalAddressCode,
@@ -275,7 +277,7 @@ export function ManualInvoicesPage() {
                                 fileName: 'CSV Facture pour Crésus',
                             })
 
-                            updateStatuses({
+                            /*updateStatuses({
                                 body: {
                                     uuids: invoicesToExport.map((invoice) => invoice.id),
                                     status: 'Export_e',
@@ -286,7 +288,7 @@ export function ManualInvoicesPage() {
                                 })
                                 .finally(() => {
                                     refetchInvoices()
-                                })
+                                })*/
                         },
                     },
                     {
