@@ -79,6 +79,7 @@ export function ManualInvoiceModal({
 
             setValue(
                 'customClientAddress',
+                // TODO: calculate custom client address on the server instead
                 `${name}\n${addressTitle ? `${addressTitle}\n` : ''}${
                     postalAddressDepartment ? `${postalAddressDepartment}\n` : ''
                 }${postalAddressStreet ? `${postalAddressStreet}\n` : ''}${
@@ -261,7 +262,7 @@ export function ManualInvoiceModal({
                                     />
                                 </Form.Group>
                                 <Form.Group className="mb-3" controlId="reason">
-                                    <Form.Label>Type de facture</Form.Label>
+                                    <Form.Label>Raison</Form.Label>
                                     <Controller
                                         name="reason"
                                         control={control}
