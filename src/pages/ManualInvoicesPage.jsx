@@ -8,11 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPen } from '@fortawesome/pro-light-svg-icons'
 
 import { Grid, ManualInvoiceModal } from '../components'
-import {
-    useGetManualInvoicesQuery,
-    useLazyGetStatusesQuery,
-    useUpdateStatusesMutation,
-} from '../services/manual-invoices'
+import { useGetManualInvoicesQuery, useLazyGetEnumsQuery, useUpdateStatusesMutation } from '../services/manual-invoices'
 import { useLazyGetOrganizationsFlatWithAddressQuery } from '../services/organizations'
 import { useLazyGetUsersQuery } from '../services/users'
 import { gridContextMenu, downloadCsvFile } from '../utils'
@@ -40,7 +36,7 @@ export function ManualInvoicesPage() {
 
     const [fetchOrganizations, { data: organizations }] = useLazyGetOrganizationsFlatWithAddressQuery()
     const [fetchUsers, { data: users }] = useLazyGetUsersQuery()
-    const [fetchStatuses, { data: statuses }] = useLazyGetStatusesQuery()
+    const [fetchEnums, { data: enums }] = useLazyGetEnumsQuery()
     const [updateStatuses, { isLoading: isStatusesUpdating }] = useUpdateStatusesMutation()
 
     const {
@@ -168,6 +164,22 @@ export function ManualInvoicesPage() {
                     )
                     .reduce((a, b) => Number(a) + Number(b), 0)
                     .toFixed(2),
+        },
+        {
+            field: 'reason',
+            headerName: 'Raison',
+            tooltipField: 'reason',
+            headerTooltip: 'Raison de la facture, utilisé pour les pénalités',
+            filter: 'agSetColumnFilter',
+            width: 150,
+        },
+        {
+            field: 'invoiceType',
+            headerName: 'Type',
+            tooltipField: 'invoiceType',
+            headerTooltip: 'Type de la facture, utilisé pour filtrer selon la page',
+            filter: 'agSetColumnFilter',
+            width: 150,
         },
     ])
 
@@ -364,8 +376,8 @@ export function ManualInvoicesPage() {
                     organizations={organizations}
                     fetchUsers={fetchUsers}
                     users={users}
-                    fetchStatuses={fetchStatuses}
-                    statuses={statuses}
+                    fetchEnums={fetchEnums}
+                    enums={enums}
                 />
             )}
         </>

@@ -25,13 +25,12 @@ const tvaOptions = [
 ]
 // const defaultTvaOption = tvaOptions[1]
 
-const unitValues = [
+const unitOptions = [
     { value: 'jour(s)', label: 'jour(s)' },
     { value: 'heure(s)', label: 'heure(s)' },
     { value: 'forfait(s)', label: 'forfait(s)' },
     { value: 'part.', label: 'part.' },
 ]
-
 export function ManualInvoiceModal({
     refetchInvoices,
     selectedInvoiceData,
@@ -41,9 +40,10 @@ export function ManualInvoiceModal({
     organizations,
     fetchUsers,
     users,
-    fetchStatuses,
-    statuses,
+    fetchEnums,
+    enums,
 }) {
+    const { invoiceStatuses, invoiceTypes, invoiceReasons } = enums ?? {}
     const {
         control,
         register,
@@ -112,13 +112,35 @@ export function ManualInvoiceModal({
 
     const statusesOptions = useMemo(
         () =>
-            statuses != null
-                ? Object.entries(statuses).map(([prismaStatus, actualStatus]) => ({
+            invoiceStatuses != null
+                ? Object.entries(invoiceStatuses).map(([prismaStatus, actualStatus]) => ({
                       value: prismaStatus,
                       label: actualStatus,
                   }))
                 : null,
-        [statuses]
+        [invoiceStatuses]
+    )
+
+    const invoiceTypeOptions = useMemo(
+        () =>
+            invoiceTypes != null
+                ? Object.entries(invoiceTypes).map(([prismaInvoiceType, actualInvoiceType]) => ({
+                      value: prismaInvoiceType,
+                      label: actualInvoiceType,
+                  }))
+                : null,
+        [invoiceTypes]
+    )
+
+    const reasonOptions = useMemo(
+        () =>
+            invoiceReasons != null
+                ? Object.entries(invoiceReasons).map(([prismaInvoiceReason, actualInvoiceReason]) => ({
+                      value: prismaInvoiceReason,
+                      label: actualInvoiceReason,
+                  }))
+                : null,
+        [invoiceReasons]
     )
 
     const userOptions = useMemo(
@@ -135,7 +157,6 @@ export function ManualInvoiceModal({
         if (selectedInvoiceData != null) {
             const {
                 organizationUuid,
-                // invoiceNumberForCurrentYear,
                 customClientEmail,
                 customClientAddress,
                 customClientTitle,
@@ -147,13 +168,14 @@ export function ManualInvoiceModal({
                 selectedUserUuid,
                 concerns,
                 status,
+                invoiceType,
+                reason,
             } = selectedInvoiceData
 
             reset({
                 client: clientOptions?.find(({ uuid }) => uuid === organizationUuid),
                 selectedUser: userOptions?.find(({ uuid }) => uuid === selectedUserUuid),
                 status: statusesOptions?.find(({ label }) => label === status),
-                // status: { value: status, label: statuses?.[status] },
                 customClientAddress,
                 customClientEmail,
                 customClientTitle,
@@ -163,6 +185,8 @@ export function ManualInvoiceModal({
                 invoiceDate: new Date(String(invoiceDate)),
                 items,
                 concerns,
+                invoiceType: invoiceTypeOptions?.find(({ label }) => label === invoiceType),
+                reason: reasonOptions?.find(({ label }) => label === reason),
             })
         } else {
             reset({
@@ -174,6 +198,9 @@ export function ManualInvoiceModal({
                 customClientLastname: '',
                 courseYear: '',
                 invoiceDate: '',
+                concerns: '',
+                invoiceType: invoiceTypeOptions?.find(({ label }) => label === 'Manuelle'),
+                reason: reasonOptions?.find(({ label }) => label === 'Participation'),
                 items: [defaultEmptyItem],
                 status: statusesOptions?.find(({ label }) => label === 'En préparation'),
             })
@@ -183,7 +210,7 @@ export function ManualInvoiceModal({
     useEffect(() => {
         if (isModalOpen) {
             fetchOrganizations()
-            fetchStatuses()
+            fetchEnums()
         }
     }, [isModalOpen])
 
@@ -225,6 +252,22 @@ export function ManualInvoiceModal({
                                 ) : (
                                     'Chargement des statuts...'
                                 )}
+                                <Form.Group className="mb-3" controlId="invoiceType">
+                                    <Form.Label>Type de facture</Form.Label>
+                                    <Controller
+                                        name="invoiceType"
+                                        control={control}
+                                        render={({ field }) => <Select {...field} options={invoiceTypeOptions} />}
+                                    />
+                                </Form.Group>
+                                <Form.Group className="mb-3" controlId="reason">
+                                    <Form.Label>Type de facture</Form.Label>
+                                    <Controller
+                                        name="reason"
+                                        control={control}
+                                        render={({ field }) => <Select {...field} options={reasonOptions} />}
+                                    />
+                                </Form.Group>
                             </Col>
                             <Col>
                                 <Form.Group className="mb-3" controlId="clientSelect">
@@ -423,7 +466,7 @@ export function ManualInvoiceModal({
                                         <Controller
                                             name={`items.${index}.unit`}
                                             control={control}
-                                            render={({ field }) => <Select {...field} options={unitValues} />}
+                                            render={({ field }) => <Select {...field} options={unitOptions} />}
                                         />
                                     </Col>
                                     <Col>

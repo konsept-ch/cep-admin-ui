@@ -6,8 +6,8 @@ export const manualInvoicesApi = createApi({
     reducerPath: 'manualInvoicesApi',
     baseQuery: prepareBaseQuery({ servicePath: 'manual-invoices' }),
     endpoints: (builder) => ({
-        getStatuses: builder.query({
-            query: () => 'statuses',
+        getEnums: builder.query({
+            query: () => 'enums',
         }),
         updateStatuses: builder.mutation({
             query: ({ body }) => ({
@@ -43,7 +43,7 @@ export const manualInvoicesApi = createApi({
 })
 
 export const {
-    useLazyGetStatusesQuery,
+    useLazyGetEnumsQuery,
     useUpdateStatusesMutation,
     useGetManualInvoicesQuery,
     useCreateManualInvoiceMutation,
