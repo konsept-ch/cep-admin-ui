@@ -360,13 +360,20 @@ export function ManualInvoicesPage() {
                         filterType: 'set',
                         values: ['A traiter', 'En préparation'],
                     },
-                    invoiceType: {
-                        filterType: 'set',
-                        values: [mapPathnameToInvoiceType[location.pathname]],
-                    },
+                    invoiceType:
+                        mapPathnameToInvoiceType[location.pathname] != null
+                            ? {
+                                  filterType: 'set',
+                                  values: [mapPathnameToInvoiceType[location.pathname]],
+                              }
+                            : null,
                 }}
                 onPathnameChange={(gridApi, pathname) => {
                     gridApi?.setFilterModel({
+                        status: {
+                            filterType: 'set',
+                            values: ['A traiter', 'En préparation'],
+                        },
                         invoiceType:
                             mapPathnameToInvoiceType[pathname] != null
                                 ? {
