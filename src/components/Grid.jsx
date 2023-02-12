@@ -80,7 +80,7 @@ export const Grid = ({
     }, [activePredefinedFiltersById, name, rowData, gridApi])
 
     useEffect(() => {
-        if (rowData?.length > 0 && defaultFilterModel !== undefined) {
+        if (rowData?.length > 0 && defaultFilterModel !== undefined && gridApi != null) {
             gridApi.setFilterModel(defaultFilterModel)
         }
     }, [gridApi, rowData])
