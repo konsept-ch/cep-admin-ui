@@ -12,6 +12,8 @@ import { useGetManualInvoicesQuery, useLazyGetEnumsQuery, useUpdateStatusesMutat
 import { useLazyGetOrganizationsFlatWithAddressQuery } from '../services/organizations'
 import { useLazyGetUsersQuery } from '../services/users'
 import { gridContextMenu, downloadCsvFile } from '../utils'
+import { mapPathnameToInvoiceType } from '../constants/invoices'
+import { useLocation } from 'react-router-dom'
 
 const INVOICE_STATUSES = ['En préparation', 'A traiter', 'Exportée', 'Non transmissible', 'Annulée', 'Envoyée']
 
@@ -38,6 +40,8 @@ export function ManualInvoicesPage() {
     const [fetchUsers, { data: users }] = useLazyGetUsersQuery()
     const [fetchEnums, { data: enums }] = useLazyGetEnumsQuery()
     const [updateStatuses, { isLoading: isStatusesUpdating }] = useUpdateStatusesMutation()
+
+    const location = useLocation()
 
     const {
         data: invoicesData,
@@ -186,10 +190,10 @@ export function ManualInvoicesPage() {
     return (
         <>
             <Helmet>
-                <title>Factures manuelles - Former22</title>
+                <title>Factures {mapPathnameToInvoiceType[location.pathname] ?? 'Toute'}s - Former22</title>
             </Helmet>
             <Grid
-                name="Factures manuelles"
+                name={`Factures ${mapPathnameToInvoiceType[location.pathname] ?? 'Toute'}s`}
                 columnDefs={columnDefs}
                 rowData={invoicesData}
                 isDataLoading={isFetchingInvoices}
@@ -356,6 +360,21 @@ export function ManualInvoicesPage() {
                         filterType: 'set',
                         values: ['A traiter', 'En préparation'],
                     },
+                    invoiceType: {
+                        filterType: 'set',
+                        values: [mapPathnameToInvoiceType[location.pathname]],
+                    },
+                }}
+                onPathnameChange={(gridApi, pathname) => {
+                    gridApi?.setFilterModel({
+                        invoiceType:
+                            mapPathnameToInvoiceType[pathname] != null
+                                ? {
+                                      filterType: 'set',
+                                      values: [mapPathnameToInvoiceType[pathname]],
+                                  }
+                                : null,
+                    })
                 }}
             />
             <Container fluid className="mb-2">

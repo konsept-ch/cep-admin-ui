@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { AgGridReact } from 'ag-grid-react'
 import {
@@ -21,6 +21,8 @@ import classNames from 'classnames'
 import { localeText } from '../agGridLocaleText'
 import { gridLoadingSelector } from '../reducers'
 import { gridContextMenu, STATUSES } from '../utils'
+import { useLocation } from 'react-router-dom'
+import { mapPathnameToIcon } from '../constants/constants'
 
 const Loader = () => <PuffLoader color="#e8ca01" loading size={100} />
 
@@ -35,12 +37,14 @@ export const Grid = ({
     defaultColDef,
     defaultSortModel,
     defaultFilterModel = undefined,
+    onPathnameChange = null,
     ...gridProps
 }) => {
     const [gridApi, setGridApi] = useState(null)
     const [filterValue, setFilterValue] = useState('')
     const isGridLoading = useSelector(gridLoadingSelector)
     const isLoading = isDataLoading ?? isGridLoading
+    const location = useLocation()
 
     useEffect(() => {
         gridApi?.setQuickFilter(filterValue)
@@ -85,13 +89,24 @@ export const Grid = ({
         }
     }, [gridApi, rowData])
 
-    const onGridReady = ({ api, columnApi }) => {
-        setGridApi(api)
-
-        if (defaultSortModel !== undefined) {
-            columnApi.applyColumnState({ state: defaultSortModel })
+    useEffect(() => {
+        if (onPathnameChange != null) {
+            onPathnameChange(gridApi, location.pathname)
         }
-    }
+    }, [window.location.pathname])
+
+    const onGridReady = useCallback(
+        ({ api, columnApi }) => {
+            setGridApi(api)
+
+            if (defaultSortModel !== undefined) {
+                columnApi.applyColumnState({ state: defaultSortModel })
+            }
+        },
+        [defaultSortModel]
+    )
+
+    const pageIcon = useMemo(() => mapPathnameToIcon[location.pathname], [location.pathname])
 
     return (
         <>
@@ -100,7 +115,14 @@ export const Grid = ({
                     <Col>
                         <Row className="predefined-filters">
                             <Col>
-                                <h1 className="mt-3">{name}</h1>
+                                <h1 className="mt-3">
+                                    {mapPathnameToIcon[location.pathname] != null && (
+                                        <>
+                                            <FontAwesomeIcon icon={pageIcon} />{' '}
+                                        </>
+                                    )}
+                                    {name}
+                                </h1>
                             </Col>
                             {predefinedFilters.length > 0 && <Col />}
                             {predefinedFilters.map(({ id, label }) => (

@@ -20,6 +20,7 @@ import {
     faObjectGroup,
     faHandHoldingDollar,
     faUserSlash,
+    faInfinity,
 } from '@fortawesome/pro-light-svg-icons'
 
 import {
@@ -43,6 +44,7 @@ import {
     PATH_ANNULATIONS,
     PATH_SEANCES,
     PATH_REFUSED_BY_HR,
+    PATH_INVOICE_ALL,
 } from '../constants/constants'
 import { clearAllAuthCookies } from '../utils'
 import { currentRunningEnv } from '../constants/config'
@@ -176,19 +178,37 @@ export const Navigation = ({ isLoggedIn }) => {
                                 href={`/${PATH_INVOICE}/${PATH_INVOICE_DIRECT}`}
                                 onClick={goTo(`${PATH_INVOICE}/${PATH_INVOICE_DIRECT}`)}
                             >
-                                <FontAwesomeIcon icon={faFileInvoiceDollar} /> Factures directes
+                                <FontAwesomeIcon icon={faFileInvoiceDollar} /> Directes
                             </Nav.Link>
                             <Nav.Link
                                 href={`/${PATH_INVOICE}/${PATH_INVOICE_GROUPED}`}
                                 onClick={goTo(`${PATH_INVOICE}/${PATH_INVOICE_GROUPED}`)}
                             >
-                                <FontAwesomeIcon icon={faObjectGroup} /> Factures groupées
+                                <FontAwesomeIcon icon={faObjectGroup} /> Groupées
                             </Nav.Link>
                             <Nav.Link
                                 href={`/${PATH_INVOICE}/${PATH_INVOICE_MANUAL}`}
                                 onClick={goTo(`${PATH_INVOICE}/${PATH_INVOICE_MANUAL}`)}
                             >
-                                <FontAwesomeIcon icon={faHandHoldingDollar} /> Factures manuelles
+                                <FontAwesomeIcon icon={faHandHoldingDollar} /> Manuelles
+                            </Nav.Link>
+                            <Nav.Link
+                                href={`/${PATH_INVOICE}/${PATH_INVOICE_ALL}`}
+                                onClick={goTo(`${PATH_INVOICE}/${PATH_INVOICE_ALL}`)}
+                            >
+                                <FontAwesomeIcon icon={faInfinity} /> Toutes
+                            </Nav.Link>
+                            <Nav.Link
+                                href={`/${PATH_INVOICE}/${PATH_INVOICE_DIRECT}`}
+                                onClick={goTo(`${PATH_INVOICE}/old-${PATH_INVOICE_DIRECT}`)}
+                            >
+                                <FontAwesomeIcon icon={faFileInvoiceDollar} /> (Deprecated) Factures directes
+                            </Nav.Link>
+                            <Nav.Link
+                                href={`/${PATH_INVOICE}/${PATH_INVOICE_GROUPED}`}
+                                onClick={goTo(`${PATH_INVOICE}/old-${PATH_INVOICE_GROUPED}`)}
+                            >
+                                <FontAwesomeIcon icon={faObjectGroup} /> (Deprecated) Factures groupées
                             </Nav.Link>
                         </NavDropdown>
                         <NavDropdown
