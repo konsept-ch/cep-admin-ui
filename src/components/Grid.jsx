@@ -34,6 +34,7 @@ export const Grid = ({
     components = {},
     defaultColDef,
     defaultSortModel,
+    defaultFilterModel = undefined,
     ...gridProps
 }) => {
     const [gridApi, setGridApi] = useState(null)
@@ -77,6 +78,12 @@ export const Grid = ({
             }
         }, 200)
     }, [activePredefinedFiltersById, name, rowData, gridApi])
+
+    useEffect(() => {
+        if (rowData?.length > 0 && defaultFilterModel !== undefined) {
+            gridApi.setFilterModel(defaultFilterModel)
+        }
+    }, [gridApi, rowData])
 
     const onGridReady = ({ api, columnApi }) => {
         setGridApi(api)

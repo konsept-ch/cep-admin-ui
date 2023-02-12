@@ -16,7 +16,7 @@ const getYearFromJsDate = ({ date }) => DateTime.fromJSDate(date).setLocale('fr-
 const getInvoiceNumber = ({ courseYear, userCode, invoiceNumberForCurrentYear }) =>
     ` ${`${courseYear}`.slice(-2)}${`${userCode}`.padStart(2, 0)}${`${invoiceNumberForCurrentYear}`.padStart(4, 0)}`
 
-const defaultEmptyItem = { designation: '', unit: {}, amount: 0, price: 0 }
+const defaultEmptyItem = { designation: '', unit: null, amount: 0, price: 0 }
 
 const tvaOptions = [
     { value: 'EXONERE', label: 'EXONERE' },
@@ -117,7 +117,7 @@ export function ManualInvoiceModal({
                       value: prismaStatus,
                       label: actualStatus,
                   }))
-                : undefined,
+                : null,
         [statuses]
     )
 
@@ -138,6 +138,9 @@ export function ManualInvoiceModal({
                 // invoiceNumberForCurrentYear,
                 customClientEmail,
                 customClientAddress,
+                customClientTitle,
+                customClientFirstname,
+                customClientLastname,
                 invoiceDate,
                 courseYear,
                 items,
@@ -146,8 +149,6 @@ export function ManualInvoiceModal({
                 status,
             } = selectedInvoiceData
 
-            console.log(statusesOptions)
-
             reset({
                 client: clientOptions?.find(({ uuid }) => uuid === organizationUuid),
                 selectedUser: userOptions?.find(({ uuid }) => uuid === selectedUserUuid),
@@ -155,6 +156,9 @@ export function ManualInvoiceModal({
                 // status: { value: status, label: statuses?.[status] },
                 customClientAddress,
                 customClientEmail,
+                customClientTitle,
+                customClientFirstname,
+                customClientLastname,
                 courseYear: new Date(String(courseYear)),
                 invoiceDate: new Date(String(invoiceDate)),
                 items,
@@ -165,9 +169,13 @@ export function ManualInvoiceModal({
                 client: '',
                 customClientAddress: '',
                 customClientEmail: '',
+                customClientTitle: '',
+                customClientFirstname: '',
+                customClientLastname: '',
                 courseYear: '',
                 invoiceDate: '',
                 items: [defaultEmptyItem],
+                status: statusesOptions?.find(({ label }) => label === 'En préparation'),
             })
         }
     }, [selectedInvoiceData, clientOptions, userOptions, statusesOptions])
@@ -237,17 +245,17 @@ export function ManualInvoiceModal({
                                                 render={({ field }) => <Select {...field} options={userOptions} />}
                                             />
                                         </Form.Group>
-                                        <Form.Group className="mb-3" controlId="selectedUserTitle">
+                                        <Form.Group className="mb-3" controlId="customClientTitle">
                                             <Form.Label>Titre</Form.Label>
-                                            <Form.Control {...register('selectedUserTitle')} />
+                                            <Form.Control {...register('customClientTitle')} />
                                         </Form.Group>
-                                        <Form.Group className="mb-3" controlId="selectedUserFirstName">
+                                        <Form.Group className="mb-3" controlId="customClientFirstname">
                                             <Form.Label>Prénom</Form.Label>
-                                            <Form.Control {...register('selectedUserFirstName')} />
+                                            <Form.Control {...register('customClientFirstname')} />
                                         </Form.Group>
-                                        <Form.Group className="mb-3" controlId="selectedUserLastName">
+                                        <Form.Group className="mb-3" controlId="customClientLastname">
                                             <Form.Label>Nom</Form.Label>
-                                            <Form.Control {...register('selectedUserLastName')} />
+                                            <Form.Control {...register('customClientLastname')} />
                                         </Form.Group>
                                     </>
                                 )}

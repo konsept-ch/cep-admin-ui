@@ -1,16 +1,23 @@
 import { useState } from 'react'
 import { Container, Button } from 'react-bootstrap'
 import { Helmet } from 'react-helmet-async'
+import { toast } from 'react-toastify'
 import Papa from 'papaparse'
 import { DateTime } from 'luxon'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPen } from '@fortawesome/pro-light-svg-icons'
 
 import { Grid, ManualInvoiceModal } from '../components'
-import { useGetManualInvoicesQuery, useLazyGetStatusesQuery } from '../services/manual-invoices'
+import {
+    useGetManualInvoicesQuery,
+    useLazyGetStatusesQuery,
+    useUpdateStatusesMutation,
+} from '../services/manual-invoices'
 import { useLazyGetOrganizationsFlatWithAddressQuery } from '../services/organizations'
 import { useLazyGetUsersQuery } from '../services/users'
 import { gridContextMenu, downloadCsvFile } from '../utils'
+
+const INVOICE_STATUSES = ['En préparation', 'A traiter', 'Exportée', 'Non transmissible', 'Annulée', 'Envoyée']
 
 const csvOptions = {
     delimiter: ';',
@@ -34,6 +41,7 @@ export function ManualInvoicesPage() {
     const [fetchOrganizations, { data: organizations }] = useLazyGetOrganizationsFlatWithAddressQuery()
     const [fetchUsers, { data: users }] = useLazyGetUsersQuery()
     const [fetchStatuses, { data: statuses }] = useLazyGetStatusesQuery()
+    const [updateStatuses, { isLoading: isStatusesUpdating }] = useUpdateStatusesMutation()
 
     const {
         data: invoicesData,
@@ -109,6 +117,9 @@ export function ManualInvoicesPage() {
             tooltipField: 'statut',
             headerTooltip: 'Statut',
             filter: 'agSetColumnFilter',
+            filterParams: {
+                newRowAction: 'keep',
+            },
             width: 150,
         },
         {
@@ -181,6 +192,8 @@ export function ManualInvoicesPage() {
                                       )
                                     : [data]
 
+                            console.log(invoicesToExport)
+
                             const csvClient = Papa.unparse(
                                 {
                                     fields: [
@@ -212,9 +225,9 @@ export function ManualInvoicesPage() {
                                         return [
                                             invoiceData.clientNumber,
                                             invoiceData.organizationName,
-                                            '', // only if private
-                                            '', // only if private
-                                            '', // only if private
+                                            invoiceData.customClientTitle,
+                                            invoiceData.customClientFirstname,
+                                            invoiceData.customClientLastname,
                                             invoiceData.customClientAddress.replaceAll('\n', '\\'),
                                             invoiceData.customClientAddress.replaceAll('\n', '\\'),
                                             postalAddressCode,
@@ -263,7 +276,47 @@ export function ManualInvoicesPage() {
                                 csv: csvFacture.replaceAll('/', '"/"'),
                                 fileName: 'CSV Facture pour Crésus',
                             })
+
+                            updateStatuses({
+                                body: {
+                                    uuids: invoicesToExport.map((invoice) => invoice.id),
+                                    status: 'Export_e',
+                                },
+                            })
+                                .then((response) => {
+                                    toast.success(response.data.message)
+                                })
+                                .finally(() => {
+                                    refetchInvoices()
+                                })
                         },
+                    },
+                    {
+                        name: 'Modifier statut',
+                        disabled: selectedRowsIds.length === 0,
+                        subMenu: INVOICE_STATUSES.map((name) => ({
+                            name,
+                            action: async () => {
+                                const statusConvertMap = {
+                                    'En préparation': 'En_pr_paration',
+                                    'A traiter': 'A_traiter',
+                                    Exportée: 'Export_e',
+                                    'Non transmissible': 'Non_transmissible',
+                                    Annulée: 'Annul_e',
+                                    Envoyée: 'Envoy_e',
+                                }
+                                const { error, data: updateStatusesResponse } = await updateStatuses({
+                                    body: {
+                                        uuids: selectedRowsIds,
+                                        status: statusConvertMap[name],
+                                    },
+                                })
+                                if (!error) {
+                                    toast.success(updateStatusesResponse.message)
+                                }
+                                refetchInvoices()
+                            },
+                        })),
                     },
                     'separator',
                     ...gridContextMenu,
@@ -285,6 +338,12 @@ export function ManualInvoicesPage() {
                         ) || []
 
                     setSelectedRowsIds(filteredSelectedRowsIds)
+                }}
+                defaultFilterModel={{
+                    status: {
+                        filterType: 'set',
+                        values: ['A traiter', 'En préparation'],
+                    },
                 }}
             />
             <Container fluid className="mb-2">
