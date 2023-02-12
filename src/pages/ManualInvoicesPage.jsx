@@ -293,7 +293,7 @@ export function ManualInvoicesPage() {
                     },
                     {
                         name: 'Modifier statut',
-                        disabled: selectedRowsIds.length == 0,
+                        disabled: selectedRowsIds.length === 0,
                         subMenu: INVOICE_STATUSES.map((name) => ({
                             name,
                             action: async () => {
@@ -305,14 +305,14 @@ export function ManualInvoicesPage() {
                                     Annulée: 'Annul_e',
                                     Envoyée: 'Envoy_e',
                                 }
-                                const { error, data } = await updateStatuses({
+                                const { error, data: updateStatusesResponse } = await updateStatuses({
                                     body: {
                                         uuids: selectedRowsIds,
                                         status: statusConvertMap[name],
                                     },
                                 })
                                 if (!error) {
-                                    toast.success(data.message)
+                                    toast.success(updateStatusesResponse.message)
                                 }
                                 refetchInvoices()
                             },
