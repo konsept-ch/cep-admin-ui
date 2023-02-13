@@ -397,14 +397,22 @@ export function ManualInvoicesPage() {
                 <Button
                     variant="secondary"
                     className="me-2"
-                    onClick={() => generateGroupedInvoices({ type: 'semestrial' })}
+                    onClick={() =>
+                        generateGroupedInvoices({ type: 'semestrial' }).then((response) => {
+                            toast.success(response.data.message)
+                        })
+                    }
                 >
                     Générer factures sémestrielles {isGeneratingGroupedInvoices && '...'}
                 </Button>
                 <Button
                     variant="secondary"
                     className="me-2"
-                    onClick={() => generateGroupedInvoices({ type: 'annual' })}
+                    onClick={() =>
+                        generateGroupedInvoices({ type: 'annual' }).then((response) => {
+                            toast.success(response.data.message)
+                        })
+                    }
                 >
                     Générer factures annuelles {isGeneratingGroupedInvoices && '...'}
                 </Button>
