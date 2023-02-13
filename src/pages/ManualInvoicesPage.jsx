@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { Container, Button } from 'react-bootstrap'
 import { Helmet } from 'react-helmet-async'
 import { toast } from 'react-toastify'
@@ -8,12 +9,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPen } from '@fortawesome/pro-light-svg-icons'
 
 import { Grid, ManualInvoiceModal } from '../components'
-import { useGetManualInvoicesQuery, useLazyGetEnumsQuery, useUpdateStatusesMutation } from '../services/manual-invoices'
+import {
+    useGetManualInvoicesQuery,
+    useLazyGetEnumsQuery,
+    useUpdateStatusesMutation,
+    useGenerateGroupedInvoiceMutation,
+} from '../services/manual-invoices'
 import { useLazyGetOrganizationsFlatWithAddressQuery } from '../services/organizations'
 import { useLazyGetUsersQuery } from '../services/users'
 import { gridContextMenu, downloadCsvFile } from '../utils'
 import { mapPathnameToInvoiceType } from '../constants/invoices'
-import { useLocation } from 'react-router-dom'
 
 const INVOICE_STATUSES = ['En préparation', 'A traiter', 'Exportée', 'Non transmissible', 'Annulée', 'Envoyée']
 
@@ -40,6 +45,7 @@ export function ManualInvoicesPage() {
     const [fetchUsers, { data: users }] = useLazyGetUsersQuery()
     const [fetchEnums, { data: enums }] = useLazyGetEnumsQuery()
     const [updateStatuses, { isLoading: isStatusesUpdating }] = useUpdateStatusesMutation()
+    const [generateGroupedInvoices, { isLoading: isGeneratingGroupedInvoices }] = useGenerateGroupedInvoiceMutation()
 
     const location = useLocation()
 
@@ -387,6 +393,20 @@ export function ManualInvoicesPage() {
             <Container fluid className="mb-2">
                 <Button variant="success" className="me-2" onClick={() => setIsManualInvoiceModalOpen(true)}>
                     Créer facture manuelle
+                </Button>
+                <Button
+                    variant="secondary"
+                    className="me-2"
+                    onClick={() => generateGroupedInvoices({ type: 'semestrial' })}
+                >
+                    Générer factures sémestrielles {isGeneratingGroupedInvoices && '...'}
+                </Button>
+                <Button
+                    variant="secondary"
+                    className="me-2"
+                    onClick={() => generateGroupedInvoices({ type: 'annual' })}
+                >
+                    Générer factures annuelles {isGeneratingGroupedInvoices && '...'}
                 </Button>
             </Container>
             {isManualInvoiceModalOpen && (
