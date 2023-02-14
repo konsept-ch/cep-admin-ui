@@ -95,10 +95,6 @@ export function ManualInvoiceModal({
                 setValue('customClientEmail', customClientEmail)
             }
         }
-
-        if (clientWatched?.value === 'DEFAUT-PRIVÉ') {
-            fetchUsers()
-        }
     }, [clientWatched])
 
     const clientOptions = useMemo(
@@ -207,13 +203,6 @@ export function ManualInvoiceModal({
             })
         }
     }, [selectedInvoiceData, clientOptions, userOptions, statusesOptions])
-
-    useEffect(() => {
-        if (isModalOpen) {
-            fetchOrganizations()
-            fetchEnums()
-        }
-    }, [isModalOpen])
 
     const [updateInvoice, { isLoading: isInvoiceUpdating }] = useUpdateManualInvoiceMutation()
     const [createInvoice, { isLoading: isInvoiceCreating }] = useCreateManualInvoiceMutation()
