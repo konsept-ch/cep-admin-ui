@@ -400,6 +400,7 @@ export function ManualInvoicesPage() {
                     onClick={() =>
                         generateGroupedInvoices({ type: 'semestrial' }).then((response) => {
                             toast.success(response.data.message)
+                            refetchInvoices()
                         })
                     }
                 >
@@ -411,6 +412,7 @@ export function ManualInvoicesPage() {
                     onClick={() =>
                         generateGroupedInvoices({ type: 'annual' }).then((response) => {
                             toast.success(response.data.message)
+                            refetchInvoices()
                         })
                     }
                 >
