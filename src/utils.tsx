@@ -325,7 +325,7 @@ export const formatToFlatObject = (data: any) => {
 
 export const downloadCsvFile = ({ csv, fileName }: { csv: string; fileName: string }) => {
     // TODO: fix encoding, ANSI
-    const blob = new Blob([csv], { type: 'text/csv' })
+    const blob = new Blob([new Uint8Array([0xef, 0xbb, 0xbf]), csv], { type: 'text/csv;charset=utf-8' })
 
     const url = window.URL.createObjectURL(blob)
 
