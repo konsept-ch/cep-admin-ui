@@ -11,7 +11,8 @@ export const contractsApi = createApi({
                 await fetchWithBQ({
                     url: contractId,
                     method: 'get',
-                    responseHandler: () => {},
+                    responseHandler: async (response) =>
+                        window.location.assign(window.URL.createObjectURL(await response.blob())),
                 })
                 return {
                     data: undefined,
