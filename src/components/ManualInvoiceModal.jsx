@@ -256,11 +256,7 @@ export function ManualInvoiceModal({
                                         name="invoiceType"
                                         control={control}
                                         render={({ field }) => (
-                                            <Select
-                                                {...field}
-                                                isDisabled={selectedInvoiceData}
-                                                options={invoiceTypeOptions}
-                                            />
+                                            <Select {...field} isDisabled={true} options={invoiceTypeOptions} />
                                         )}
                                     />
                                 </Form.Group>
@@ -270,11 +266,7 @@ export function ManualInvoiceModal({
                                         name="reason"
                                         control={control}
                                         render={({ field }) => (
-                                            <Select
-                                                {...field}
-                                                isDisabled={selectedInvoiceData}
-                                                options={reasonOptions}
-                                            />
+                                            <Select {...field} isDisabled={isEditModal} options={reasonOptions} />
                                         )}
                                     />
                                 </Form.Group>
