@@ -25,10 +25,11 @@ const INVOICE_STATUSES = ['En préparation', 'A traiter', 'Exportée', 'Non tran
 const csvOptions = {
     delimiter: ';',
     quotes: true,
+    encoding: 'utf-8',
 }
 
 const deriveInvoiceNumber = ({ data }) =>
-    `${`${data?.courseYear}`.slice(-2)}${`${data?.user.cfNumber}`.padStart(
+    `${`${data?.courseYear}`.slice(-2)}${`${data?.user.cfNumber ?? ''}`.padStart(
         2,
         '0'
     )}${`${data?.invoiceNumberForCurrentYear}`.padStart(4, '0')}`
@@ -213,8 +214,6 @@ export function ManualInvoicesPage() {
                                           ({ id, status }) => selectedRowsIds.includes(id) && status === 'A traiter'
                                       )
                                     : [data]
-
-                            console.log(invoicesToExport)
 
                             const csvClient = Papa.unparse(
                                 {

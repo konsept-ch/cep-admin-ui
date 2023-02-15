@@ -95,10 +95,6 @@ export function ManualInvoiceModal({
                 setValue('customClientEmail', customClientEmail)
             }
         }
-
-        if (clientWatched?.value === 'DEFAUT-PRIVÉ') {
-            fetchUsers()
-        }
     }, [clientWatched])
 
     const clientOptions = useMemo(
@@ -208,15 +204,16 @@ export function ManualInvoiceModal({
         }
     }, [selectedInvoiceData, clientOptions, userOptions, statusesOptions])
 
-    useEffect(() => {
-        if (isModalOpen) {
-            fetchOrganizations()
-            fetchEnums()
-        }
-    }, [isModalOpen])
-
     const [updateInvoice, { isLoading: isInvoiceUpdating }] = useUpdateManualInvoiceMutation()
     const [createInvoice, { isLoading: isInvoiceCreating }] = useCreateManualInvoiceMutation()
+
+    useEffect(() => {
+        if (isModalOpen) {
+            fetchEnums()
+            fetchOrganizations()
+            fetchUsers()
+        }
+    }, [isModalOpen])
 
     const closeInvoiceModal = () => {
         closeModal()
@@ -258,7 +255,9 @@ export function ManualInvoiceModal({
                                     <Controller
                                         name="invoiceType"
                                         control={control}
-                                        render={({ field }) => <Select {...field} options={invoiceTypeOptions} />}
+                                        render={({ field }) => (
+                                            <Select {...field} isDisabled={true} options={invoiceTypeOptions} />
+                                        )}
                                     />
                                 </Form.Group>
                                 <Form.Group className="mb-3" controlId="reason">
@@ -266,7 +265,9 @@ export function ManualInvoiceModal({
                                     <Controller
                                         name="reason"
                                         control={control}
-                                        render={({ field }) => <Select {...field} options={reasonOptions} />}
+                                        render={({ field }) => (
+                                            <Select {...field} isDisabled={isEditModal} options={reasonOptions} />
+                                        )}
                                     />
                                 </Form.Group>
                             </Col>
