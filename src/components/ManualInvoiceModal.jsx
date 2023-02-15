@@ -207,6 +207,14 @@ export function ManualInvoiceModal({
     const [updateInvoice, { isLoading: isInvoiceUpdating }] = useUpdateManualInvoiceMutation()
     const [createInvoice, { isLoading: isInvoiceCreating }] = useCreateManualInvoiceMutation()
 
+    useEffect(() => {
+        if (isModalOpen) {
+            fetchEnums()
+            fetchOrganizations()
+            fetchUsers()
+        }
+    }, [isModalOpen])
+
     const closeInvoiceModal = () => {
         closeModal()
         refetchInvoices()
