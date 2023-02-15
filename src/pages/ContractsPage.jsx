@@ -2,7 +2,6 @@ import { useState, useMemo } from 'react'
 import { Button } from 'react-bootstrap'
 import { Helmet } from 'react-helmet-async'
 
-import { MIDDLEWARE_URL } from '../constants/config'
 import { Grid, ContractModal, FloatCellEditor } from '../components'
 import { useGetEventsQuery, useUpdateEventMutation } from '../services/events'
 import { useLazyDownloadContractQuery } from '../services/contracts'
@@ -13,11 +12,7 @@ export function ContractsPage() {
     const LEVEL_SESSION = 3
     const LEVEL_EVENT = 4
 
-    const {
-        data: eventsData,
-        isFetching: isFetchingEvents,
-        refetch: refetchEvents,
-    } = useGetEventsQuery(null, { refetchOnMountOrArgChange: true })
+    const { data: eventsData, isFetching: isFetchingEvents, refetch: refetchEvents } = useGetEventsQuery()
     const [updateEvent] = useUpdateEventMutation()
 
     const [downloadContract] = useLazyDownloadContractQuery()
