@@ -173,6 +173,7 @@ export function AttestationTemplatesPage() {
                                         templates.map(({ uuid, title, description }) => (
                                             <AttestationModelItem
                                                 {...{
+                                                    key: uuid,
                                                     uuid,
                                                     title,
                                                     description,

@@ -173,6 +173,7 @@ export function ContractTemplatesPage() {
                                         templates.map(({ uuid, title, description }) => (
                                             <ContractModelItem
                                                 {...{
+                                                    key: uuid,
                                                     uuid,
                                                     title,
                                                     description,

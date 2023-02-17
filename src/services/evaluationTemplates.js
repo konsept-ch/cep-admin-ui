@@ -16,10 +16,13 @@ export const evaluationTemplatesApi = createApi({
             }),
         }),
         updateEvaluation: builder.mutation({
-            query: ({ uuid, formData }) => ({
+            query: ({ uuid, data, struct }) => ({
                 url: uuid,
                 method: 'PUT',
-                body: formData,
+                body: {
+                    ...data,
+                    struct,
+                },
             }),
         }),
         deleteEvaluation: builder.mutation({
