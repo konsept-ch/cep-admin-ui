@@ -229,6 +229,7 @@ export function ManualInvoicesPage() {
                 columnDefs={columnDefs}
                 rowData={invoicesData}
                 isDataLoading={isFetchingInvoices}
+                defaultSortModel={[{ colId: 'invoiceNumber', sort: 'asc', sortIndex: 0 }]}
                 getContextMenuItems={({ node: { data } }) => [
                     {
                         name: 'Exporter pour Crésus',
