@@ -50,7 +50,7 @@ export const manualInvoicesApi = createApi({
 })
 
 export const {
-    useLazyGetEnumsQuery,
+    useGetEnumsQuery,
     useUpdateStatusesMutation,
     useGetManualInvoicesQuery,
     useCreateManualInvoiceMutation,

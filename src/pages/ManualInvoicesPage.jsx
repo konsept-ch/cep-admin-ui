@@ -11,7 +11,7 @@ import { faPen } from '@fortawesome/pro-light-svg-icons'
 import { Grid, ManualInvoiceModal } from '../components'
 import {
     useGetManualInvoicesQuery,
-    useLazyGetEnumsQuery,
+    useGetEnumsQuery,
     useUpdateStatusesMutation,
     useGenerateGroupedInvoiceMutation,
 } from '../services/manual-invoices'
@@ -19,16 +19,6 @@ import { useLazyGetOrganizationsFlatWithAddressQuery } from '../services/organiz
 import { useLazyGetUsersQuery } from '../services/users'
 import { gridContextMenu, downloadCsvFile } from '../utils'
 import { mapPathnameToInvoiceType } from '../constants/invoices'
-
-const INVOICE_STATUSES = [
-    'En préparation',
-    'A traiter',
-    'Exportée',
-    'Annulée',
-    'Envoyée',
-    'Non transmissible',
-    'Quotas',
-]
 
 const csvOptions = {
     delimiter: ';',
@@ -52,7 +42,7 @@ export function ManualInvoicesPage() {
 
     const [fetchOrganizations, { data: organizations }] = useLazyGetOrganizationsFlatWithAddressQuery()
     const [fetchUsers, { data: users }] = useLazyGetUsersQuery()
-    const [fetchEnums, { data: enums }] = useLazyGetEnumsQuery()
+    const { data: enums, isLoading: areEnumsLoading, refetch: fetchEnums } = useGetEnumsQuery()
     const [updateStatuses, { isLoading: isStatusesUpdating }] = useUpdateStatusesMutation()
     const [generateGroupedInvoices, { isLoading: isGeneratingGroupedInvoices }] = useGenerateGroupedInvoiceMutation()
 
@@ -323,29 +313,23 @@ export function ManualInvoicesPage() {
                     {
                         name: 'Modifier statut',
                         disabled: selectedRowsIds.length === 0,
-                        subMenu: INVOICE_STATUSES.map((name) => ({
-                            name,
-                            action: async () => {
-                                const statusConvertMap = {
-                                    'En préparation': 'En_pr_paration',
-                                    'A traiter': 'A_traiter',
-                                    Exportée: 'Export_e',
-                                    'Non transmissible': 'Non_transmissible',
-                                    Annulée: 'Annul_e',
-                                    Envoyée: 'Envoy_e',
-                                }
-                                const { error, data: updateStatusesResponse } = await updateStatuses({
-                                    body: {
-                                        uuids: selectedRowsIds,
-                                        status: statusConvertMap[name],
-                                    },
-                                })
-                                if (!error) {
-                                    toast.success(updateStatusesResponse.message)
-                                }
-                                refetchInvoices()
-                            },
-                        })),
+                        subMenu: areEnumsLoading
+                            ? null
+                            : Object.entries(enums.invoiceStatuses).map(([prismaStatus, actualStatus]) => ({
+                                  name: actualStatus,
+                                  action: async () => {
+                                      const { error, data: updateStatusesResponse } = await updateStatuses({
+                                          body: {
+                                              uuids: selectedRowsIds,
+                                              status: prismaStatus,
+                                          },
+                                      })
+                                      if (!error) {
+                                          toast.success(updateStatusesResponse.message)
+                                      }
+                                      refetchInvoices()
+                                  },
+                              })),
                     },
                     'separator',
                     ...gridContextMenu,
