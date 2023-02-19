@@ -3,7 +3,7 @@ import {
     faFileInvoiceDollar,
     faObjectGroup,
     faHandHoldingDollar,
-    faGraduationCap,
+    faPersonCircleCheck,
 } from '@fortawesome/pro-thin-svg-icons'
 
 export const DATE_FORMAT_SWISS_FRENCH = 'fr-CH'
@@ -32,6 +32,7 @@ export const PATH_INVOICE_DIRECT = 'direct'
 export const PATH_INVOICE_GROUPED = 'grouped'
 export const PATH_INVOICE_MANUAL = 'manual'
 export const PATH_INVOICE_ALL = 'all'
+export const PATH_INVOICE_QUOTAS = 'quotas'
 export const PATH_ANNULATIONS = 'annulations'
 export const PATH_REFUSED_BY_HR = 'refused-by-hr'
 export const PATH_SEANCES = 'seances'
@@ -43,4 +44,5 @@ export const mapPathnameToIcon = {
     [`/${PATH_INVOICE}/${PATH_INVOICE_GROUPED}`]: faObjectGroup,
     [`/${PATH_INVOICE}/${PATH_INVOICE_MANUAL}`]: faHandHoldingDollar,
     [`/${PATH_INVOICE}/${PATH_INVOICE_ALL}`]: faInfinity,
+    [`/${PATH_INVOICE}/${PATH_INVOICE_QUOTAS}`]: faPersonCircleCheck,
 }

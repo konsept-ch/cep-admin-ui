@@ -21,6 +21,7 @@ import {
     faHandHoldingDollar,
     faUserSlash,
     faInfinity,
+    faPersonCircleCheck,
 } from '@fortawesome/pro-light-svg-icons'
 
 import {
@@ -45,6 +46,7 @@ import {
     PATH_SEANCES,
     PATH_REFUSED_BY_HR,
     PATH_INVOICE_ALL,
+    PATH_INVOICE_QUOTAS,
 } from '../constants/constants'
 import { clearAllAuthCookies } from '../utils'
 import { currentRunningEnv } from '../constants/config'
@@ -197,6 +199,12 @@ export const Navigation = ({ isLoggedIn }) => {
                                 onClick={goTo(`${PATH_INVOICE}/${PATH_INVOICE_ALL}`)}
                             >
                                 <FontAwesomeIcon icon={faInfinity} /> Toutes
+                            </Nav.Link>
+                            <Nav.Link
+                                href={`/${PATH_INVOICE}/${PATH_INVOICE_QUOTAS}`}
+                                onClick={goTo(`${PATH_INVOICE}/${PATH_INVOICE_QUOTAS}`)}
+                            >
+                                <FontAwesomeIcon icon={faPersonCircleCheck} /> Quotas
                             </Nav.Link>
                             <Nav.Link
                                 href={`/${PATH_INVOICE}/${PATH_INVOICE_DIRECT}`}

@@ -50,6 +50,7 @@ import {
     PATH_SEANCES,
     PATH_REFUSED_BY_HR,
     PATH_INVOICE_ALL,
+    PATH_INVOICE_QUOTAS,
 } from './constants/constants'
 import { AuthWrapper } from './AuthWrapper'
 import { cookies } from './utils'
@@ -138,6 +139,11 @@ export function App() {
                             <Route
                                 exact
                                 path={`${PATH_INVOICE}/${PATH_INVOICE_ALL}`}
+                                element={<ManualInvoicesPage />}
+                            />
+                            <Route
+                                exact
+                                path={`${PATH_INVOICE}/${PATH_INVOICE_QUOTAS}`}
                                 element={<ManualInvoicesPage />}
                             />
                             <Route
