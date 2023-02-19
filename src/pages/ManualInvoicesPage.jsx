@@ -20,7 +20,15 @@ import { useLazyGetUsersQuery } from '../services/users'
 import { gridContextMenu, downloadCsvFile } from '../utils'
 import { mapPathnameToInvoiceType } from '../constants/invoices'
 
-const INVOICE_STATUSES = ['En préparation', 'A traiter', 'Exportée', 'Non transmissible', 'Annulée', 'Envoyée']
+const INVOICE_STATUSES = [
+    'En préparation',
+    'A traiter',
+    'Exportée',
+    'Annulée',
+    'Envoyée',
+    'Non transmissible',
+    'Quotas',
+]
 
 const csvOptions = {
     delimiter: ';',
