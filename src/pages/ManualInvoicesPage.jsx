@@ -197,17 +197,18 @@ export function ManualInvoicesPage() {
             status: {
                 filterType: 'set',
                 values:
-                    mapPathnameToInvoiceType[location.pathname] != null
-                        ? ['En préparation', 'A traiter', 'Exportée', 'Annulée']
-                        : ['Envoyée', 'Non transmissible'],
+                    mapPathnameToInvoiceType[location.pathname] == null
+                        ? ['Envoyée', 'Non transmissible']
+                        : mapPathnameToInvoiceType[location.pathname] === 'Quota'
+                        ? ['Quotas']
+                        : ['En préparation', 'A traiter', 'Exportée', 'Annulée'],
             },
-            invoiceType:
-                mapPathnameToInvoiceType[location.pathname] != null
-                    ? {
-                          filterType: 'set',
-                          values: [mapPathnameToInvoiceType[location.pathname]],
-                      }
-                    : null,
+            invoiceType: ['Directe', 'Groupée', 'Manuelle'].includes(mapPathnameToInvoiceType[location.pathname])
+                ? {
+                      filterType: 'set',
+                      values: [mapPathnameToInvoiceType[location.pathname]],
+                  }
+                : null,
         }),
         [location.pathname]
     )
