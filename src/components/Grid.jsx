@@ -91,9 +91,9 @@ export const Grid = ({
 
     useEffect(() => {
         if (onPathnameChange != null) {
-            onPathnameChange(gridApi, location.pathname)
+            onPathnameChange(gridApi)
         }
-    }, [window.location.pathname])
+    }, [onPathnameChange, gridApi])
 
     const onGridReady = useCallback(
         ({ api, columnApi }) => {

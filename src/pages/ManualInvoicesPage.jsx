@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import { useLocation } from 'react-router-dom'
 import { Container, Button } from 'react-bootstrap'
 import { Helmet } from 'react-helmet-async'
@@ -192,6 +192,33 @@ export function ManualInvoicesPage() {
         },
     ])
 
+    const filterModel = useMemo(
+        () => ({
+            status: {
+                filterType: 'set',
+                values:
+                    mapPathnameToInvoiceType[location.pathname] != null
+                        ? ['En préparation', 'A traiter', 'Exportée', 'Annulée']
+                        : ['Envoyée', 'Non transmissible'],
+            },
+            invoiceType:
+                mapPathnameToInvoiceType[location.pathname] != null
+                    ? {
+                          filterType: 'set',
+                          values: [mapPathnameToInvoiceType[location.pathname]],
+                      }
+                    : null,
+        }),
+        [location.pathname]
+    )
+
+    const onPathnameChange = useCallback(
+        (gridApi) => {
+            gridApi?.setFilterModel(filterModel)
+        },
+        [filterModel]
+    )
+
     return (
         <>
             <Helmet>
@@ -352,34 +379,8 @@ export function ManualInvoicesPage() {
 
                     setSelectedRowsIds(filteredSelectedRowsIds)
                 }}
-                defaultFilterModel={{
-                    status: {
-                        filterType: 'set',
-                        values: ['A traiter', 'En préparation'],
-                    },
-                    invoiceType:
-                        mapPathnameToInvoiceType[location.pathname] != null
-                            ? {
-                                  filterType: 'set',
-                                  values: [mapPathnameToInvoiceType[location.pathname]],
-                              }
-                            : null,
-                }}
-                onPathnameChange={(gridApi, pathname) => {
-                    gridApi?.setFilterModel({
-                        status: {
-                            filterType: 'set',
-                            values: ['A traiter', 'En préparation'],
-                        },
-                        invoiceType:
-                            mapPathnameToInvoiceType[pathname] != null
-                                ? {
-                                      filterType: 'set',
-                                      values: [mapPathnameToInvoiceType[pathname]],
-                                  }
-                                : null,
-                    })
-                }}
+                defaultFilterModel={filterModel}
+                onPathnameChange={onPathnameChange}
             />
             <Container fluid className="mb-2">
                 <Button variant="success" className="me-2" onClick={() => setIsManualInvoiceModalOpen(true)}>
