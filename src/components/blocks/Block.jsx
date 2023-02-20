@@ -1,9 +1,11 @@
 import { Form } from 'react-bootstrap'
 
+import Notes from './Notes'
 import Paragraph from './Paragraph'
+import Remark from './Remark'
 import Title from './Title'
 
-const blocks = [Title, Paragraph].reduce(
+const blocks = [Title, Paragraph, Notes, Remark].reduce(
     (acc, component) => ({
         ...acc,
         [component.type]: component,

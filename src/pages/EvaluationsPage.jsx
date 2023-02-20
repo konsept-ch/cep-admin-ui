@@ -1,9 +1,8 @@
-import { useState, useMemo } from 'react'
+import { useMemo } from 'react'
 import { Helmet } from 'react-helmet-async'
 
-import { MIDDLEWARE_URL } from '../constants/config'
-import { Grid, ContractModal, FloatCellEditor } from '../components'
-import { useGetEventsQuery, useUpdateEventMutation } from '../services/events'
+import { Grid } from '../components'
+import { useGetEvaluationsQuery } from '../services/evaluations'
 import { gridContextMenu } from '../utils'
 
 export function EvaluationsPage() {
@@ -12,11 +11,10 @@ export function EvaluationsPage() {
     const LEVEL_EVENT = 4
 
     const {
-        data: eventsData,
+        data: evaluationsData,
         isFetching: isFetchingEvents,
-        refetch: refetchEvents,
-    } = useGetEventsQuery(null, { refetchOnMountOrArgChange: true })
-    const [updateEvent] = useUpdateEventMutation()
+        refetch: refetchEvaluationss,
+    } = useGetEvaluationsQuery(null, { refetchOnMountOrArgChange: true })
 
     const columnDefs = useMemo(
         () => [
@@ -57,12 +55,12 @@ export function EvaluationsPage() {
                 isDataLoading={isFetchingEvents}
                 name="Evaluations"
                 columnDefs={columnDefs}
-                rowData={eventsData}
+                rowData={evaluationsData}
                 groupDisplayType={'singleColumn'}
                 rowGroupPanelShow={false}
                 groupDefaultExpanded={0}
                 autoGroupColumnDef={{
-                    headerName: 'Années/Formateurs/Cours/Sessions',
+                    headerName: 'Années/Cours/Sessions',
                     minWidth: 400,
                     cellRendererParams: {
                         suppressCount: true,

@@ -60,6 +60,11 @@ export function EvaluationTemplatesPage() {
         ])
     }
 
+    const onRemoveBlock = () => {
+        if (selectedBlock)
+            setStruct([...struct.slice(0, selectedBlock.index), ...struct.slice(selectedBlock.index + 1)])
+    }
+
     const onAddButtonClick = async () => {
         const { data, error } = await createEvaluation()
 
@@ -206,10 +211,14 @@ export function EvaluationTemplatesPage() {
                                             {...block}
                                         />
                                     ))}
-                                    <div>
-                                        <Button variant="light" onClick={onAddBlock} className="mt-2">
-                                            <FontAwesomeIcon icon={faPlusLarge} />
+                                    <div className="mt-2">
+                                        <Button variant="light" onClick={onAddBlock}>
+                                            <FontAwesomeIcon icon={faPlusLarge} className="me-1" />
                                             Ajouter bloc
+                                        </Button>
+                                        <Button variant="danger" onClick={onRemoveBlock} className="ms-2">
+                                            <FontAwesomeIcon icon={faTrash} className="me-1" />
+                                            Supprimer bloc
                                         </Button>
                                     </div>
                                 </>
