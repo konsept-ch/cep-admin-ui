@@ -7,6 +7,7 @@ const Editor = ({ type, text, onUpdate }) => (
         <Form.Group className="mb-3">
             <Form.Label>Texte</Form.Label>
             <Form.Control
+                key={text}
                 as="textarea"
                 placeholder="Texte"
                 defaultValue={text}
