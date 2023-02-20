@@ -18,7 +18,7 @@ export const Block = {
         const Block = blocks[props.type]
         return (
             <div
-                className={`property ${props.selected ? 'selected' : ''}`}
+                className={`property mb-2 ${props.selected ? 'selected' : ''}`}
                 onClick={(e) => {
                     e.preventDefault()
                     props.onSelected()

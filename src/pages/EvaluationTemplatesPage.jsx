@@ -170,6 +170,7 @@ export function EvaluationTemplatesPage() {
                                                     description,
                                                     isActive: selectedTemplateUuid === uuid,
                                                     onClick: () => {
+                                                        if (selectedTemplateUuid === uuid) return
                                                         if (isDirty) {
                                                             setDiscardWarningData({
                                                                 isVisible: true,
@@ -216,10 +217,12 @@ export function EvaluationTemplatesPage() {
                                             <FontAwesomeIcon icon={faPlusLarge} className="me-1" />
                                             Ajouter bloc
                                         </Button>
-                                        <Button variant="danger" onClick={onRemoveBlock} className="ms-2">
-                                            <FontAwesomeIcon icon={faTrash} className="me-1" />
-                                            Supprimer bloc
-                                        </Button>
+                                        {selectedBlock !== null && (
+                                            <Button variant="danger" onClick={onRemoveBlock} className="ms-2">
+                                                <FontAwesomeIcon icon={faTrash} className="me-1" />
+                                                Supprimer bloc
+                                            </Button>
+                                        )}
                                     </div>
                                 </>
                             )}

@@ -1,6 +1,6 @@
 import { Form } from 'react-bootstrap'
 
-const Render = ({ text }) => <p>{text}</p>
+const Render = ({ text }) => <p class="text-break">{text}</p>
 
 const Editor = ({ type, text, onUpdate }) => (
     <>

@@ -1,7 +1,8 @@
-import { useMemo } from 'react'
+import { useState, useMemo } from 'react'
+import { Container, Button } from 'react-bootstrap'
 import { Helmet } from 'react-helmet-async'
 
-import { Grid } from '../components'
+import { Grid, EvaluationModal } from '../components'
 import { useGetEvaluationsQuery } from '../services/evaluations'
 import { gridContextMenu } from '../utils'
 
@@ -15,6 +16,8 @@ export function EvaluationsPage() {
         isFetching: isFetchingEvents,
         refetch: refetchEvaluationss,
     } = useGetEvaluationsQuery(null, { refetchOnMountOrArgChange: true })
+
+    const [evaluationModalVisible, setEvaluationModalVisible] = useState(false)
 
     const columnDefs = useMemo(
         () => [
@@ -89,6 +92,18 @@ export function EvaluationsPage() {
                         : []),
                     ...gridContextMenu,
                 ]}
+            />
+            <Container fluid className="mb-2">
+                <Button variant="success" className="me-2" onClick={() => setEvaluationModalVisible(true)}>
+                    Générer évaluation
+                </Button>
+            </Container>
+
+            <EvaluationModal
+                closeModal={() => {
+                    setEvaluationModalVisible(false)
+                }}
+                isVisible={evaluationModalVisible}
             />
         </>
     )
