@@ -39,6 +39,7 @@ export function TemplatesPage() {
         statuses: inscriptionStatuses.map((current) => ({ value: current, label: current })),
         templateId: getUniqueId(),
         isUsedForSessionInvites: false,
+        usedByEvaluation: false,
     })
 
     const checkIsTemplateChanged = () => {
@@ -71,6 +72,7 @@ export function TemplatesPage() {
                                         statuses,
                                         templateId,
                                         isUsedForSessionInvites,
+                                        usedByEvaluation,
                                         emailSubject,
                                         smsBody,
                                     }) => (
@@ -90,6 +92,7 @@ export function TemplatesPage() {
                                                                   statuses,
                                                                   templateId,
                                                                   isUsedForSessionInvites,
+                                                                  usedByEvaluation,
                                                               }),
                                                       })
                                                     : setSelectedTemplateData({
@@ -101,6 +104,7 @@ export function TemplatesPage() {
                                                           statuses,
                                                           templateId,
                                                           isUsedForSessionInvites,
+                                                          usedByEvaluation,
                                                       })
                                             }}
                                             className={classNames({
@@ -182,7 +186,6 @@ export function TemplatesPage() {
                                     shouldHaveVariables
                                     isEmailSubjectInput
                                 />
-
                                 <label>Corps de l'e-mail :</label>
                                 <EmailTemplateBodyInput
                                     className="email-body-input"
@@ -197,7 +200,6 @@ export function TemplatesPage() {
                                     shouldHaveVariables
                                     shouldHaveBlockTag
                                 />
-
                                 <label>Texte de l'SMS :</label>
                                 <EmailTemplateBodyInput
                                     className="email-body-input"
@@ -210,7 +212,6 @@ export function TemplatesPage() {
                                     }}
                                     shouldHaveVariables
                                 />
-
                                 <label>Valable pour statuts :</label>
                                 <Select
                                     onChange={(selectedStatuses) =>
@@ -220,6 +221,18 @@ export function TemplatesPage() {
                                     closeMenuOnSelect={false}
                                     isMulti
                                     options={inscriptionStatuses.map((current) => ({ value: current, label: current }))}
+                                />
+                                <Form.Check
+                                    className="mt-2"
+                                    type="checkbox"
+                                    label="Valable pour évaluation"
+                                    checked={selectedTemplateData.usedByEvaluation}
+                                    onChange={({ target: { checked } }) =>
+                                        setSelectedTemplateData({
+                                            ...selectedTemplateData,
+                                            usedByEvaluation: checked,
+                                        })
+                                    }
                                 />
                                 <div className="d-flex justify-content-between mb-2">
                                     <div>

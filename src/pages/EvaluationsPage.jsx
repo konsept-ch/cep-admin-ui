@@ -4,12 +4,10 @@ import { Helmet } from 'react-helmet-async'
 
 import { Grid, EvaluationModal } from '../components'
 import { useGetEvaluationsQuery } from '../services/evaluations'
-import { gridContextMenu } from '../utils'
 
 export function EvaluationsPage() {
     const LEVEL_COURSE = 2
     const LEVEL_SESSION = 3
-    const LEVEL_EVENT = 4
 
     const {
         data: evaluationsData,
@@ -79,19 +77,6 @@ export function EvaluationsPage() {
                     defaultToolPanel: false,
                     hiddenByDefault: false,
                 }}
-                getContextMenuItems={({ node }) => [
-                    ...(node.level === LEVEL_COURSE
-                        ? [
-                              {
-                                  name: 'Envoyer évaluations',
-                                  action: () => {
-                                      console.log('envoi des évaluations')
-                                  },
-                              },
-                          ]
-                        : []),
-                    ...gridContextMenu,
-                ]}
             />
             <Container fluid className="mb-2">
                 <Button variant="success" className="me-2" onClick={() => setEvaluationModalVisible(true)}>

@@ -126,6 +126,7 @@ export const draftVariables = {
     SESSION_RÉSUMÉ_DATES: '[SESSION_RÉSUMÉ_DATES]',
     PARTICIPANT_CIVILITÉ: '[PARTICIPANT_CIVILITÉ]',
     INSCRIPTION_DATE: '[INSCRIPTION_DATE]',
+    EVALUATION_LIEN: '[EVALUATION_LIEN]',
 }
 
 export const formatDate = ({ dateString, isTimeVisible, isDateVisible }) => {

@@ -23,6 +23,7 @@ const entities = {
     lessons: draftVariables.SESSION_RÉSUMÉ_DATES,
     civility: draftVariables.PARTICIPANT_CIVILITÉ,
     inscriptionDate: draftVariables.INSCRIPTION_DATE,
+    evaluationLink: draftVariables.EVALUATION_LIEN,
 }
 
 const decorator = new CompositeDecorator([
@@ -53,6 +54,10 @@ const decorator = new CompositeDecorator([
     {
         strategy: DecoratorStrategy(entities.inscriptionDate),
         component: DecoratorWrapper(entities.inscriptionDate),
+    },
+    {
+        strategy: DecoratorStrategy(entities.evaluationLink),
+        component: DecoratorWrapper(entities.evaluationLink),
     },
 ])
 
