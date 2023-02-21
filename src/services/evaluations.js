@@ -9,7 +9,13 @@ export const evaluationsApi = createApi({
         getEvaluations: builder.query({
             query: () => '',
         }),
+        createEvaluation: builder.mutation({
+            query: (body) => ({
+                method: 'POST',
+                body,
+            }),
+        }),
     }),
 })
 
-export const { useGetEvaluationsQuery } = evaluationsApi
+export const { useGetEvaluationsQuery, useCreateEvaluationMutation } = evaluationsApi

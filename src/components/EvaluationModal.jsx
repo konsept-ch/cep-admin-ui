@@ -5,6 +5,7 @@ import { ConfirmInscriptionChangeButton } from '.'
 import classNames from 'classnames'
 import { CommonModal } from '../components'
 
+import { useCreateEvaluationMutation } from '../services/evaluations'
 import { useGetEvaluationsQuery } from '../services/evaluationTemplates'
 import { useGetTemplatesQuery } from '../services/templates'
 import { useGetMinimalSessionsQuery, useLazyGetUsersQuery } from '../services/sessions'
@@ -37,7 +38,9 @@ export const EvaluationModal = ({ closeModal, isVisible }) => {
         refetchOnMountOrArgChange: true,
     })
 
-    const [fetchUsers, { data: users }] = useLazyGetUsersQuery()
+    const [fetchUsers, { data: users, isLoading: isUsersFetching }] = useLazyGetUsersQuery()
+
+    const [createEvaluation, { isLoading: isEvaluationCreating }] = useCreateEvaluationMutation()
 
     const [selectedTemplateUuid, setSelectedTemplateUuid] = useState(null)
     const [selectedEmailUuid, setSelectedEmailUuid] = useState(null)
@@ -163,7 +166,12 @@ export const EvaluationModal = ({ closeModal, isVisible }) => {
                         }
                         isLoading={isFetchingTemplates && isFetchingEmailTemplates}
                         variant="primary"
-                        onClick={async () => console.log("Générer l'évaluation")}
+                        onClick={async () =>
+                            createEvaluation({
+                                sessionId: selectedSession.value,
+                                templateId: selectedTemplateUuid,
+                            })
+                        }
                     >
                         Générer évaluation
                     </ConfirmInscriptionChangeButton>
