@@ -9,9 +9,6 @@ export const sessionsApi = createApi({
         getSessions: builder.query({
             query: () => '',
         }),
-        getMinimalSessions: builder.query({
-            query: () => 'minimal',
-        }),
         getUsers: builder.query({
             query: ({ sessionId }) => `${sessionId}/users`,
         }),

@@ -10,6 +10,7 @@ import { InscriptionCancellationsPage } from './pages/InscriptionCancellationsPa
 import { SurveyPage } from './pages/SurveyPage'
 import { ContractsPage } from './pages/ContractsPage'
 import { EvaluationsPage } from './pages/EvaluationsPage'
+import { EvaluationPage } from './pages/EvaluationPage'
 import { SessionsPage } from './pages/SessionsPage'
 import { CoursesPage } from './pages/CoursesPage'
 import { TemplatesPage } from './pages/TemplatesPage'
@@ -68,6 +69,9 @@ export function App() {
                     <title>CEP - Former22</title>
                 </Helmet>
                 <ErrorBoundary>
+                    <Routes>
+                        <Route exact path={`/${PATH_EVALUATIONS}/:uuid`} element={<EvaluationPage />} />
+                    </Routes>
                     <AuthWrapper {...{ isLoggedIn, setLoggedIn }}>
                         <Routes>
                             <Route

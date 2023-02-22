@@ -5,36 +5,32 @@ import { ConfirmInscriptionChangeButton } from '.'
 import classNames from 'classnames'
 import { CommonModal } from '../components'
 
-import { useCreateEvaluationMutation } from '../services/evaluations'
+import { useGetSessionsQuery, useCreateEvaluationMutation } from '../services/evaluations'
 import { useGetEvaluationsQuery } from '../services/evaluationTemplates'
 import { useGetTemplatesQuery } from '../services/templates'
-import { useGetMinimalSessionsQuery, useLazyGetUsersQuery } from '../services/sessions'
+import { useLazyGetUsersQuery } from '../services/sessions'
 
 export const EvaluationModal = ({ closeModal, isVisible }) => {
     const {
         data: evaluationTemplates,
         isLoading: isLoadingTemplates,
         isFetching: isFetchingTemplates,
-        isError,
-    } = useGetEvaluationsQuery(null, {
-        refetchOnMountOrArgChange: true,
-    })
+        isError: isErrorTemplates,
+    } = useGetEvaluationsQuery()
 
     const {
         data: emailTemplates,
         isLoading: isLoadingEmailTemplates,
         isFetching: isFetchingEmailTemplates,
-        isEmailError,
-    } = useGetTemplatesQuery(null, {
-        refetchOnMountOrArgChange: true,
-    })
+        isError: isEmailError,
+    } = useGetTemplatesQuery()
 
     const {
         data: sessions,
         isLoading: isLoadingSessions,
         isFetching: isFetchingSessions,
-        isSessionsError,
-    } = useGetMinimalSessionsQuery(null, {
+        isError: isSessionsError,
+    } = useGetSessionsQuery(null, {
         refetchOnMountOrArgChange: true,
     })
 
@@ -46,6 +42,15 @@ export const EvaluationModal = ({ closeModal, isVisible }) => {
     const [selectedEmailUuid, setSelectedEmailUuid] = useState(null)
     const [selectedSession, setSelectedSession] = useState(null)
     const [selectedUserUuids, setSelectedUserUuids] = useState([])
+
+    const onCloseModal = (doesntClose = false) => {
+        if (doesntClose) return
+        setSelectedTemplateUuid(null)
+        setSelectedEmailUuid(null)
+        setSelectedSession(null)
+        setSelectedUserUuids([])
+        closeModal()
+    }
 
     useEffect(() => {
         if (selectedSession !== null) {
@@ -62,14 +67,14 @@ export const EvaluationModal = ({ closeModal, isVisible }) => {
             dialogClassName="update-modal create-evaluation-modal"
             backdrop="static"
             isVisible={isVisible}
-            onHide={() => closeModal()}
+            onHide={() => onCloseModal()}
             content={
                 <Row>
                     <Col>
                         <h6>Choix de modèle d'évaluation</h6>
                         {isLoadingTemplates ? (
                             'Chargement...'
-                        ) : isError ? (
+                        ) : isErrorTemplates ? (
                             'Erreur de chargement des modèles.'
                         ) : (
                             <ListGroup>
@@ -164,27 +169,20 @@ export const EvaluationModal = ({ closeModal, isVisible }) => {
                         isSelectedTemplateDataNull={
                             selectedTemplateUuid === null || selectedEmailUuid === null || selectedUserUuids.length == 0
                         }
-                        isLoading={isFetchingTemplates && isFetchingEmailTemplates}
+                        isLoading={isFetchingTemplates || isFetchingEmailTemplates || isFetchingSessions}
                         variant="primary"
-                        onClick={async () =>
+                        onClick={() => {
                             createEvaluation({
-                                sessionId: selectedSession.value,
-                                templateId: selectedTemplateUuid,
-                            })
-                        }
+                                session: selectedSession.value,
+                                template: selectedTemplateUuid,
+                                email: selectedEmailUuid,
+                                users: selectedUserUuids,
+                            }).then((response) => onCloseModal(response.error))
+                        }}
                     >
                         Générer évaluation
                     </ConfirmInscriptionChangeButton>
-                    <Button
-                        variant="outline-primary"
-                        onClick={() => {
-                            setSelectedTemplateUuid(null)
-                            setSelectedEmailUuid(null)
-                            setSelectedSession(null)
-                            setSelectedUserUuids([])
-                            closeModal()
-                        }}
-                    >
+                    <Button variant="outline-primary" onClick={() => onCloseModal()}>
                         Annuler
                     </Button>
                 </>

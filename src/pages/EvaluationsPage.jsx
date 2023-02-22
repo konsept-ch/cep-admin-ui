@@ -1,21 +1,24 @@
 import { useState, useMemo } from 'react'
-import { Container, Button } from 'react-bootstrap'
+import { Container, Button, Nav } from 'react-bootstrap'
 import { Helmet } from 'react-helmet-async'
+import { useNavigate } from 'react-router-dom'
 
 import { Grid, EvaluationModal } from '../components'
 import { useGetEvaluationsQuery } from '../services/evaluations'
+import { PATH_EVALUATIONS } from '../constants/constants'
 
 export function EvaluationsPage() {
     const LEVEL_COURSE = 2
-    const LEVEL_SESSION = 3
+
+    const navigate = useNavigate()
+
+    const [evaluationModalVisible, setEvaluationModalVisible] = useState(false)
 
     const {
         data: evaluationsData,
-        isFetching: isFetchingEvents,
-        refetch: refetchEvaluationss,
+        isFetching: isFetchingEvaluations,
+        refetch: refetchEvaluations,
     } = useGetEvaluationsQuery(null, { refetchOnMountOrArgChange: true })
-
-    const [evaluationModalVisible, setEvaluationModalVisible] = useState(false)
 
     const columnDefs = useMemo(
         () => [
@@ -40,8 +43,21 @@ export function EvaluationsPage() {
                 headerName: 'Session',
                 filter: 'agTextColumnFilter',
                 headerTooltip: 'Le nom de la session',
-                rowGroup: true,
-                hide: true,
+            },
+            {
+                field: 'link',
+                headerName: 'Lien',
+                headerTooltip: "Le lien vers l'évaluation",
+                cellRenderer: ({ node }) => {
+                    return node.level == LEVEL_COURSE ? (
+                        <a
+                            href={`/${PATH_EVALUATIONS}/${node.data.uuid}`}
+                            onClick={() => navigate(`/${PATH_EVALUATIONS}/${node.data.uuid}`)}
+                        >{`${process.env.PUBLIC_URL}/${PATH_EVALUATIONS}/${node.data.uuid}`}</a>
+                    ) : (
+                        <span></span>
+                    )
+                },
             },
         ],
         []
@@ -53,7 +69,7 @@ export function EvaluationsPage() {
                 <title>Evaluations - Former22</title>
             </Helmet>
             <Grid
-                isDataLoading={isFetchingEvents}
+                isDataLoading={isFetchingEvaluations}
                 name="Evaluations"
                 columnDefs={columnDefs}
                 rowData={evaluationsData}
@@ -87,6 +103,7 @@ export function EvaluationsPage() {
             <EvaluationModal
                 closeModal={() => {
                     setEvaluationModalVisible(false)
+                    refetchEvaluations()
                 }}
                 isVisible={evaluationModalVisible}
             />
