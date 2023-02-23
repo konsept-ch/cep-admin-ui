@@ -135,30 +135,36 @@ export const EvaluationModal = ({ closeModal, isVisible }) => {
                     </Col>
                     <Col>
                         <h6>Choix des participants</h6>
-                        {selectedSession && users && users.length > 0 ? (
-                            <ListGroup>
-                                {users.map(({ uuid, fullname }) => (
-                                    <ListGroup.Item
-                                        key={uuid}
-                                        onClick={() => {
-                                            const index = selectedUserUuids.indexOf(uuid)
-                                            if (index >= 0)
-                                                setSelectedUserUuids([
-                                                    ...selectedUserUuids.slice(0, index),
-                                                    ...selectedUserUuids.slice(index + 1),
-                                                ])
-                                            else setSelectedUserUuids([...selectedUserUuids, uuid])
-                                        }}
-                                        className={classNames({
-                                            'active-template': selectedUserUuids.includes(uuid),
-                                        })}
-                                    >
-                                        <p>{fullname}</p>
-                                    </ListGroup.Item>
-                                ))}
-                            </ListGroup>
+                        {selectedSession ? (
+                            isUsersFetching ? (
+                                <span>Chargement des participants</span>
+                            ) : users && users.length > 0 ? (
+                                <ListGroup>
+                                    {users.map(({ uuid, fullname }) => (
+                                        <ListGroup.Item
+                                            key={uuid}
+                                            onClick={() => {
+                                                const index = selectedUserUuids.indexOf(uuid)
+                                                if (index >= 0)
+                                                    setSelectedUserUuids([
+                                                        ...selectedUserUuids.slice(0, index),
+                                                        ...selectedUserUuids.slice(index + 1),
+                                                    ])
+                                                else setSelectedUserUuids([...selectedUserUuids, uuid])
+                                            }}
+                                            className={classNames({
+                                                'active-template': selectedUserUuids.includes(uuid),
+                                            })}
+                                        >
+                                            <p>{fullname}</p>
+                                        </ListGroup.Item>
+                                    ))}
+                                </ListGroup>
+                            ) : (
+                                <span>Il y a aucun participant dans cette session</span>
+                            )
                         ) : (
-                            <span>Il y a aucun participant dans cette session</span>
+                            <span>Veuillez sélectionner une session</span>
                         )}
                     </Col>
                 </Row>

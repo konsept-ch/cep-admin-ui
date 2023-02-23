@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ListGroup, Row, Col, Container, Button, FloatingLabel, Form } from 'react-bootstrap'
 import { Helmet } from 'react-helmet-async'
 import { useForm } from 'react-hook-form'
@@ -35,6 +35,15 @@ export function EvaluationTemplatesPage() {
         reset,
         formState: { isDirty, errors },
     } = useForm()
+
+    useEffect(() => {
+        if (selectedBlock)
+            setStruct([
+                ...struct.slice(0, selectedBlock.index),
+                selectedBlock.block,
+                ...struct.slice(selectedBlock.index + 1),
+            ])
+    }, [selectedBlock])
 
     const [selectedTemplateUuid, setSelectedTemplateUuid] = useState(null)
     const [isDeleteWarningVisible, setIsDeleteWarningVisible] = useState(false)
@@ -200,7 +209,7 @@ export function EvaluationTemplatesPage() {
                             {selectedTemplateUuid !== null && (
                                 <>
                                     {struct.map((block, i) => (
-                                        <Block.Render
+                                        <Block.Preview
                                             key={i}
                                             selected={i === selectedBlock?.index}
                                             onSelected={() => {
@@ -262,19 +271,13 @@ export function EvaluationTemplatesPage() {
                                         </label>
                                         {selectedBlock && (
                                             <Block.Editor
+                                                key={selectedBlock.index}
                                                 {...selectedBlock.block}
-                                                onTypeUpdate={(block) => {
+                                                onUpdate={(block) => {
                                                     setSelectedBlock({
                                                         index: selectedBlock.index,
                                                         block,
                                                     })
-                                                }}
-                                                onUpdate={(block) => {
-                                                    setStruct([
-                                                        ...struct.slice(0, selectedBlock.index),
-                                                        block,
-                                                        ...struct.slice(selectedBlock.index + 1),
-                                                    ])
                                                 }}
                                             />
                                         )}

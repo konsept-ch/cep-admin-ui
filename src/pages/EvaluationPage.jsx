@@ -1,8 +1,9 @@
-import { useState, useMemo } from 'react'
+import { useEffect, useState } from 'react'
 import { Container, Button } from 'react-bootstrap'
 import { Helmet } from 'react-helmet-async'
 import { useParams } from 'react-router-dom'
 import { Spinner } from 'react-bootstrap'
+import { Block } from '../components'
 
 import { useGetEvaluationQuery } from '../services/evaluations'
 
@@ -13,12 +14,16 @@ export function EvaluationPage() {
 
     const { data: evaluation, isFetching: isFetchingEvaluation, isError } = useGetEvaluationQuery(params.uuid)
 
+    useEffect(() => {
+        console.log(result)
+    }, [result])
+
     return (
         <>
             <Helmet>
                 <title>Evaluation - Former22</title>
             </Helmet>
-            <Container fluid>
+            <Container className="py-4">
                 {isFetchingEvaluation || isError ? (
                     <div className="d-flex justify-content-center align-items-center h-vh">
                         <div className="d-flex flex-column align-items-center">
@@ -33,8 +38,21 @@ export function EvaluationPage() {
                         </div>
                     </div>
                 ) : (
-                    <h1>{evaluation.sessionName}</h1>
+                    evaluation.struct.map((block, i) => (
+                        <Block.Render
+                            key={i}
+                            onUpdate={(key, value) =>
+                                setResult({
+                                    ...result,
+                                    [key]: value,
+                                })
+                            }
+                            {...block}
+                        />
+                    ))
                 )}
+
+                <Button variant="primary">Envoyer résultat</Button>
             </Container>
         </>
     )

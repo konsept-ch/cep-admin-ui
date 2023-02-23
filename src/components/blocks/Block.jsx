@@ -17,14 +17,22 @@ export const Block = {
     Render: (props) => {
         const Block = blocks[props.type]
         return (
+            <div className={`block render ${props.type}`}>
+                <Block.Render {...props} />
+            </div>
+        )
+    },
+    Preview: (props) => {
+        const Block = blocks[props.type]
+        return (
             <div
-                className={`property mb-2 ${props.selected ? 'selected' : ''}`}
+                className={`block preview ${props.type} ${props.selected ? 'selected' : ''}`}
                 onClick={(e) => {
                     e.preventDefault()
                     props.onSelected()
                 }}
             >
-                <Block.Render {...props} />
+                <Block.Preview {...props} />
             </div>
         )
     },
@@ -38,12 +46,10 @@ export const Block = {
                         value={Block.type}
                         onChange={(e) => {
                             const block = blocks[e.target.value]
-                            const def = {
+                            props.onUpdate({
                                 type: block.type,
                                 ...block.default,
-                            }
-                            props.onTypeUpdate(def)
-                            props.onUpdate(def)
+                            })
                         }}
                     >
                         {Object.entries(blocks).map(([type, block]) => (

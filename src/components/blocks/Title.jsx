@@ -1,13 +1,15 @@
 import { Form } from 'react-bootstrap'
 
-const Render = ({ text }) => <h1 class="text-break">{text}</h1>
+const Render = ({ text }) => <h1 className="text-break">{text}</h1>
+
+const Preview = ({ text }) => <h1 className="text-break">{text}</h1>
 
 const Editor = ({ type, text, onUpdate }) => (
     <>
         <Form.Group className="mb-3">
             <Form.Label>Texte</Form.Label>
             <Form.Control
-                key={text}
+                key="text"
                 type="text"
                 placeholder="Texte"
                 defaultValue={text}
@@ -29,5 +31,6 @@ export default {
         text: 'Titre par défaut',
     },
     Render,
+    Preview,
     Editor,
 }
