@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Container, Button } from 'react-bootstrap'
 import { Helmet } from 'react-helmet-async'
 import { useParams } from 'react-router-dom'
@@ -11,12 +11,16 @@ export function EvaluationPage() {
     const params = useParams()
 
     const [result, setResult] = useState({})
+    const [errors, setErrors] = useState({})
 
     const { data: evaluation, isFetching: isFetchingEvaluation, isError } = useGetEvaluationQuery(params.uuid)
 
-    useEffect(() => {
-        console.log(result)
-    }, [result])
+    const onSubmit = () => {
+        // Check if fields are filled
+        const errors = evaluation.struct.filter((block) => block.required && !result[block.identifier])
+        setErrors(errors.reduce((acc, block) => ({ ...acc, [block.identifier]: true }), {}))
+        if (errors.length > 0) return
+    }
 
     return (
         <>
@@ -28,7 +32,7 @@ export function EvaluationPage() {
                     <div className="d-flex justify-content-center align-items-center h-vh">
                         <div className="d-flex flex-column align-items-center">
                             {isError ? (
-                                <h4>Cette évaluation n'est pas ou plus accessible</h4>
+                                <h4>Cette évaluation n'est pas ou plus accessible.</h4>
                             ) : (
                                 <>
                                     <Spinner animation="grow" size="lg" className="mb-4" />
@@ -39,20 +43,27 @@ export function EvaluationPage() {
                     </div>
                 ) : (
                     evaluation.struct.map((block, i) => (
-                        <Block.Render
-                            key={i}
-                            onUpdate={(key, value) =>
-                                setResult({
-                                    ...result,
-                                    [key]: value,
-                                })
-                            }
-                            {...block}
-                        />
+                        <>
+                            {errors[block.identifier] && (
+                                <div className="text-danger">Cette question doit être remplie.</div>
+                            )}
+                            <Block.Render
+                                key={i}
+                                onUpdate={(key, value) =>
+                                    setResult({
+                                        ...result,
+                                        [key]: value,
+                                    })
+                                }
+                                {...block}
+                            />
+                        </>
                     ))
                 )}
 
-                <Button variant="primary">Envoyer résultat</Button>
+                <Button variant="primary" onClick={onSubmit}>
+                    Envoyer résultat
+                </Button>
             </Container>
         </>
     )

@@ -1,19 +1,18 @@
 import { Form, Button, InputGroup } from 'react-bootstrap'
 
-const Render = ({ name, text, notes, onUpdate }) => {
+const Render = ({ identifier, text, notes, onUpdate }) => {
     return (
         <>
-            <p>{text}</p>
+            <p className="text-break" dangerouslySetInnerHTML={{ __html: text.replaceAll('\n', '<br>') }}></p>
             <div className="d-flex gap-2">
                 {notes.map((note, index) => (
                     <Form.Check
                         key={index}
                         type="radio"
-                        name={name}
-                        id={`${name}-${note}`}
+                        name={identifier}
                         label={note}
                         value={note}
-                        onChange={(e) => onUpdate(name, e.target.value)}
+                        onChange={(e) => onUpdate(identifier, e.target.value)}
                     />
                 ))}
             </div>
@@ -21,24 +20,24 @@ const Render = ({ name, text, notes, onUpdate }) => {
     )
 }
 
-const Preview = ({ name, text, notes }) => {
+const Preview = ({ identifier, text, notes }) => {
     return (
         <>
-            <p>{text}</p>
+            <p className="text-break" dangerouslySetInnerHTML={{ __html: text.replaceAll('\n', '<br>') }}></p>
             <div className="d-flex gap-2">
                 {notes.map((note, index) => (
-                    <Form.Check key={index} type="radio" name={name} id={`${name}-${note}`} label={note} />
+                    <Form.Check key={index} type="radio" name={identifier} label={note} />
                 ))}
             </div>
         </>
     )
 }
 
-const Editor = ({ type, name, text, notes, onUpdate }) => {
+const Editor = ({ type, identifier, text, notes, onUpdate }) => {
     const onAddNote = () => {
         onUpdate({
             type,
-            name,
+            identifier,
             text,
             notes: [...notes, `${notes.length + 1}`],
         })
@@ -47,7 +46,7 @@ const Editor = ({ type, name, text, notes, onUpdate }) => {
     const onRemoveNote = (index) => {
         onUpdate({
             type,
-            name,
+            identifier,
             text,
             notes: [...notes.slice(0, index), ...notes.slice(index + 1)],
         })
@@ -55,23 +54,6 @@ const Editor = ({ type, name, text, notes, onUpdate }) => {
 
     return (
         <>
-            <Form.Group className="mb-3">
-                <Form.Label>Nom</Form.Label>
-                <Form.Control
-                    key="name"
-                    type="text"
-                    placeholder="Nom"
-                    defaultValue={name}
-                    onChange={(e) =>
-                        onUpdate({
-                            type,
-                            name: e.target.value,
-                            text,
-                            notes,
-                        })
-                    }
-                />
-            </Form.Group>
             <Form.Group className="mb-3">
                 <Form.Label>Texte</Form.Label>
                 <Form.Control
@@ -82,7 +64,7 @@ const Editor = ({ type, name, text, notes, onUpdate }) => {
                     onChange={(e) =>
                         onUpdate({
                             type,
-                            name,
+                            identifier,
                             text: e.target.value,
                             notes,
                         })
@@ -90,18 +72,17 @@ const Editor = ({ type, name, text, notes, onUpdate }) => {
                 />
             </Form.Group>
             <Form.Label>Notes</Form.Label>
-            <div className="mb-3">
+            <div className="mb-3" key={notes.length}>
                 {notes.map((note, index) => (
-                    <InputGroup className="mb-1">
+                    <InputGroup className="mb-1" key={index}>
                         <Form.Control
-                            key={notes.length + index}
                             type="text"
                             placeholder="Libellé"
                             defaultValue={note}
                             onChange={(e) =>
                                 onUpdate({
                                     type,
-                                    name,
+                                    identifier,
                                     text,
                                     notes: [...notes.slice(0, index), e.target.value, ...notes.slice(index + 1)],
                                 })
@@ -124,10 +105,10 @@ export default {
     type: 'notes',
     label: 'Notes',
     default: {
-        identifier: 'abc',
+        identifier: '',
+        required: true,
         text: 'Question par défaut',
-        min: 1,
-        max: 5,
+        notes: [],
     },
     Render,
     Preview,

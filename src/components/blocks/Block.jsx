@@ -36,17 +36,17 @@ export const Block = {
             </div>
         )
     },
-    Editor: (props) => {
+    Editor: ({ onUpdate, ...props }) => {
         const Block = blocks[props.type]
         return (
             <>
                 <Form.Group className="mb-3">
                     <Form.Label>Type</Form.Label>
                     <Form.Select
-                        value={Block.type}
+                        value={props.type}
                         onChange={(e) => {
                             const block = blocks[e.target.value]
-                            props.onUpdate({
+                            onUpdate({
                                 type: block.type,
                                 ...block.default,
                             })
@@ -59,7 +59,36 @@ export const Block = {
                         ))}
                     </Form.Select>
                 </Form.Group>
-                <Block.Editor {...props} />
+                <Form.Group className="mb-3">
+                    <Form.Label>Identifiant</Form.Label>
+                    <Form.Control
+                        key="identifier"
+                        type="text"
+                        placeholder="Identifiant"
+                        defaultValue={props.identifier}
+                        onChange={(e) =>
+                            onUpdate({
+                                ...props,
+                                identifier: e.target.value,
+                            })
+                        }
+                    />
+                </Form.Group>
+                <Form.Group className="mb-3">
+                    <Form.Check
+                        key="required"
+                        type="checkbox"
+                        label="Champ obligatoire"
+                        checked={props.required}
+                        onChange={(e) =>
+                            onUpdate({
+                                ...props,
+                                required: e.target.checked,
+                            })
+                        }
+                    />
+                </Form.Group>
+                <Block.Editor {...props} onUpdate={onUpdate} />
             </>
         )
     },

@@ -32,6 +32,8 @@ export default {
     type: 'paragraph',
     label: 'Paragraph',
     default: {
+        identifier: '',
+        required: false,
         text: 'Texte par défaut',
     },
     Render,

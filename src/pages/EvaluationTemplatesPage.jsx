@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFloppyDisk, faTrash, faPlusLarge } from '@fortawesome/pro-regular-svg-icons'
 
 import { EvaluationModelItem, CommonModal, Block } from '../components'
+import titleProps from '../components/blocks/Title'
 import {
     useGetEvaluationsQuery,
     useCreateEvaluationMutation,
@@ -59,19 +60,19 @@ export function EvaluationTemplatesPage() {
         })
     }
 
-    const onAddBlock = () => {
+    const onAddBlock = () =>
         setStruct([
             ...struct,
             {
-                type: 'title',
-                text: 'Titre 1',
+                type: titleProps.type,
+                ...titleProps.default,
             },
         ])
-    }
 
     const onRemoveBlock = () => {
-        if (selectedBlock)
-            setStruct([...struct.slice(0, selectedBlock.index), ...struct.slice(selectedBlock.index + 1)])
+        if (!selectedBlock) return
+        setStruct([...struct.slice(0, selectedBlock.index), ...struct.slice(selectedBlock.index + 1)])
+        setSelectedBlock(null)
     }
 
     const onAddButtonClick = async () => {
@@ -95,7 +96,7 @@ export function EvaluationTemplatesPage() {
         })
 
         if (error == null) {
-            toast.success("Modèle d'évaluation modifiée")
+            toast.success("Modèle d'évaluation modifié")
         } else {
             toast.error("Erreur de modification du modèle d'évaluation", { autoClose: false })
         }
@@ -273,12 +274,12 @@ export function EvaluationTemplatesPage() {
                                             <Block.Editor
                                                 key={selectedBlock.index}
                                                 {...selectedBlock.block}
-                                                onUpdate={(block) => {
+                                                onUpdate={(block) =>
                                                     setSelectedBlock({
                                                         index: selectedBlock.index,
                                                         block,
                                                     })
-                                                }}
+                                                }
                                             />
                                         )}
                                     </div>
