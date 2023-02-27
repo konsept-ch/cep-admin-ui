@@ -10,7 +10,7 @@ export const evaluationsApi = createApi({
             query: () => '',
         }),
         getEvaluation: builder.query({
-            query: (uuid) => `${uuid}`,
+            query: (uuid) => uuid,
         }),
         getSessions: builder.query({
             query: () => 'sessions',
@@ -21,8 +21,20 @@ export const evaluationsApi = createApi({
                 body,
             }),
         }),
+        createEvaluationResult: builder.mutation({
+            query: (body) => ({
+                url: 'results',
+                method: 'POST',
+                body,
+            }),
+        }),
     }),
 })
 
-export const { useGetEvaluationsQuery, useGetEvaluationQuery, useGetSessionsQuery, useCreateEvaluationMutation } =
-    evaluationsApi
+export const {
+    useGetEvaluationsQuery,
+    useGetEvaluationQuery,
+    useGetSessionsQuery,
+    useCreateEvaluationMutation,
+    useCreateEvaluationResultMutation,
+} = evaluationsApi
