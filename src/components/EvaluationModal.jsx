@@ -9,26 +9,20 @@ import { useGetSessionsQuery, useCreateEvaluationMutation } from '../services/ev
 import { useGetEvaluationsQuery } from '../services/evaluationTemplates'
 import { useGetTemplatesQuery } from '../services/templates'
 import { useLazyGetUsersQuery } from '../services/sessions'
+import { toast } from 'react-toastify'
 
-export const EvaluationModal = ({ closeModal, isVisible }) => {
+export const EvaluationModal = ({ closeModal, isVisible, data }) => {
     const {
         data: evaluationTemplates,
         isLoading: isLoadingTemplates,
-        isFetching: isFetchingTemplates,
         isError: isErrorTemplates,
     } = useGetEvaluationsQuery()
 
-    const {
-        data: emailTemplates,
-        isLoading: isLoadingEmailTemplates,
-        isFetching: isFetchingEmailTemplates,
-        isError: isEmailError,
-    } = useGetTemplatesQuery()
+    const { data: emailTemplates, isLoading: isLoadingEmailTemplates, isError: isEmailError } = useGetTemplatesQuery()
 
     const {
         data: sessions,
         isLoading: isLoadingSessions,
-        isFetching: isFetchingSessions,
         isError: isSessionsError,
     } = useGetSessionsQuery(null, {
         refetchOnMountOrArgChange: true,
@@ -43,6 +37,13 @@ export const EvaluationModal = ({ closeModal, isVisible }) => {
     const [selectedSession, setSelectedSession] = useState(null)
     const [selectedUserUuids, setSelectedUserUuids] = useState([])
 
+    useEffect(() => {
+        if (isVisible && data) {
+            setSelectedTemplateUuid(data.template)
+            setSelectedSession(data.session)
+        }
+    }, [isVisible])
+
     const onCloseModal = (doesntClose = false) => {
         if (doesntClose) return
         setSelectedTemplateUuid(null)
@@ -54,9 +55,10 @@ export const EvaluationModal = ({ closeModal, isVisible }) => {
 
     useEffect(() => {
         if (selectedSession !== null) {
-            setSelectedUserUuids([])
             fetchUsers({
                 sessionId: selectedSession.value,
+            }).then((response) => {
+                if (response.data) setSelectedUserUuids(response.data.map((user) => user.uuid))
             })
         }
     }, [selectedSession])
@@ -175,7 +177,7 @@ export const EvaluationModal = ({ closeModal, isVisible }) => {
                         isSelectedTemplateDataNull={
                             selectedTemplateUuid === null || selectedEmailUuid === null || selectedUserUuids.length == 0
                         }
-                        isLoading={isFetchingTemplates || isFetchingEmailTemplates || isFetchingSessions}
+                        isLoading={isEvaluationCreating}
                         variant="primary"
                         onClick={() => {
                             createEvaluation({
@@ -183,7 +185,11 @@ export const EvaluationModal = ({ closeModal, isVisible }) => {
                                 template: selectedTemplateUuid,
                                 email: selectedEmailUuid,
                                 users: selectedUserUuids,
-                            }).then((response) => onCloseModal(response.error))
+                            }).then((response) => {
+                                const msg = response.error ? response.error : response.data.message
+                                if (!response.error) toast.success(msg)
+                                onCloseModal()
+                            })
                         }}
                     >
                         Générer évaluation

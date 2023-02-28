@@ -1,18 +1,22 @@
 import { useState, useMemo } from 'react'
-import { Container, Button, Nav } from 'react-bootstrap'
+import { Container, Button } from 'react-bootstrap'
 import { Helmet } from 'react-helmet-async'
 import { useNavigate } from 'react-router-dom'
 
 import { Grid, EvaluationModal } from '../components'
 import { useGetEvaluationsQuery } from '../services/evaluations'
 import { PATH_EVALUATIONS } from '../constants/constants'
+import { gridContextMenu } from '../utils'
 
 export function EvaluationsPage() {
     const LEVEL_COURSE = 2
 
     const navigate = useNavigate()
 
-    const [evaluationModalVisible, setEvaluationModalVisible] = useState(false)
+    const [evaluationModal, setEvaluationModal] = useState({
+        data: null,
+        visible: false,
+    })
 
     const {
         data: evaluationsData,
@@ -93,19 +97,47 @@ export function EvaluationsPage() {
                     defaultToolPanel: false,
                     hiddenByDefault: false,
                 }}
+                getContextMenuItems={({ node }) => [
+                    ...(node.level == LEVEL_COURSE
+                        ? [
+                              {
+                                  name: 'Renvoyer évaluation',
+                                  action: () => {
+                                      setEvaluationModal({
+                                          data: {
+                                              template: node.data.templateUuid,
+                                              session: {
+                                                  label: node.data.sessionName,
+                                                  value: node.data.sessionUuid,
+                                              },
+                                          },
+                                          visible: true,
+                                      })
+                                  },
+                              },
+                              'separator',
+                          ]
+                        : []),
+                    ...gridContextMenu,
+                ]}
             />
             <Container fluid className="mb-2">
-                <Button variant="success" className="me-2" onClick={() => setEvaluationModalVisible(true)}>
+                <Button
+                    variant="success"
+                    className="me-2"
+                    onClick={() => setEvaluationModal({ data: null, visible: true })}
+                >
                     Générer évaluation
                 </Button>
             </Container>
 
             <EvaluationModal
                 closeModal={() => {
-                    setEvaluationModalVisible(false)
+                    setEvaluationModal({ data: null, visible: false })
                     refetchEvaluations()
                 }}
-                isVisible={evaluationModalVisible}
+                data={evaluationModal.data}
+                isVisible={evaluationModal.visible}
             />
         </>
     )
