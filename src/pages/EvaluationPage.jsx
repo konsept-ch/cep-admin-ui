@@ -25,7 +25,7 @@ export function EvaluationPage() {
         if (errors.length > 0) return
 
         const response = await createResult({
-            evaluation: params.uuid,
+            uuid: params.uuid,
             result,
         })
         if (response.error) return

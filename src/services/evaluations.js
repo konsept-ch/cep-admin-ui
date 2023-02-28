@@ -22,10 +22,10 @@ export const evaluationsApi = createApi({
             }),
         }),
         createEvaluationResult: builder.mutation({
-            query: (body) => ({
-                url: 'results',
+            query: ({ uuid, result }) => ({
+                url: `${uuid}/result`,
                 method: 'POST',
-                body,
+                body: { result },
             }),
         }),
     }),
