@@ -60,6 +60,8 @@ export function ManualInvoiceModal({
 
     const clientWatched = watch('client')
 
+    const itemsWatched = watch('items')
+
     useEffect(() => {
         // don't reset if we just opened edit mode
         if (isDirty) {
@@ -455,6 +457,11 @@ export function ManualInvoiceModal({
                                     <Col xs={6}>
                                         <Row>
                                             <Col xs={2}>
+                                                <p />
+                                                <p>
+                                                    <strong>{itemsWatched[index].participantName}</strong>
+                                                </p>
+                                                <p>{itemsWatched[index].sessionCode}</p>
                                                 <Button variant="danger" onClick={() => remove(index)}>
                                                     Supprimer
                                                 </Button>
