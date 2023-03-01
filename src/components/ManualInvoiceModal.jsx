@@ -16,9 +16,9 @@ const getYearFromJsDate = ({ date }) => DateTime.fromJSDate(date).setLocale('fr-
 const getInvoiceNumber = ({ courseYear, userCode, invoiceNumberForCurrentYear }) =>
     ` ${`${courseYear}`.slice(-2)}${`${userCode}`.padStart(2, 0)}${`${invoiceNumberForCurrentYear}`.padStart(4, 0)}`
 
-const defaultEmptyItem = { designation: '', unit: null, amount: 0, price: 0 }
+const defaultEmptyItem = { designation: '', unit: null, amount: 0, price: 0, vatCode: null }
 
-const tvaOptions = [
+const vatOptions = [
     { value: 'EXONERE', label: 'EXONERE' },
     { value: 'TVA', label: 'TVA 7.7%' },
     { value: 'TAUX1', label: 'TVA incluse' },
@@ -180,7 +180,11 @@ export function ManualInvoiceModal({
                 customClientLastname,
                 courseYear: new Date(String(courseYear)),
                 invoiceDate: new Date(String(invoiceDate)),
-                items,
+                items: items.map(({ vatCode, unit, ...rest }) => ({
+                    ...rest,
+                    vatCode: vatOptions?.find(({ value }) => value === vatCode),
+                    unit: unitOptions?.find(({ value }) => value === unit),
+                })),
                 concerns,
                 invoiceType: invoiceTypeOptions?.find(({ label }) => label === invoiceType),
                 reason: reasonOptions?.find(({ label }) => label === reason),
@@ -483,7 +487,7 @@ export function ManualInvoiceModal({
                                             <Controller
                                                 name={`items.${index}.vatCode`}
                                                 control={control}
-                                                render={({ field }) => <Select {...field} options={tvaOptions} />}
+                                                render={({ field }) => <Select {...field} options={vatOptions} />}
                                                 // TODO: exonere par defaut
                                             />
                                         </Form.Group>
