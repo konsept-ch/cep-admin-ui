@@ -5,8 +5,9 @@ import { useNavigate } from 'react-router-dom'
 
 import { Grid, EvaluationModal } from '../components'
 import { useGetEvaluationsQuery } from '../services/evaluations'
+import { MIDDLEWARE_URL } from '../constants/config'
 import { PATH_EVALUATIONS } from '../constants/constants'
-import { gridContextMenu } from '../utils'
+import { gotoUrl, gridContextMenu } from '../utils'
 
 export function EvaluationsPage() {
     const LEVEL_COURSE = 2
@@ -114,6 +115,11 @@ export function EvaluationsPage() {
                                           visible: true,
                                       })
                                   },
+                              },
+                              {
+                                  name: 'Exporter résultats',
+                                  action: () =>
+                                      gotoUrl(new URL(`/evaluations/${node.data.uuid}/export`, MIDDLEWARE_URL).href),
                               },
                               'separator',
                           ]

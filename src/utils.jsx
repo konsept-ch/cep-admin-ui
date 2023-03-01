@@ -321,3 +321,11 @@ export const downloadCsvFile = ({ csv, fileName }) => {
     a.click()
     a.remove()
 }
+
+export const gotoUrl = (url) => {
+    const a = document.createElement('a')
+    a.setAttribute('target', '_blank')
+    a.setAttribute('href', url)
+    a.click()
+    a.remove()
+}
