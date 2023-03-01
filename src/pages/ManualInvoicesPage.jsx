@@ -182,6 +182,46 @@ export function ManualInvoicesPage() {
             filter: 'agSetColumnFilter',
             width: 150,
         },
+
+        {
+            field: 'sessionCodes',
+            headerName: 'Codes sessions',
+            tooltipField: 'sessionCodes',
+            headerTooltip: 'Les codes des sessions de chaque article',
+            filter: 'agTextColumnFilter',
+            width: 170,
+            valueGetter: ({ data }) =>
+                data?.items
+                    ?.map(({ sessionCode }) => sessionCode)
+                    .filter(Boolean)
+                    .join(', '),
+        },
+        {
+            field: 'participantNames',
+            headerName: 'Noms participants',
+            tooltipField: 'participantNames',
+            headerTooltip: 'Les noms des participants de chaque article',
+            filter: 'agTextColumnFilter',
+            width: 170,
+            valueGetter: ({ data }) =>
+                data?.items
+                    ?.map(({ participantName }) => participantName)
+                    .filter(Boolean)
+                    .join(', '),
+        },
+        {
+            field: 'validationTypes',
+            headerName: 'Types de validations par RH',
+            tooltipField: 'validationTypes',
+            headerTooltip: 'Les types de validations par RH',
+            filter: 'agTextColumnFilter',
+            width: 170,
+            valueGetter: ({ data }) =>
+                data?.items
+                    ?.map(({ validationType }) => validationType)
+                    .filter((type) => type != null)
+                    .join(', '),
+        },
         {
             field: 'invoiceType',
             headerName: 'Type',
