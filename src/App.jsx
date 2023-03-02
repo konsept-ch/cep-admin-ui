@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import { HelmetProvider, Helmet } from 'react-helmet-async'
 import { ToastContainer } from 'react-toastify'
 import { Container } from 'react-bootstrap'
@@ -60,6 +60,10 @@ import { cookies } from './utils'
 export function App() {
     const [isLoggedIn, setLoggedIn] = useState(cookies.get('isLoggedIn') === 'true')
 
+    const isPublicRoute = /^\/evaluations\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(
+        useLocation().pathname
+    )
+
     return (
         <>
             <ToastContainer />
@@ -69,93 +73,109 @@ export function App() {
                     <title>CEP - Former22</title>
                 </Helmet>
                 <ErrorBoundary>
-                    <Routes>
-                        <Route exact path={`/${PATH_EVALUATIONS}/:uuid`} element={<EvaluationPage />} />
-                    </Routes>
-                    <AuthWrapper {...{ isLoggedIn, setLoggedIn }}>
+                    {isPublicRoute ? (
                         <Routes>
                             <Route
                                 exact
-                                path="/"
-                                element={
-                                    <Container fluid>
-                                        <h1>Dashboard (en construction)</h1>
-                                        <p>Notifications et alertes à venir</p>
-                                    </Container>
-                                }
+                                id="evaluation"
+                                path={`/${PATH_EVALUATIONS}/:uuid`}
+                                element={<EvaluationPage />}
                             />
-                            <Route exact path={PATH_AGENDA} element={<AgendaPage />} />
-                            <Route
-                                exact
-                                path={`${PATH_INSCRIPTIONS}/${PATH_INSCRIPTIONS}`}
-                                element={<InscriptionsPage />}
-                            />
-                            <Route
-                                exact
-                                path={`${PATH_INSCRIPTIONS}/${PATH_FORMATEURS}`}
-                                element={<FormateursPage />}
-                            />
-                            <Route
-                                exact
-                                path={`${PATH_INSCRIPTIONS}/${PATH_ANNULATIONS}`}
-                                element={<InscriptionCancellationsPage />}
-                            />
-                            <Route
-                                exact
-                                path={`${PATH_INSCRIPTIONS}/${PATH_REFUSED_BY_HR}`}
-                                element={<InscriptionsRefusedByHrPage />}
-                            />
-                            <Route exact path={`${PATH_CATALOGUE}/${PATH_FORMATIONS}`} element={<CoursesPage />} />
-                            <Route exact path={`${PATH_CATALOGUE}/${PATH_SESSIONS}`} element={<SessionsPage />} />
-                            <Route exact path={`${PATH_CATALOGUE}/${PATH_SEANCES}`} element={<SeancesPage />} />
-                            <Route exact path={`${PATH_CATALOGUE}/${PATH_CONTRACTS}`} element={<ContractsPage />} />
-                            <Route exact path={`${PATH_CATALOGUE}/${PATH_EVALUATIONS}`} element={<EvaluationsPage />} />
-                            <Route
-                                exact
-                                path={`${PATH_TEMPLATES}/${PATH_EMAIL_TEMPLATES}`}
-                                element={<TemplatesPage />}
-                            />
-                            <Route
-                                exact
-                                path={`${PATH_TEMPLATES}/${PATH_ATTESTATION_TEMPLATES}`}
-                                element={<AttestationTemplatesPage />}
-                            />
-                            <Route
-                                exact
-                                path={`${PATH_TEMPLATES}/${PATH_CONTRACTS}`}
-                                element={<ContractTemplatesPage />}
-                            />
-                            <Route
-                                exact
-                                path={`${PATH_TEMPLATES}/${PATH_EVALUATIONS}`}
-                                element={<EvaluationTemplatesPage />}
-                            />
-                            <Route exact path={PATH_TEMPLATES} element={<TemplatesPage />} />
-                            <Route exact path={`${PATH_COMMUNITY}/${PATH_USERS}`} element={<UsersPage />} />
-                            <Route exact path={`${PATH_INVOICE}/${PATH_INVOICE_DIRECT}`} element={<InvoicePage />} />
-                            <Route
-                                exact
-                                path={`${PATH_INVOICE}/${PATH_INVOICE_GROUPED}`}
-                                element={<InvoiceGroupedPage />}
-                            />
-                            <Route
-                                exact
-                                path={`${PATH_INVOICE}/${PATH_INVOICE_MANUAL}`}
-                                element={<ManualInvoicesPage />}
-                            />
-                            <Route
-                                exact
-                                path={`${PATH_COMMUNITY}/${PATH_ORGANIZATIONS}`}
-                                element={<OrganizationsPage />}
-                            />
-                            <Route exact path={PATH_NOTIFICATIONS} element={<NotificationsPage />} />
-                            <Route path="/survey/" element={<SurveyPage />} />
-                            <Route path="/typography" element={<TypographyPage />} />
                         </Routes>
-                    </AuthWrapper>
+                    ) : (
+                        <AuthWrapper {...{ isLoggedIn, setLoggedIn }}>
+                            <Routes>
+                                <Route
+                                    exact
+                                    path="/"
+                                    element={
+                                        <Container fluid>
+                                            <h1>Dashboard (en construction)</h1>
+                                            <p>Notifications et alertes à venir</p>
+                                        </Container>
+                                    }
+                                />
+                                <Route exact path={PATH_AGENDA} element={<AgendaPage />} />
+                                <Route
+                                    exact
+                                    path={`${PATH_INSCRIPTIONS}/${PATH_INSCRIPTIONS}`}
+                                    element={<InscriptionsPage />}
+                                />
+                                <Route
+                                    exact
+                                    path={`${PATH_INSCRIPTIONS}/${PATH_FORMATEURS}`}
+                                    element={<FormateursPage />}
+                                />
+                                <Route
+                                    exact
+                                    path={`${PATH_INSCRIPTIONS}/${PATH_ANNULATIONS}`}
+                                    element={<InscriptionCancellationsPage />}
+                                />
+                                <Route
+                                    exact
+                                    path={`${PATH_INSCRIPTIONS}/${PATH_REFUSED_BY_HR}`}
+                                    element={<InscriptionsRefusedByHrPage />}
+                                />
+                                <Route exact path={`${PATH_CATALOGUE}/${PATH_FORMATIONS}`} element={<CoursesPage />} />
+                                <Route exact path={`${PATH_CATALOGUE}/${PATH_SESSIONS}`} element={<SessionsPage />} />
+                                <Route exact path={`${PATH_CATALOGUE}/${PATH_SEANCES}`} element={<SeancesPage />} />
+                                <Route exact path={`${PATH_CATALOGUE}/${PATH_CONTRACTS}`} element={<ContractsPage />} />
+                                <Route
+                                    exact
+                                    path={`${PATH_CATALOGUE}/${PATH_EVALUATIONS}`}
+                                    element={<EvaluationsPage />}
+                                />
+                                <Route
+                                    exact
+                                    path={`${PATH_TEMPLATES}/${PATH_EMAIL_TEMPLATES}`}
+                                    element={<TemplatesPage />}
+                                />
+                                <Route
+                                    exact
+                                    path={`${PATH_TEMPLATES}/${PATH_ATTESTATION_TEMPLATES}`}
+                                    element={<AttestationTemplatesPage />}
+                                />
+                                <Route
+                                    exact
+                                    path={`${PATH_TEMPLATES}/${PATH_CONTRACTS}`}
+                                    element={<ContractTemplatesPage />}
+                                />
+                                <Route
+                                    exact
+                                    path={`${PATH_TEMPLATES}/${PATH_EVALUATIONS}`}
+                                    element={<EvaluationTemplatesPage />}
+                                />
+                                <Route exact path={PATH_TEMPLATES} element={<TemplatesPage />} />
+                                <Route exact path={`${PATH_COMMUNITY}/${PATH_USERS}`} element={<UsersPage />} />
+                                <Route
+                                    exact
+                                    path={`${PATH_INVOICE}/${PATH_INVOICE_DIRECT}`}
+                                    element={<InvoicePage />}
+                                />
+                                <Route
+                                    exact
+                                    path={`${PATH_INVOICE}/${PATH_INVOICE_GROUPED}`}
+                                    element={<InvoiceGroupedPage />}
+                                />
+                                <Route
+                                    exact
+                                    path={`${PATH_INVOICE}/${PATH_INVOICE_MANUAL}`}
+                                    element={<ManualInvoicesPage />}
+                                />
+                                <Route
+                                    exact
+                                    path={`${PATH_COMMUNITY}/${PATH_ORGANIZATIONS}`}
+                                    element={<OrganizationsPage />}
+                                />
+                                <Route exact path={PATH_NOTIFICATIONS} element={<NotificationsPage />} />
+                                <Route path="/survey/" element={<SurveyPage />} />
+                                <Route path="/typography" element={<TypographyPage />} />
+                            </Routes>
+                        </AuthWrapper>
+                    )}
                 </ErrorBoundary>
             </HelmetProvider>
-            <Footer />
+            <Footer isLoggedIn={isLoggedIn} />
         </>
     )
 }
