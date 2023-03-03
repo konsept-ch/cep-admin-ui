@@ -166,6 +166,7 @@ export function ManualInvoiceModal({
                 items,
                 selectedUserUuid,
                 concerns,
+                codeCompta,
                 status,
                 invoiceType,
                 reason,
@@ -188,6 +189,7 @@ export function ManualInvoiceModal({
                     unit: unitOptions?.find(({ value }) => value === unit),
                 })),
                 concerns,
+                codeCompta,
                 invoiceType: invoiceTypeOptions?.find(({ label }) => label === invoiceType),
                 reason: reasonOptions?.find(({ label }) => label === reason),
             })
@@ -202,6 +204,7 @@ export function ManualInvoiceModal({
                 courseYear: '',
                 invoiceDate: '',
                 concerns: '',
+                codeCompta: '',
                 invoiceType: invoiceTypeOptions?.find(({ label }) => label === 'Manuelle'),
                 reason: reasonOptions?.find(({ label }) => label === 'Participation'),
                 items: [defaultEmptyItem],
@@ -417,6 +420,12 @@ export function ManualInvoiceModal({
                                 <Form.Group className="mb-3" controlId="concerns">
                                     <Form.Label>Concerne</Form.Label>
                                     <Form.Control {...register('concerns')} />
+                                </Form.Group>
+                            </Col>
+                            <Col>
+                                <Form.Group className="mb-3" controlId="concerns">
+                                    <Form.Label>Code compta</Form.Label>
+                                    <Form.Control {...register('codeCompta')} />
                                 </Form.Group>
                             </Col>
                         </Row>
