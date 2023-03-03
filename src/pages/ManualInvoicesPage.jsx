@@ -341,20 +341,27 @@ export function ManualInvoicesPage() {
                                         '`Client',
                                         '`DateFacture',
                                         '`RefClient',
+                                        '`DateDébut',
+                                        '`DateFin',
                                     ],
-                                    data: invoicesToExport.map((invoiceData) => [
-                                        deriveInvoiceNumber({ data: invoiceData }),
-                                        invoiceData.items.map(({ vatCode }) => vatCode?.value).join('/'),
-                                        invoiceData.items
-                                            .map(({ designation }) => designation.replaceAll('\n', '\\'))
-                                            .join('/'),
-                                        invoiceData.items.map(({ price }) => price).join('/'),
-                                        invoiceData.items.map(({ amount }) => amount).join('/'),
-                                        invoiceData.items.map(({ unit }) => unit.value).join('/'),
-                                        invoiceData.customClientAddress.replaceAll('\n', '\\'),
-                                        formatInvoiceDate({ value: invoiceData.invoiceDate }),
-                                        invoiceData.clientNumber,
-                                    ]),
+                                    data: invoicesToExport.map((invoiceData) => {
+                                        const date = formatInvoiceDate({ value: invoiceData.invoiceDate })
+                                        return [
+                                            deriveInvoiceNumber({ data: invoiceData }),
+                                            invoiceData.items.map(({ vatCode }) => vatCode?.value).join('/'),
+                                            invoiceData.items
+                                                .map(({ designation }) => designation.replaceAll('\n', '\\'))
+                                                .join('/'),
+                                            invoiceData.items.map(({ price }) => price).join('/'),
+                                            invoiceData.items.map(({ amount }) => amount).join('/'),
+                                            invoiceData.items.map(({ unit }) => unit.value).join('/'),
+                                            invoiceData.customClientAddress.replaceAll('\n', '\\'),
+                                            date,
+                                            invoiceData.clientNumber,
+                                            date,
+                                            date,
+                                        ]
+                                    }),
                                 },
                                 csvOptions
                             )
