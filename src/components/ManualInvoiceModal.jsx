@@ -16,7 +16,7 @@ const getYearFromJsDate = ({ date }) => DateTime.fromJSDate(date).setLocale('fr-
 const getInvoiceNumber = ({ courseYear, userCode, invoiceNumberForCurrentYear }) =>
     ` ${`${courseYear}`.slice(-2)}${`${userCode}`.padStart(2, 0)}${`${invoiceNumberForCurrentYear}`.padStart(4, 0)}`
 
-const defaultEmptyItem = { designation: '', unit: null, amount: 0, price: 0, vatCode: null }
+const defaultEmptyItem = { number: '', designation: '', unit: null, amount: 0, price: 0, vatCode: null }
 
 const vatOptions = [
     { value: 'EXONERE', label: 'EXONERE' },
@@ -437,6 +437,11 @@ export function ManualInvoiceModal({
                                             <strong>Actions</strong>
                                         </Form.Label>
                                     </Col>
+                                    <Col xs={2}>
+                                        <Form.Label>
+                                            <strong>N° article</strong>
+                                        </Form.Label>
+                                    </Col>
                                     <Col>
                                         <Form.Label>
                                             <strong>Designation</strong>
@@ -466,7 +471,6 @@ export function ManualInvoiceModal({
                                     <Col xs={6}>
                                         <Row>
                                             <Col xs={2}>
-                                                <p />
                                                 <p>
                                                     <strong>{itemsWatched[index].participantName}</strong>
                                                 </p>
@@ -474,6 +478,9 @@ export function ManualInvoiceModal({
                                                 <Button variant="danger" onClick={() => remove(index)}>
                                                     Supprimer
                                                 </Button>
+                                            </Col>
+                                            <Col xs={2}>
+                                                <Form.Control {...register(`items.${index}.number`)} />
                                             </Col>
                                             <Col>
                                                 <Form.Control
