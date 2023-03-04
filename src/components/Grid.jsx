@@ -203,6 +203,7 @@ export const Grid = ({
                             sortable: true,
                             filter: true,
                             aggFunc: 'count',
+                            headerCheckboxSelectionFilteredOnly: true,
                             ...defaultColDef,
                         },
                         statusBar: {
