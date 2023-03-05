@@ -6,8 +6,15 @@ export const manualInvoicesApi = createApi({
     reducerPath: 'manualInvoicesApi',
     baseQuery: prepareBaseQuery({ servicePath: 'manual-invoices' }),
     endpoints: (builder) => ({
-        getStatuses: builder.query({
-            query: () => 'statuses',
+        getEnums: builder.query({
+            query: () => 'enums',
+        }),
+        updateStatuses: builder.mutation({
+            query: ({ body }) => ({
+                url: 'statuses',
+                method: 'PUT',
+                body,
+            }),
         }),
         getManualInvoices: builder.query({
             query: () => '',
@@ -32,13 +39,36 @@ export const manualInvoicesApi = createApi({
                 method: 'DELETE',
             }),
         }),
+        generateDirectInvoice: builder.mutation({
+            query: () => ({
+                url: 'direct',
+                method: 'POST',
+            }),
+        }),
+        generateGroupedInvoice: builder.mutation({
+            query: ({ type }) => ({
+                url: 'grouped',
+                method: 'POST',
+                body: { type },
+            }),
+        }),
+        deleteAllInvoices: builder.mutation({
+            query: () => ({
+                url: 'all',
+                method: 'delete',
+            }),
+        }),
     }),
 })
 
 export const {
-    useLazyGetStatusesQuery,
+    useGetEnumsQuery,
+    useUpdateStatusesMutation,
     useGetManualInvoicesQuery,
     useCreateManualInvoiceMutation,
     useUpdateManualInvoiceMutation,
     useRemoveManualInvoiceMutation,
+    useGenerateDirectInvoiceMutation,
+    useGenerateGroupedInvoiceMutation,
+    useDeleteAllInvoicesMutation,
 } = manualInvoicesApi

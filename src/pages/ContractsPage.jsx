@@ -1,9 +1,10 @@
 import { useState, useMemo } from 'react'
+import { Button } from 'react-bootstrap'
 import { Helmet } from 'react-helmet-async'
 
-import { MIDDLEWARE_URL } from '../constants/config'
 import { Grid, ContractModal, FloatCellEditor } from '../components'
 import { useGetEventsQuery, useUpdateEventMutation } from '../services/events'
+import { useLazyDownloadContractQuery } from '../services/contracts'
 import { gridContextMenu } from '../utils'
 
 export function ContractsPage() {
@@ -11,12 +12,10 @@ export function ContractsPage() {
     const LEVEL_SESSION = 3
     const LEVEL_EVENT = 4
 
-    const {
-        data: eventsData,
-        isFetching: isFetchingEvents,
-        refetch: refetchEvents,
-    } = useGetEventsQuery(null, { refetchOnMountOrArgChange: true })
+    const { data: eventsData, isFetching: isFetchingEvents, refetch: refetchEvents } = useGetEventsQuery()
     const [updateEvent] = useUpdateEventMutation()
+
+    const [downloadContract] = useLazyDownloadContractQuery()
 
     const [contractModalVisible, setContractModalVisible] = useState(false)
     const [selectedCourse, setSelectedCourse] = useState(null)
@@ -105,13 +104,18 @@ export function ContractsPage() {
                 cellRenderer: ({ node }) =>
                     node.level === LEVEL_COURSE ? (
                         node.allLeafChildren[0].data.contract ? (
-                            <a
-                                href={
-                                    new URL(`/contracts/${node.allLeafChildren[0].data.contract}`, MIDDLEWARE_URL).href
+                            <Button
+                                className="p-0"
+                                variant="link"
+                                size="sm"
+                                onClick={() =>
+                                    downloadContract({
+                                        contractId: node.allLeafChildren[0].data.contract,
+                                    })
                                 }
                             >
                                 Télécharger contrat
-                            </a>
+                            </Button>
                         ) : (
                             <span>Aucun contract</span>
                         )

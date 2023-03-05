@@ -2,6 +2,7 @@ const mapCurrentUrlToEnv = {
     'https://former22.cep.swiss': 'prod',
     'https://former22.cep-val.ch': 'val',
     'http://localhost:3000': 'local',
+    'http://127.0.0.1:3000': 'local',
 }
 const mapCurrentEnvToMiddlewareUrl = {
     prod: 'https://middleware.cep.swiss',

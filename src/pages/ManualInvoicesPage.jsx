@@ -1,24 +1,43 @@
-import { useState } from 'react'
+import { useState, useMemo, useCallback } from 'react'
+import { useLocation } from 'react-router-dom'
 import { Container, Button } from 'react-bootstrap'
 import { Helmet } from 'react-helmet-async'
+import { toast } from 'react-toastify'
 import Papa from 'papaparse'
 import { DateTime } from 'luxon'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPen } from '@fortawesome/pro-light-svg-icons'
 
 import { Grid, ManualInvoiceModal } from '../components'
-import { useGetManualInvoicesQuery, useLazyGetStatusesQuery } from '../services/manual-invoices'
+import {
+    useGetManualInvoicesQuery,
+    useGetEnumsQuery,
+    useUpdateStatusesMutation,
+    useGenerateDirectInvoiceMutation,
+    useGenerateGroupedInvoiceMutation,
+    useDeleteAllInvoicesMutation,
+} from '../services/manual-invoices'
 import { useLazyGetOrganizationsFlatWithAddressQuery } from '../services/organizations'
 import { useLazyGetUsersQuery } from '../services/users'
 import { gridContextMenu, downloadCsvFile } from '../utils'
+import { mapPathnameToInvoiceType } from '../constants/invoices'
+import {
+    PATH_INVOICE,
+    PATH_INVOICE_ALL,
+    PATH_INVOICE_DIRECT,
+    PATH_INVOICE_GROUPED,
+    PATH_INVOICE_MANUAL,
+} from '../constants/constants'
+import { currentRunningEnv } from '../constants/config'
 
 const csvOptions = {
     delimiter: ';',
     quotes: true,
+    encoding: 'utf-8',
 }
 
 const deriveInvoiceNumber = ({ data }) =>
-    `${`${data?.courseYear}`.slice(-2)}${`${data?.user.cfNumber}`.padStart(
+    `${`${data?.courseYear}`.slice(-2)}${`${data?.user.cfNumber ?? ''}`.padStart(
         2,
         '0'
     )}${`${data?.invoiceNumberForCurrentYear}`.padStart(4, '0')}`
@@ -33,7 +52,13 @@ export function ManualInvoicesPage() {
 
     const [fetchOrganizations, { data: organizations }] = useLazyGetOrganizationsFlatWithAddressQuery()
     const [fetchUsers, { data: users }] = useLazyGetUsersQuery()
-    const [fetchStatuses, { data: statuses }] = useLazyGetStatusesQuery()
+    const { data: enums, isLoading: areEnumsLoading, refetch: fetchEnums } = useGetEnumsQuery()
+    const [updateStatuses, { isLoading: isStatusesUpdating }] = useUpdateStatusesMutation()
+    const [generateDirectInvoices, { isLoading: isGeneratingDirectInvoices }] = useGenerateDirectInvoiceMutation()
+    const [generateGroupedInvoices, { isLoading: isGeneratingGroupedInvoices }] = useGenerateGroupedInvoiceMutation()
+    const [deleteAllInvoices, { isLoading: isDeletingAllInvoices }] = useDeleteAllInvoicesMutation()
+
+    const location = useLocation()
 
     const {
         data: invoicesData,
@@ -109,6 +134,9 @@ export function ManualInvoicesPage() {
             tooltipField: 'statut',
             headerTooltip: 'Statut',
             filter: 'agSetColumnFilter',
+            filterParams: {
+                newRowAction: 'keep',
+            },
             width: 150,
         },
         {
@@ -158,18 +186,103 @@ export function ManualInvoicesPage() {
                     .reduce((a, b) => Number(a) + Number(b), 0)
                     .toFixed(2),
         },
+        {
+            field: 'reason',
+            headerName: 'Raison',
+            tooltipField: 'reason',
+            headerTooltip: 'Raison de la facture, utilisé pour les pénalités',
+            filter: 'agSetColumnFilter',
+            width: 150,
+        },
+
+        {
+            field: 'sessionCodes',
+            headerName: 'Codes sessions',
+            tooltipField: 'sessionCodes',
+            headerTooltip: 'Les codes des sessions de chaque article',
+            filter: 'agTextColumnFilter',
+            width: 170,
+            valueGetter: ({ data }) =>
+                data?.items
+                    ?.map(({ sessionCode }) => sessionCode)
+                    .filter(Boolean)
+                    .join(', '),
+        },
+        {
+            field: 'participantNames',
+            headerName: 'Noms participants',
+            tooltipField: 'participantNames',
+            headerTooltip: 'Les noms des participants de chaque article',
+            filter: 'agTextColumnFilter',
+            width: 170,
+            valueGetter: ({ data }) =>
+                data?.items
+                    ?.map(({ participantName }) => participantName)
+                    .filter(Boolean)
+                    .join(', '),
+        },
+        {
+            field: 'validationTypes',
+            headerName: 'Types de validations par RH',
+            tooltipField: 'validationTypes',
+            headerTooltip: 'Les types de validations par RH',
+            filter: 'agTextColumnFilter',
+            width: 170,
+            valueGetter: ({ data }) =>
+                data?.items
+                    ?.map(({ validationType }) => validationType)
+                    .filter((type) => type != null)
+                    .join(', '),
+        },
+        {
+            field: 'invoiceType',
+            headerName: 'Type',
+            tooltipField: 'invoiceType',
+            headerTooltip: 'Type de la facture, utilisé pour filtrer selon la page',
+            filter: 'agSetColumnFilter',
+            width: 150,
+        },
     ])
+
+    const filterModel = useMemo(
+        () => ({
+            status: {
+                filterType: 'set',
+                values:
+                    mapPathnameToInvoiceType[location.pathname] == null
+                        ? ['Envoyée', 'Non transmissible']
+                        : mapPathnameToInvoiceType[location.pathname] === 'Quota'
+                        ? ['Quotas']
+                        : ['En préparation', 'A traiter', 'Exportée', 'Annulée'],
+            },
+            invoiceType: ['Directe', 'Groupée', 'Manuelle'].includes(mapPathnameToInvoiceType[location.pathname])
+                ? {
+                      filterType: 'set',
+                      values: [mapPathnameToInvoiceType[location.pathname]],
+                  }
+                : null,
+        }),
+        [location.pathname]
+    )
+
+    const onPathnameChange = useCallback(
+        (gridApi) => {
+            gridApi?.setFilterModel(filterModel)
+        },
+        [filterModel]
+    )
 
     return (
         <>
             <Helmet>
-                <title>Factures manuelles - Former22</title>
+                <title>Factures {mapPathnameToInvoiceType[location.pathname] ?? 'Toute'}s - Former22</title>
             </Helmet>
             <Grid
-                name="Factures manuelles"
+                name={`Factures ${mapPathnameToInvoiceType[location.pathname] ?? 'Toute'}s`}
                 columnDefs={columnDefs}
                 rowData={invoicesData}
-                isDataLoading={isFetchingInvoices}
+                isDataLoading={isFetchingInvoices || isStatusesUpdating}
+                defaultSortModel={[{ colId: 'invoiceNumber', sort: 'asc', sortIndex: 0 }]}
                 getContextMenuItems={({ node: { data } }) => [
                     {
                         name: 'Exporter pour Crésus',
@@ -212,9 +325,9 @@ export function ManualInvoicesPage() {
                                         return [
                                             invoiceData.clientNumber,
                                             invoiceData.organizationName,
-                                            '', // only if private
-                                            '', // only if private
-                                            '', // only if private
+                                            invoiceData.customClientTitle,
+                                            invoiceData.customClientFirstname,
+                                            invoiceData.customClientLastname,
                                             invoiceData.customClientAddress.replaceAll('\n', '\\'),
                                             invoiceData.customClientAddress.replaceAll('\n', '\\'),
                                             postalAddressCode,
@@ -263,7 +376,41 @@ export function ManualInvoicesPage() {
                                 csv: csvFacture.replaceAll('/', '"/"'),
                                 fileName: 'CSV Facture pour Crésus',
                             })
+
+                            updateStatuses({
+                                body: {
+                                    uuids: invoicesToExport.map((invoice) => invoice.id),
+                                    status: 'Export_e',
+                                },
+                            })
+                                .then((response) => {
+                                    toast.success(response.data.message)
+                                })
+                                .finally(() => {
+                                    refetchInvoices()
+                                })
                         },
+                    },
+                    {
+                        name: 'Modifier statut',
+                        disabled: selectedRowsIds.length === 0,
+                        subMenu: areEnumsLoading
+                            ? null
+                            : Object.entries(enums.invoiceStatuses).map(([prismaStatus, actualStatus]) => ({
+                                  name: actualStatus,
+                                  action: async () => {
+                                      const { error, data: updateStatusesResponse } = await updateStatuses({
+                                          body: {
+                                              uuids: selectedRowsIds,
+                                              status: prismaStatus,
+                                          },
+                                      })
+                                      if (!error) {
+                                          toast.success(updateStatusesResponse.message)
+                                      }
+                                      refetchInvoices()
+                                  },
+                              })),
                     },
                     'separator',
                     ...gridContextMenu,
@@ -286,11 +433,82 @@ export function ManualInvoicesPage() {
 
                     setSelectedRowsIds(filteredSelectedRowsIds)
                 }}
+                defaultFilterModel={filterModel}
+                onPathnameChange={onPathnameChange}
             />
             <Container fluid className="mb-2">
-                <Button variant="success" className="me-2" onClick={() => setIsManualInvoiceModalOpen(true)}>
-                    Créer facture manuelle
-                </Button>
+                {location.pathname === `/${PATH_INVOICE}/${PATH_INVOICE_DIRECT}` && (
+                    <Button
+                        variant="secondary"
+                        className="me-2"
+                        disabled={isGeneratingDirectInvoices}
+                        onClick={async () => {
+                            const directGenerationResponse = await generateDirectInvoices()
+
+                            if (directGenerationResponse.data != null && directGenerationResponse.error == null) {
+                                toast.success('Factures directes générées')
+                            }
+
+                            await refetchInvoices()
+                        }}
+                    >
+                        Générer directes (année 2023) {isGeneratingDirectInvoices && '...'}
+                    </Button>
+                )}
+                {location.pathname === `/${PATH_INVOICE}/${PATH_INVOICE_MANUAL}` && (
+                    <Button variant="success" className="me-2" onClick={() => setIsManualInvoiceModalOpen(true)}>
+                        Créer manuelle
+                    </Button>
+                )}
+                {location.pathname === `/${PATH_INVOICE}/${PATH_INVOICE_GROUPED}` && (
+                    <>
+                        <Button
+                            variant="secondary"
+                            className="me-2"
+                            disabled={isGeneratingGroupedInvoices}
+                            onClick={() =>
+                                generateGroupedInvoices({ type: 'semestrial' }).then((response) => {
+                                    toast.success(response.data.message)
+                                    refetchInvoices()
+                                })
+                            }
+                        >
+                            Générer sémestrielles {isGeneratingGroupedInvoices && '...'}
+                        </Button>
+                        <Button
+                            variant="secondary"
+                            className="me-2"
+                            disabled={isGeneratingGroupedInvoices}
+                            onClick={() =>
+                                generateGroupedInvoices({ type: 'annual' }).then((response) => {
+                                    toast.success(response.data.message)
+                                    refetchInvoices()
+                                })
+                            }
+                        >
+                            Générer annuelles {isGeneratingGroupedInvoices && '...'}
+                        </Button>
+                    </>
+                )}
+                {location.pathname === `/${PATH_INVOICE}/${PATH_INVOICE_ALL}` &&
+                    currentRunningEnv.toLowerCase() !== 'prod' && (
+                        <Button
+                            variant="danger"
+                            className="me-2"
+                            onClick={async () => {
+                                const deletionResponse = await deleteAllInvoices()
+
+                                if (deletionResponse.data != null && deletionResponse.error == null) {
+                                    toast.success(deletionResponse.data)
+                                }
+
+                                await refetchInvoices()
+                            }}
+                            disabled={isDeletingAllInvoices /* || invoicesData?.length === 0 */}
+                        >
+                            Supprimer toutes ({currentRunningEnv})
+                        </Button>
+                    )}
             </Container>
             {isManualInvoiceModalOpen && (
                 <ManualInvoiceModal
@@ -305,8 +523,8 @@ export function ManualInvoicesPage() {
                     organizations={organizations}
                     fetchUsers={fetchUsers}
                     users={users}
-                    fetchStatuses={fetchStatuses}
-                    statuses={statuses}
+                    fetchEnums={fetchEnums}
+                    enums={enums}
                 />
             )}
         </>

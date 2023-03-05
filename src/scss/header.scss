@@ -38,8 +38,10 @@
 }
 
 .nav-link {
+    --box-shadow-color: #e8ca01;
+
     transition: box-shadow 0.15s linear;
-    box-shadow: 0 0 0 0 #e8ca01;
+    box-shadow: 0 0 0 0 var(--box-shadow-color);
     white-space: nowrap;
 
     .dropdown-menu & {
@@ -47,14 +49,26 @@
     }
 
     &.active {
-        box-shadow: 0 5px 0 0 #e8ca01;
+        box-shadow: 0 5px 0 0 var(--box-shadow-color);
 
         .dropdown-menu & {
-            box-shadow: -5px 0 0 0 #e8ca01;
+            box-shadow: -5px 0 0 0 var(--box-shadow-color);
         }
     }
 
     &.disabled {
         opacity: 0.5;
+    }
+
+    .navbar.is-running-in-prod & {
+        --box-shadow-color: #e8ca01;
+    }
+
+    .navbar.is-running-in-val & {
+        --box-shadow-color: #78a5b6;
+    }
+
+    .navbar.is-running-in-local & {
+        --box-shadow-color: #4f7302;
     }
 }

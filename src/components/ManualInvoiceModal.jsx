@@ -16,22 +16,21 @@ const getYearFromJsDate = ({ date }) => DateTime.fromJSDate(date).setLocale('fr-
 const getInvoiceNumber = ({ courseYear, userCode, invoiceNumberForCurrentYear }) =>
     ` ${`${courseYear}`.slice(-2)}${`${userCode}`.padStart(2, 0)}${`${invoiceNumberForCurrentYear}`.padStart(4, 0)}`
 
-const defaultEmptyItem = { designation: '', unit: {}, amount: 0, price: 0 }
+const defaultEmptyItem = { designation: '', unit: null, amount: 0, price: 0, vatCode: null }
 
-const tvaOptions = [
+const vatOptions = [
     { value: 'EXONERE', label: 'EXONERE' },
     { value: 'TVA', label: 'TVA 7.7%' },
     { value: 'TAUX1', label: 'TVA incluse' },
 ]
 // const defaultTvaOption = tvaOptions[1]
 
-const unitValues = [
+const unitOptions = [
     { value: 'jour(s)', label: 'jour(s)' },
     { value: 'heure(s)', label: 'heure(s)' },
     { value: 'forfait(s)', label: 'forfait(s)' },
     { value: 'part.', label: 'part.' },
 ]
-
 export function ManualInvoiceModal({
     refetchInvoices,
     selectedInvoiceData,
@@ -41,9 +40,10 @@ export function ManualInvoiceModal({
     organizations,
     fetchUsers,
     users,
-    fetchStatuses,
-    statuses,
+    fetchEnums,
+    enums,
 }) {
+    const { invoiceStatuses, invoiceTypes, invoiceReasons } = enums ?? {}
     const {
         control,
         register,
@@ -59,6 +59,8 @@ export function ManualInvoiceModal({
     const courseYearWatched = watch('courseYear')
 
     const clientWatched = watch('client')
+
+    const itemsWatched = watch('items')
 
     useEffect(() => {
         // don't reset if we just opened edit mode
@@ -79,6 +81,7 @@ export function ManualInvoiceModal({
 
             setValue(
                 'customClientAddress',
+                // TODO: calculate custom client address on the server instead
                 `${name}\n${addressTitle ? `${addressTitle}\n` : ''}${
                     postalAddressDepartment ? `${postalAddressDepartment}\n` : ''
                 }${postalAddressStreet ? `${postalAddressStreet}\n` : ''}${
@@ -94,10 +97,6 @@ export function ManualInvoiceModal({
                 setValue('customClientEmail', customClientEmail)
             }
         }
-
-        if (clientWatched?.value === 'DEFAUT-PRIVÉ') {
-            fetchUsers()
-        }
     }, [clientWatched])
 
     const clientOptions = useMemo(
@@ -112,13 +111,35 @@ export function ManualInvoiceModal({
 
     const statusesOptions = useMemo(
         () =>
-            statuses != null
-                ? Object.entries(statuses).map(([prismaStatus, actualStatus]) => ({
+            invoiceStatuses != null
+                ? Object.entries(invoiceStatuses).map(([prismaStatus, actualStatus]) => ({
                       value: prismaStatus,
                       label: actualStatus,
                   }))
-                : undefined,
-        [statuses]
+                : null,
+        [invoiceStatuses]
+    )
+
+    const invoiceTypeOptions = useMemo(
+        () =>
+            invoiceTypes != null
+                ? Object.entries(invoiceTypes).map(([prismaInvoiceType, actualInvoiceType]) => ({
+                      value: prismaInvoiceType,
+                      label: actualInvoiceType,
+                  }))
+                : null,
+        [invoiceTypes]
+    )
+
+    const reasonOptions = useMemo(
+        () =>
+            invoiceReasons != null
+                ? Object.entries(invoiceReasons).map(([prismaInvoiceReason, actualInvoiceReason]) => ({
+                      value: prismaInvoiceReason,
+                      label: actualInvoiceReason,
+                  }))
+                : null,
+        [invoiceReasons]
     )
 
     const userOptions = useMemo(
@@ -135,52 +156,70 @@ export function ManualInvoiceModal({
         if (selectedInvoiceData != null) {
             const {
                 organizationUuid,
-                // invoiceNumberForCurrentYear,
                 customClientEmail,
                 customClientAddress,
+                customClientTitle,
+                customClientFirstname,
+                customClientLastname,
                 invoiceDate,
                 courseYear,
                 items,
                 selectedUserUuid,
                 concerns,
                 status,
+                invoiceType,
+                reason,
             } = selectedInvoiceData
-
-            console.log(statusesOptions)
 
             reset({
                 client: clientOptions?.find(({ uuid }) => uuid === organizationUuid),
                 selectedUser: userOptions?.find(({ uuid }) => uuid === selectedUserUuid),
                 status: statusesOptions?.find(({ label }) => label === status),
-                // status: { value: status, label: statuses?.[status] },
                 customClientAddress,
                 customClientEmail,
+                customClientTitle,
+                customClientFirstname,
+                customClientLastname,
                 courseYear: new Date(String(courseYear)),
                 invoiceDate: new Date(String(invoiceDate)),
-                items,
+                items: items.map(({ vatCode, unit, ...rest }) => ({
+                    ...rest,
+                    vatCode: vatOptions?.find(({ value }) => value === vatCode),
+                    unit: unitOptions?.find(({ value }) => value === unit),
+                })),
                 concerns,
+                invoiceType: invoiceTypeOptions?.find(({ label }) => label === invoiceType),
+                reason: reasonOptions?.find(({ label }) => label === reason),
             })
         } else {
             reset({
                 client: '',
                 customClientAddress: '',
                 customClientEmail: '',
+                customClientTitle: '',
+                customClientFirstname: '',
+                customClientLastname: '',
                 courseYear: '',
                 invoiceDate: '',
+                concerns: '',
+                invoiceType: invoiceTypeOptions?.find(({ label }) => label === 'Manuelle'),
+                reason: reasonOptions?.find(({ label }) => label === 'Participation'),
                 items: [defaultEmptyItem],
+                status: statusesOptions?.find(({ label }) => label === 'En préparation'),
             })
         }
     }, [selectedInvoiceData, clientOptions, userOptions, statusesOptions])
 
-    useEffect(() => {
-        if (isModalOpen) {
-            fetchOrganizations()
-            fetchStatuses()
-        }
-    }, [isModalOpen])
-
     const [updateInvoice, { isLoading: isInvoiceUpdating }] = useUpdateManualInvoiceMutation()
     const [createInvoice, { isLoading: isInvoiceCreating }] = useCreateManualInvoiceMutation()
+
+    useEffect(() => {
+        if (isModalOpen) {
+            fetchEnums()
+            fetchOrganizations()
+            fetchUsers()
+        }
+    }, [isModalOpen])
 
     const closeInvoiceModal = () => {
         closeModal()
@@ -197,12 +236,44 @@ export function ManualInvoiceModal({
                     <Form noValidate>
                         <Row>
                             <Col>
-                                <Form.Group className="mb-3" controlId="statut">
-                                    <Form.Label>Statut</Form.Label>
+                                {statusesOptions ? (
+                                    <Form.Group className="mb-3" controlId="statut">
+                                        <Form.Label>Statut</Form.Label>
+                                        <Controller
+                                            name="status"
+                                            control={control}
+                                            render={({ field }) => (
+                                                <Select
+                                                    {...field}
+                                                    options={statusesOptions}
+                                                    defaultValue={statusesOptions.find(
+                                                        ({ label }) => label === 'En préparation'
+                                                    )}
+                                                />
+                                            )}
+                                        />
+                                    </Form.Group>
+                                ) : (
+                                    'Chargement des statuts...'
+                                )}
+                                <Form.Group className="mb-3" controlId="invoiceType">
+                                    <Form.Label>Type de facture</Form.Label>
                                     <Controller
-                                        name="status"
+                                        name="invoiceType"
                                         control={control}
-                                        render={({ field }) => <Select {...field} options={statusesOptions} />}
+                                        render={({ field }) => (
+                                            <Select {...field} isDisabled={true} options={invoiceTypeOptions} />
+                                        )}
+                                    />
+                                </Form.Group>
+                                <Form.Group className="mb-3" controlId="reason">
+                                    <Form.Label>Raison</Form.Label>
+                                    <Controller
+                                        name="reason"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Select {...field} isDisabled={isEditModal} options={reasonOptions} />
+                                        )}
                                     />
                                 </Form.Group>
                             </Col>
@@ -225,17 +296,17 @@ export function ManualInvoiceModal({
                                                 render={({ field }) => <Select {...field} options={userOptions} />}
                                             />
                                         </Form.Group>
-                                        <Form.Group className="mb-3" controlId="selectedUserTitle">
+                                        <Form.Group className="mb-3" controlId="customClientTitle">
                                             <Form.Label>Titre</Form.Label>
-                                            <Form.Control {...register('selectedUserTitle')} />
+                                            <Form.Control {...register('customClientTitle')} />
                                         </Form.Group>
-                                        <Form.Group className="mb-3" controlId="selectedUserFirstName">
+                                        <Form.Group className="mb-3" controlId="customClientFirstname">
                                             <Form.Label>Prénom</Form.Label>
-                                            <Form.Control {...register('selectedUserFirstName')} />
+                                            <Form.Control {...register('customClientFirstname')} />
                                         </Form.Group>
-                                        <Form.Group className="mb-3" controlId="selectedUserLastName">
+                                        <Form.Group className="mb-3" controlId="customClientLastname">
                                             <Form.Label>Nom</Form.Label>
-                                            <Form.Control {...register('selectedUserLastName')} />
+                                            <Form.Control {...register('customClientLastname')} />
                                         </Form.Group>
                                     </>
                                 )}
@@ -386,6 +457,11 @@ export function ManualInvoiceModal({
                                     <Col xs={6}>
                                         <Row>
                                             <Col xs={2}>
+                                                <p />
+                                                <p>
+                                                    <strong>{itemsWatched[index].participantName}</strong>
+                                                </p>
+                                                <p>{itemsWatched[index].sessionCode}</p>
                                                 <Button variant="danger" onClick={() => remove(index)}>
                                                     Supprimer
                                                 </Button>
@@ -403,7 +479,7 @@ export function ManualInvoiceModal({
                                         <Controller
                                             name={`items.${index}.unit`}
                                             control={control}
-                                            render={({ field }) => <Select {...field} options={unitValues} />}
+                                            render={({ field }) => <Select {...field} options={unitOptions} />}
                                         />
                                     </Col>
                                     <Col>
@@ -418,7 +494,7 @@ export function ManualInvoiceModal({
                                             <Controller
                                                 name={`items.${index}.vatCode`}
                                                 control={control}
-                                                render={({ field }) => <Select {...field} options={tvaOptions} />}
+                                                render={({ field }) => <Select {...field} options={vatOptions} />}
                                                 // TODO: exonere par defaut
                                             />
                                         </Form.Group>

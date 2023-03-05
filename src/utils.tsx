@@ -15,7 +15,7 @@ export const clearAllAuthCookies = () => {
     cookies.remove('token')
 }
 
-export const keepAuthAlive = ({ path, maxAge }) => {
+export const keepAuthAlive = ({ path, maxAge }: { path: string; maxAge: number }) => {
     cookies.set('rememberMe', cookies.get('rememberMe'), { path, maxAge })
     cookies.set('isLoggedIn', cookies.get('isLoggedIn'), { path, maxAge })
     cookies.set('email', cookies.get('email'), { path, maxAge })
@@ -31,16 +31,16 @@ export const dateOptions = {
     hour: 'numeric',
     minute: 'numeric',
     timeZone: 'UTC',
-}
+} as const
 
-export const mapEventTypeToClassName = ({ type }) =>
+export const mapEventTypeToClassName = ({ type }: { type: string }) =>
     ({
         f2f: 'presence-course',
         sync: 'online-sync',
         async: 'online-async',
     }[type])
 
-export const mapClassNameToEventType = ({ className }) =>
+export const mapClassNameToEventType = ({ className }: { className: string }) =>
     ({
         'presence-course': 'f2f',
         'online-sync': 'sync',
@@ -64,7 +64,9 @@ export const STATUSES = {
     ANNULEE_FACTURABLE: 'Annulée facturable',
     ANNULEE_NON_FACTURABLE: 'Annulée non-facturable',
     ECARTEE: 'Écartée',
-}
+} as const
+type StatusesKeys = keyof typeof STATUSES
+export type StatusesValues = (typeof STATUSES)[StatusesKeys]
 
 export const FINAL_STATUSES = [
     STATUSES.A_TRAITER_PAR_RH,
@@ -78,14 +80,15 @@ export const FINAL_STATUSES = [
     STATUSES.ANNULEE_FACTURABLE,
     STATUSES.ANNULEE_NON_FACTURABLE,
     STATUSES.ECARTEE,
-]
+] as const
 
 export const UNSELECTABLE_STATUSES = [
     STATUSES.A_TRAITER_PAR_RH,
     STATUSES.VALIDE_PAR_RH,
     STATUSES.REFUSEE_PAR_RH,
     STATUSES.EN_ATTENTE,
-]
+    STATUSES.ANNULEE,
+] as const
 
 export const lockGroups = [
     [
@@ -96,19 +99,23 @@ export const lockGroups = [
         STATUSES.ANNULEE_FACTURABLE,
         STATUSES.ANNULEE_NON_FACTURABLE,
     ],
-]
+] as const
 
-export const INVOICE_STATUSES = [STATUSES.PARTICIPATION, STATUSES.PARTICIPATION_PARTIELLE, STATUSES.NON_PARTICIPATION]
+export const INVOICE_STATUSES = [
+    STATUSES.PARTICIPATION,
+    STATUSES.PARTICIPATION_PARTIELLE,
+    STATUSES.NON_PARTICIPATION,
+] as const
 
 export const statusWarnings = {
     [STATUSES.ECARTEE]: {
         [STATUSES.ACCEPTEE_PAR_CEP]:
             "Vous êtes en train de changer le de 'Écartée' à 'Acceptée', mais c'est probablement mieux de créer une nouvelle inscription",
     },
-}
+} as const
 
-export const checkAreInSameLockGroup = (status1) => (status2) =>
-    lockGroups.some((lockGroup) => lockGroup.includes(status1) && lockGroup.includes(status2))
+export const checkAreInSameLockGroup = (status1: StatusesValues) => (status2: StatusesValues) =>
+    lockGroups.some((lockGroup) => lockGroup.includes(status1 as any) && lockGroup.includes(status2 as any))
 
 export const getUniqueId = () => {
     const dateString = Date.now().toString(36)
@@ -126,10 +133,17 @@ export const draftVariables = {
     SESSION_RÉSUMÉ_DATES: '[SESSION_RÉSUMÉ_DATES]',
     PARTICIPANT_CIVILITÉ: '[PARTICIPANT_CIVILITÉ]',
     INSCRIPTION_DATE: '[INSCRIPTION_DATE]',
-    EVALUATION_LIEN: '[EVALUATION_LIEN]',
-}
+} as const
 
-export const formatDate = ({ dateString, isTimeVisible, isDateVisible }) => {
+export const formatDate = ({
+    dateString,
+    isTimeVisible,
+    isDateVisible,
+}: {
+    dateString: string
+    isTimeVisible?: boolean
+    isDateVisible?: boolean
+}) => {
     if (dateString == null) {
         return
     }
@@ -149,11 +163,11 @@ export const formatDate = ({ dateString, isTimeVisible, isDateVisible }) => {
     return [getDate(), getTime()].filter(Boolean).join(', ')
 }
 
-export const callApi = async ({ path = '', method = 'GET', headers, body, successCallback = () => {} }) => {
+export const callApi = async ({ path = '', method = 'GET', headers, body, successCallback = () => {} }: any) => {
     try {
-        let response
+        // let response
         try {
-            response = await fetch(new URL(path, MIDDLEWARE_URL).href, {
+            const response = await fetch(new URL(path, MIDDLEWARE_URL).href, {
                 headers: {
                     'Access-Control-Allow-Origin': '*',
                     'x-login-email-address': cookies.get('email'),
@@ -164,6 +178,41 @@ export const callApi = async ({ path = '', method = 'GET', headers, body, succes
                 method,
                 body,
             })
+
+            if (response.status !== 200) {
+                const { message, stack, error } = await response.json()
+
+                /* eslint-disable-next-line no-console */
+                console.error(stack)
+
+                toast.error(
+                    <>
+                        <p>{`${response.status} - ${response.statusText}`}</p>
+                        <p>{message ?? error}</p>
+                    </>,
+                    { autoClose: false }
+                )
+                fetch(new URL('reportError', MIDDLEWARE_URL).href, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*',
+                    },
+                    body: JSON.stringify({
+                        errorDescription: `${window.location.href}\n<br/>${cookies.get('email')}\n<br/>${
+                            message ?? error
+                        }`,
+                    }),
+                })
+
+                return
+            }
+
+            const resultJson = response.json()
+
+            successCallback()
+
+            return resultJson
         } catch (error) {
             console.error(error)
 
@@ -190,52 +239,19 @@ export const callApi = async ({ path = '', method = 'GET', headers, body, succes
 
             toast(<RetryToast />, { autoClose: false })
         }
-
-        if (response.status !== 200) {
-            const { message, stack, error } = await response.json()
-
-            /* eslint-disable-next-line no-console */
-            console.error(stack)
-
-            toast.error(
-                <>
-                    <p>{`${response.status} - ${response.statusText}`}</p>
-                    <p>{message ?? error}</p>
-                </>,
-                { autoClose: false }
-            )
-            fetch(new URL('reportError', MIDDLEWARE_URL).href, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*',
-                },
-                body: JSON.stringify({
-                    errorDescription: `${window.location.href}\n<br/>${cookies.get('email')}\n<br/>${message ?? error}`,
-                }),
-            })
-
-            return
-        }
-
-        const resultJson = response.json()
-
-        successCallback()
-
-        return resultJson
     } catch (error) {
         /* eslint-disable-next-line no-console */
-        console.error(error.message)
+        console.error((error as any)?.message)
 
         toast.error(
             <>
                 <p>Middleware hors service ou en redéploiement.</p>
-                <p>Message: {error.message}</p>
+                <p>Message: {(error as any)?.message}</p>
             </>,
             { autoClose: false, toastId: 'middleware-is-down' }
         )
 
-        const RetryToast = ({ closeToast }) => {
+        const RetryToast = ({ closeToast }: any) => {
             return (
                 <div>
                     Réessayer l'action
@@ -259,8 +275,9 @@ export const callApi = async ({ path = '', method = 'GET', headers, body, succes
         })
     }
 }
+
 export const inscriptionsGridRowClassRules = {
-    'inscription-row-highlight': ({ data: { inscriptionDate, startDate, status } = {} }) => {
+    'inscription-row-highlight': ({ data: { inscriptionDate, startDate, status } = {} }: { data: any }) => {
         const milisecondsIn5days = 1000 * 60 * 60 * 24 * 5
         const isSession5daysAfterInscription =
             new Date(startDate).getTime() - new Date(inscriptionDate).getTime() <= milisecondsIn5days
@@ -295,10 +312,10 @@ export const inscriptionsGridColumnDefs = [
     'chartRange',
 ]
 
-export const formatToFlatObject = (data) => {
+export const formatToFlatObject = (data: any) => {
     const objectValuesEntries = Object.entries(data)
         .filter(([_k, v]) => typeof v === 'object' && !Array.isArray(v) && v !== null)
-        .reduce((acc, [k, v]) => {
+        .reduce((acc: any, [k, v]: any) => {
             acc[k] = v.label
             return acc
         }, {})
@@ -306,9 +323,9 @@ export const formatToFlatObject = (data) => {
     return { ...data, ...objectValuesEntries }
 }
 
-export const downloadCsvFile = ({ csv, fileName }) => {
+export const downloadCsvFile = ({ csv, fileName }: { csv: string; fileName: string }) => {
     // TODO: fix encoding, ANSI
-    const blob = new Blob([csv], { type: 'text/csv' })
+    const blob = new Blob([new Uint8Array([0xef, 0xbb, 0xbf]), csv], { type: 'text/csv;charset=utf-8' })
 
     const url = window.URL.createObjectURL(blob)
 
