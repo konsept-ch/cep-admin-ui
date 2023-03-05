@@ -19,6 +19,14 @@ import { useLazyGetOrganizationsFlatWithAddressQuery } from '../services/organiz
 import { useLazyGetUsersQuery } from '../services/users'
 import { gridContextMenu, downloadCsvFile } from '../utils'
 import { mapPathnameToInvoiceType } from '../constants/invoices'
+import {
+    PATH_INVOICE,
+    PATH_INVOICE_ALL,
+    PATH_INVOICE_DIRECT,
+    PATH_INVOICE_GROUPED,
+    PATH_INVOICE_MANUAL,
+} from '../constants/constants'
+import { currentRunningEnv } from '../constants/config'
 
 const csvOptions = {
     delimiter: ';',
@@ -425,33 +433,50 @@ export function ManualInvoicesPage() {
                 onPathnameChange={onPathnameChange}
             />
             <Container fluid className="mb-2">
-                <Button variant="success" className="me-2" onClick={() => setIsManualInvoiceModalOpen(true)}>
-                    Créer facture manuelle
-                </Button>
-                <Button
-                    variant="secondary"
-                    className="me-2"
-                    onClick={() =>
-                        generateGroupedInvoices({ type: 'semestrial' }).then((response) => {
-                            toast.success(response.data.message)
-                            refetchInvoices()
-                        })
-                    }
-                >
-                    Générer factures sémestrielles {isGeneratingGroupedInvoices && '...'}
-                </Button>
-                <Button
-                    variant="secondary"
-                    className="me-2"
-                    onClick={() =>
-                        generateGroupedInvoices({ type: 'annual' }).then((response) => {
-                            toast.success(response.data.message)
-                            refetchInvoices()
-                        })
-                    }
-                >
-                    Générer factures annuelles {isGeneratingGroupedInvoices && '...'}
-                </Button>
+                {location.pathname === `/${PATH_INVOICE}/${PATH_INVOICE_DIRECT}` && (
+                    <Button variant="secondary" className="me-2" onClick={() => setIsManualInvoiceModalOpen(true)}>
+                        Générer directes
+                    </Button>
+                )}
+                {location.pathname === `/${PATH_INVOICE}/${PATH_INVOICE_MANUAL}` && (
+                    <Button variant="success" className="me-2" onClick={() => setIsManualInvoiceModalOpen(true)}>
+                        Créer manuelle
+                    </Button>
+                )}
+                {location.pathname === `/${PATH_INVOICE}/${PATH_INVOICE_GROUPED}` && (
+                    <>
+                        <Button
+                            variant="secondary"
+                            className="me-2"
+                            onClick={() =>
+                                generateGroupedInvoices({ type: 'semestrial' }).then((response) => {
+                                    toast.success(response.data.message)
+                                    refetchInvoices()
+                                })
+                            }
+                        >
+                            Générer sémestrielles {isGeneratingGroupedInvoices && '...'}
+                        </Button>
+                        <Button
+                            variant="secondary"
+                            className="me-2"
+                            onClick={() =>
+                                generateGroupedInvoices({ type: 'annual' }).then((response) => {
+                                    toast.success(response.data.message)
+                                    refetchInvoices()
+                                })
+                            }
+                        >
+                            Générer annuelles {isGeneratingGroupedInvoices && '...'}
+                        </Button>
+                    </>
+                )}
+                {location.pathname === `/${PATH_INVOICE}/${PATH_INVOICE_ALL}` &&
+                    currentRunningEnv.toLowerCase() !== 'prod' && (
+                        <Button variant="danger" className="me-2">
+                            Supprimer toutes ({currentRunningEnv})
+                        </Button>
+                    )}
             </Container>
             {isManualInvoiceModalOpen && (
                 <ManualInvoiceModal
