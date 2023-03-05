@@ -14,6 +14,7 @@ import {
     useGetEnumsQuery,
     useUpdateStatusesMutation,
     useGenerateGroupedInvoiceMutation,
+    useDeleteAllInvoicesMutation,
 } from '../services/manual-invoices'
 import { useLazyGetOrganizationsFlatWithAddressQuery } from '../services/organizations'
 import { useLazyGetUsersQuery } from '../services/users'
@@ -53,6 +54,7 @@ export function ManualInvoicesPage() {
     const { data: enums, isLoading: areEnumsLoading, refetch: fetchEnums } = useGetEnumsQuery()
     const [updateStatuses, { isLoading: isStatusesUpdating }] = useUpdateStatusesMutation()
     const [generateGroupedInvoices, { isLoading: isGeneratingGroupedInvoices }] = useGenerateGroupedInvoiceMutation()
+    const [deleteAllInvoices, { isLoading: isDeletingAllInvoices }] = useDeleteAllInvoicesMutation()
 
     const location = useLocation()
 
@@ -434,8 +436,8 @@ export function ManualInvoicesPage() {
             />
             <Container fluid className="mb-2">
                 {location.pathname === `/${PATH_INVOICE}/${PATH_INVOICE_DIRECT}` && (
-                    <Button variant="secondary" className="me-2" onClick={() => setIsManualInvoiceModalOpen(true)}>
-                        Générer directes
+                    <Button variant="secondary" className="me-2">
+                        Générer directes (2023)
                     </Button>
                 )}
                 {location.pathname === `/${PATH_INVOICE}/${PATH_INVOICE_MANUAL}` && (
@@ -473,7 +475,18 @@ export function ManualInvoicesPage() {
                 )}
                 {location.pathname === `/${PATH_INVOICE}/${PATH_INVOICE_ALL}` &&
                     currentRunningEnv.toLowerCase() !== 'prod' && (
-                        <Button variant="danger" className="me-2">
+                        <Button
+                            variant="danger"
+                            className="me-2"
+                            onClick={async () => {
+                                const deletionResponse = await deleteAllInvoices()
+                                if (deletionResponse.data != null && deletionResponse.error == null) {
+                                    toast.success(deletionResponse.data)
+                                }
+                                await refetchInvoices()
+                            }}
+                            disabled={isDeletingAllInvoices /* || invoicesData?.length === 0 */}
+                        >
                             Supprimer toutes ({currentRunningEnv})
                         </Button>
                     )}

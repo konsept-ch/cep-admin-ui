@@ -46,6 +46,12 @@ export const manualInvoicesApi = createApi({
                 body: { type },
             }),
         }),
+        deleteAllInvoices: builder.mutation({
+            query: () => ({
+                url: 'all',
+                method: 'delete',
+            }),
+        }),
     }),
 })
 
@@ -57,4 +63,5 @@ export const {
     useUpdateManualInvoiceMutation,
     useRemoveManualInvoiceMutation,
     useGenerateGroupedInvoiceMutation,
+    useDeleteAllInvoicesMutation,
 } = manualInvoicesApi
