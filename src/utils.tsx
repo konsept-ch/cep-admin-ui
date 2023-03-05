@@ -339,7 +339,7 @@ export const downloadCsvFile = ({ csv, fileName }: { csv: string; fileName: stri
     a.remove()
 }
 
-export const gotoUrl = (url) => {
+export const gotoUrl = (url: string) => {
     const a = document.createElement('a')
     a.setAttribute('target', '_blank')
     a.setAttribute('href', url)
