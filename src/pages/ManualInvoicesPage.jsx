@@ -13,6 +13,7 @@ import {
     useGetManualInvoicesQuery,
     useGetEnumsQuery,
     useUpdateStatusesMutation,
+    useGenerateDirectInvoiceMutation,
     useGenerateGroupedInvoiceMutation,
     useDeleteAllInvoicesMutation,
 } from '../services/manual-invoices'
@@ -53,6 +54,7 @@ export function ManualInvoicesPage() {
     const [fetchUsers, { data: users }] = useLazyGetUsersQuery()
     const { data: enums, isLoading: areEnumsLoading, refetch: fetchEnums } = useGetEnumsQuery()
     const [updateStatuses, { isLoading: isStatusesUpdating }] = useUpdateStatusesMutation()
+    const [generateDirectInvoices, { isLoading: isGeneratingDirectInvoices }] = useGenerateDirectInvoiceMutation()
     const [generateGroupedInvoices, { isLoading: isGeneratingGroupedInvoices }] = useGenerateGroupedInvoiceMutation()
     const [deleteAllInvoices, { isLoading: isDeletingAllInvoices }] = useDeleteAllInvoicesMutation()
 
@@ -279,7 +281,7 @@ export function ManualInvoicesPage() {
                 name={`Factures ${mapPathnameToInvoiceType[location.pathname] ?? 'Toute'}s`}
                 columnDefs={columnDefs}
                 rowData={invoicesData}
-                isDataLoading={isFetchingInvoices}
+                isDataLoading={isFetchingInvoices || isStatusesUpdating}
                 defaultSortModel={[{ colId: 'invoiceNumber', sort: 'asc', sortIndex: 0 }]}
                 getContextMenuItems={({ node: { data } }) => [
                     {
@@ -436,8 +438,21 @@ export function ManualInvoicesPage() {
             />
             <Container fluid className="mb-2">
                 {location.pathname === `/${PATH_INVOICE}/${PATH_INVOICE_DIRECT}` && (
-                    <Button variant="secondary" className="me-2">
-                        Générer directes (2023)
+                    <Button
+                        variant="secondary"
+                        className="me-2"
+                        disabled={isGeneratingDirectInvoices}
+                        onClick={async () => {
+                            const directGenerationResponse = await generateDirectInvoices()
+
+                            if (directGenerationResponse.data != null && directGenerationResponse.error == null) {
+                                toast.success('Factures directes générées')
+                            }
+
+                            await refetchInvoices()
+                        }}
+                    >
+                        Générer directes (2023) {isGeneratingDirectInvoices && '...'}
                     </Button>
                 )}
                 {location.pathname === `/${PATH_INVOICE}/${PATH_INVOICE_MANUAL}` && (
@@ -450,6 +465,7 @@ export function ManualInvoicesPage() {
                         <Button
                             variant="secondary"
                             className="me-2"
+                            disabled={isGeneratingGroupedInvoices}
                             onClick={() =>
                                 generateGroupedInvoices({ type: 'semestrial' }).then((response) => {
                                     toast.success(response.data.message)
@@ -462,6 +478,7 @@ export function ManualInvoicesPage() {
                         <Button
                             variant="secondary"
                             className="me-2"
+                            disabled={isGeneratingGroupedInvoices}
                             onClick={() =>
                                 generateGroupedInvoices({ type: 'annual' }).then((response) => {
                                     toast.success(response.data.message)
@@ -480,9 +497,11 @@ export function ManualInvoicesPage() {
                             className="me-2"
                             onClick={async () => {
                                 const deletionResponse = await deleteAllInvoices()
+
                                 if (deletionResponse.data != null && deletionResponse.error == null) {
                                     toast.success(deletionResponse.data)
                                 }
+
                                 await refetchInvoices()
                             }}
                             disabled={isDeletingAllInvoices /* || invoicesData?.length === 0 */}

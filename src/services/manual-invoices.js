@@ -39,6 +39,12 @@ export const manualInvoicesApi = createApi({
                 method: 'DELETE',
             }),
         }),
+        generateDirectInvoice: builder.mutation({
+            query: () => ({
+                url: 'direct',
+                method: 'POST',
+            }),
+        }),
         generateGroupedInvoice: builder.mutation({
             query: ({ type }) => ({
                 url: 'grouped',
@@ -62,6 +68,7 @@ export const {
     useCreateManualInvoiceMutation,
     useUpdateManualInvoiceMutation,
     useRemoveManualInvoiceMutation,
+    useGenerateDirectInvoiceMutation,
     useGenerateGroupedInvoiceMutation,
     useDeleteAllInvoicesMutation,
 } = manualInvoicesApi
