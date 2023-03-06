@@ -10,7 +10,7 @@
     "npm": ">=8.19.3"
   },
   "scripts": {
-    "start": "cross-env TSC_COMPILE_ON_ERROR=true DISABLE_ESLINT_PLUGIN=true react-scripts start",
+    "start": "cross-env REACT_APP_EVALUATIONS_URL=http://localhost:3001 TSC_COMPILE_ON_ERROR=true DISABLE_ESLINT_PLUGIN=true react-scripts start",
     "test": "react-scripts test --watchAll=false",
     "build": "react-scripts build",
     "markdownlint:check": "markdownlint README.md",

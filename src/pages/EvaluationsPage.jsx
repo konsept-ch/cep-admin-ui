@@ -1,7 +1,6 @@
 import { useState, useMemo } from 'react'
 import { Container, Button } from 'react-bootstrap'
 import { Helmet } from 'react-helmet-async'
-import { useNavigate } from 'react-router-dom'
 
 import { Grid, EvaluationModal } from '../components'
 import { useGetEvaluationsQuery } from '../services/evaluations'
@@ -11,8 +10,6 @@ import { gotoUrl, gridContextMenu } from '../utils'
 
 export function EvaluationsPage() {
     const LEVEL_COURSE = 2
-
-    const navigate = useNavigate()
 
     const [evaluationModal, setEvaluationModal] = useState({
         data: null,
@@ -56,9 +53,9 @@ export function EvaluationsPage() {
                 cellRenderer: ({ node }) => {
                     return node.level == LEVEL_COURSE ? (
                         <a
-                            href={`/${PATH_EVALUATIONS}/${node.data.uuid}`}
-                            onClick={() => navigate(`/${PATH_EVALUATIONS}/${node.data.uuid}`)}
-                        >{`${process.env.PUBLIC_URL}/${PATH_EVALUATIONS}/${node.data.uuid}`}</a>
+                            target="_blank"
+                            href={`${process.env.REACT_APP_EVALUATIONS_URL}/${PATH_EVALUATIONS}/${node.data.uuid}`}
+                        >{`${process.env.REACT_APP_EVALUATIONS_URL}/${PATH_EVALUATIONS}/${node.data.uuid}`}</a>
                     ) : (
                         <span></span>
                     )
