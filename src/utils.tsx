@@ -133,6 +133,7 @@ export const draftVariables = {
     SESSION_RÉSUMÉ_DATES: '[SESSION_RÉSUMÉ_DATES]',
     PARTICIPANT_CIVILITÉ: '[PARTICIPANT_CIVILITÉ]',
     INSCRIPTION_DATE: '[INSCRIPTION_DATE]',
+    EVALUATION_LIEN: '[EVALUATION_LIEN]',
 } as const
 
 export const formatDate = ({
@@ -335,6 +336,14 @@ export const downloadCsvFile = ({ csv, fileName }: { csv: string; fileName: stri
 
     a.setAttribute('download', `${fileName}.csv`)
 
+    a.click()
+    a.remove()
+}
+
+export const gotoUrl = (url: string) => {
+    const a = document.createElement('a')
+    a.setAttribute('target', '_blank')
+    a.setAttribute('href', url)
     a.click()
     a.remove()
 }

@@ -20,7 +20,10 @@ import { manualInvoicesApi } from './services/manual-invoices'
 import { inscriptionsApi } from './services/inscriptions'
 import { attestationsApi } from './services/attestations'
 import { contractTemplatesApi } from './services/contractTemplates'
+import { evaluationTemplatesApi } from './services/evaluationTemplates'
 import { eventsApi } from './services/events'
+import { evaluationsApi } from './services/evaluations'
+import { templatesApi } from './services/templates'
 
 const sagaMiddleware = createSagaMiddleware()
 
@@ -43,7 +46,10 @@ export const store = configureStore({
         [inscriptionsApi.reducerPath]: inscriptionsApi.reducer,
         [attestationsApi.reducerPath]: attestationsApi.reducer,
         [contractTemplatesApi.reducerPath]: contractTemplatesApi.reducer,
+        [evaluationTemplatesApi.reducerPath]: evaluationTemplatesApi.reducer,
         [eventsApi.reducerPath]: eventsApi.reducer,
+        [evaluationsApi.reducerPath]: evaluationsApi.reducer,
+        [templatesApi.reducerPath]: templatesApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat([
@@ -57,7 +63,10 @@ export const store = configureStore({
             inscriptionsApi.middleware,
             attestationsApi.middleware,
             contractTemplatesApi.middleware,
+            evaluationTemplatesApi.middleware,
             eventsApi.middleware,
+            evaluationsApi.middleware,
+            templatesApi.middleware,
             rtkQueryErrorLogger,
         ]),
 })
