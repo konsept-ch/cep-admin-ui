@@ -52,10 +52,9 @@ export function EvaluationsPage() {
                 headerTooltip: "Le lien vers l'évaluation",
                 cellRenderer: ({ node }) => {
                     return node.level == LEVEL_COURSE ? (
-                        <a
-                            target="_blank"
-                            href={`${process.env.REACT_APP_EVALUATIONS_URL}/${PATH_EVALUATIONS}/${node.data.uuid}`}
-                        >{`${process.env.REACT_APP_EVALUATIONS_URL}/${PATH_EVALUATIONS}/${node.data.uuid}`}</a>
+                        <a target="_blank" href={node.data.link}>
+                            {node.data.link}
+                        </a>
                     ) : (
                         <span></span>
                     )
