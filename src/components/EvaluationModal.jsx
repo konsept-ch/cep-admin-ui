@@ -175,7 +175,9 @@ export const EvaluationModal = ({ closeModal, isVisible, data }) => {
                 <>
                     <ConfirmInscriptionChangeButton
                         isSelectedTemplateDataNull={
-                            selectedTemplateUuid === null || selectedEmailUuid === null || selectedUserUuids.length == 0
+                            selectedTemplateUuid === null ||
+                            selectedEmailUuid === null ||
+                            selectedUserUuids.length === 0
                         }
                         isLoading={isEvaluationCreating}
                         variant="primary"

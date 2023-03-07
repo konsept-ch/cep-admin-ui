@@ -15,15 +15,15 @@ const blocks = [Title, Paragraph, Notes, Remark].reduce(
 
 export const Block = {
     Render: (props) => {
-        const Block = blocks[props.type]
+        const BlockInner = blocks[props.type]
         return (
             <div className={`block render ${props.type}`}>
-                <Block.Render {...props} />
+                <BlockInner.Render {...props} />
             </div>
         )
     },
     Preview: (props) => {
-        const Block = blocks[props.type]
+        const BlockInner = blocks[props.type]
         return (
             <div
                 className={`block preview ${props.type} ${props.selected ? 'selected' : ''}`}
@@ -32,12 +32,12 @@ export const Block = {
                     props.onSelected()
                 }}
             >
-                <Block.Preview {...props} />
+                <BlockInner.Preview {...props} />
             </div>
         )
     },
     Editor: ({ onUpdate, ...props }) => {
-        const Block = blocks[props.type]
+        const BlockInner = blocks[props.type]
         return (
             <>
                 <Form.Group className="mb-3">
@@ -88,7 +88,7 @@ export const Block = {
                         }
                     />
                 </Form.Group>
-                <Block.Editor {...props} onUpdate={onUpdate} />
+                <BlockInner.Editor {...props} onUpdate={onUpdate} />
             </>
         )
     },

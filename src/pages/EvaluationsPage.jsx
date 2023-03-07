@@ -51,7 +51,7 @@ export function EvaluationsPage() {
                 headerName: 'Lien',
                 headerTooltip: "Le lien vers l'évaluation",
                 cellRenderer: ({ node }) => {
-                    return node.level == LEVEL_COURSE ? (
+                    return node.level === LEVEL_COURSE ? (
                         <a target="_blank" href={node.data.link}>
                             {node.data.link}
                         </a>
@@ -95,7 +95,7 @@ export function EvaluationsPage() {
                     hiddenByDefault: false,
                 }}
                 getContextMenuItems={({ node }) => [
-                    ...(node.level == LEVEL_COURSE
+                    ...(node.level === LEVEL_COURSE
                         ? [
                               {
                                   name: 'Renvoyer évaluation',

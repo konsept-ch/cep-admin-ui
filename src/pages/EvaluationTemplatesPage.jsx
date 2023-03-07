@@ -50,9 +50,9 @@ export function EvaluationTemplatesPage() {
     const [isDeleteWarningVisible, setIsDeleteWarningVisible] = useState(false)
     const [discardWarningData, setDiscardWarningData] = useState({ isVisible: false })
 
-    const resetPreview = (uuid, title, description, struct) => {
+    const resetPreview = (uuid, title, description, structParam) => {
         setSelectedTemplateUuid(uuid)
-        setStruct(struct)
+        setStruct(structParam)
         setSelectedBlock(null)
         reset({
             title,
@@ -171,7 +171,7 @@ export function EvaluationTemplatesPage() {
                             ) : (
                                 <ListGroup>
                                     {templates.length > 0 &&
-                                        templates.map(({ uuid, title, description, struct }) => (
+                                        templates.map(({ uuid, title, description, structParam }) => (
                                             <EvaluationModelItem
                                                 {...{
                                                     key: uuid,
@@ -185,10 +185,10 @@ export function EvaluationTemplatesPage() {
                                                             setDiscardWarningData({
                                                                 isVisible: true,
                                                                 selectNewTemplate: () =>
-                                                                    resetPreview(uuid, title, description, struct),
+                                                                    resetPreview(uuid, title, description, structParam),
                                                             })
                                                         } else {
-                                                            resetPreview(uuid, title, description, struct)
+                                                            resetPreview(uuid, title, description, structParam)
                                                         }
                                                     },
                                                 }}
