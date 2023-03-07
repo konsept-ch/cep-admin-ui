@@ -138,7 +138,7 @@ export function App() {
                             <Route
                                 exact
                                 path={`${PATH_INVOICE}/${PATH_INVOICE_GROUPED}`}
-                                element={<InvoiceGroupedPage />}
+                                element={<ManualInvoicesPage />}
                             />
                             <Route
                                 exact
