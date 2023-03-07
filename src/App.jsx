@@ -52,6 +52,8 @@ import {
     PATH_ANNULATIONS,
     PATH_SEANCES,
     PATH_REFUSED_BY_HR,
+    PATH_INVOICE_ALL,
+    PATH_INVOICE_QUOTAS,
 } from './constants/constants'
 import { AuthWrapper } from './AuthWrapper'
 import { cookies } from './utils'
@@ -138,6 +140,26 @@ export function App() {
                                 exact
                                 path={`${PATH_INVOICE}/${PATH_INVOICE_MANUAL}`}
                                 element={<ManualInvoicesPage />}
+                            />
+                            <Route
+                                exact
+                                path={`${PATH_INVOICE}/${PATH_INVOICE_ALL}`}
+                                element={<ManualInvoicesPage />}
+                            />
+                            <Route
+                                exact
+                                path={`${PATH_INVOICE}/${PATH_INVOICE_QUOTAS}`}
+                                element={<ManualInvoicesPage />}
+                            />
+                            <Route
+                                exact
+                                path={`${PATH_INVOICE}/old-${PATH_INVOICE_DIRECT}`}
+                                element={<InvoicePage />}
+                            />
+                            <Route
+                                exact
+                                path={`${PATH_INVOICE}/old-${PATH_INVOICE_GROUPED}`}
+                                element={<InvoiceGroupedPage />}
                             />
                             <Route
                                 exact
