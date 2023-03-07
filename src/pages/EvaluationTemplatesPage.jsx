@@ -171,7 +171,7 @@ export function EvaluationTemplatesPage() {
                             ) : (
                                 <ListGroup>
                                     {templates.length > 0 &&
-                                        templates.map(({ uuid, title, description, structParam }) => (
+                                        templates.map(({ uuid, title, description, struct: structParam }) => (
                                             <EvaluationModelItem
                                                 {...{
                                                     key: uuid,
