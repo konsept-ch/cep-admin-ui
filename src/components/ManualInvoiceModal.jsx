@@ -16,7 +16,7 @@ const getYearFromJsDate = ({ date }) => DateTime.fromJSDate(date).setLocale('fr-
 const getInvoiceNumber = ({ courseYear, userCode, invoiceNumberForCurrentYear }) =>
     ` ${`${courseYear}`.slice(-2)}${`${userCode}`.padStart(2, 0)}${`${invoiceNumberForCurrentYear}`.padStart(4, 0)}`
 
-const defaultEmptyItem = { designation: '', unit: null, amount: 0, price: 0, vatCode: null }
+const defaultEmptyItem = { number: '', designation: '', unit: null, amount: 0, price: 0, vatCode: null }
 
 const vatOptions = [
     { value: 'EXONERE', label: 'EXONERE' },
@@ -166,6 +166,7 @@ export function ManualInvoiceModal({
                 items,
                 selectedUserUuid,
                 concerns,
+                codeCompta,
                 status,
                 invoiceType,
                 reason,
@@ -188,6 +189,7 @@ export function ManualInvoiceModal({
                     unit: unitOptions?.find(({ value }) => value === unit),
                 })),
                 concerns,
+                codeCompta,
                 invoiceType: invoiceTypeOptions?.find(({ label }) => label === invoiceType),
                 reason: reasonOptions?.find(({ label }) => label === reason),
             })
@@ -202,6 +204,7 @@ export function ManualInvoiceModal({
                 courseYear: '',
                 invoiceDate: '',
                 concerns: '',
+                codeCompta: '',
                 invoiceType: invoiceTypeOptions?.find(({ label }) => label === 'Manuelle'),
                 reason: reasonOptions?.find(({ label }) => label === 'Participation'),
                 items: [defaultEmptyItem],
@@ -419,6 +422,12 @@ export function ManualInvoiceModal({
                                     <Form.Control {...register('concerns')} />
                                 </Form.Group>
                             </Col>
+                            <Col>
+                                <Form.Group className="mb-3" controlId="concerns">
+                                    <Form.Label>Code compta</Form.Label>
+                                    <Form.Control {...register('codeCompta')} />
+                                </Form.Group>
+                            </Col>
                         </Row>
                         <Row>
                             <Col xs={6}>
@@ -426,6 +435,11 @@ export function ManualInvoiceModal({
                                     <Col xs={2}>
                                         <Form.Label>
                                             <strong>Actions</strong>
+                                        </Form.Label>
+                                    </Col>
+                                    <Col xs={2}>
+                                        <Form.Label>
+                                            <strong>N° article</strong>
                                         </Form.Label>
                                     </Col>
                                     <Col>
@@ -457,7 +471,6 @@ export function ManualInvoiceModal({
                                     <Col xs={6}>
                                         <Row>
                                             <Col xs={2}>
-                                                <p />
                                                 <p>
                                                     <strong>{itemsWatched[index].participantName}</strong>
                                                 </p>
@@ -465,6 +478,9 @@ export function ManualInvoiceModal({
                                                 <Button variant="danger" onClick={() => remove(index)}>
                                                     Supprimer
                                                 </Button>
+                                            </Col>
+                                            <Col xs={2}>
+                                                <Form.Control {...register(`items.${index}.number`)} />
                                             </Col>
                                             <Col>
                                                 <Form.Control
