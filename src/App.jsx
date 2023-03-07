@@ -130,7 +130,11 @@ export function App() {
                             />
                             <Route exact path={PATH_TEMPLATES} element={<TemplatesPage />} />
                             <Route exact path={`${PATH_COMMUNITY}/${PATH_USERS}`} element={<UsersPage />} />
-                            <Route exact path={`${PATH_INVOICE}/${PATH_INVOICE_DIRECT}`} element={<InvoicePage />} />
+                            <Route
+                                exact
+                                path={`${PATH_INVOICE}/${PATH_INVOICE_DIRECT}`}
+                                element={<ManualInvoicesPage />}
+                            />
                             <Route
                                 exact
                                 path={`${PATH_INVOICE}/${PATH_INVOICE_GROUPED}`}
