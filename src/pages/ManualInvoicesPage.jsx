@@ -498,7 +498,7 @@ export function ManualInvoicesPage() {
                     </>
                 )}
                 {location.pathname === `/${PATH_INVOICE}/${PATH_INVOICE_ALL}` &&
-                    currentRunningEnv.toLowerCase() !== 'prod' && (
+                    (currentRunningEnv.toLowerCase() === 'val' || currentRunningEnv.toLowerCase() === 'local') && (
                         <Button
                             variant="danger"
                             className="me-2"
