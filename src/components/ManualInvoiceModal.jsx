@@ -398,6 +398,7 @@ export function ManualInvoiceModal({
                                                 <DatePicker
                                                     selected={value}
                                                     onChange={onChange}
+                                                    dateFormat="dd/MM/yyyy"
                                                     className={classNames('form-control', {
                                                         'is-invalid': Boolean(errors.courseYear),
                                                     })}
