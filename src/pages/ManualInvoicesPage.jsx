@@ -37,7 +37,7 @@ const csvOptions = {
 }
 
 const deriveInvoiceNumber = ({ data }) =>
-    `${`${data?.courseYear}`.slice(-2)}${`${data?.user.cfNumber ?? ''}`.padStart(
+    `${`${data?.courseYear}`.slice(-2)}${`${data?.user.cfNumber}`.padStart(
         2,
         '0'
     )}${`${data?.invoiceNumberForCurrentYear}`.padStart(4, '0')}`
@@ -303,7 +303,7 @@ export function ManualInvoicesPage() {
                                         '`Nom',
                                         '`Prénom',
                                         '`Adresse',
-                                        '`AdresseFacturation',
+                                        '`Rue',
                                         '`NPA',
                                         '`Localité',
                                         '`Pays',
@@ -316,6 +316,7 @@ export function ManualInvoicesPage() {
                                             {}
 
                                         const {
+                                            postalAddressStreet,
                                             postalAddressCode,
                                             postalAddressLocality,
                                             postalAddressCountry,
@@ -329,7 +330,7 @@ export function ManualInvoicesPage() {
                                             invoiceData.customClientFirstname,
                                             invoiceData.customClientLastname,
                                             invoiceData.customClientAddress.replaceAll('\n', '\\'),
-                                            invoiceData.customClientAddress.replaceAll('\n', '\\'),
+                                            postalAddressStreet,
                                             postalAddressCode,
                                             postalAddressLocality,
                                             postalAddressCountry,
@@ -345,33 +346,39 @@ export function ManualInvoicesPage() {
                                 {
                                     fields: [
                                         '`Numéro',
-                                        '`ACodeTVA',
-                                        '`ADésignation',
-                                        '`APrix',
-                                        '`AQuantité',
-                                        '`AUnité',
-                                        '`Client',
                                         '`DateFacture',
+                                        '`Concerne',
+                                        '`CodeCompta',
+                                        '`ANuméro',
+                                        '`ADésignation',
+                                        '`AUnité',
+                                        '`AQuantité',
+                                        '`APrix',
+                                        '`ACodeTVA',
+                                        '`Client',
                                         '`RefClient',
                                         '`DateDébut',
                                         '`DateFin',
                                     ],
                                     data: invoicesToExport.map((invoiceData) => {
-                                        const date = formatInvoiceDate({ value: invoiceData.invoiceDate })
+                                        const year = new Date(invoiceData.invoiceDate).getFullYear()
                                         return [
                                             deriveInvoiceNumber({ data: invoiceData }),
-                                            invoiceData.items.map(({ vatCode }) => vatCode?.value).join('/'),
+                                            formatInvoiceDate({ value: invoiceData.invoiceDate }),
+                                            invoiceData.concerns ?? '',
+                                            invoiceData.codeCompta ?? '',
+                                            invoiceData.items.map(({ number }) => number).join('/'),
                                             invoiceData.items
                                                 .map(({ designation }) => designation.replaceAll('\n', '\\'))
                                                 .join('/'),
-                                            invoiceData.items.map(({ price }) => price).join('/'),
+                                            invoiceData.items.map(({ unit }) => unit).join('/'),
                                             invoiceData.items.map(({ amount }) => amount).join('/'),
-                                            invoiceData.items.map(({ unit }) => unit.value).join('/'),
+                                            invoiceData.items.map(({ price }) => price).join('/'),
+                                            invoiceData.items.map(({ vatCode }) => vatCode).join('/'),
                                             invoiceData.customClientAddress.replaceAll('\n', '\\'),
-                                            date,
                                             invoiceData.clientNumber,
-                                            date,
-                                            date,
+                                            new Date(year, 0, 1, 12, 0, 0, 0).toLocaleDateString('fr-CH'),
+                                            new Date(year, 11, 31, 12, 0, 0, 0).toLocaleDateString('fr-CH'),
                                         ]
                                     }),
                                 },

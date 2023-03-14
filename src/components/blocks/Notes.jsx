@@ -4,7 +4,7 @@ const Render = ({ identifier, text, notes, onUpdate }) => {
     return (
         <>
             <p className="text-break" dangerouslySetInnerHTML={{ __html: text.replaceAll('\n', '<br>') }}></p>
-            <div className="d-flex gap-2">
+            <div className="d-flex flex-column gap-2">
                 {notes.map((note, index) => (
                     <Form.Check
                         key={index}
@@ -24,7 +24,7 @@ const Preview = ({ identifier, text, notes }) => {
     return (
         <>
             <p className="text-break" dangerouslySetInnerHTML={{ __html: text.replaceAll('\n', '<br>') }}></p>
-            <div className="d-flex gap-2">
+            <div className="d-flex flex-column gap-2">
                 {notes.map((note, index) => (
                     <Form.Check key={index} type="radio" name={identifier} label={note} />
                 ))}

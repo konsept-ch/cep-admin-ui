@@ -397,7 +397,12 @@ export function ManualInvoiceModal({
                                             render={({ field: { value, onChange } }) => (
                                                 <DatePicker
                                                     selected={value}
-                                                    onChange={onChange}
+                                                    onChange={(date) =>
+                                                        onChange(
+                                                            new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+                                                        )
+                                                    }
+                                                    dateFormat="dd/MM/yyyy"
                                                     className={classNames('form-control', {
                                                         'is-invalid': Boolean(errors.courseYear),
                                                     })}
@@ -423,7 +428,7 @@ export function ManualInvoiceModal({
                                 </Form.Group>
                             </Col>
                             <Col>
-                                <Form.Group className="mb-3" controlId="concerns">
+                                <Form.Group className="mb-3" controlId="codeCompta">
                                     <Form.Label>Code compta</Form.Label>
                                     <Form.Control {...register('codeCompta')} />
                                 </Form.Group>
