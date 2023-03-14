@@ -1,13 +1,14 @@
 // @import '~react-toastify/scss/main';
+@use '~ag-grid-community/styles' as ag;
+
 @import '~react-toastify/dist/ReactToastify.css';
 @import '~draft-js/dist/Draft.css';
-@import '~ag-grid-community/dist/styles/ag-grid.css';
-@import '~ag-grid-community/dist/styles/ag-theme-alpine.css';
 @import '~react-datepicker/dist/react-datepicker.css';
 @import 'var-overrides';
 @import '~bootstrap/scss/bootstrap';
 @import 'class-overrides';
 @import 'custom-variables';
+@import 'evaluations';
 @import 'fonts';
 @import 'typography';
 @import 'generic';
@@ -21,3 +22,9 @@
 @import 'organizations-page';
 @import 'modals';
 @import 'errors';
+
+@include ag.grid-styles(
+    (
+        theme: alpine,
+    )
+);

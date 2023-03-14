@@ -8,7 +8,15 @@ import { store } from './store'
 import { App } from './App'
 // import { register } from './serviceWorker'
 // import { reportWebVitals } from './reportWebVitals'
+// import the third-party stylesheets directly from your JS
+// import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-icons/font/bootstrap-icons.css' // needs additional webpack config!
 import './scss/index.scss'
+
+// for UX only - normally handled on the server side
+// if (window.location.protocol !== 'https:') {
+//     window.location.replace(`https:${window.location.href.substring(window.location.protocol.length)}`)
+// }
 
 const container = document.getElementById('root')
 const root = createRoot(container) // createRoot(container!) if you use TypeScript

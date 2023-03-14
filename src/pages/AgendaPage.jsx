@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Container, Button, Collapse, InputGroup, FormControl, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -51,6 +51,24 @@ export const AgendaPage = () => {
             )
     )
 
+    const resourcesMemoized = useMemo(
+        () => searchedRooms.filter(({ id }) => selectedRoomIds[id]),
+        [searchedRooms, selectedRoomIds]
+    )
+
+    const eventsMemoized = useMemo(
+        () =>
+            events.filter(
+                ({ room }) =>
+                    (selectedRoomIds[room?.id] && searchedRooms.some((searchedRoom) => searchedRoom.id === room?.id)) ||
+                    (selectedRoomIds['no-room'] && (room == null || room.id === undefined))
+            ),
+        [events, selectedRoomIds, searchedRooms]
+    )
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const refreshCallback = useCallback(() => dispatch(fetchAgendaAction()), [])
+
     return (
         <>
             <Helmet>
@@ -59,15 +77,10 @@ export const AgendaPage = () => {
             <div className="calendar-page mt-3">
                 <Container fluid>
                     <Calendar
-                        resources={searchedRooms.filter(({ id }) => selectedRoomIds[id])}
-                        events={events.filter(
-                            ({ room }) =>
-                                (selectedRoomIds[room?.id] &&
-                                    searchedRooms.some((searchedRoom) => searchedRoom.id === room?.id)) ||
-                                (selectedRoomIds['no-room'] && (room == null || room.id === undefined))
-                        )}
+                        resources={resourcesMemoized}
+                        events={eventsMemoized}
                         calendarRef={calendarRef}
-                        refreshCallback={() => dispatch(fetchAgendaAction())}
+                        refreshCallback={refreshCallback}
                     />
                 </Container>
                 <div className="d-flex">

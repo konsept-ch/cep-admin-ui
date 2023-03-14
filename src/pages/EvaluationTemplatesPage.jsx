@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 import { ListGroup, Row, Col, Container, Button, FloatingLabel, Form } from 'react-bootstrap'
 import { Helmet } from 'react-helmet-async'
 import { useForm } from 'react-hook-form'
@@ -6,25 +6,29 @@ import { toast } from 'react-toastify'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFloppyDisk, faTrash, faPlusLarge } from '@fortawesome/pro-regular-svg-icons'
 
-import { AttestationModelItem, CommonModal } from '../components'
+import { EvaluationModelItem, CommonModal, Block } from '../components'
+import titleProps from '../components/blocks/Title'
 import {
-    useGetAttestationsQuery,
-    useCreateAttestationMutation,
-    useUpdateAttestationMutation,
-    useDeleteAttestationMutation,
-} from '../services/attestations'
+    useGetEvaluationsQuery,
+    useCreateEvaluationMutation,
+    useUpdateEvaluationMutation,
+    useDeleteEvaluationMutation,
+} from '../services/evaluationTemplates'
 
-export function AttestationTemplatesPage() {
+export function EvaluationTemplatesPage() {
     const {
         data: templates,
         isLoading,
         isFetching,
         isError,
         refetch,
-    } = useGetAttestationsQuery(null, { refetchOnMountOrArgChange: true })
-    const [createAttestation, { isLoading: isCreating }] = useCreateAttestationMutation()
-    const [updateAttestation, { isLoading: isUpdating }] = useUpdateAttestationMutation()
-    const [deleteAttestation, { isLoading: isDeleting }] = useDeleteAttestationMutation()
+    } = useGetEvaluationsQuery(null, { refetchOnMountOrArgChange: true })
+    const [createEvaluation, { isLoading: isCreating }] = useCreateEvaluationMutation()
+    const [updateEvaluation, { isLoading: isUpdating }] = useUpdateEvaluationMutation()
+    const [deleteEvaluation, { isLoading: isDeleting }] = useDeleteEvaluationMutation()
+
+    const [selectedBlock, setSelectedBlock] = useState(null)
+    const [struct, setStruct] = useState([])
 
     const {
         register,
@@ -33,90 +37,87 @@ export function AttestationTemplatesPage() {
         formState: { isDirty, errors },
     } = useForm()
 
+    useEffect(() => {
+        if (selectedBlock)
+            setStruct([
+                ...struct.slice(0, selectedBlock.index),
+                selectedBlock.block,
+                ...struct.slice(selectedBlock.index + 1),
+            ])
+    }, [selectedBlock])
+
     const [selectedTemplateUuid, setSelectedTemplateUuid] = useState(null)
     const [isDeleteWarningVisible, setIsDeleteWarningVisible] = useState(false)
     const [discardWarningData, setDiscardWarningData] = useState({ isVisible: false })
 
-    const fileName = useMemo(
-        () => templates?.find(({ uuid }) => uuid === selectedTemplateUuid)?.fileOriginalName,
-        [templates, selectedTemplateUuid]
-    )
+    const resetPreview = (uuid, title, description, structParam) => {
+        setSelectedTemplateUuid(uuid)
+        setStruct(structParam)
+        setSelectedBlock(null)
+        reset({
+            title,
+            description,
+        })
+    }
+
+    const onAddBlock = () =>
+        setStruct([
+            ...struct,
+            {
+                type: titleProps.type,
+                ...titleProps.default,
+            },
+        ])
+
+    const onRemoveBlock = () => {
+        if (!selectedBlock) return
+        setStruct([...struct.slice(0, selectedBlock.index), ...struct.slice(selectedBlock.index + 1)])
+        setSelectedBlock(null)
+    }
 
     const onAddButtonClick = async () => {
-        const { data, error } = await createAttestation()
+        const { data, error } = await createEvaluation()
 
         if (error == null) {
-            toast.success("Modèle d'attestation créée")
-
-            setSelectedTemplateUuid(data.uuid)
-
-            reset({ title: data.title, description: data.description, file: {} })
+            toast.success("Modèle d'évaluation créée")
+            resetPreview(data.uuid, data.title, '', [])
         } else {
-            toast.error("Erreur de création du modèle d'attestation", { autoClose: false })
+            toast.error("Erreur de création du modèle d'évaluation", { autoClose: false })
         }
 
         await refetch()
     }
 
-    const onApplyButtonClick = handleSubmit(async ({ title, description, file }) => {
-        const uploadedFile = file[0]
-        const formData = new FormData()
-
-        formData.append('title', title)
-
-        if (description != null) {
-            formData.append('description', description)
-        }
-
-        if (uploadedFile != null) {
-            formData.append('file', uploadedFile)
-        }
-
-        const { error } = await updateAttestation({ uuid: selectedTemplateUuid, formData })
+    const onApplyButtonClick = handleSubmit(async (data) => {
+        const { error } = await updateEvaluation({
+            uuid: selectedTemplateUuid,
+            data,
+            struct,
+        })
 
         if (error == null) {
-            toast.success("Modèle d'attestation modifiée")
+            toast.success("Modèle d'évaluation modifié")
         } else {
-            toast.error("Erreur de modification du modèle d'attestation", { autoClose: false })
+            toast.error("Erreur de modification du modèle d'évaluation", { autoClose: false })
         }
 
-        reset({ title, description, file: {} })
+        reset(data)
 
         await refetch()
     })
 
     const onDeleteButtonClick = async ({ shouldForceDelete }) => {
-        const { error } = await deleteAttestation({ uuid: selectedTemplateUuid, shouldForceDelete })
+        const { error } = await deleteEvaluation({ uuid: selectedTemplateUuid, shouldForceDelete })
 
-        if (error.status === 400) {
-            toast.error("Ce modèle d'attestation a déjà été utilisé et ne peut plus être supprimé.", {
+        if (error?.status === 400) {
+            toast.error("Ce modèle d'évaluation a déjà été utilisé et ne peut plus être supprimé.", {
                 autoClose: false,
             })
-
-            // const RetryToast = ({ closeToast }) => (
-            //     <div>
-            //         <p>Ce modèle d'attestation a déjà été utilisé.</p>
-            //         <p>Si vous le supprimez, il n'y aura plus de trâce dans les inscriptions qui l'ont utilisés.</p>
-            //         <Button
-            //             className="d-block mb-1"
-            //             variant="primary"
-            //             onClick={async () => {
-            //                 const { error: forceDeleteError } = await deleteAttestation({
-            //                     uuid: selectedTemplateUuid,
-            //                 })
-
-            //                 closeToast()
-            //             }}
-            //         >
-            //             <FontAwesomeIcon icon={faTrash} /> Forcer la suppression ?
-            //         </Button>
-            //     </div>
-            // )
 
             toast(
                 ({ closeToast }) => (
                     <div>
-                        <p>Ce modèle d'attestation a déjà été utilisé.</p>
+                        <p>Ce modèle d'évaluation a déjà été utilisé.</p>
                         <p>Si vous le supprimez, il n'y aura plus de trâce dans les inscriptions qui l'ont utilisé.</p>
                         <Button
                             className="d-block mb-1"
@@ -139,9 +140,9 @@ export function AttestationTemplatesPage() {
         } else if (error) {
             console.error(error)
 
-            toast.error("Erreur de suppression du modèle d'attestation", { autoClose: false })
+            toast.error("Erreur de suppression du modèle d'évaluation", { autoClose: false })
         } else {
-            toast.success("Modèle d'attestation supprimée")
+            toast.success("Modèle d'évaluation supprimée")
 
             setSelectedTemplateUuid(null)
 
@@ -154,24 +155,24 @@ export function AttestationTemplatesPage() {
     return (
         <>
             <Helmet>
-                <title>Modèles d'attestations - Former22</title>
+                <title>Modèles d'évaluations - Former22</title>
             </Helmet>
             <Container fluid className="templates-page">
-                <h1>Modèles d'attestations</h1>
+                <h1>Modèles d'évaluations</h1>
                 {isLoading ? (
                     'Chargement...'
                 ) : isError ? (
                     'Erreur de chargement des modèles.'
                 ) : (
                     <Row>
-                        <Col>
+                        <Col md="4">
                             {templates.length === 0 ? (
                                 <p>Aucun modèle, vous pouvez créer un nouveau</p>
                             ) : (
                                 <ListGroup>
                                     {templates.length > 0 &&
-                                        templates.map(({ uuid, title, description }) => (
-                                            <AttestationModelItem
+                                        templates.map(({ uuid, title, description, struct: structParam }) => (
+                                            <EvaluationModelItem
                                                 {...{
                                                     key: uuid,
                                                     uuid,
@@ -179,19 +180,15 @@ export function AttestationTemplatesPage() {
                                                     description,
                                                     isActive: selectedTemplateUuid === uuid,
                                                     onClick: () => {
+                                                        if (selectedTemplateUuid === uuid) return
                                                         if (isDirty) {
                                                             setDiscardWarningData({
                                                                 isVisible: true,
-                                                                selectNewTemplate: () => {
-                                                                    setSelectedTemplateUuid(uuid)
-
-                                                                    reset({ uuid, title, description, file: {} })
-                                                                },
+                                                                selectNewTemplate: () =>
+                                                                    resetPreview(uuid, title, description, structParam),
                                                             })
                                                         } else {
-                                                            setSelectedTemplateUuid(uuid)
-
-                                                            reset({ uuid, title, description, file: {} })
+                                                            resetPreview(uuid, title, description, structParam)
                                                         }
                                                     },
                                                 }}
@@ -209,42 +206,90 @@ export function AttestationTemplatesPage() {
                                 {isCreating ? 'Ajout en cours...' : isFetching ? 'Un instant...' : 'Ajouter'}
                             </Button>
                         </Col>
-                        <Col className="template-preview">
+                        <Col md="5">
                             {selectedTemplateUuid !== null && (
                                 <>
-                                    <FloatingLabel controlId="title" label="Titre" className="mb-2">
-                                        <Form.Control
-                                            type="text"
-                                            placeholder="Titre du modèle d'attestation"
-                                            isInvalid={errors.title}
-                                            {...register('title', {
-                                                required: { value: true, message: 'Le titre est requis' },
-                                            })}
+                                    {struct.map((block, i) => (
+                                        <Block.Preview
+                                            key={i}
+                                            selected={i === selectedBlock?.index}
+                                            onSelected={() => {
+                                                setSelectedBlock({
+                                                    index: i,
+                                                    block,
+                                                })
+                                            }}
+                                            {...block}
                                         />
-                                        <Form.Control.Feedback type="invalid">
-                                            {errors.title?.message}
-                                        </Form.Control.Feedback>
-                                    </FloatingLabel>
-                                    <FloatingLabel controlId="description" label="Description" className="mb-2">
-                                        <Form.Control
-                                            as="textarea"
-                                            placeholder="Description du modèle d'attestation"
-                                            style={{ height: '100px' }}
-                                            {...register('description')}
-                                        />
-                                    </FloatingLabel>
-                                    <Form.Group controlId="formFile" className="mb-3">
-                                        <Form.Label>Fichier Word (.docx):</Form.Label>
-                                        <Form.Control type="file" {...register('file')} />
-                                        <Form.Text className="text-muted">Fichier actuel : {fileName ?? ' '}</Form.Text>
-                                    </Form.Group>
+                                    ))}
+                                    <div className="mt-2">
+                                        <Button variant="light" onClick={onAddBlock}>
+                                            <FontAwesomeIcon icon={faPlusLarge} className="me-1" />
+                                            Ajouter bloc
+                                        </Button>
+                                        {selectedBlock !== null && (
+                                            <Button variant="danger" onClick={onRemoveBlock} className="ms-2">
+                                                <FontAwesomeIcon icon={faTrash} className="me-1" />
+                                                Supprimer bloc
+                                            </Button>
+                                        )}
+                                    </div>
+                                </>
+                            )}
+                        </Col>
+                        <Col md="3">
+                            {selectedTemplateUuid !== null && (
+                                <>
+                                    <div>
+                                        <label className="mb-2">
+                                            <strong>Général</strong>
+                                        </label>
+                                        <FloatingLabel controlId="title" label="Titre" className="mb-2">
+                                            <Form.Control
+                                                type="text"
+                                                placeholder="Titre de la séance"
+                                                isInvalid={errors.title}
+                                                {...register('title', {
+                                                    required: { value: true, message: 'Le titre est requis' },
+                                                })}
+                                            />
+                                            <Form.Control.Feedback type="invalid">
+                                                {errors.title?.message}
+                                            </Form.Control.Feedback>
+                                        </FloatingLabel>
+                                        <FloatingLabel controlId="description" label="Description" className="mb-4">
+                                            <Form.Control
+                                                as="textarea"
+                                                placeholder="Description de la séance"
+                                                style={{ height: '100px' }}
+                                                {...register('description')}
+                                            />
+                                        </FloatingLabel>
+                                    </div>
+                                    <div>
+                                        <label className="mb-2">
+                                            <strong>Propriétés</strong>
+                                        </label>
+                                        {selectedBlock && (
+                                            <Block.Editor
+                                                key={selectedBlock.index}
+                                                {...selectedBlock.block}
+                                                onUpdate={(block) =>
+                                                    setSelectedBlock({
+                                                        index: selectedBlock.index,
+                                                        block,
+                                                    })
+                                                }
+                                            />
+                                        )}
+                                    </div>
                                     <div className="d-flex justify-content-between mb-2">
                                         <div>
                                             <Button
                                                 variant="primary"
                                                 onClick={onApplyButtonClick}
                                                 className="mt-2 me-2"
-                                                disabled={!isDirty || isUpdating || isFetching}
+                                                disabled={isUpdating || isFetching}
                                             >
                                                 <FontAwesomeIcon icon={faFloppyDisk} />{' '}
                                                 {isUpdating ? 'Sauvegarde en cours...' : 'Appliquer'}

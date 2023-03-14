@@ -107,6 +107,13 @@ export function UsersPage() {
             width: 160,
         },
         {
+            field: 'cfNumber',
+            headerName: 'Numéro CF',
+            filter: 'agNumberColumnFilter',
+            headerTooltip: 'The CF number of the user, used for invoices',
+            width: 150,
+        },
+        {
             field: 'roles',
             headerName: 'Rôles',
             filter: 'agTextColumnFilter',
@@ -123,6 +130,7 @@ export function UsersPage() {
         mainOrganizationName: user.mainOrganizationName,
         shouldReceiveSms: user.shouldReceiveSms,
         colorCode: user.colorCode,
+        cfNumber: user.cfNumber,
         telephone: user.phone,
         phoneForSms: user.phoneForSms,
         roles: user.roles,

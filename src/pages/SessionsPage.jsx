@@ -109,6 +109,20 @@ export function SessionsPage() {
                 type: 'numericColumn',
             },
             {
+                field: 'occupation',
+                headerName: "Nombre d'inscrits",
+                filter: 'agNumberColumnFilter',
+                headerTooltip: "Le nombre d'inscrits de la session",
+                type: 'numericColumn',
+            },
+            {
+                field: 'availables',
+                headerName: 'Places disponibles',
+                filter: 'agNumberColumnFilter',
+                headerTooltip: 'La disponibilité de la session',
+                type: 'numericColumn',
+            },
+            {
                 field: 'hidden',
                 headerName: 'Visibilité',
                 filter: 'agSetColumnFilter',
@@ -171,6 +185,8 @@ export function SessionsPage() {
             quotaDays,
             areInvitesSent,
             isUsedForQuota,
+            availables,
+            occupation,
         }) => ({
             id,
             name,
@@ -186,6 +202,8 @@ export function SessionsPage() {
             isUsedForQuota,
             sessionFormat,
             sessionLocation,
+            availables,
+            occupation,
         })
     )
 

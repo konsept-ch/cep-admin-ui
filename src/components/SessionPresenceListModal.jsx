@@ -222,7 +222,7 @@ export function SessionPresenceListModal({ sessionId, closeModal, isModalOpen })
                         <Form.Control {...register('courseName')} />
                     </Form.Group>
                     <Form.Group className="mb-3">
-                        <Form.Label>Dates de séances physiques</Form.Label>
+                        <Form.Label>Dates de séances</Form.Label>
                         <Form.Control {...register('eventDates')} />
                     </Form.Group>
                     <Form.Group className="mb-3">

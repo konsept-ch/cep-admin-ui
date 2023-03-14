@@ -6,3 +6,18 @@
 .course-details-modal {
     max-width: 100%;
 }
+
+.create-contract-modal {
+    max-width: 1500px;
+
+    .contract-sessions {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        grid-gap: 1rem;
+
+        .contract-events {
+            display: grid;
+            grid-template-columns: auto 1fr 1fr auto;
+        }
+    }
+}

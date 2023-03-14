@@ -1,30 +1,77 @@
-import { useState } from 'react'
+import { useState, useMemo, useCallback } from 'react'
+import { useLocation } from 'react-router-dom'
 import { Container, Button } from 'react-bootstrap'
 import { Helmet } from 'react-helmet-async'
+import { toast } from 'react-toastify'
 import Papa from 'papaparse'
+import { DateTime } from 'luxon'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPen } from '@fortawesome/pro-light-svg-icons'
 
 import { Grid, ManualInvoiceModal } from '../components'
-import { useGetManualInvoicesQuery } from '../services/invoices'
-import { gridContextMenu, downloadCsvFile, formatDate } from '../utils'
+import {
+    useGetManualInvoicesQuery,
+    useGetEnumsQuery,
+    useUpdateStatusesMutation,
+    useGenerateDirectInvoiceMutation,
+    useGenerateGroupedInvoiceMutation,
+    useDeleteAllInvoicesMutation,
+} from '../services/manual-invoices'
+import { useLazyGetOrganizationsFlatWithAddressQuery } from '../services/organizations'
+import { useLazyGetUsersQuery } from '../services/users'
+import { gridContextMenu, downloadCsvFile } from '../utils'
+import { mapPathnameToInvoiceType } from '../constants/invoices'
+import {
+    PATH_INVOICE,
+    PATH_INVOICE_ALL,
+    PATH_INVOICE_DIRECT,
+    PATH_INVOICE_GROUPED,
+    PATH_INVOICE_MANUAL,
+} from '../constants/constants'
+import { currentRunningEnv } from '../constants/config'
+
+const csvOptions = {
+    delimiter: ';',
+    quotes: true,
+    encoding: 'utf-8',
+}
+
+const deriveInvoiceNumber = ({ data }) =>
+    `${`${data?.courseYear}`.slice(-2)}${`${data?.user.cfNumber}`.padStart(
+        2,
+        '0'
+    )}${`${data?.invoiceNumberForCurrentYear}`.padStart(4, '0')}`
+
+const formatInvoiceDate = ({ value }) =>
+    DateTime.fromISO(value, { zone: 'UTC' }).setLocale('fr-CH').toLocaleString(DateTime.DATE_SHORT)
 
 export function ManualInvoicesPage() {
     const [isManualInvoiceModalOpen, setIsManualInvoiceModalOpen] = useState(false)
     const [selectedInvoiceId, setSelectedInvoiceId] = useState()
+    const [selectedRowsIds, setSelectedRowsIds] = useState([])
+
+    const [fetchOrganizations, { data: organizations }] = useLazyGetOrganizationsFlatWithAddressQuery()
+    const [fetchUsers, { data: users }] = useLazyGetUsersQuery()
+    const { data: enums, isLoading: areEnumsLoading, refetch: fetchEnums } = useGetEnumsQuery()
+    const [updateStatuses, { isLoading: isStatusesUpdating }] = useUpdateStatusesMutation()
+    const [generateDirectInvoices, { isLoading: isGeneratingDirectInvoices }] = useGenerateDirectInvoiceMutation()
+    const [generateGroupedInvoices, { isLoading: isGeneratingGroupedInvoices }] = useGenerateGroupedInvoiceMutation()
+    const [deleteAllInvoices, { isLoading: isDeletingAllInvoices }] = useDeleteAllInvoicesMutation()
+
+    const location = useLocation()
 
     const {
         data: invoicesData,
-        isFetchingInvoices,
+        isFetching: isFetchingInvoices,
         refetch: refetchInvoices,
     } = useGetManualInvoicesQuery(null, { refetchOnMountOrArgChange: true })
 
-    const openInvoiceEditModal = ({ data: { id } }) => {
+    const openInvoiceEditModal = ({ id }) => {
         setSelectedInvoiceId(id)
         setIsManualInvoiceModalOpen(true)
     }
 
-    const columnDefs = [
+    const [columnDefs] = useState([
         {
             field: 'edit',
             headerName: '',
@@ -37,7 +84,7 @@ export function ManualInvoicesPage() {
             cellRenderer: ({ data }) => (
                 <Button
                     variant="primary"
-                    onClick={() => openInvoiceEditModal({ data })}
+                    onClick={() => openInvoiceEditModal({ id: data.id })}
                     size="sm"
                     className="edit-button-style"
                 >
@@ -46,114 +93,454 @@ export function ManualInvoicesPage() {
             ),
         },
         {
-            field: 'organizationId', // TODO display organization name, hierarchy, etc...
-            headerName: 'Organisation',
-            tooltipField: 'organizationId',
-            // headerTooltip: 'Le nom du formateur',
-            filter: 'agTextColumnFilter',
-        },
-        {
-            field: 'customClientAddress',
-            headerName: 'Address client',
-            tooltipField: 'customClientAddress',
-            // headerTooltip: 'Le nom de la formation',
-            filter: 'agTextColumnFilter',
-        },
-        {
-            field: 'vatCode',
-            headerName: 'Code TVA',
-            tooltipField: 'vatCode',
-            // headerTooltip: 'Le nom de la session',
-            filter: 'agTextColumnFilter',
+            field: 'invoiceNumber',
+            headerName: 'Numéro',
+            tooltipField: 'invoiceNumber',
+            headerTooltip: 'Numéro de facture',
+            filter: 'agNumberColumnFilter',
+            width: 160,
+            valueGetter: deriveInvoiceNumber,
+            checkboxSelection: true,
+            headerCheckboxSelection: true,
         },
         {
             field: 'invoiceDate',
             headerName: 'Date de facture',
             tooltipField: 'invoiceDate',
-            // headerTooltip: 'Date de création de facture',
+            headerTooltip: 'Date de facture',
+            filter: 'agDateColumnFilter',
+            width: 170,
+            valueFormatter: formatInvoiceDate,
+        },
+        {
+            field: 'client',
+            headerName: 'Client',
+            tooltipField: 'client',
+            headerTooltip: 'Organisation/Utilisateur',
             filter: 'agTextColumnFilter',
-            valueGetter: ({ data }) => formatDate({ dateString: data?.createdAt, isDateVisible: true }),
+            valueGetter: ({ data }) => (data?.organizationCode !== 'NREF' ? data?.organizationName : 'Nom+Prénom'),
+        },
+        {
+            field: 'organizationName',
+            headerName: 'Organisation',
+            tooltipField: 'organizationName',
+            headerTooltip: 'Organisation',
+            filter: 'agSetColumnFilter',
+            hide: true,
+        },
+        {
+            field: 'status',
+            headerName: 'Statut',
+            tooltipField: 'statut',
+            headerTooltip: 'Statut',
+            filter: 'agSetColumnFilter',
+            filterParams: {
+                newRowAction: 'keep',
+            },
+            width: 150,
         },
         {
             field: 'courseYear',
-            headerName: 'Année de formation',
+            headerName: 'Année',
             tooltipField: 'courseYear',
-            // headerTooltip: "Statut de l'inscription",
-            filter: 'agTextColumnFilter',
-        },
-        {
-            field: 'creatorCode',
-            headerName: 'Code créateur',
-            tooltipField: 'creatorCode',
-            // headerTooltip: "Statut de l'inscription",
-            filter: 'agTextColumnFilter',
-        },
-        {
-            field: 'invoiceNumberForCurrentYear',
-            headerName: 'Numéro annuel facture',
-            tooltipField: 'invoiceNumberForCurrentYear',
-            // headerTooltip: "Statut de l'inscription",
+            headerTooltip: 'Année de formation',
             filter: 'agNumberColumnFilter',
-            type: 'numericColumn',
+            width: 120,
+            hide: true,
         },
         {
-            field: 'invoiceReason',
-            headerName: 'Concerne',
-            tooltipField: 'invoiceReason',
-            // headerTooltip: "Statut de l'inscription",
+            field: 'userFullName',
+            headerName: 'Créateur',
+            tooltipField: 'userFullName',
+            headerTooltip: "Le nom complet de l'utilisateur qui a créé la facture",
             filter: 'agTextColumnFilter',
+            valueGetter: ({ data }) => `${data?.user.lastName} ${data?.user.firstName}`,
         },
-    ]
+        {
+            field: 'itemAmounts',
+            headerName: 'Total hors TVA',
+            tooltipField: 'itemAmounts',
+            headerTooltip: 'La somme des montants des articles, hors TVA',
+            filter: 'agTextColumnFilter',
+            width: 170,
+            valueGetter: ({ data }) =>
+                data?.items
+                    ?.map(({ price }) => price)
+                    .reduce((a, b) => Number(a) + Number(b), 0)
+                    .toFixed(2),
+        },
+        {
+            field: 'itemAmountsWithVat',
+            headerName: 'Total avec TVA',
+            tooltipField: 'itemAmountsWithVat',
+            headerTooltip: 'La somme des montants des articles, avec TVA',
+            filter: 'agTextColumnFilter',
+            width: 170,
+            valueGetter: ({ data }) =>
+                data?.items
+                    ?.map(
+                        ({ price, vatCode, amount }) =>
+                            Number(amount) *
+                            (vatCode?.value === 'TVA' ? Number(price) + (Number(price) * 7.7) / 100 : Number(price))
+                    )
+                    .reduce((a, b) => Number(a) + Number(b), 0)
+                    .toFixed(2),
+        },
+        {
+            field: 'reason',
+            headerName: 'Raison',
+            tooltipField: 'reason',
+            headerTooltip: 'Raison de la facture, utilisé pour les pénalités',
+            filter: 'agSetColumnFilter',
+            width: 150,
+        },
+
+        {
+            field: 'sessionCodes',
+            headerName: 'Codes sessions',
+            tooltipField: 'sessionCodes',
+            headerTooltip: 'Les codes des sessions de chaque article',
+            filter: 'agTextColumnFilter',
+            width: 170,
+            valueGetter: ({ data }) =>
+                data?.items
+                    ?.map(({ sessionCode }) => sessionCode)
+                    .filter(Boolean)
+                    .join(', '),
+        },
+        {
+            field: 'participantNames',
+            headerName: 'Noms participants',
+            tooltipField: 'participantNames',
+            headerTooltip: 'Les noms des participants de chaque article',
+            filter: 'agTextColumnFilter',
+            width: 170,
+            valueGetter: ({ data }) =>
+                data?.items
+                    ?.map(({ participantName }) => participantName)
+                    .filter(Boolean)
+                    .join(', '),
+        },
+        {
+            field: 'validationTypes',
+            headerName: 'Types de validations par RH',
+            tooltipField: 'validationTypes',
+            headerTooltip: 'Les types de validations par RH',
+            filter: 'agTextColumnFilter',
+            width: 170,
+            valueGetter: ({ data }) =>
+                data?.items
+                    ?.map(({ validationType }) => validationType)
+                    .filter((type) => type != null)
+                    .join(', '),
+        },
+        {
+            field: 'invoiceType',
+            headerName: 'Type',
+            tooltipField: 'invoiceType',
+            headerTooltip: 'Type de la facture, utilisé pour filtrer selon la page',
+            filter: 'agSetColumnFilter',
+            width: 150,
+        },
+    ])
+
+    const filterModel = useMemo(
+        () => ({
+            status: {
+                filterType: 'set',
+                values:
+                    mapPathnameToInvoiceType[location.pathname] == null
+                        ? ['Envoyée', 'Non transmissible']
+                        : mapPathnameToInvoiceType[location.pathname] === 'Quota'
+                        ? ['Quotas']
+                        : ['En préparation', 'A traiter', 'Exportée', 'Annulée'],
+            },
+            invoiceType: ['Directe', 'Groupée', 'Manuelle'].includes(mapPathnameToInvoiceType[location.pathname])
+                ? {
+                      filterType: 'set',
+                      values: [mapPathnameToInvoiceType[location.pathname]],
+                  }
+                : null,
+        }),
+        [location.pathname]
+    )
+
+    const onPathnameChange = useCallback(
+        (gridApi) => {
+            gridApi?.setFilterModel(filterModel)
+        },
+        [filterModel]
+    )
 
     return (
         <>
             <Helmet>
-                <title>Factures manuelles - Former22</title>
+                <title>Factures {mapPathnameToInvoiceType[location.pathname] ?? 'Toute'}s - Former22</title>
             </Helmet>
             <Grid
-                name="Factures manuelles"
+                name={`Factures ${mapPathnameToInvoiceType[location.pathname] ?? 'Toute'}s`}
                 columnDefs={columnDefs}
                 rowData={invoicesData}
-                isDataLoading={isFetchingInvoices}
-                getContextMenuItems={({
-                    node: { data: rowData },
-                    columnApi: {
-                        columnModel: { columnDefs: gridColumnDefs },
-                    },
-                }) => [
+                isDataLoading={isFetchingInvoices || isStatusesUpdating}
+                defaultSortModel={[{ colId: 'invoiceNumber', sort: 'asc', sortIndex: 0 }]}
+                getContextMenuItems={({ node: { data } }) => [
                     {
                         name: 'Exporter pour Crésus',
                         action: () => {
-                            const fieldsData = gridColumnDefs
-                                .filter(({ field }) => field !== columnDefs[0].field)
-                                .map(({ headerName, field }) => ({ headerName, field }))
+                            const invoicesToExport =
+                                selectedRowsIds.length > 0
+                                    ? invoicesData.filter(
+                                          ({ id, status }) => selectedRowsIds.includes(id) && status === 'A traiter'
+                                      )
+                                    : [data]
 
-                            const fields = fieldsData.map(({ headerName }) => headerName)
-                            const data = fieldsData.map(({ field }) => rowData[field])
+                            const csvClient = Papa.unparse(
+                                {
+                                    fields: [
+                                        '`Numéro',
+                                        '`Firme',
+                                        '`Titre',
+                                        '`Nom',
+                                        '`Prénom',
+                                        '`Adresse',
+                                        '`Rue',
+                                        '`NPA',
+                                        '`Localité',
+                                        '`Pays',
+                                        '`TélProf',
+                                        '`TélEmail',
+                                    ],
+                                    data: invoicesToExport.map((invoiceData) => {
+                                        const { former22_organization } =
+                                            organizations?.find(({ uuid }) => uuid === invoiceData.organizationUuid) ??
+                                            {}
 
-                            const csv = Papa.unparse({ fields, data })
+                                        const {
+                                            postalAddressStreet,
+                                            postalAddressCode,
+                                            postalAddressLocality,
+                                            postalAddressCountry,
+                                            phone,
+                                        } = former22_organization ?? {}
 
-                            downloadCsvFile({ csv, fileName: 'CSV pour Crésus' })
+                                        return [
+                                            invoiceData.clientNumber,
+                                            invoiceData.organizationName,
+                                            invoiceData.customClientTitle,
+                                            invoiceData.customClientFirstname,
+                                            invoiceData.customClientLastname,
+                                            invoiceData.customClientAddress.replaceAll('\n', '\\'),
+                                            postalAddressStreet,
+                                            postalAddressCode,
+                                            postalAddressLocality,
+                                            postalAddressCountry,
+                                            phone,
+                                            invoiceData.customClientEmail,
+                                        ]
+                                    }),
+                                },
+                                csvOptions
+                            )
+
+                            const csvFacture = Papa.unparse(
+                                {
+                                    fields: [
+                                        '`Numéro',
+                                        '`DateFacture',
+                                        '`Concerne',
+                                        '`CodeCompta',
+                                        '`ANuméro',
+                                        '`ADésignation',
+                                        '`AUnité',
+                                        '`AQuantité',
+                                        '`APrix',
+                                        '`ACodeTVA',
+                                        '`Client',
+                                        '`RefClient',
+                                        '`DateDébut',
+                                        '`DateFin',
+                                    ],
+                                    data: invoicesToExport.map((invoiceData) => {
+                                        const year = new Date(invoiceData.invoiceDate).getFullYear()
+                                        return [
+                                            deriveInvoiceNumber({ data: invoiceData }),
+                                            formatInvoiceDate({ value: invoiceData.invoiceDate }),
+                                            invoiceData.concerns ?? '',
+                                            invoiceData.codeCompta ?? '',
+                                            invoiceData.items.map(({ number }) => number).join('/'),
+                                            invoiceData.items
+                                                .map(({ designation }) => designation.replaceAll('\n', '\\'))
+                                                .join('/'),
+                                            invoiceData.items.map(({ unit }) => unit).join('/'),
+                                            invoiceData.items.map(({ amount }) => amount).join('/'),
+                                            invoiceData.items.map(({ price }) => price).join('/'),
+                                            invoiceData.items.map(({ vatCode }) => vatCode).join('/'),
+                                            invoiceData.customClientAddress.replaceAll('\n', '\\'),
+                                            invoiceData.clientNumber,
+                                            new Date(year, 0, 1, 12, 0, 0, 0).toLocaleDateString('fr-CH'),
+                                            new Date(year, 11, 31, 12, 0, 0, 0).toLocaleDateString('fr-CH'),
+                                        ]
+                                    }),
+                                },
+                                csvOptions
+                            )
+
+                            downloadCsvFile({ csv: csvClient, fileName: 'CSV Client pour Crésus' })
+                            downloadCsvFile({
+                                csv: csvFacture.replaceAll('/', '"/"'),
+                                fileName: 'CSV Facture pour Crésus',
+                            })
+
+                            updateStatuses({
+                                body: {
+                                    uuids: invoicesToExport.map((invoice) => invoice.id),
+                                    status: 'Export_e',
+                                },
+                            })
+                                .then((response) => {
+                                    toast.success(response.data.message)
+                                })
+                                .finally(() => {
+                                    refetchInvoices()
+                                })
                         },
+                    },
+                    {
+                        name: 'Modifier statut',
+                        disabled: selectedRowsIds.length === 0,
+                        subMenu: areEnumsLoading
+                            ? null
+                            : Object.entries(enums.invoiceStatuses).map(([prismaStatus, actualStatus]) => ({
+                                  name: actualStatus,
+                                  action: async () => {
+                                      const { error, data: updateStatusesResponse } = await updateStatuses({
+                                          body: {
+                                              uuids: selectedRowsIds,
+                                              status: prismaStatus,
+                                          },
+                                      })
+                                      if (!error) {
+                                          toast.success(updateStatusesResponse.message)
+                                      }
+                                      refetchInvoices()
+                                  },
+                              })),
                     },
                     'separator',
                     ...gridContextMenu,
                 ]}
+                onRowSelected={({
+                    api: {
+                        selectionService: { selectedNodes },
+                    },
+                }) => {
+                    const filteredSelectedRowsIds =
+                        Object.values(selectedNodes).reduce(
+                            (previous, current) => [
+                                ...previous,
+                                ...(typeof current !== 'undefined' && typeof previous !== 'undefined'
+                                    ? [current.data.id]
+                                    : []),
+                            ],
+                            []
+                        ) || []
+
+                    setSelectedRowsIds(filteredSelectedRowsIds)
+                }}
+                defaultFilterModel={filterModel}
+                onPathnameChange={onPathnameChange}
             />
             <Container fluid className="mb-2">
-                <Button variant="success" className="me-2" onClick={() => setIsManualInvoiceModalOpen(true)}>
-                    Créer facture manuelle
-                </Button>
+                {location.pathname === `/${PATH_INVOICE}/${PATH_INVOICE_DIRECT}` && (
+                    <Button
+                        variant="secondary"
+                        className="me-2"
+                        disabled={isGeneratingDirectInvoices}
+                        onClick={async () => {
+                            const directGenerationResponse = await generateDirectInvoices()
+
+                            if (directGenerationResponse.data != null && directGenerationResponse.error == null) {
+                                toast.success('Factures directes générées')
+                            }
+
+                            await refetchInvoices()
+                        }}
+                    >
+                        Générer directes (année 2023) {isGeneratingDirectInvoices && '...'}
+                    </Button>
+                )}
+                {location.pathname === `/${PATH_INVOICE}/${PATH_INVOICE_MANUAL}` && (
+                    <Button variant="success" className="me-2" onClick={() => setIsManualInvoiceModalOpen(true)}>
+                        Créer manuelle
+                    </Button>
+                )}
+                {location.pathname === `/${PATH_INVOICE}/${PATH_INVOICE_GROUPED}` && (
+                    <>
+                        <Button
+                            variant="secondary"
+                            className="me-2"
+                            disabled={isGeneratingGroupedInvoices}
+                            onClick={() =>
+                                generateGroupedInvoices({ type: 'semestrial' }).then((response) => {
+                                    toast.success(response.data.message)
+                                    refetchInvoices()
+                                })
+                            }
+                        >
+                            Générer sémestrielles {isGeneratingGroupedInvoices && '...'}
+                        </Button>
+                        <Button
+                            variant="secondary"
+                            className="me-2"
+                            disabled={isGeneratingGroupedInvoices}
+                            onClick={() =>
+                                generateGroupedInvoices({ type: 'annual' }).then((response) => {
+                                    toast.success(response.data.message)
+                                    refetchInvoices()
+                                })
+                            }
+                        >
+                            Générer annuelles {isGeneratingGroupedInvoices && '...'}
+                        </Button>
+                    </>
+                )}
+                {location.pathname === `/${PATH_INVOICE}/${PATH_INVOICE_ALL}` &&
+                    (currentRunningEnv.toLowerCase() === 'val' || currentRunningEnv.toLowerCase() === 'local') && (
+                        <Button
+                            variant="danger"
+                            className="me-2"
+                            onClick={async () => {
+                                const deletionResponse = await deleteAllInvoices()
+
+                                if (deletionResponse.data != null && deletionResponse.error == null) {
+                                    toast.success(deletionResponse.data)
+                                }
+
+                                await refetchInvoices()
+                            }}
+                            disabled={isDeletingAllInvoices /* || invoicesData?.length === 0 */}
+                        >
+                            Supprimer toutes ({currentRunningEnv})
+                        </Button>
+                    )}
             </Container>
-            <ManualInvoiceModal
-                refetchInvoices={refetchInvoices}
-                selectedInvoiceData={invoicesData?.find(({ id }) => id === selectedInvoiceId)}
-                closeModal={() => {
-                    setIsManualInvoiceModalOpen(false)
-                    setSelectedInvoiceId()
-                }}
-                isModalOpen={isManualInvoiceModalOpen}
-            />
+            {isManualInvoiceModalOpen && (
+                <ManualInvoiceModal
+                    refetchInvoices={refetchInvoices}
+                    selectedInvoiceData={invoicesData?.find(({ id }) => id === selectedInvoiceId)}
+                    closeModal={() => {
+                        setIsManualInvoiceModalOpen(false)
+                        setSelectedInvoiceId()
+                    }}
+                    isModalOpen={isManualInvoiceModalOpen}
+                    fetchOrganizations={fetchOrganizations}
+                    organizations={organizations}
+                    fetchUsers={fetchUsers}
+                    users={users}
+                    fetchEnums={fetchEnums}
+                    enums={enums}
+                />
+            )}
         </>
     )
 }

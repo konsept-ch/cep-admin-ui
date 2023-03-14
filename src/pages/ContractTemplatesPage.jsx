@@ -6,13 +6,13 @@ import { toast } from 'react-toastify'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFloppyDisk, faTrash, faPlusLarge } from '@fortawesome/pro-regular-svg-icons'
 
-import { AttestationModelItem, CommonModal } from '../components'
+import { ContractModelItem, CommonModal } from '../components'
 import {
-    useGetAttestationsQuery,
-    useCreateAttestationMutation,
-    useUpdateAttestationMutation,
-    useDeleteAttestationMutation,
-} from '../services/attestations'
+    useGetContractsQuery,
+    useCreateContractMutation,
+    useUpdateContractMutation,
+    useDeleteContractMutation,
+} from '../services/contractTemplates'
 
 export function ContractTemplatesPage() {
     const {
@@ -21,10 +21,10 @@ export function ContractTemplatesPage() {
         isFetching,
         isError,
         refetch,
-    } = useGetAttestationsQuery(null, { refetchOnMountOrArgChange: true })
-    const [createAttestation, { isLoading: isCreating }] = useCreateAttestationMutation()
-    const [updateAttestation, { isLoading: isUpdating }] = useUpdateAttestationMutation()
-    const [deleteAttestation, { isLoading: isDeleting }] = useDeleteAttestationMutation()
+    } = useGetContractsQuery(null, { refetchOnMountOrArgChange: true })
+    const [createContract, { isLoading: isCreating }] = useCreateContractMutation()
+    const [updateContract, { isLoading: isUpdating }] = useUpdateContractMutation()
+    const [deleteContract, { isLoading: isDeleting }] = useDeleteContractMutation()
 
     const {
         register,
@@ -43,16 +43,16 @@ export function ContractTemplatesPage() {
     )
 
     const onAddButtonClick = async () => {
-        const { data, error } = await createAttestation()
+        const { data, error } = await createContract()
 
         if (error == null) {
-            toast.success("Modèle d'attestation créée")
+            toast.success('Modèle de contrat créée')
 
             setSelectedTemplateUuid(data.uuid)
 
             reset({ title: data.title, description: data.description, file: {} })
         } else {
-            toast.error("Erreur de création du modèle d'attestation", { autoClose: false })
+            toast.error('Erreur de création du modèle de contrat', { autoClose: false })
         }
 
         await refetch()
@@ -72,12 +72,12 @@ export function ContractTemplatesPage() {
             formData.append('file', uploadedFile)
         }
 
-        const { error } = await updateAttestation({ uuid: selectedTemplateUuid, formData })
+        const { error } = await updateContract({ uuid: selectedTemplateUuid, formData })
 
         if (error == null) {
-            toast.success("Modèle d'attestation modifiée")
+            toast.success('Modèle de contrat modifiée')
         } else {
-            toast.error("Erreur de modification du modèle d'attestation", { autoClose: false })
+            toast.error('Erreur de modification du modèle de contrat', { autoClose: false })
         }
 
         reset({ title, description, file: {} })
@@ -86,10 +86,10 @@ export function ContractTemplatesPage() {
     })
 
     const onDeleteButtonClick = async ({ shouldForceDelete }) => {
-        const { error } = await deleteAttestation({ uuid: selectedTemplateUuid, shouldForceDelete })
+        const { error } = await deleteContract({ uuid: selectedTemplateUuid, shouldForceDelete })
 
         if (error.status === 400) {
-            toast.error("Ce modèle d'attestation a déjà été utilisé et ne peut plus être supprimé.", {
+            toast.error('Ce modèle de contrat a déjà été utilisé et ne peut plus être supprimé.', {
                 autoClose: false,
             })
 
@@ -116,7 +116,7 @@ export function ContractTemplatesPage() {
             toast(
                 ({ closeToast }) => (
                     <div>
-                        <p>Ce modèle d'attestation a déjà été utilisé.</p>
+                        <p>Ce modèle de contrat a déjà été utilisé.</p>
                         <p>Si vous le supprimez, il n'y aura plus de trâce dans les inscriptions qui l'ont utilisé.</p>
                         <Button
                             className="d-block mb-1"
@@ -139,9 +139,9 @@ export function ContractTemplatesPage() {
         } else if (error) {
             console.error(error)
 
-            toast.error("Erreur de suppression du modèle d'attestation", { autoClose: false })
+            toast.error('Erreur de suppression du modèle de contrat', { autoClose: false })
         } else {
-            toast.success("Modèle d'attestation supprimée")
+            toast.success('Modèle de contrat supprimée')
 
             setSelectedTemplateUuid(null)
 
@@ -157,7 +157,7 @@ export function ContractTemplatesPage() {
                 <title>Modèles de contrats - Former22</title>
             </Helmet>
             <Container fluid className="templates-page">
-                <h1>Modèles de contacts</h1>
+                <h1>Modèles de contrats</h1>
                 {isLoading ? (
                     'Chargement...'
                 ) : isError ? (
@@ -171,8 +171,9 @@ export function ContractTemplatesPage() {
                                 <ListGroup>
                                     {templates.length > 0 &&
                                         templates.map(({ uuid, title, description }) => (
-                                            <AttestationModelItem
+                                            <ContractModelItem
                                                 {...{
+                                                    key: uuid,
                                                     uuid,
                                                     title,
                                                     description,
