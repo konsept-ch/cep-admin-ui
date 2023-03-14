@@ -428,7 +428,7 @@ export function ManualInvoiceModal({
                                 </Form.Group>
                             </Col>
                             <Col>
-                                <Form.Group className="mb-3" controlId="concerns">
+                                <Form.Group className="mb-3" controlId="codeCompta">
                                     <Form.Label>Code compta</Form.Label>
                                     <Form.Control {...register('codeCompta')} />
                                 </Form.Group>
