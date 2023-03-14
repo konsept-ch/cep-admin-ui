@@ -22,7 +22,8 @@ import {
 } from '../utils'
 import { useUpdateInscriptionStatusMutation } from '../services/inscriptions'
 
-const formatDateTime = ({ value }) => DateTime.fromJSDate(value).setLocale('fr-CH').toLocaleString(DateTime.DATE_SHORT)
+const formatDateTime = ({ value }: any) =>
+    DateTime.fromJSDate(value).setLocale('fr-CH').toLocaleString(DateTime.DATE_SHORT)
 
 export function InscriptionsPage() {
     const dispatch = useDispatch()
@@ -178,7 +179,7 @@ export function InscriptionsPage() {
                 headerName: 'Date de naissance',
                 filter: 'agDateColumnFilter',
                 headerTooltip: "La date de naissance de l'utilisateur",
-                valueFormatter: ({ value }) => {
+                valueFormatter: ({ value }: any) => {
                     const date = new Date(specialCharsDecodingFormatter({ value }))
 
                     if (`${date}` === 'Invalid Date') {
@@ -398,7 +399,7 @@ export function InscriptionsPage() {
                     organizationCode,
                     hierarchy,
                     organization,
-                } = {},
+                },
                 session,
                 status,
                 attestationTitle,
@@ -406,7 +407,7 @@ export function InscriptionsPage() {
                 type,
                 coordinator,
                 isPending,
-            }) => ({
+            }: any) => ({
                 id,
                 civility,
                 lastName,
