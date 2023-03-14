@@ -340,7 +340,7 @@ export const downloadCsvFile = ({ csv, fileName }: { csv: string; fileName: stri
     a.remove()
 }
 
-const escapeIfValidUri = ({ possiblyValidUri }) => {
+const escapeIfValidUri = ({ possiblyValidUri }: any) => {
     try {
         return decodeURIComponent(JSON.parse(`"${escape(possiblyValidUri) ?? ''}"`))
     } catch (e) {
@@ -348,7 +348,7 @@ const escapeIfValidUri = ({ possiblyValidUri }) => {
     }
 }
 
-export const specialCharsDecodingFormatter = ({ value }) =>
+export const specialCharsDecodingFormatter = ({ value }: any) =>
     value != null ? decodeURIComponent(JSON.parse(`"${escapeIfValidUri({ possiblyValidUri: value }) ?? ''}"`)) : ''
 export const gotoUrl = (url: string) => {
     const a = document.createElement('a')
