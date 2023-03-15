@@ -206,7 +206,7 @@ export function EvaluationTemplatesPage() {
                                 {isCreating ? 'Ajout en cours...' : isFetching ? 'Un instant...' : 'Ajouter'}
                             </Button>
                         </Col>
-                        <Col md="5">
+                        <Col md="5" className="pb-4">
                             {selectedTemplateUuid !== null && (
                                 <>
                                     {struct.map((block, i) => (
@@ -237,7 +237,7 @@ export function EvaluationTemplatesPage() {
                                 </>
                             )}
                         </Col>
-                        <Col md="3">
+                        <Col md="3" className="position-relative">
                             {selectedTemplateUuid !== null && (
                                 <>
                                     <div>
@@ -266,89 +266,91 @@ export function EvaluationTemplatesPage() {
                                             />
                                         </FloatingLabel>
                                     </div>
-                                    <div>
-                                        <label className="mb-2">
-                                            <strong>Propriétés</strong>
-                                        </label>
-                                        {selectedBlock && (
-                                            <Block.Editor
-                                                key={selectedBlock.index}
-                                                {...selectedBlock.block}
-                                                onUpdate={(block) =>
-                                                    setSelectedBlock({
-                                                        index: selectedBlock.index,
-                                                        block,
-                                                    })
-                                                }
-                                            />
-                                        )}
-                                    </div>
-                                    <div className="d-flex justify-content-between mb-2">
+                                    <div className="sticky-top pt-2">
                                         <div>
-                                            <Button
-                                                variant="primary"
-                                                onClick={onApplyButtonClick}
-                                                className="mt-2 me-2"
-                                                disabled={isUpdating || isFetching}
-                                            >
-                                                <FontAwesomeIcon icon={faFloppyDisk} />{' '}
-                                                {isUpdating ? 'Sauvegarde en cours...' : 'Appliquer'}
-                                            </Button>
-                                            <Button
-                                                variant="danger"
-                                                onClick={() => setIsDeleteWarningVisible(true)}
-                                                className="mt-2"
-                                            >
-                                                <FontAwesomeIcon icon={faTrash} /> Supprimer
-                                            </Button>
+                                            <label className="mb-2">
+                                                <strong>Propriétés</strong>
+                                            </label>
+                                            {selectedBlock && (
+                                                <Block.Editor
+                                                    key={selectedBlock.index}
+                                                    {...selectedBlock.block}
+                                                    onUpdate={(block) =>
+                                                        setSelectedBlock({
+                                                            index: selectedBlock.index,
+                                                            block,
+                                                        })
+                                                    }
+                                                />
+                                            )}
                                         </div>
-                                        <CommonModal
-                                            title="Avertissement"
-                                            content={<p>Êtes-vous sûr de vouloir supprimer ce modèle?</p>}
-                                            footer={
+                                        <div className="d-flex justify-content-between mb-2">
+                                            <div>
+                                                <Button
+                                                    variant="primary"
+                                                    onClick={onApplyButtonClick}
+                                                    className="mt-2 me-2"
+                                                    disabled={isUpdating || isFetching}
+                                                >
+                                                    <FontAwesomeIcon icon={faFloppyDisk} />{' '}
+                                                    {isUpdating ? 'Sauvegarde en cours...' : 'Appliquer'}
+                                                </Button>
                                                 <Button
                                                     variant="danger"
-                                                    disabled={isDeleting}
-                                                    onClick={onDeleteButtonClick}
+                                                    onClick={() => setIsDeleteWarningVisible(true)}
+                                                    className="mt-2"
                                                 >
-                                                    <FontAwesomeIcon icon={faTrash} />{' '}
-                                                    {isDeleting ? 'Supprimer en cours...' : 'Supprimer'}
+                                                    <FontAwesomeIcon icon={faTrash} /> Supprimer
                                                 </Button>
-                                            }
-                                            isVisible={isDeleteWarningVisible}
-                                            onHide={() => setIsDeleteWarningVisible(false)}
-                                        />
-                                        <CommonModal
-                                            title="Avertissement"
-                                            content={<p>Êtes-vous sûr de vouloir écarter vos modifications ?</p>}
-                                            footer={
-                                                <>
-                                                    <Button
-                                                        variant="primary"
-                                                        onClick={() => {
-                                                            onApplyButtonClick()
-
-                                                            discardWarningData.selectNewTemplate()
-                                                            setDiscardWarningData({ isVisible: false })
-                                                        }}
-                                                        className="me-2"
-                                                    >
-                                                        Appliquer
-                                                    </Button>
+                                            </div>
+                                            <CommonModal
+                                                title="Avertissement"
+                                                content={<p>Êtes-vous sûr de vouloir supprimer ce modèle?</p>}
+                                                footer={
                                                     <Button
                                                         variant="danger"
-                                                        onClick={() => {
-                                                            discardWarningData.selectNewTemplate()
-                                                            setDiscardWarningData({ isVisible: false })
-                                                        }}
+                                                        disabled={isDeleting}
+                                                        onClick={onDeleteButtonClick}
                                                     >
-                                                        Écarter modifications
+                                                        <FontAwesomeIcon icon={faTrash} />{' '}
+                                                        {isDeleting ? 'Supprimer en cours...' : 'Supprimer'}
                                                     </Button>
-                                                </>
-                                            }
-                                            isVisible={discardWarningData.isVisible}
-                                            onHide={() => setDiscardWarningData({ isVisible: false })}
-                                        />
+                                                }
+                                                isVisible={isDeleteWarningVisible}
+                                                onHide={() => setIsDeleteWarningVisible(false)}
+                                            />
+                                            <CommonModal
+                                                title="Avertissement"
+                                                content={<p>Êtes-vous sûr de vouloir écarter vos modifications ?</p>}
+                                                footer={
+                                                    <>
+                                                        <Button
+                                                            variant="primary"
+                                                            onClick={() => {
+                                                                onApplyButtonClick()
+
+                                                                discardWarningData.selectNewTemplate()
+                                                                setDiscardWarningData({ isVisible: false })
+                                                            }}
+                                                            className="me-2"
+                                                        >
+                                                            Appliquer
+                                                        </Button>
+                                                        <Button
+                                                            variant="danger"
+                                                            onClick={() => {
+                                                                discardWarningData.selectNewTemplate()
+                                                                setDiscardWarningData({ isVisible: false })
+                                                            }}
+                                                        >
+                                                            Écarter modifications
+                                                        </Button>
+                                                    </>
+                                                }
+                                                isVisible={discardWarningData.isVisible}
+                                                onHide={() => setDiscardWarningData({ isVisible: false })}
+                                            />
+                                        </div>
                                     </div>
                                 </>
                             )}
