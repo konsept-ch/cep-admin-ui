@@ -56,12 +56,10 @@ const Editor = ({ type, identifier, text, tag, onUpdate }) => (
 export default {
     type: 'title',
     label: 'Titre',
-    default: {
-        identifier: '',
-        required: false,
+    default: () => ({
         text: 'Titre par défaut',
         tag: 'h1',
-    },
+    }),
     Render,
     Preview,
     Editor,

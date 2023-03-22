@@ -48,7 +48,7 @@ export const Block = {
                             const block = blocks[e.target.value]
                             onUpdate({
                                 type: block.type,
-                                ...block.default,
+                                ...block.default(),
                             })
                         }}
                     >
@@ -58,35 +58,6 @@ export const Block = {
                             </option>
                         ))}
                     </Form.Select>
-                </Form.Group>
-                <Form.Group className="mb-3">
-                    <Form.Label>Identifiant</Form.Label>
-                    <Form.Control
-                        key="identifier"
-                        type="text"
-                        placeholder="Identifiant"
-                        defaultValue={props.identifier}
-                        onChange={(e) =>
-                            onUpdate({
-                                ...props,
-                                identifier: e.target.value,
-                            })
-                        }
-                    />
-                </Form.Group>
-                <Form.Group className="mb-3">
-                    <Form.Check
-                        key="required"
-                        type="checkbox"
-                        label="Champ obligatoire"
-                        checked={props.required}
-                        onChange={(e) =>
-                            onUpdate({
-                                ...props,
-                                required: e.target.checked,
-                            })
-                        }
-                    />
                 </Form.Group>
                 <BlockInner.Editor {...props} onUpdate={onUpdate} />
             </>
