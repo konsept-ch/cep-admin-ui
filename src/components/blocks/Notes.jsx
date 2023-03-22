@@ -1,4 +1,5 @@
 import { Form, Button, InputGroup } from 'react-bootstrap'
+import { v4 as uuidv4 } from 'uuid'
 
 const Render = ({ identifier, text, notes, onUpdate }) => {
     return (
@@ -33,7 +34,7 @@ const Preview = ({ identifier, text, notes }) => {
     )
 }
 
-const Editor = ({ type, identifier, text, notes, onUpdate }) => {
+const Editor = ({ type, identifier, required, text, notes, onUpdate }) => {
     const onAddNote = () => {
         onUpdate({
             type,
@@ -55,6 +56,23 @@ const Editor = ({ type, identifier, text, notes, onUpdate }) => {
     return (
         <>
             <Form.Group className="mb-3">
+                <Form.Check
+                    key="required"
+                    type="checkbox"
+                    label="Champ obligatoire"
+                    checked={required}
+                    onChange={(e) =>
+                        onUpdate({
+                            type,
+                            identifier,
+                            required: e.target.checked,
+                            text,
+                            notes,
+                        })
+                    }
+                />
+            </Form.Group>
+            <Form.Group className="mb-3">
                 <Form.Label>Texte</Form.Label>
                 <Form.Control
                     key="text"
@@ -65,6 +83,7 @@ const Editor = ({ type, identifier, text, notes, onUpdate }) => {
                         onUpdate({
                             type,
                             identifier,
+                            required,
                             text: e.target.value,
                             notes,
                         })
@@ -83,6 +102,7 @@ const Editor = ({ type, identifier, text, notes, onUpdate }) => {
                                 onUpdate({
                                     type,
                                     identifier,
+                                    required,
                                     text,
                                     notes: [...notes.slice(0, index), e.target.value, ...notes.slice(index + 1)],
                                 })
@@ -104,12 +124,12 @@ const Editor = ({ type, identifier, text, notes, onUpdate }) => {
 export default {
     type: 'notes',
     label: 'Notes',
-    default: {
-        identifier: '',
+    default: () => ({
+        identifier: uuidv4(),
         required: true,
         text: 'Question par défaut',
         notes: [],
-    },
+    }),
     Render,
     Preview,
     Editor,

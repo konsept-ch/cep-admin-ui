@@ -31,11 +31,9 @@ const Editor = ({ type, text, onUpdate }) => (
 export default {
     type: 'paragraph',
     label: 'Paragraph',
-    default: {
-        identifier: '',
-        required: false,
+    default: () => ({
         text: 'Texte par défaut',
-    },
+    }),
     Render,
     Preview,
     Editor,

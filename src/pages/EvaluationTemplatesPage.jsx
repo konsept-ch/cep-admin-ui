@@ -65,7 +65,7 @@ export function EvaluationTemplatesPage() {
             ...struct,
             {
                 type: titleProps.type,
-                ...titleProps.default,
+                ...titleProps.default(),
             },
         ])
 
