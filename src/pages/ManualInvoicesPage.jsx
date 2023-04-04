@@ -32,7 +32,7 @@ import { currentRunningEnv } from '../constants/config'
 
 const csvOptions = {
     delimiter: ';',
-    quotes: true,
+    quotes: false,
     encoding: 'utf-8',
 }
 
@@ -387,7 +387,7 @@ export function ManualInvoicesPage() {
 
                             downloadCsvFile({ csv: csvClient, fileName: 'CSV Client pour Crésus' })
                             downloadCsvFile({
-                                csv: csvFacture.replaceAll('/', '"/"'),
+                                csv: csvFacture,
                                 fileName: 'CSV Facture pour Crésus',
                             })
 
