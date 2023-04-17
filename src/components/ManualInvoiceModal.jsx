@@ -16,7 +16,15 @@ const getYearFromJsDate = ({ date }) => DateTime.fromJSDate(date).setLocale('fr-
 const getInvoiceNumber = ({ courseYear, userCode, invoiceNumberForCurrentYear }) =>
     ` ${`${courseYear}`.slice(-2)}${`${userCode}`.padStart(2, 0)}${`${invoiceNumberForCurrentYear}`.padStart(4, 0)}`
 
-const defaultEmptyItem = { number: '', designation: '', unit: null, amount: 0, price: 0, vatCode: null }
+const defaultEmptyItem = {
+    number: '',
+    designation: '',
+    unit: null,
+    amount: 0,
+    price: 0,
+    vatCode: null,
+    inscriptionUuid: null,
+}
 
 const vatOptions = [
     { value: 'EXONERE', label: 'EXONERE' },
