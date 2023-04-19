@@ -73,8 +73,7 @@ export function ManualInvoiceModal({
     useEffect(() => {
         // don't reset if we just opened edit mode
         if (isDirty) {
-            const { name, email, former22_organization } =
-                organizations?.find(({ uuid }) => uuid === clientWatched.uuid) ?? {}
+            const { name, former22_organization } = organizations?.find(({ uuid }) => uuid === clientWatched.uuid) ?? {}
 
             const {
                 addressTitle,
@@ -85,6 +84,7 @@ export function ManualInvoiceModal({
                 postalAddressDepartment,
                 // postalAddressDepartmentCode,
                 postalAddressLocality,
+                email,
             } = former22_organization ?? {}
 
             setValue(
