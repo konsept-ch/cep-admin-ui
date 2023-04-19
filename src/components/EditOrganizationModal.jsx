@@ -187,7 +187,17 @@ export function EditOrganizationModal({ refetchOrganizations, selectedOrganizati
                             <Col sm={12}>
                                 <Form.Label>E-mail</Form.Label>
                                 <InputGroup className="mb-3" hasValidation>
-                                    <Form.Control type="email" isInvalid={errors?.email} {...register('email')} />
+                                    <InputGroup.Text id="inputGroupPrepend">@</InputGroup.Text>
+                                    <Form.Control
+                                        type="email"
+                                        isInvalid={errors?.email}
+                                        {...register('email', {
+                                            pattern: {
+                                                value: /\S+@\S+\.\S+/,
+                                                message: "L'e-mail n'est pas valide",
+                                            },
+                                        })}
+                                    />
                                     <Form.Control.Feedback type="invalid">
                                         {errors?.email?.message}
                                     </Form.Control.Feedback>
