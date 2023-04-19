@@ -23,6 +23,7 @@ export function EditOrganizationModal({ refetchOrganizations, selectedOrganizati
                 clientNumber: selectedOrganizationData?.clientNumber,
                 flyersCount: selectedOrganizationData?.flyersCount,
                 phone: selectedOrganizationData?.phone,
+                email: selectedOrganizationData?.email,
                 addressTitle: selectedOrganizationData?.addressTitle,
                 postalAddressCountry: selectedOrganizationData?.postalAddressCountry,
                 postalAddressCountryCode: selectedOrganizationData?.postalAddressCountryCode,
@@ -68,8 +69,6 @@ export function EditOrganizationModal({ refetchOrganizations, selectedOrganizati
                                 )}
                                 <dt>Code</dt>
                                 <dd>{selectedOrganizationData.code}</dd>
-                                <dt>E-mail</dt>
-                                <dd>{selectedOrganizationData.email}</dd>
                                 <dt>Type</dt>
                                 <dd>{selectedOrganizationData.type}</dd>
                                 <dt>Adresse</dt>
@@ -181,6 +180,18 @@ export function EditOrganizationModal({ refetchOrganizations, selectedOrganizati
                                     </InputGroup>
                                     <Form.Text>Utilisé pour le numéro de facture</Form.Text>
                                 </Form.Group>
+                            </Col>
+                        </Row>
+
+                        <Row className="mb-3">
+                            <Col sm={12}>
+                                <Form.Label>E-mail</Form.Label>
+                                <InputGroup className="mb-3" hasValidation>
+                                    <Form.Control type="email" isInvalid={errors?.email} {...register('email')} />
+                                    <Form.Control.Feedback type="invalid">
+                                        {errors?.email?.message}
+                                    </Form.Control.Feedback>
+                                </InputGroup>
                             </Col>
                         </Row>
 
