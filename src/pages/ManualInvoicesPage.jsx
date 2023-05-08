@@ -251,11 +251,11 @@ export function ManualInvoicesPage() {
                 values:
                     mapPathnameToInvoiceType[location.pathname] == null
                         ? ['Envoyée', 'Non transmissible']
-                        : mapPathnameToInvoiceType[location.pathname] === 'Quota'
-                        ? ['Quotas']
                         : ['En préparation', 'A traiter', 'Exportée', 'Annulée'],
             },
-            invoiceType: ['Directe', 'Groupée', 'Manuelle'].includes(mapPathnameToInvoiceType[location.pathname])
+            invoiceType: ['Directe', 'Groupée', 'Manuelle', 'Quota'].includes(
+                mapPathnameToInvoiceType[location.pathname]
+            )
                 ? {
                       filterType: 'set',
                       values: [mapPathnameToInvoiceType[location.pathname]],
