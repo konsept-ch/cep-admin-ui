@@ -101,21 +101,16 @@ export function EditOrganizationModal({ refetchOrganizations, selectedOrganizati
                                     label="Pas de facturation"
                                     value="Pas de facturation"
                                 />
-                                <Form.Check {...register('billingMode')} type="radio" label="Directe" value="Directe" />
+                                <Form.Check
+                                    {...register('billingMode')}
+                                    type="radio"
+                                    label="Idem niveau supérieur"
+                                    value="Idem niveau supérieur"
+                                />
                             </Col>
                             <Col>
-                                <Form.Check
-                                    {...register('billingMode')}
-                                    type="radio"
-                                    label="Groupée - Semestrielle"
-                                    value="Groupée - Semestrielle"
-                                />
-                                <Form.Check
-                                    {...register('billingMode')}
-                                    type="radio"
-                                    label="Groupée - Annuelle"
-                                    value="Groupée - Annuelle"
-                                />
+                                <Form.Check {...register('billingMode')} type="radio" label="Directe" value="Directe" />
+                                <Form.Check {...register('billingMode')} type="radio" label="Groupée" value="Groupée" />
                             </Col>
                             <Col>
                                 <Form.Check
@@ -123,12 +118,6 @@ export function EditOrganizationModal({ refetchOrganizations, selectedOrganizati
                                     type="radio"
                                     label="Frais effectifs"
                                     value="Frais effectifs"
-                                />
-                                <Form.Check
-                                    {...register('billingMode')}
-                                    type="radio"
-                                    label="Idem niveau supérieur"
-                                    value="Idem niveau supérieur"
                                 />
                             </Col>
                         </Row>
