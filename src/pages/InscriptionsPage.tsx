@@ -253,6 +253,13 @@ export function InscriptionsPage() {
                 filter: 'agTextColumnFilter',
                 headerTooltip: 'Le public cible',
             },
+            {
+                field: 'invoiceNumber',
+                headerName: 'Facture',
+                tooltipField: 'invoiceNumber',
+                headerTooltip: 'Numéro de facture',
+                filter: 'agTextColumnFilter',
+            },
         ],
         []
     )
@@ -275,6 +282,7 @@ export function InscriptionsPage() {
                 isPending,
                 validationType,
                 organizationClientNumber,
+                invoiceNumber,
             }: any) => ({
                 id,
                 participant: user.lastName != null ? `${user.lastName} ${user.firstName}` : 'Aucune inscription',
@@ -302,6 +310,7 @@ export function InscriptionsPage() {
                 isPending,
                 validationType,
                 organizationClientNumber,
+                invoiceNumber,
             })
         )
 
