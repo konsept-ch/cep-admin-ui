@@ -289,9 +289,7 @@ export function ManualInvoicesPage() {
                         action: () => {
                             const invoicesToExport =
                                 selectedRowsIds.length > 0
-                                    ? invoicesData.filter(
-                                          ({ id, status }) => selectedRowsIds.includes(id) && status === 'A traiter'
-                                      )
+                                    ? invoicesData.filter(({ id, status }) => selectedRowsIds.includes(id))
                                     : [data]
 
                             const csvClient = Papa.unparse(
