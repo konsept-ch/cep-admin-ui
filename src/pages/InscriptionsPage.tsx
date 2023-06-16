@@ -458,14 +458,15 @@ export function InscriptionsPage() {
                                 }
                             },
                         },
-                        selectedRowsData.length <= 1 && /*FINAL_STATUSES.includes(data?.status) &&*/ {
-                            name: "Modifier l'organisation",
-                            action: () => {
-                                if (data != null) {
-                                    setSelectedInscriptionId(data.id)
-                                }
+                        selectedRowsData.length <= 1 &&
+                            FINAL_STATUSES.includes(data?.status) && {
+                                name: "Modifier l'organisation",
+                                action: () => {
+                                    if (data != null) {
+                                        setSelectedInscriptionId(data.id)
+                                    }
+                                },
                             },
-                        },
                         'separator',
                         ...gridContextMenu,
                     ]
