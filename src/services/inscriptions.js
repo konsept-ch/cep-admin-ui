@@ -6,6 +6,15 @@ export const inscriptionsApi = createApi({
     reducerPath: 'inscriptionsApi',
     baseQuery: prepareBaseQuery({ servicePath: 'inscriptions' }),
     endpoints: (builder) => ({
+        updateOrganization: builder.mutation({
+            query: ({ inscriptionId, organizationId }) => ({
+                url: `${inscriptionId}/organization`,
+                method: 'PUT',
+                body: {
+                    organizationId,
+                },
+            }),
+        }),
         updateInscriptionStatus: builder.mutation({
             query: ({ inscriptionId, newStatus, emailTemplateId, selectedAttestationTemplateUuid, shouldSendSms }) => ({
                 url: inscriptionId,
@@ -30,5 +39,6 @@ export const inscriptionsApi = createApi({
 export const {
     useGetInscriptionCancellationsQuery,
     useGetInscriptionsRefusedByHrQuery,
+    useUpdateOrganizationMutation,
     useUpdateInscriptionStatusMutation,
 } = inscriptionsApi

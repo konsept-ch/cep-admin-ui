@@ -19,6 +19,8 @@ import {
     StatusesValues,
 } from '../utils'
 import { useUpdateInscriptionStatusMutation } from '../services/inscriptions'
+import { ChangeOrganizationModal } from '../components/ChangeOrganizationModal'
+import { useUpdateOrganizationMutation } from '../services/inscriptions'
 
 export function InscriptionsPage() {
     const dispatch = useDispatch()
@@ -31,6 +33,7 @@ export function InscriptionsPage() {
     const [selectedRowsData, setSelectedRowsData] = useState<any[]>([])
     const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false)
     const [isMassUpdateModalVisible, setIsMassUpdateModalVisible] = useState(false)
+    const [selectedInscriptionId, setSelectedInscriptionId] = useState(null)
     const inscriptions = useSelector(inscriptionsSelector)
     const [activePredefinedFiltersById, setActivePredefinedFiltersById] = useState({ onlyWebEntries: true })
 
@@ -455,6 +458,14 @@ export function InscriptionsPage() {
                                 }
                             },
                         },
+                        selectedRowsData.length <= 1 && /*FINAL_STATUSES.includes(data?.status) &&*/ {
+                            name: "Modifier l'organisation",
+                            action: () => {
+                                if (data != null) {
+                                    setSelectedInscriptionId(data.id)
+                                }
+                            },
+                        },
                         'separator',
                         ...gridContextMenu,
                     ]
@@ -558,8 +569,6 @@ export function InscriptionsPage() {
                                 shouldSendSms: false,
                             })
 
-                            console.log(response)
-
                             if (response.error) {
                                 hasErrors = true
 
@@ -595,6 +604,12 @@ export function InscriptionsPage() {
                     }}
                 />
             )}
+
+            <ChangeOrganizationModal
+                inscriptionId={selectedInscriptionId}
+                onHide={() => setSelectedInscriptionId(null)}
+                onDone={() => dispatch(fetchInscriptionsAction())}
+            />
         </>
     )
 }
