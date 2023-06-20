@@ -6,6 +6,9 @@ export const organizationsApi = createApi({
     reducerPath: 'organizationsApi',
     baseQuery: prepareBaseQuery({ servicePath: 'organizations' }),
     endpoints: (builder) => ({
+        getOrganizationsFlat: builder.query({
+            query: () => 'flat',
+        }),
         getOrganizationsFlatWithAddress: builder.query({
             query: () => 'flat-with-address',
         }),
@@ -23,6 +26,7 @@ export const organizationsApi = createApi({
 })
 
 export const {
+    useGetOrganizationsFlatQuery,
     useLazyGetOrganizationsFlatWithAddressQuery,
     useGetOrganizationsHierarchyQuery,
     useUpdateOrganizationMutation,
