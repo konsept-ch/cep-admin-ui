@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1 - the build process
-FROM node:18-slim as build-deps
+FROM node:18-bullseye-slim as build-deps
 ARG FONTAWESOME_NPM_AUTH_TOKEN
 WORKDIR /usr/src/app
 COPY ["package.json", "package-lock.json*", ".npmrc", "./"]
