@@ -90,7 +90,7 @@
     "react-toastify": "9.1.1",
     "redux": "4.2.1",
     "redux-saga": "1.2.2",
-    "sass": "1.58.0",
+    "sass": "1.62.1",
     "stylelint": "14.16.1",
     "stylelint-config-idiomatic-order": "9.0.0",
     "stylelint-config-prettier": "9.0.4",
