@@ -165,7 +165,7 @@ export function ManualInvoicesPage() {
             width: 170,
             valueGetter: ({ data }) =>
                 data?.items
-                    ?.map(({ price }) => price)
+                    ?.map(({ price, amount }) => Number(price) * Number(amount))
                     .reduce((a, b) => Number(a) + Number(b), 0)
                     .toFixed(2),
         },
