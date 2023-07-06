@@ -22,6 +22,7 @@ export const updateInscriptionStatusAction = ({
     selectedAttestationTemplateUuid,
     shouldSendSms,
     successCallback,
+    remark,
 }: {
     inscriptionId: any
     newStatus: any
@@ -29,6 +30,7 @@ export const updateInscriptionStatusAction = ({
     selectedAttestationTemplateUuid: any
     shouldSendSms: any
     successCallback: any
+    remark: any
 }) => ({
     type: UPDATE_INSCRIPTIONS,
     payload: {
@@ -38,6 +40,7 @@ export const updateInscriptionStatusAction = ({
         selectedAttestationTemplateUuid,
         shouldSendSms,
         successCallback,
+        remark,
     },
 })
 

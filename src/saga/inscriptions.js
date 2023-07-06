@@ -25,6 +25,7 @@ function* updateInscriptionsSaga(action) {
             emailTemplateId,
             selectedAttestationTemplateUuid,
             shouldSendSms,
+            remark,
             successCallback,
         },
     } = action
@@ -44,6 +45,7 @@ function* updateInscriptionsSaga(action) {
                     emailTemplateId,
                     selectedAttestationTemplateUuid,
                     shouldSendSms,
+                    remark,
                 }),
             },
             action,

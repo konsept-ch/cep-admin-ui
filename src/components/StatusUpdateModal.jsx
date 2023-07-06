@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Modal, Button, ListGroup, Alert, Spinner, Row } from 'react-bootstrap'
+import { Form, Modal, Button, ListGroup, Alert, Spinner, Row } from 'react-bootstrap'
 import { useSelector, useDispatch } from 'react-redux'
 import classNames from 'classnames'
 import { fetchParametersAction } from '../actions/parameters.ts'
@@ -23,6 +23,7 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
 
     const [selectedTemplateData, setSelectedTemplateData] = useState(null)
     const [selectedAttestationTemplateUuid, setSelectedAttestationTemplateUuid] = useState(null)
+    const [remark, setRemark] = useState(statusUpdateData.remark)
     const parameters = useSelector(parametersSelector)
     const isSagaLoading = useSelector(loadingSelector)
     const areTemplatesLoading = useSelector(templatesLoadingSelector)
@@ -138,6 +139,15 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
                                 {statusUpdateData.newStatus}
                             </Alert.Heading>
                         </Alert>
+                        <h6>Remarque</h6>
+                        <Form.Group className="mb-3">
+                            <Form.Control
+                                as="textarea"
+                                rows={2}
+                                defaultValue={remark}
+                                onChange={(e) => setRemark(e.target.value)}
+                            />
+                        </Form.Group>
                         <h6>Choix de modèle d'e-mail</h6>
                         <ListGroup>
                             <ListGroup.Item
@@ -285,6 +295,7 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
                             selectedTemplateData?.templateId === 'no-email' ? null : selectedTemplateData.templateId
 
                         updateStatus({
+                            remark,
                             emailTemplateId: templateId,
                             shouldSendSms: false,
                             selectedAttestationTemplateUuid:
@@ -305,6 +316,7 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
                             selectedTemplateData?.templateId === 'no-email' ? null : selectedTemplateData.templateId
 
                         updateStatus({
+                            remark,
                             emailTemplateId: templateId,
                             shouldSendSms: true,
                             selectedAttestationTemplateUuid:
