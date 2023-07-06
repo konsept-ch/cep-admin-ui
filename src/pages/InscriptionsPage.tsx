@@ -267,7 +267,7 @@ export function InscriptionsPage() {
         []
     )
 
-    const rowData = inscriptions
+    const rowData = (inscriptions || [])
         .filter((current: any) => current != null)
         .map(
             ({
@@ -403,7 +403,7 @@ export function InscriptionsPage() {
                             })),
                         },
                         selectedRowsData.length > 1 && {
-                            name: 'Modifier statut en mass',
+                            name: 'Modifier statut en masse',
                             disabled: !isMassUpdatePossible,
                             tooltip: !isMassUpdatePossible ? 'Statut final (non modifiable)' : '',
                             subMenu: inscriptionStatuses.map((currentStatus) => ({

@@ -27,7 +27,7 @@ export const AgendaPage = () => {
 
     useEffect(() => {
         if (Object.keys(selectedRoomIds).length <= 1) {
-            const initialSelectedRoomIds = rooms.reduce(
+            const initialSelectedRoomIds = (rooms || []).reduce(
                 (acc, { id, location }) => ({ ...acc, [id]: location?.name === 'CEP' }),
                 { 'no-room': false }
             )
@@ -38,7 +38,7 @@ export const AgendaPage = () => {
 
     const handleSearch = (e) => setSearchTerm(e.target.value)
 
-    const searchedRooms = rooms.filter((room) =>
+    const searchedRooms = (rooms || []).filter((room) =>
         room.name
             .toLowerCase()
             .normalize('NFD')
