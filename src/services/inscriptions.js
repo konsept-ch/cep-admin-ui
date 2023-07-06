@@ -16,7 +16,14 @@ export const inscriptionsApi = createApi({
             }),
         }),
         updateInscriptionStatus: builder.mutation({
-            query: ({ inscriptionId, newStatus, emailTemplateId, selectedAttestationTemplateUuid, shouldSendSms }) => ({
+            query: ({
+                inscriptionId,
+                newStatus,
+                emailTemplateId,
+                selectedAttestationTemplateUuid,
+                shouldSendSms,
+                remark,
+            }) => ({
                 url: inscriptionId,
                 method: 'PUT',
                 body: {
@@ -24,6 +31,7 @@ export const inscriptionsApi = createApi({
                     emailTemplateId,
                     selectedAttestationTemplateUuid,
                     shouldSendSms,
+                    remark,
                 },
             }),
         }),

@@ -499,11 +499,12 @@ export function InscriptionsPage() {
                         dispatch(fetchInscriptionsAction())
                     }}
                     statusUpdateData={statusUpdateData}
-                    updateStatus={({ emailTemplateId, shouldSendSms, selectedAttestationTemplateUuid }: any) =>
+                    updateStatus={({ emailTemplateId, shouldSendSms, selectedAttestationTemplateUuid, remark }: any) =>
                         dispatch(
                             updateInscriptionStatusAction({
                                 inscriptionId: (statusUpdateData as any)?.id,
                                 newStatus: (statusUpdateData as any)?.newStatus,
+                                remark,
                                 emailTemplateId,
                                 selectedAttestationTemplateUuid,
                                 shouldSendSms,
@@ -567,6 +568,7 @@ export function InscriptionsPage() {
                                 newStatus: statusMassUpdateData.newStatus,
                                 emailTemplateId,
                                 selectedAttestationTemplateUuid,
+                                remark: null,
                                 shouldSendSms: false,
                             })
 
