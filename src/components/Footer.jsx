@@ -1,7 +1,7 @@
 import { useNavigate, useLocation } from 'react-router-dom'
 import { Nav, Navbar } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMemo, faMessage } from '@fortawesome/pro-light-svg-icons'
+import { faFileLines, faMessage } from '@fortawesome/free-regular-svg-icons'
 import { PATH_NOTIFICATIONS } from '../constants/constants'
 
 export const Footer = ({ isLoggedIn }) => {
@@ -20,7 +20,7 @@ export const Footer = ({ isLoggedIn }) => {
                     <Nav className="me-auto" />
                     <Nav activeKey={location.pathname}>
                         <Nav.Link>
-                            <FontAwesomeIcon icon={faMemo} /> Logs
+                            <FontAwesomeIcon icon={faFileLines} /> Logs
                         </Nav.Link>
                         <Nav.Link href={PATH_NOTIFICATIONS} onClick={goTo(PATH_NOTIFICATIONS)}>
                             <FontAwesomeIcon icon={faMessage} /> Notifications

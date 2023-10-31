@@ -3,7 +3,7 @@ import { Button, Container, Spinner } from 'react-bootstrap'
 import { Helmet } from 'react-helmet-async'
 import { toast } from 'react-toastify'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPen } from '@fortawesome/pro-light-svg-icons'
+import { faPen } from '@fortawesome/free-solid-svg-icons'
 
 import { Grid, CommonModal, EditOrganizationModal } from '../components'
 import { useGetOrganizationsHierarchyQuery } from '../services/organizations'

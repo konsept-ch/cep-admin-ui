@@ -2,14 +2,8 @@ import { useState, useEffect } from 'react'
 import { Button, Col, Container, Form, InputGroup, Row } from 'react-bootstrap'
 import { toast } from 'react-toastify'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-    faAt,
-    faInputNumeric,
-    faKeySkeleton,
-    faPaperPlaneTop,
-    faArrowRightToBracket,
-    // faGlobe,
-} from '@fortawesome/pro-regular-svg-icons'
+import { faAt, faAddressCard, faArrowRightToBracket, faKey } from '@fortawesome/free-solid-svg-icons'
+import { faPaperPlane } from '@fortawesome/free-regular-svg-icons'
 
 import { cookies, clearAllAuthCookies, keepAuthAlive, callApi } from './utils'
 import { authCookiesMaxAgeSeconds, MIDDLEWARE_URL } from './constants/config'
@@ -167,7 +161,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                                 </InputGroup>
                             </Form.Group> */}
                             <Button variant="primary" type="submit">
-                                <ButtonIcon isLoading={isCodeLoading} icon={faPaperPlaneTop} />
+                                <ButtonIcon isLoading={isCodeLoading} icon={faPaperPlane} />
                                 Envoyer code
                             </Button>
                         </Form>
@@ -178,7 +172,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                                 <Form.Label>Code reçu</Form.Label>
                                 <InputGroup>
                                     <InputGroup.Text>
-                                        <FontAwesomeIcon icon={faInputNumeric} />
+                                        <FontAwesomeIcon icon={faAddressCard} />
                                     </InputGroup.Text>
                                     <Form.Control
                                         type="number"

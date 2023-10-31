@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async'
 import Papa from 'papaparse'
 import { Button } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPen } from '@fortawesome/pro-light-svg-icons'
+import { faPen } from '@fortawesome/free-solid-svg-icons'
 
 import { Grid, InvoiceModal } from '../components'
 import { useGetInvoicesQuery } from '../services/invoices'
