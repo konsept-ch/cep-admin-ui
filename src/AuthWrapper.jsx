@@ -189,7 +189,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                                 <Form.Label>Jeton d'authentification</Form.Label>
                                 <InputGroup>
                                     <InputGroup.Text>
-                                        <FontAwesomeIcon icon={faKeySkeleton} />
+                                        <FontAwesomeIcon icon={faKey} />
                                     </InputGroup.Text>
                                     <Form.Control
                                         type="password"
