@@ -2,7 +2,7 @@ import { useDispatch } from 'react-redux'
 import { Button } from 'react-bootstrap'
 import { toast } from 'react-toastify'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faRotateRight } from '@fortawesome/pro-regular-svg-icons'
+import { faRotateRight } from '@fortawesome/free-solid-svg-icons'
 import { MIDDLEWARE_URL } from '../constants/config'
 import { cookies } from '../utils'
 

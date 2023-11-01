@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEye, faEyeSlash } from '@fortawesome/pro-solid-svg-icons'
-import { faEye as faEyeLight } from '@fortawesome/pro-light-svg-icons'
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
+import { faEye as faEyeLight } from '@fortawesome/free-regular-svg-icons'
 
 export const BulkSelect = ({ rooms, roomsFilter, selectedRoomIds, setSelectedRoomIds }) => (
     <span

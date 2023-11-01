@@ -2,8 +2,8 @@ import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Container, Button, Collapse, InputGroup, FormControl, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowLeftFromLine, faArrowRightToLine } from '@fortawesome/pro-solid-svg-icons'
-import { faFilterCircleXmark } from '@fortawesome/pro-light-svg-icons'
+import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons'
+import { faFilterCircleXmark } from '@fortawesome/free-solid-svg-icons'
 import { Helmet } from 'react-helmet-async'
 
 import { Calendar, RoomSelection, BulkSelect, ExpandController, RoomCheckbox } from '../components'
@@ -215,9 +215,9 @@ export const AgendaPage = () => {
                         aria-controls="collapseExample"
                     >
                         {isRoomSelectionExpanded ? (
-                            <FontAwesomeIcon icon={faArrowRightToLine} />
+                            <FontAwesomeIcon icon={faArrowRight} />
                         ) : (
-                            <FontAwesomeIcon icon={faArrowLeftFromLine} />
+                            <FontAwesomeIcon icon={faArrowLeft} />
                         )}
                     </button>
                 </div>

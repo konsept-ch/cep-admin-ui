@@ -1,7 +1,7 @@
 import { fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { Button } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faRotateRight } from '@fortawesome/pro-regular-svg-icons'
+import { faRotateRight } from '@fortawesome/free-solid-svg-icons'
 import { toast } from 'react-toastify'
 
 import { MIDDLEWARE_URL } from '../constants/config'

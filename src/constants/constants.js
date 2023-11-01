@@ -4,7 +4,7 @@ import {
     faObjectGroup,
     faHandHoldingDollar,
     faPersonCircleCheck,
-} from '@fortawesome/pro-thin-svg-icons'
+} from '@fortawesome/free-solid-svg-icons'
 
 export const DATE_FORMAT_SWISS_FRENCH = 'fr-CH'
 export const DATE_FORMAT_OPTIONS = {

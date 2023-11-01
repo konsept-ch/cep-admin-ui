@@ -6,7 +6,7 @@ import { toast } from 'react-toastify'
 import Papa from 'papaparse'
 import { DateTime } from 'luxon'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPen } from '@fortawesome/pro-light-svg-icons'
+import { faPen } from '@fortawesome/free-solid-svg-icons'
 
 import { Grid, ManualInvoiceModal } from '../components'
 import {
