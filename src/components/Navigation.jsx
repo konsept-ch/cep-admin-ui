@@ -220,18 +220,6 @@ export const Navigation = ({ isLoggedIn }) => {
                             >
                                 <FontAwesomeIcon icon={faPersonCircleCheck} /> Quotas
                             </Nav.Link>
-                            <Nav.Link
-                                href={`/${PATH_INVOICE}/${PATH_INVOICE_DIRECT}`}
-                                onClick={goTo(`${PATH_INVOICE}/old-${PATH_INVOICE_DIRECT}`)}
-                            >
-                                <FontAwesomeIcon icon={faFileInvoiceDollar} /> (Deprecated) Factures directes
-                            </Nav.Link>
-                            <Nav.Link
-                                href={`/${PATH_INVOICE}/${PATH_INVOICE_GROUPED}`}
-                                onClick={goTo(`${PATH_INVOICE}/old-${PATH_INVOICE_GROUPED}`)}
-                            >
-                                <FontAwesomeIcon icon={faObjectGroup} /> (Deprecated) Factures groupées
-                            </Nav.Link>
                         </NavDropdown>
                         <NavDropdown
                             active={location.pathname.startsWith(`/${PATH_COMMUNITY}`)}

@@ -71,13 +71,6 @@ export function SessionsPage() {
                 type: 'numericColumn',
             },
             {
-                field: 'price',
-                headerName: 'Coût',
-                filter: 'agNumberColumnFilter',
-                headerTooltip: 'Le prix de la session',
-                type: 'numericColumn',
-            },
-            {
                 field: 'quotaDays',
                 headerName: 'Jours de quota',
                 filter: 'agNumberColumnFilter',
@@ -91,6 +84,28 @@ export function SessionsPage() {
                 headerTooltip: 'Les quotas de la session',
                 valueGetter: ({ data }) =>
                     typeof data === 'undefined' ? '' : data.isUsedForQuota ? 'Utilisé' : 'Non-utilisé',
+            },
+            {
+                field: 'category',
+                headerName: 'Code catégorie',
+                filter: 'agTextColumnFilter',
+                headerTooltip: 'Le code catégorie',
+                width: 150,
+            },
+            {
+                field: 'startDate',
+                headerName: 'Date de début',
+                filter: 'agDateColumnFilter',
+                headerTooltip: 'La date de début de la session',
+                valueFormatter: ({ value }) => formatDate({ dateString: value, isDateVisible: true }),
+                type: 'numericColumn',
+            },
+            {
+                field: 'fees',
+                headerName: 'Honoraires',
+                filter: 'agNumberColumnFilter',
+                headerTooltip: 'les honoraires de la session',
+                type: 'numericColumn',
             },
             {
                 field: 'creationDate',
@@ -179,7 +194,7 @@ export function SessionsPage() {
             sessionLocation,
             hidden,
             startDate,
-            price,
+            fees,
             created,
             updated,
             quotaDays,
@@ -187,23 +202,25 @@ export function SessionsPage() {
             isUsedForQuota,
             availables,
             occupation,
+            category,
         }) => ({
             id,
             name,
             code,
             duration: quotaDays,
-            price,
             creationDate: created,
             lastModifiedDate: updated,
             hidden,
             invited: areInvitesSent,
             startDate,
+            fees,
             quotaDays,
             isUsedForQuota,
             sessionFormat,
             sessionLocation,
             availables,
             occupation,
+            category,
         })
     )
 
