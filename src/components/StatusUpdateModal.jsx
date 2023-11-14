@@ -307,27 +307,6 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
                 >
                     Confirmer
                 </ConfirmInscriptionChangeButton>
-                <ConfirmInscriptionChangeButton
-                    isSelectedTemplateDataNull={selectedTemplateData === null}
-                    isLoading={isSagaLoading}
-                    variant={statusUpdateData.user.shouldReceiveSms ? 'success' : 'warning'}
-                    onClick={() => {
-                        const templateId =
-                            selectedTemplateData?.templateId === 'no-email' ? null : selectedTemplateData.templateId
-
-                        updateStatus({
-                            remark,
-                            emailTemplateId: templateId,
-                            shouldSendSms: true,
-                            selectedAttestationTemplateUuid:
-                                selectedAttestationTemplateUuid === 'no-attestation'
-                                    ? null
-                                    : selectedAttestationTemplateUuid,
-                        })
-                    }}
-                >
-                    Confirmer avec SMS
-                </ConfirmInscriptionChangeButton>
                 <Button
                     variant="outline-primary"
                     onClick={() => {
