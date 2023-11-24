@@ -21,6 +21,7 @@ export const evaluationTemplatesApi = createApi({
                 method: 'PUT',
                 body: {
                     ...data,
+                    category: data.category.value,
                     struct,
                 },
             }),
