@@ -1,11 +1,12 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { ListGroup, Row, Col, Container, Button, FloatingLabel, Form } from 'react-bootstrap'
 import { Helmet } from 'react-helmet-async'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { faFloppyDisk } from '@fortawesome/free-regular-svg-icons'
+import Select from 'react-select'
 
 import { EvaluationModelItem, CommonModal, Block } from '../components'
 import titleProps from '../components/blocks/Title'
@@ -28,6 +29,7 @@ export function EvaluationTemplatesPage() {
     const [updateEvaluation, { isLoading: isUpdating }] = useUpdateEvaluationMutation()
     const [deleteEvaluation, { isLoading: isDeleting }] = useDeleteEvaluationMutation()
 
+    const [selectedCategory, setSelectedCategory] = useState({ label: 'CEP', value: 0 })
     const [selectedBlock, setSelectedBlock] = useState(null)
     const [struct, setStruct] = useState([])
 
@@ -35,6 +37,7 @@ export function EvaluationTemplatesPage() {
         register,
         handleSubmit,
         reset,
+        control,
         formState: { isDirty, errors },
     } = useForm()
 
@@ -51,13 +54,19 @@ export function EvaluationTemplatesPage() {
     const [isDeleteWarningVisible, setIsDeleteWarningVisible] = useState(false)
     const [discardWarningData, setDiscardWarningData] = useState({ isVisible: false })
 
-    const resetPreview = (uuid, title, description, structParam) => {
+    const filteredTemplates = useMemo(
+        () => (templates || []).filter((t) => t.category.value === selectedCategory.value),
+        [templates, selectedCategory]
+    )
+
+    const resetPreview = (uuid, title, description, category, structParam) => {
         setSelectedTemplateUuid(uuid)
         setStruct(structParam)
         setSelectedBlock(null)
         reset({
             title,
             description,
+            category,
         })
     }
 
@@ -81,7 +90,7 @@ export function EvaluationTemplatesPage() {
 
         if (error == null) {
             toast.success("Modèle d'évaluation créée")
-            resetPreview(data.uuid, data.title, '', [])
+            resetPreview(data.uuid, data.title, '', 0, [])
         } else {
             toast.error("Erreur de création du modèle d'évaluation", { autoClose: false })
         }
@@ -167,12 +176,20 @@ export function EvaluationTemplatesPage() {
                 ) : (
                     <Row>
                         <Col md="4">
-                            {templates.length === 0 ? (
-                                <p>Aucun modèle, vous pouvez créer un nouveau</p>
+                            <Select
+                                onChange={(e) => setSelectedCategory(e)}
+                                value={selectedCategory}
+                                options={[
+                                    { label: 'CEP', value: 0 },
+                                    { label: 'INTER', value: 1 },
+                                ]}
+                            />
+                            {filteredTemplates.length === 0 ? (
+                                <p className="mt-4">Aucun modèle, vous pouvez créer un nouveau</p>
                             ) : (
-                                <ListGroup>
-                                    {templates.length > 0 &&
-                                        templates.map(({ uuid, title, description, struct: structParam }) => (
+                                <ListGroup className="mt-4">
+                                    {filteredTemplates.map(
+                                        ({ uuid, title, description, category, struct: structParam }) => (
                                             <EvaluationModelItem
                                                 {...{
                                                     key: uuid,
@@ -186,15 +203,28 @@ export function EvaluationTemplatesPage() {
                                                             setDiscardWarningData({
                                                                 isVisible: true,
                                                                 selectNewTemplate: () =>
-                                                                    resetPreview(uuid, title, description, structParam),
+                                                                    resetPreview(
+                                                                        uuid,
+                                                                        title,
+                                                                        description,
+                                                                        category,
+                                                                        structParam
+                                                                    ),
                                                             })
                                                         } else {
-                                                            resetPreview(uuid, title, description, structParam)
+                                                            resetPreview(
+                                                                uuid,
+                                                                title,
+                                                                description,
+                                                                category,
+                                                                structParam
+                                                            )
                                                         }
                                                     },
                                                 }}
                                             />
-                                        ))}
+                                        )
+                                    )}
                                 </ListGroup>
                             )}
                             <Button
@@ -245,7 +275,20 @@ export function EvaluationTemplatesPage() {
                                         <label className="mb-2">
                                             <strong>Général</strong>
                                         </label>
-                                        <FloatingLabel controlId="title" label="Titre" className="mb-2">
+                                        <Controller
+                                            name="category"
+                                            control={control}
+                                            render={({ field }) => (
+                                                <Select
+                                                    {...field}
+                                                    options={[
+                                                        { label: 'CEP', value: 0 },
+                                                        { label: 'INTER', value: 1 },
+                                                    ]}
+                                                />
+                                            )}
+                                        />
+                                        <FloatingLabel controlId="title" label="Titre" className="my-2">
                                             <Form.Control
                                                 type="text"
                                                 placeholder="Titre de la séance"
