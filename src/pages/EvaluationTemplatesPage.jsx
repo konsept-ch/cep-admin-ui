@@ -29,7 +29,7 @@ export function EvaluationTemplatesPage() {
     const [updateEvaluation, { isLoading: isUpdating }] = useUpdateEvaluationMutation()
     const [deleteEvaluation, { isLoading: isDeleting }] = useDeleteEvaluationMutation()
 
-    const [category, setCategory] = useState({ label: 'CEP', value: 0 })
+    const [selectedCategory, setSelectedCategory] = useState({ label: 'CEP', value: 0 })
     const [selectedBlock, setSelectedBlock] = useState(null)
     const [struct, setStruct] = useState([])
 
@@ -55,8 +55,8 @@ export function EvaluationTemplatesPage() {
     const [discardWarningData, setDiscardWarningData] = useState({ isVisible: false })
 
     const filteredTemplates = useMemo(
-        () => (templates || []).filter((t) => t.category.value === category.value),
-        [templates, category]
+        () => (templates || []).filter((t) => t.category.value === selectedCategory.value),
+        [templates, selectedCategory]
     )
 
     const resetPreview = (uuid, title, description, category, structParam) => {
@@ -177,8 +177,8 @@ export function EvaluationTemplatesPage() {
                     <Row>
                         <Col md="4">
                             <Select
-                                onChange={(e) => setCategory(e)}
-                                value={category}
+                                onChange={(e) => setSelectedCategory(e)}
+                                value={selectedCategory}
                                 options={[
                                     { label: 'CEP', value: 0 },
                                     { label: 'INTER', value: 1 },
