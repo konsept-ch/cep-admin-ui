@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { ListGroup, Row, Col, Container, Button, FloatingLabel, Form } from 'react-bootstrap'
 import { Helmet } from 'react-helmet-async'
 import { useForm, Controller } from 'react-hook-form'
@@ -29,6 +29,7 @@ export function EvaluationTemplatesPage() {
     const [updateEvaluation, { isLoading: isUpdating }] = useUpdateEvaluationMutation()
     const [deleteEvaluation, { isLoading: isDeleting }] = useDeleteEvaluationMutation()
 
+    const [category, setCategory] = useState({ label: 'CEP', value: 0 })
     const [selectedBlock, setSelectedBlock] = useState(null)
     const [struct, setStruct] = useState([])
 
@@ -52,6 +53,11 @@ export function EvaluationTemplatesPage() {
     const [selectedTemplateUuid, setSelectedTemplateUuid] = useState(null)
     const [isDeleteWarningVisible, setIsDeleteWarningVisible] = useState(false)
     const [discardWarningData, setDiscardWarningData] = useState({ isVisible: false })
+
+    const filteredTemplates = useMemo(
+        () => (templates || []).filter((t) => t.category.value === category.value),
+        [templates, category]
+    )
 
     const resetPreview = (uuid, title, description, category, structParam) => {
         setSelectedTemplateUuid(uuid)
@@ -170,12 +176,20 @@ export function EvaluationTemplatesPage() {
                 ) : (
                     <Row>
                         <Col md="4">
-                            {templates.length === 0 ? (
-                                <p>Aucun modèle, vous pouvez créer un nouveau</p>
+                            <Select
+                                onChange={(e) => setCategory(e)}
+                                value={category}
+                                options={[
+                                    { label: 'CEP', value: 0 },
+                                    { label: 'INTER', value: 1 },
+                                ]}
+                            />
+                            {filteredTemplates.length === 0 ? (
+                                <p className="mt-4">Aucun modèle, vous pouvez créer un nouveau</p>
                             ) : (
-                                <ListGroup>
-                                    {templates.length > 0 &&
-                                        templates.map(({ uuid, title, description, category, struct: structParam }) => (
+                                <ListGroup className="mt-4">
+                                    {filteredTemplates.map(
+                                        ({ uuid, title, description, category, struct: structParam }) => (
                                             <EvaluationModelItem
                                                 {...{
                                                     key: uuid,
@@ -209,7 +223,8 @@ export function EvaluationTemplatesPage() {
                                                     },
                                                 }}
                                             />
-                                        ))}
+                                        )
+                                    )}
                                 </ListGroup>
                             )}
                             <Button
