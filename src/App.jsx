@@ -22,9 +22,8 @@ import { NotificationsPage } from './pages/NotificationsPage'
 import { FormateursPage } from './pages/FormateursPage'
 import { ErrorBoundary } from './pages/ErrorBoundaryPage'
 import { OrganizationsPage } from './pages/OrganizationsPage'
+import { TutorsPage } from './pages/TutorsPage'
 import { UsersPage } from './pages/UsersPage'
-import { InvoicePage } from './pages/InvoicePage'
-import { InvoiceGroupedPage } from './pages/InvoiceGroupedPage'
 import { ManualInvoicesPage } from './pages/ManualInvoicesPage'
 import { SeancesPage } from './pages/SeancesPage'
 import { Navigation } from './components'
@@ -157,19 +156,10 @@ export function App() {
                             />
                             <Route
                                 exact
-                                path={`${PATH_INVOICE}/old-${PATH_INVOICE_DIRECT}`}
-                                element={<InvoicePage />}
-                            />
-                            <Route
-                                exact
-                                path={`${PATH_INVOICE}/old-${PATH_INVOICE_GROUPED}`}
-                                element={<InvoiceGroupedPage />}
-                            />
-                            <Route
-                                exact
                                 path={`${PATH_COMMUNITY}/${PATH_ORGANIZATIONS}`}
                                 element={<OrganizationsPage />}
                             />
+                            <Route exact path={`${PATH_COMMUNITY}/${PATH_FORMATEURS}`} element={<TutorsPage />} />
                             <Route exact path={PATH_NOTIFICATIONS} element={<NotificationsPage />} />
                             <Route path="/survey/" element={<SurveyPage />} />
                             <Route path="/typography" element={<TypographyPage />} />

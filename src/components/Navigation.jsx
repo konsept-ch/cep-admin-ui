@@ -241,6 +241,12 @@ export const Navigation = ({ isLoggedIn }) => {
                             >
                                 <FontAwesomeIcon icon={faList} /> Organisations
                             </Nav.Link>
+                            <Nav.Link
+                                href={`/${PATH_COMMUNITY}/${PATH_FORMATEURS}`}
+                                onClick={goTo(`${PATH_COMMUNITY}/${PATH_FORMATEURS}`)}
+                            >
+                                <FontAwesomeIcon icon={faChalkboardUser} /> Formateurs
+                            </Nav.Link>
                         </NavDropdown>
 
                         {/* <NavDropdown
