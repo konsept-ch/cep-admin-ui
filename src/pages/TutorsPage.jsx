@@ -21,13 +21,11 @@ export function TutorsPage() {
     const columnDefs = useMemo(
         () => [
             {
-                field: 'edit',
-                headerName: '',
+                valueGetter: ({ data }) => data,
                 cellRenderer: ({ data }) => (
                     <Button
                         variant="primary"
                         onClick={() => {
-                            console.log(data)
                             reset({
                                 ...data,
                                 skills: data.skills.map((v) => ({ v })),
@@ -154,7 +152,7 @@ export function TutorsPage() {
                 <title>Formateurs - Former22</title>
             </Helmet>
             <Grid name="Formateurs" columnDefs={columnDefs} rowData={tutors} isDataLoading={fetching} />
-            <Modal dialogClassName="update-modal" show={visible} onHide={() => setVisible(false)}>
+            <Modal dialogClassName="update-modal" backdrop="static" show={visible} onHide={() => setVisible(false)}>
                 <Modal.Header closeButton>
                     <Modal.Title>Détail</Modal.Title>
                 </Modal.Header>
