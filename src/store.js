@@ -24,6 +24,7 @@ import { evaluationTemplatesApi } from './services/evaluationTemplates'
 import { eventsApi } from './services/events'
 import { evaluationsApi } from './services/evaluations'
 import { templatesApi } from './services/templates'
+import { tutorsApi } from './services/tutors'
 
 const sagaMiddleware = createSagaMiddleware()
 
@@ -50,6 +51,7 @@ export const store = configureStore({
         [eventsApi.reducerPath]: eventsApi.reducer,
         [evaluationsApi.reducerPath]: evaluationsApi.reducer,
         [templatesApi.reducerPath]: templatesApi.reducer,
+        [tutorsApi.reducerPath]: tutorsApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat([
@@ -67,6 +69,7 @@ export const store = configureStore({
             eventsApi.middleware,
             evaluationsApi.middleware,
             templatesApi.middleware,
+            tutorsApi.middleware,
             rtkQueryErrorLogger,
         ]),
 })
