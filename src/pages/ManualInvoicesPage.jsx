@@ -36,12 +36,6 @@ const csvOptions = {
     encoding: 'utf-8',
 }
 
-const deriveInvoiceNumber = ({ data }) =>
-    `${`${data?.courseYear}`.slice(-2)}${`${data?.user.cfNumber}`.padStart(
-        2,
-        '0'
-    )}${`${data?.invoiceNumberForCurrentYear}`.padStart(4, '0')}`
-
 const formatInvoiceDate = ({ value }) =>
     DateTime.fromISO(value, { zone: 'UTC' }).setLocale('fr-CH').toLocaleString(DateTime.DATE_SHORT)
 
@@ -93,13 +87,12 @@ export function ManualInvoicesPage() {
             ),
         },
         {
-            field: 'invoiceNumber',
+            field: 'number',
             headerName: 'Numéro',
             tooltipField: 'invoiceNumber',
             headerTooltip: 'Numéro de facture',
-            filter: 'agNumberColumnFilter',
+            filter: 'agTextColumnFilter',
             width: 160,
-            valueGetter: deriveInvoiceNumber,
             checkboxSelection: true,
             headerCheckboxSelection: true,
         },
@@ -327,8 +320,8 @@ export function ManualInvoicesPage() {
                                             invoiceData.clientNumber,
                                             invoiceData.organizationName,
                                             invoiceData.customClientTitle,
-                                            invoiceData.customClientFirstname,
                                             invoiceData.customClientLastname,
+                                            invoiceData.customClientFirstname,
                                             invoiceData.customClientAddress.replaceAll('\n', '\\'),
                                             postalAddressStreet,
                                             postalAddressCode,
@@ -363,7 +356,7 @@ export function ManualInvoicesPage() {
                                     data: invoicesToExport.map((invoiceData) => {
                                         const year = new Date(invoiceData.invoiceDate).getFullYear()
                                         return [
-                                            deriveInvoiceNumber({ data: invoiceData }),
+                                            invoiceData.number,
                                             formatInvoiceDate({ value: invoiceData.invoiceDate }),
                                             invoiceData.concerns ?? '',
                                             invoiceData.codeCompta ?? '',
