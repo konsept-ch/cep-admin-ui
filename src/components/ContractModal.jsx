@@ -77,25 +77,30 @@ export const ContractModal = ({ closeModal, selectedCourse, isVisible, refetchEv
                             {selectedCourse?.user.name}
                         </p>
                         <div className="my-4 contract-sessions">
-                            {selectedCourse?.sessions.map((session) => (
-                                <>
-                                    <strong className="py-1">{session.name.split('|')[2].trim()}</strong>
-                                    <div className="contract-events">
-                                        {session.events.map((event) => (
-                                            <>
-                                                <span className="py-1 border-top">{event.date}</span>
-                                                <span className="py-1 border-top text-center">
-                                                    {event.locationName}
-                                                </span>
-                                                <span className="py-1 border-top">
-                                                    {event.startTime} - {event.endTime}
-                                                </span>
-                                                <span className="py-1 border-top text-end">{event.fees}</span>
-                                            </>
-                                        ))}
-                                    </div>
-                                </>
-                            ))}
+                            {selectedCourse?.sessions.map((session) => {
+                                const splitted = session.name.split('|')
+                                return (
+                                    <>
+                                        <strong className="py-1">
+                                            {splitted.length > 2 ? splitted[2].trim() : session.name}
+                                        </strong>
+                                        <div className="contract-events">
+                                            {session.events.map((event) => (
+                                                <>
+                                                    <span className="py-1 border-top">{event.date}</span>
+                                                    <span className="py-1 border-top text-center">
+                                                        {event.locationName}
+                                                    </span>
+                                                    <span className="py-1 border-top">
+                                                        {event.startTime} - {event.endTime}
+                                                    </span>
+                                                    <span className="py-1 border-top text-end">{event.fees}</span>
+                                                </>
+                                            ))}
+                                        </div>
+                                    </>
+                                )
+                            })}
                         </div>
                     </div>
                 </Row>
