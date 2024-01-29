@@ -281,7 +281,7 @@ export function ManualInvoicesPage() {
                         name: 'Exporter pour Crésus',
                         action: () => {
                             const invoicesToExport = (selectedRowsIds.length > 0 ? invoicesData : [data]).filter(
-                                ({ id, status }) => selectedRowsIds.includes(id) && status === 'Traitée'
+                                ({ id }) => selectedRowsIds.includes(id)
                             )
 
                             const csvClient = Papa.unparse(
