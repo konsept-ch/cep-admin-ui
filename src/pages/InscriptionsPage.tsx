@@ -35,7 +35,7 @@ export function InscriptionsPage() {
     const [isMassUpdateModalVisible, setIsMassUpdateModalVisible] = useState(false)
     const [selectedInscriptionId, setSelectedInscriptionId] = useState(null)
     const inscriptions = useSelector(inscriptionsSelector)
-    const [activePredefinedFiltersById, setActivePredefinedFiltersById] = useState({ onlyWebEntries: true })
+    const [activePredefinedFiltersById, setActivePredefinedFiltersById] = useState({ onlyWebEntries: false })
 
     const [updateInscriptionStatus, { isLoading: isUpdatingInscriptionStatus }] = useUpdateInscriptionStatusMutation()
 
