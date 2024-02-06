@@ -27,10 +27,9 @@ export const AgendaPage = () => {
 
     useEffect(() => {
         if (Object.keys(selectedRoomIds).length <= 1) {
-            const initialSelectedRoomIds = (rooms || []).reduce(
-                (acc, { id, location }) => ({ ...acc, [id]: location?.name === 'CEP' }),
-                { 'no-room': false }
-            )
+            const initialSelectedRoomIds = (rooms || []).reduce((acc, { id, location }) => ({ ...acc, [id]: true }), {
+                'no-room': true,
+            })
 
             setSelectedRoomIds(initialSelectedRoomIds)
         }

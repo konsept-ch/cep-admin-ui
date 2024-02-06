@@ -281,7 +281,7 @@ export function ManualInvoicesPage() {
                         name: 'Exporter pour Crésus',
                         action: () => {
                             const invoicesToExport = (selectedRowsIds.length > 0 ? invoicesData : [data]).filter(
-                                ({ id, status }) => selectedRowsIds.includes(id) && status === 'Traitée'
+                                ({ id }) => selectedRowsIds.includes(id)
                             )
 
                             const csvClient = Papa.unparse(
@@ -319,7 +319,9 @@ export function ManualInvoicesPage() {
                                             invoiceData.customClientTitle,
                                             invoiceData.customClientLastname,
                                             invoiceData.customClientFirstname,
-                                            invoiceData.customClientAddress.replaceAll('\n', '\\'),
+                                            (invoiceData.organizationName === 'Compte privé'
+                                                ? `${invoiceData.customClientFirstname} ${invoiceData.customClientLastname}\\`
+                                                : '') + invoiceData.customClientAddress.replaceAll('\n', '\\'),
                                             postalAddressStreet,
                                             postalAddressCode,
                                             postalAddressLocality,
@@ -365,7 +367,9 @@ export function ManualInvoicesPage() {
                                             invoiceData.items.map(({ amount }) => amount).join('/'),
                                             invoiceData.items.map(({ price }) => price).join('/'),
                                             invoiceData.items.map(({ vatCode }) => vatCode).join('/'),
-                                            invoiceData.customClientAddress.replaceAll('\n', '\\'),
+                                            (invoiceData.organizationName === 'Compte privé'
+                                                ? `${invoiceData.customClientFirstname} ${invoiceData.customClientLastname}\\`
+                                                : '') + invoiceData.customClientAddress.replaceAll('\n', '\\'),
                                             invoiceData.clientNumber,
                                             new Date(year, 0, 1, 12, 0, 0, 0).toLocaleDateString('fr-CH'),
                                             new Date(year, 11, 31, 12, 0, 0, 0).toLocaleDateString('fr-CH'),
