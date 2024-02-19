@@ -27,7 +27,7 @@ const defaultEmptyItem = {
 
 const vatOptions = [
     { value: 'EXONERE', label: 'EXONERE' },
-    { value: 'TVA', label: 'TVA 7.7%' },
+    { value: 'TVA', label: 'TVA' },
     { value: 'TAUX1', label: 'TVA incluse' },
 ]
 // const defaultTvaOption = tvaOptions[1]
