@@ -460,7 +460,7 @@ export function ManualInvoicesPage() {
                             await refetchInvoices()
                         }}
                     >
-                        Générer directes (année 2023) {isGeneratingDirectInvoices && '...'}
+                        Générer directes (année 2024) {isGeneratingDirectInvoices && '...'}
                     </Button>
                 )}
                 {location.pathname === `/${PATH_INVOICE}/${PATH_INVOICE_MANUAL}` && (
