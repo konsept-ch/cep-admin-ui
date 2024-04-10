@@ -28,10 +28,10 @@ export function TutorsPage() {
                         onClick={() => {
                             reset({
                                 ...data,
+                                titles: data.titles.map((v) => ({ v })),
                                 skills: data.skills.map((v) => ({ v })),
                                 roles: data.roles.map((v) => ({ v })),
-                                administrative: data.administrative.map((v) => ({ v })),
-                                domain: data.domain ? { v: data.domain } : null,
+                                domains: data.domains.map((v) => ({ v })),
                                 status: data.status ? { v: data.status } : null,
                             })
                             setVisible(true)
@@ -75,12 +75,16 @@ export function TutorsPage() {
             },
             {
                 field: 'cert',
-                headerName: 'Certificat envoyé',
+                headerName: 'Diplômes/certifications transmis',
                 valueGetter: (o) => (o.data.cert ? 'Oui' : 'Non'),
             },
             {
                 field: 'title',
                 headerName: 'Titre pédagogique',
+            },
+            {
+                field: 'titles',
+                headerName: 'Titres pédagogique',
             },
             {
                 field: 'accreditations',
@@ -99,8 +103,8 @@ export function TutorsPage() {
                 headerName: 'Rôles',
             },
             {
-                field: 'domain',
-                headerName: 'Domaine intervention',
+                field: 'domains',
+                headerName: 'Domaines intervention',
             },
             {
                 field: 'cat',
@@ -131,16 +135,28 @@ export function TutorsPage() {
                 headerName: 'Dates',
             },
             {
-                field: 'administrative',
-                headerName: 'Suivi administratif',
-            },
-            {
                 field: 'grids',
                 headerName: 'Grilles supervision',
             },
             {
                 field: 'educational',
-                headerName: 'Suivi pédagogique',
+                headerName: 'Dernière supervision',
+            },
+            {
+                field: 'expertise',
+                headerName: 'Titre expertise métier',
+            },
+            {
+                field: 'course',
+                headerName: 'Descriptif de cours',
+            },
+            {
+                field: 'pitch',
+                headerName: 'Pitch',
+            },
+            {
+                field: 'scenario',
+                headerName: "Scénario d'hybridation/fil rouge",
             },
         ],
         []
@@ -168,7 +184,12 @@ export function TutorsPage() {
                                 <Form.Control type="text" {...register('year')} />
                             </Form.Group>
                             <Form.Check type="checkbox" id="cv" label="CV envoyé" {...register('cv')} />
-                            <Form.Check type="checkbox" id="cert" label="Certficat envoyé" {...register('cert')} />
+                            <Form.Check
+                                type="checkbox"
+                                id="cert"
+                                label="Diplômes/certifications transmis"
+                                {...register('cert')}
+                            />
                             <Form.Check type="checkbox" id="cat" label="CAT" {...register('cat')} />
                             <Form.Check type="checkbox" id="ps" label="PS" {...register('ps')} />
                             <Form.Check type="checkbox" id="fsm" label="FSM" {...register('fsm')} />
@@ -278,10 +299,10 @@ export function TutorsPage() {
                                     )}
                                 />
                             </Form.Group>
-                            <Form.Group className="mb-3" controlId="domain">
-                                <Form.Label>Domaine intervention</Form.Label>
+                            <Form.Group className="mb-3" controlId="domains">
+                                <Form.Label>Domaines intervention</Form.Label>
                                 <Controller
-                                    name="domain"
+                                    name="domains"
                                     control={control}
                                     render={({ field }) => (
                                         <Select
@@ -299,6 +320,7 @@ export function TutorsPage() {
                                             ]}
                                             getOptionLabel={(o) => o.v}
                                             getOptionValue={(o) => o.v}
+                                            isMulti
                                         />
                                     )}
                                 />
@@ -318,26 +340,17 @@ export function TutorsPage() {
                                     )}
                                 />
                             </Form.Group>
-                            <Form.Group className="mb-3" controlId="administrative">
-                                <Form.Label>Suivi administratif</Form.Label>
-                                <Controller
-                                    name="administrative"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <Select
-                                            {...field}
-                                            options={[
-                                                { v: 'Scénario hybridation / fil rouge' },
-                                                { v: 'Descriptif de cours' },
-                                                { v: 'Pitch' },
-                                                { v: 'Programme' },
-                                            ]}
-                                            getOptionLabel={(o) => o.v}
-                                            getOptionValue={(o) => o.v}
-                                            isMulti
-                                        />
-                                    )}
-                                />
+                            <Form.Group className="mb-3" controlId="course">
+                                <Form.Label>Descriptif de cours</Form.Label>
+                                <Form.Control as="textarea" rows={1} {...register('course')} />
+                            </Form.Group>
+                            <Form.Group className="mb-3" controlId="pitch">
+                                <Form.Label>Pitch</Form.Label>
+                                <Form.Control as="textarea" rows={1} {...register('pitch')} />
+                            </Form.Group>
+                            <Form.Group className="mb-3" controlId="scenario">
+                                <Form.Label>Scénario d'hybridation/fil rouge</Form.Label>
+                                <Form.Control as="textarea" rows={1} {...register('scenario')} />
                             </Form.Group>
                         </Col>
                         <Col>
@@ -348,6 +361,32 @@ export function TutorsPage() {
                             <Form.Group className="mb-3" controlId="title">
                                 <Form.Label>Titre pédagogique</Form.Label>
                                 <Form.Control as="textarea" rows={2} {...register('title')} />
+                            </Form.Group>
+                            <Form.Group className="mb-3" controlId="titles">
+                                <Form.Label>Titres pédagogique</Form.Label>
+                                <Controller
+                                    name="titles"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <Select
+                                            {...field}
+                                            options={[
+                                                { v: 'Certificat FSEA - module 1' },
+                                                { v: 'Certificat FSEA - module 2' },
+                                                { v: 'Certificat FSEA - module 3' },
+                                                { v: 'Certificat FSEA - module 4' },
+                                                { v: 'Certificat FSEA - module 5' },
+                                                { v: "Brevet fédéral de formateur/trice d'adultes" },
+                                                { v: 'Diplôme fédéral de responsable de formation' },
+                                                { v: "DAS en formation d'adultes" },
+                                                { v: "Formation universitaire en sciences de l'éducation" },
+                                            ]}
+                                            getOptionLabel={(o) => o.v}
+                                            getOptionValue={(o) => o.v}
+                                            isMulti
+                                        />
+                                    )}
+                                />
                             </Form.Group>
                             <Form.Group className="mb-3" controlId="accreditations">
                                 <Form.Label>Accréditations spécifiques tests</Form.Label>
@@ -368,8 +407,12 @@ export function TutorsPage() {
                                 <Form.Control as="textarea" rows={2} {...register('links')} />
                             </Form.Group>
                             <Form.Group className="mb-3" controlId="educational">
-                                <Form.Label>Suivi pédagogique</Form.Label>
+                                <Form.Label>Dernière supervision</Form.Label>
                                 <Form.Control as="textarea" rows={2} {...register('educational')} />
+                            </Form.Group>
+                            <Form.Group className="mb-3" controlId="expertise">
+                                <Form.Label>Titre expertise métier</Form.Label>
+                                <Form.Control as="textarea" rows={2} {...register('expertise')} />
                             </Form.Group>
                         </Col>
                     </Row>
@@ -397,10 +440,14 @@ export function TutorsPage() {
                                     dates: data.dates,
                                     links: data.links,
                                     educational: data.educational,
+                                    expertise: data.expertise,
+                                    course: data.course,
+                                    pitch: data.pitch,
+                                    scenario: data.scenario,
+                                    titles: data.titles.map((o) => o.v),
                                     skills: data.skills.map((o) => o.v),
                                     roles: data.roles.map((o) => o.v),
-                                    administrative: data.administrative.map((o) => o.v),
-                                    domain: data.domain?.v,
+                                    domains: data.domains.map((o) => o.v),
                                     status: data.status?.v,
                                 },
                             })
