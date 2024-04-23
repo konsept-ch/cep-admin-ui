@@ -382,17 +382,7 @@ export function ManualInvoiceModal({
                                         </Form.Control.Feedback>
                                     </InputGroup>
                                 </Form.Group>
-                                {isEditModal && (
-                                    <>
-                                        <Form.Label>Numéro facture: </Form.Label>
-                                        {getInvoiceNumber({
-                                            courseYear: getYearFromJsDate({ date: courseYearWatched }),
-                                            userCode: `${selectedInvoiceData?.user.cfNumber}`.padStart(2, '0'),
-                                            invoiceNumberForCurrentYear:
-                                                selectedInvoiceData?.invoiceNumberForCurrentYear,
-                                        })}
-                                    </>
-                                )}
+                                {isEditModal && <Form.Label>Numéro facture: {selectedInvoiceData.number}</Form.Label>}
                             </Col>
                             <Col>
                                 <Form.Group className="mb-3" controlId="dateInput">
