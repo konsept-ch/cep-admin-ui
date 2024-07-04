@@ -108,13 +108,20 @@ export function InscriptionCancellationsPage() {
                 valueGetter: ({ data }) =>
                     typeof data === 'undefined' ? '' : data.isUsedForQuota ? 'Utilisé' : 'Non-utilisé',
             },
+            {
+                field: 'invoiceNumber',
+                headerName: 'Facture',
+                tooltipField: 'invoiceNumber',
+                headerTooltip: 'Numéro de facture',
+                filter: 'agTextColumnFilter',
+            },
         ],
         []
     )
 
     const rowData = annulationsData
         ?.filter((current) => current != null)
-        .map(({ id, user = {}, session, status, inscriptionDate, type }) => ({
+        .map(({ id, user = {}, session, status, inscriptionDate, type, invoiceNumber }) => ({
             id,
             participant: user.lastName != null ? `${user.lastName} ${user.firstName}` : 'Aucune annulation',
             profession: user.profession,
@@ -129,6 +136,7 @@ export function InscriptionCancellationsPage() {
             hierarchy: user.hierarchy,
             organization: user.organization,
             email: user.email,
+            invoiceNumber,
         }))
 
     return (
