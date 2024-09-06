@@ -11,6 +11,7 @@ export function SessionPresenceListModal({ sessionId, closeModal, isModalOpen })
 
     const courseName = watch('courseName')
     const eventDates = watch('eventDates')
+    const coordinator = watch('coordinator')
     const tutors = watch('tutors')
     const sessionCode = watch('sessionCode')
 
@@ -30,6 +31,7 @@ export function SessionPresenceListModal({ sessionId, closeModal, isModalOpen })
                         )
                     )
                     .join(', '),
+                coordinator: presenceList.coordinator,
                 tutors: presenceList.tutors.map(({ firstName, lastName }) => `${lastName} ${firstName}`).join(', '),
                 sessionCode: `Liste de présences (${presenceList.sessionCode})`,
             })
@@ -53,6 +55,13 @@ export function SessionPresenceListModal({ sessionId, closeModal, isModalOpen })
                         }),
                         new Paragraph({
                             text: eventDates,
+                            heading: HeadingLevel.HEADING_2,
+                        }),
+                        new Paragraph({
+                            text: ' ',
+                        }),
+                        new Paragraph({
+                            text: coordinator,
                             heading: HeadingLevel.HEADING_2,
                         }),
                         new Paragraph({
@@ -224,6 +233,10 @@ export function SessionPresenceListModal({ sessionId, closeModal, isModalOpen })
                     <Form.Group className="mb-3">
                         <Form.Label>Dates de séances</Form.Label>
                         <Form.Control {...register('eventDates')} />
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Coordinateur</Form.Label>
+                        <Form.Control {...register('coordinator')} />
                     </Form.Group>
                     <Form.Group className="mb-3">
                         <Form.Label>Formateurs</Form.Label>
