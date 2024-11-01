@@ -79,12 +79,12 @@ export function TutorsPage() {
                 valueGetter: (o) => (o.data.cert ? 'Oui' : 'Non'),
             },
             {
-                field: 'title',
-                headerName: 'Titre pédagogique',
+                field: 'expertises',
+                headerName: 'Titres expertise métier',
             },
             {
                 field: 'titles',
-                headerName: 'Titres pédagogique',
+                headerName: 'Titres pédagogiques',
             },
             {
                 field: 'accreditations',
@@ -141,10 +141,6 @@ export function TutorsPage() {
             {
                 field: 'educational',
                 headerName: 'Dernière supervision',
-            },
-            {
-                field: 'expertise',
-                headerName: 'Titre expertise métier',
             },
             {
                 field: 'course',
@@ -341,15 +337,15 @@ export function TutorsPage() {
                                 />
                             </Form.Group>
                             <Form.Group className="mb-3" controlId="course">
-                                <Form.Label>Descriptif de cours</Form.Label>
+                                <Form.Label>Descriptif (OK/Pas OK – année – acronyme)</Form.Label>
                                 <Form.Control as="textarea" rows={1} {...register('course')} />
                             </Form.Group>
                             <Form.Group className="mb-3" controlId="pitch">
-                                <Form.Label>Pitch</Form.Label>
+                                <Form.Label>Pitch (OK/Pas OK – année – acronyme)</Form.Label>
                                 <Form.Control as="textarea" rows={1} {...register('pitch')} />
                             </Form.Group>
                             <Form.Group className="mb-3" controlId="scenario">
-                                <Form.Label>Scénario d'hybridation/fil rouge</Form.Label>
+                                <Form.Label>Scénario (OK/Pas OK – année – acronyme)</Form.Label>
                                 <Form.Control as="textarea" rows={1} {...register('scenario')} />
                             </Form.Group>
                         </Col>
@@ -358,12 +354,12 @@ export function TutorsPage() {
                                 <Form.Label>Adresse</Form.Label>
                                 <Form.Control as="textarea" rows={2} {...register('address')} />
                             </Form.Group>
-                            <Form.Group className="mb-3" controlId="title">
-                                <Form.Label>Titre pédagogique</Form.Label>
-                                <Form.Control as="textarea" rows={2} {...register('title')} />
+                            <Form.Group className="mb-3" controlId="expertises">
+                                <Form.Label>Titres expertise métier</Form.Label>
+                                <Form.Control as="textarea" rows={2} {...register('expertises')} />
                             </Form.Group>
                             <Form.Group className="mb-3" controlId="titles">
-                                <Form.Label>Titres pédagogique</Form.Label>
+                                <Form.Label>Titres pédagogiques</Form.Label>
                                 <Controller
                                     name="titles"
                                     control={control}
@@ -402,17 +398,13 @@ export function TutorsPage() {
                                 <Form.Label>Dates</Form.Label>
                                 <Form.Control as="textarea" rows={2} {...register('dates')} />
                             </Form.Group>
-                            <Form.Group className="mb-3" controlId="links">
-                                <Form.Label>Suivi administratif</Form.Label>
-                                <Form.Control as="textarea" rows={2} {...register('links')} />
-                            </Form.Group>
                             <Form.Group className="mb-3" controlId="educational">
-                                <Form.Label>Dernière supervision</Form.Label>
+                                <Form.Label>Supervisons (année – code cours – superviseur)</Form.Label>
                                 <Form.Control as="textarea" rows={2} {...register('educational')} />
                             </Form.Group>
-                            <Form.Group className="mb-3" controlId="expertise">
-                                <Form.Label>Titre expertise métier</Form.Label>
-                                <Form.Control as="textarea" rows={2} {...register('expertise')} />
+                            <Form.Group className="mb-3" controlId="remark">
+                                <Form.Label>Commentaire</Form.Label>
+                                <Form.Control as="textarea" rows={2} {...register('remark')} />
                             </Form.Group>
                         </Col>
                     </Row>
@@ -422,6 +414,7 @@ export function TutorsPage() {
                         variant="primary"
                         disabled={updating}
                         onClick={handleSubmit(async (data) => {
+                            console.log(data)
                             const response = await updateTutor({
                                 uuid: data.id,
                                 data: {
@@ -430,7 +423,8 @@ export function TutorsPage() {
                                     year: data.year,
                                     cv: data.cv,
                                     cert: data.cert,
-                                    title: data.title,
+                                    expertises: data.expertises,
+                                    remark: data.remark,
                                     accreditations: data.accreditations,
                                     training: data.training,
                                     cat: data.cat,
@@ -440,7 +434,6 @@ export function TutorsPage() {
                                     dates: data.dates,
                                     links: data.links,
                                     educational: data.educational,
-                                    expertise: data.expertise,
                                     course: data.course,
                                     pitch: data.pitch,
                                     scenario: data.scenario,
