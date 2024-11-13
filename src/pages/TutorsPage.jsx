@@ -92,7 +92,7 @@ export function TutorsPage() {
             },
             {
                 field: 'skills',
-                headerName: 'Thématiques d\'expertise',
+                headerName: "Thématiques d'expertise",
             },
             {
                 field: 'training',
@@ -368,7 +368,7 @@ export function TutorsPage() {
                                                 { v: 'Diplôme fédéral de responsable de formation' },
                                                 { v: "DAS en formation d'adultes" },
                                                 { v: "Formation universitaire en sciences de l'éducation" },
-                                                { v: "Autre" },
+                                                { v: 'Autre' },
                                             ]}
                                             getOptionLabel={(o) => o.v}
                                             getOptionValue={(o) => o.v}
