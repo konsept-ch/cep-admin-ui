@@ -92,7 +92,7 @@ export function TutorsPage() {
             },
             {
                 field: 'skills',
-                headerName: 'Compétences clés',
+                headerName: 'Thématiques d\'expertise',
             },
             {
                 field: 'training',
@@ -104,7 +104,7 @@ export function TutorsPage() {
             },
             {
                 field: 'domains',
-                headerName: 'Domaines intervention',
+                headerName: 'Domaines de compétence',
             },
             {
                 field: 'cat',
@@ -131,16 +131,8 @@ export function TutorsPage() {
                 headerName: 'Statut',
             },
             {
-                field: 'dates',
-                headerName: 'Dates',
-            },
-            {
-                field: 'grids',
-                headerName: 'Grilles supervision',
-            },
-            {
                 field: 'educational',
-                headerName: 'Dernière supervision',
+                headerName: 'Supervisions',
             },
             {
                 field: 'course',
@@ -198,7 +190,7 @@ export function TutorsPage() {
                         </Col>
                         <Col>
                             <Form.Group className="mb-3" controlId="skills">
-                                <Form.Label>Compétences clés</Form.Label>
+                                <Form.Label>Thématiques d'expertise</Form.Label>
                                 <Controller
                                     name="skills"
                                     control={control}
@@ -296,7 +288,7 @@ export function TutorsPage() {
                                 />
                             </Form.Group>
                             <Form.Group className="mb-3" controlId="domains">
-                                <Form.Label>Domaines intervention</Form.Label>
+                                <Form.Label>Domaines de compétence</Form.Label>
                                 <Controller
                                     name="domains"
                                     control={control}
@@ -376,6 +368,7 @@ export function TutorsPage() {
                                                 { v: 'Diplôme fédéral de responsable de formation' },
                                                 { v: "DAS en formation d'adultes" },
                                                 { v: "Formation universitaire en sciences de l'éducation" },
+                                                { v: "Autre" },
                                             ]}
                                             getOptionLabel={(o) => o.v}
                                             getOptionValue={(o) => o.v}
@@ -389,17 +382,13 @@ export function TutorsPage() {
                                 <Form.Control as="textarea" rows={2} {...register('accreditations')} />
                             </Form.Group>
                             <Form.Group className="mb-3" controlId="training">
-                                <Form.Label>Formation continue</Form.Label>
+                                <Form.Label>Formation continue (année - titre)</Form.Label>
                                 <Form.Control as="textarea" rows={2} {...register('training')} />
                             </Form.Group>
                         </Col>
                         <Col>
-                            <Form.Group className="mb-3" controlId="dates">
-                                <Form.Label>Dates</Form.Label>
-                                <Form.Control as="textarea" rows={2} {...register('dates')} />
-                            </Form.Group>
                             <Form.Group className="mb-3" controlId="educational">
-                                <Form.Label>Supervisons (année – code cours – superviseur)</Form.Label>
+                                <Form.Label>Supervisions (année – code cours – superviseur)</Form.Label>
                                 <Form.Control as="textarea" rows={2} {...register('educational')} />
                             </Form.Group>
                             <Form.Group className="mb-3" controlId="remark">
