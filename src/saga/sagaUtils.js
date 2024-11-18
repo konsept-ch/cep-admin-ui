@@ -66,17 +66,6 @@ export function* callService({ endpoint, action, successCallback = () => {}, opt
                 </>,
                 { autoClose: false }
             )
-            yield fetch(new URL('reportError', MIDDLEWARE_URL).href, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*',
-                },
-                body: JSON.stringify({
-                    errorDescription: `${window.location.href}\n<br/>${cookies.get('email')}\n<br/>${message ?? error}`,
-                }),
-            })
-
             return
         }
 
