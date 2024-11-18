@@ -12,7 +12,7 @@ import { ButtonIcon } from './components'
 let keepAliveInterval
 
 export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
-    const [email, setEmail] = useState(cookies.get('email'))
+    const [email, setEmail] = useState(cookies.get('email') || '')
     const [code, setCode] = useState('')
     const [token, setToken] = useState('')
     const [isCodeLoading, setCodeLoading] = useState(false)
@@ -22,18 +22,6 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
 
     const maxAge = process.env.NODE_ENV === 'development' ? 999999 : authCookiesMaxAgeSeconds[shouldRememberMe]
     const path = '/'
-
-    useEffect(() => {
-        if (isLoggedIn) {
-            keepAuthAlive({ path, maxAge })
-            keepAliveInterval = setInterval(() => {
-                keepAuthAlive({ path, maxAge })
-            }, (maxAge / 2) * 1000)
-        } else {
-            clearAllAuthCookies()
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
 
     useEffect(() => {
         cookies.addChangeListener(({ name, value }) => {
@@ -48,6 +36,15 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                 toast.success('Déconnexion OK')
             }
         })
+
+        if (isLoggedIn) {
+            keepAuthAlive({ path, maxAge })
+            keepAliveInterval = setInterval(() => {
+                keepAuthAlive({ path, maxAge })
+            }, (maxAge / 2) * 1000)
+        } else {
+            clearAllAuthCookies()
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
