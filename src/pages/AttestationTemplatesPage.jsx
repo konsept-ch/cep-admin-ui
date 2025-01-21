@@ -169,7 +169,7 @@ export function AttestationTemplatesPage() {
                             {templates.length === 0 ? (
                                 <p>Aucun modèle, vous pouvez créer un nouveau</p>
                             ) : (
-                                <ListGroup>
+                                <ListGroup className="template-list">
                                     {templates.length > 0 &&
                                         templates.map(({ uuid, title, description }) => (
                                             <AttestationModelItem
@@ -210,105 +210,103 @@ export function AttestationTemplatesPage() {
                                 {isCreating ? 'Ajout en cours...' : isFetching ? 'Un instant...' : 'Ajouter'}
                             </Button>
                         </Col>
-                        <Col className="template-preview">
-                            {selectedTemplateUuid !== null && (
-                                <>
-                                    <FloatingLabel controlId="title" label="Titre" className="mb-2">
-                                        <Form.Control
-                                            type="text"
-                                            placeholder="Titre du modèle d'attestation"
-                                            isInvalid={errors.title}
-                                            {...register('title', {
-                                                required: { value: true, message: 'Le titre est requis' },
-                                            })}
-                                        />
-                                        <Form.Control.Feedback type="invalid">
-                                            {errors.title?.message}
-                                        </Form.Control.Feedback>
-                                    </FloatingLabel>
-                                    <FloatingLabel controlId="description" label="Description" className="mb-2">
-                                        <Form.Control
-                                            as="textarea"
-                                            placeholder="Description du modèle d'attestation"
-                                            style={{ height: '100px' }}
-                                            {...register('description')}
-                                        />
-                                    </FloatingLabel>
-                                    <Form.Group controlId="formFile" className="mb-3">
-                                        <Form.Label>Fichier Word (.docx):</Form.Label>
-                                        <Form.Control type="file" {...register('file')} />
-                                        <Form.Text className="text-muted">Fichier actuel : {fileName ?? ' '}</Form.Text>
-                                    </Form.Group>
-                                    <div className="d-flex justify-content-between mb-2">
-                                        <div>
-                                            <Button
-                                                variant="primary"
-                                                onClick={onApplyButtonClick}
-                                                className="mt-2 me-2"
-                                                disabled={!isDirty || isUpdating || isFetching}
-                                            >
-                                                <FontAwesomeIcon icon={faFloppyDisk} />{' '}
-                                                {isUpdating ? 'Sauvegarde en cours...' : 'Appliquer'}
-                                            </Button>
+                        {selectedTemplateUuid !== null && (
+                            <Col className="template-preview">
+                                <FloatingLabel controlId="title" label="Titre" className="mb-2">
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Titre du modèle d'attestation"
+                                        isInvalid={errors.title}
+                                        {...register('title', {
+                                            required: { value: true, message: 'Le titre est requis' },
+                                        })}
+                                    />
+                                    <Form.Control.Feedback type="invalid">
+                                        {errors.title?.message}
+                                    </Form.Control.Feedback>
+                                </FloatingLabel>
+                                <FloatingLabel controlId="description" label="Description" className="mb-2">
+                                    <Form.Control
+                                        as="textarea"
+                                        placeholder="Description du modèle d'attestation"
+                                        style={{ height: '100px' }}
+                                        {...register('description')}
+                                    />
+                                </FloatingLabel>
+                                <Form.Group controlId="formFile" className="mb-3">
+                                    <Form.Label>Fichier Word (.docx):</Form.Label>
+                                    <Form.Control type="file" {...register('file')} />
+                                    <Form.Text className="text-muted">Fichier actuel : {fileName ?? ' '}</Form.Text>
+                                </Form.Group>
+                                <div className="d-flex justify-content-between mb-2">
+                                    <div>
+                                        <Button
+                                            variant="primary"
+                                            onClick={onApplyButtonClick}
+                                            className="mt-2 me-2"
+                                            disabled={!isDirty || isUpdating || isFetching}
+                                        >
+                                            <FontAwesomeIcon icon={faFloppyDisk} />{' '}
+                                            {isUpdating ? 'Sauvegarde en cours...' : 'Appliquer'}
+                                        </Button>
+                                        <Button
+                                            variant="danger"
+                                            onClick={() => setIsDeleteWarningVisible(true)}
+                                            className="mt-2"
+                                        >
+                                            <FontAwesomeIcon icon={faTrash} /> Supprimer
+                                        </Button>
+                                    </div>
+                                    <CommonModal
+                                        title="Avertissement"
+                                        content={<p>Êtes-vous sûr de vouloir supprimer ce modèle?</p>}
+                                        footer={
                                             <Button
                                                 variant="danger"
-                                                onClick={() => setIsDeleteWarningVisible(true)}
-                                                className="mt-2"
+                                                disabled={isDeleting}
+                                                onClick={onDeleteButtonClick}
                                             >
-                                                <FontAwesomeIcon icon={faTrash} /> Supprimer
+                                                <FontAwesomeIcon icon={faTrash} />{' '}
+                                                {isDeleting ? 'Supprimer en cours...' : 'Supprimer'}
                                             </Button>
-                                        </div>
-                                        <CommonModal
-                                            title="Avertissement"
-                                            content={<p>Êtes-vous sûr de vouloir supprimer ce modèle?</p>}
-                                            footer={
+                                        }
+                                        isVisible={isDeleteWarningVisible}
+                                        onHide={() => setIsDeleteWarningVisible(false)}
+                                    />
+                                    <CommonModal
+                                        title="Avertissement"
+                                        content={<p>Êtes-vous sûr de vouloir écarter vos modifications ?</p>}
+                                        footer={
+                                            <>
+                                                <Button
+                                                    variant="primary"
+                                                    onClick={() => {
+                                                        onApplyButtonClick()
+
+                                                        discardWarningData.selectNewTemplate()
+                                                        setDiscardWarningData({ isVisible: false })
+                                                    }}
+                                                    className="me-2"
+                                                >
+                                                    Appliquer
+                                                </Button>
                                                 <Button
                                                     variant="danger"
-                                                    disabled={isDeleting}
-                                                    onClick={onDeleteButtonClick}
+                                                    onClick={() => {
+                                                        discardWarningData.selectNewTemplate()
+                                                        setDiscardWarningData({ isVisible: false })
+                                                    }}
                                                 >
-                                                    <FontAwesomeIcon icon={faTrash} />{' '}
-                                                    {isDeleting ? 'Supprimer en cours...' : 'Supprimer'}
+                                                    Écarter modifications
                                                 </Button>
-                                            }
-                                            isVisible={isDeleteWarningVisible}
-                                            onHide={() => setIsDeleteWarningVisible(false)}
-                                        />
-                                        <CommonModal
-                                            title="Avertissement"
-                                            content={<p>Êtes-vous sûr de vouloir écarter vos modifications ?</p>}
-                                            footer={
-                                                <>
-                                                    <Button
-                                                        variant="primary"
-                                                        onClick={() => {
-                                                            onApplyButtonClick()
-
-                                                            discardWarningData.selectNewTemplate()
-                                                            setDiscardWarningData({ isVisible: false })
-                                                        }}
-                                                        className="me-2"
-                                                    >
-                                                        Appliquer
-                                                    </Button>
-                                                    <Button
-                                                        variant="danger"
-                                                        onClick={() => {
-                                                            discardWarningData.selectNewTemplate()
-                                                            setDiscardWarningData({ isVisible: false })
-                                                        }}
-                                                    >
-                                                        Écarter modifications
-                                                    </Button>
-                                                </>
-                                            }
-                                            isVisible={discardWarningData.isVisible}
-                                            onHide={() => setDiscardWarningData({ isVisible: false })}
-                                        />
-                                    </div>
-                                </>
-                            )}
-                        </Col>
+                                            </>
+                                        }
+                                        isVisible={discardWarningData.isVisible}
+                                        onHide={() => setDiscardWarningData({ isVisible: false })}
+                                    />
+                                </div>
+                            </Col>
+                        )}
                     </Row>
                 )}
             </Container>

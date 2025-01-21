@@ -175,7 +175,7 @@ export function EvaluationTemplatesPage() {
                     'Erreur de chargement des modèles.'
                 ) : (
                     <Row>
-                        <Col md="4">
+                        <Col>
                             <Select
                                 onChange={(e) => setSelectedCategory(e)}
                                 value={selectedCategory}
@@ -187,7 +187,7 @@ export function EvaluationTemplatesPage() {
                             {filteredTemplates.length === 0 ? (
                                 <p className="mt-4">Aucun modèle, vous pouvez créer un nouveau</p>
                             ) : (
-                                <ListGroup className="mt-4">
+                                <ListGroup className="mt-4 template-list">
                                     {filteredTemplates.map(
                                         ({ uuid, title, description, category, struct: structParam }) => (
                                             <EvaluationModelItem
@@ -237,9 +237,9 @@ export function EvaluationTemplatesPage() {
                                 {isCreating ? 'Ajout en cours...' : isFetching ? 'Un instant...' : 'Ajouter'}
                             </Button>
                         </Col>
-                        <Col md="5" className="pb-4">
-                            {selectedTemplateUuid !== null && (
-                                <>
+                        {selectedTemplateUuid !== null && (
+                            <>
+                                <Col md="5" className="pb-4">
                                     {struct.map((block, i) => (
                                         <Block.Preview
                                             key={i}
@@ -265,12 +265,8 @@ export function EvaluationTemplatesPage() {
                                             </Button>
                                         )}
                                     </div>
-                                </>
-                            )}
-                        </Col>
-                        <Col md="3" className="position-relative">
-                            {selectedTemplateUuid !== null && (
-                                <>
+                                </Col>
+                                <Col md="3" className="position-relative">
                                     <div>
                                         <label className="mb-2">
                                             <strong>Général</strong>
@@ -396,9 +392,9 @@ export function EvaluationTemplatesPage() {
                                             />
                                         </div>
                                     </div>
-                                </>
-                            )}
-                        </Col>
+                                </Col>
+                            </>
+                        )}
                     </Row>
                 )}
             </Container>
