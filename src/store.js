@@ -11,6 +11,7 @@ import { parametersReducer } from './reducers/parameters'
 import { loadingReducer } from './reducers/loading'
 import { templatesReducer } from './reducers/templates'
 import { formateursReducer } from './reducers/formateurs'
+import { authApi } from './services/auth'
 import { usersApi } from './services/users'
 import { organizationsApi } from './services/organizations'
 import { coursesApi } from './services/courses'
@@ -39,6 +40,7 @@ export const store = configureStore({
         templates: templatesReducer,
         formateurs: formateursReducer,
         // Add the generated reducer as a specific top-level slice
+        [authApi.reducerPath]: authApi.reducer,
         [usersApi.reducerPath]: usersApi.reducer,
         [organizationsApi.reducerPath]: organizationsApi.reducer,
         [coursesApi.reducerPath]: coursesApi.reducer,
@@ -58,6 +60,7 @@ export const store = configureStore({
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat([
             sagaMiddleware,
+            authApi.middleware,
             usersApi.middleware,
             organizationsApi.middleware,
             coursesApi.middleware,

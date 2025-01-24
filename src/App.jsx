@@ -58,7 +58,7 @@ import { AuthWrapper } from './AuthWrapper'
 import { cookies } from './utils'
 
 export function App() {
-    const [isLoggedIn, setLoggedIn] = useState(cookies.get('isLoggedIn') === 'true')
+    const [isLoggedIn, setLoggedIn] = useState(cookies.get('isLoggedIn') === true)
 
     return (
         <>
