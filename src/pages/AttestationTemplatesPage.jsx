@@ -3,11 +3,12 @@ import { ListGroup, Row, Col, Container, Button, FloatingLabel, Form } from 'rea
 import { Helmet } from 'react-helmet-async'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
+import classNames from 'classnames'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { faFloppyDisk } from '@fortawesome/free-regular-svg-icons'
 
-import { AttestationModelItem, CommonModal } from '../components'
+import { CommonModal } from '../components'
 import {
     useGetAttestationsQuery,
     useCreateAttestationMutation,
@@ -93,27 +94,6 @@ export function AttestationTemplatesPage() {
             toast.error("Ce modèle d'attestation a déjà été utilisé et ne peut plus être supprimé.", {
                 autoClose: false,
             })
-
-            // const RetryToast = ({ closeToast }) => (
-            //     <div>
-            //         <p>Ce modèle d'attestation a déjà été utilisé.</p>
-            //         <p>Si vous le supprimez, il n'y aura plus de trâce dans les inscriptions qui l'ont utilisés.</p>
-            //         <Button
-            //             className="d-block mb-1"
-            //             variant="primary"
-            //             onClick={async () => {
-            //                 const { error: forceDeleteError } = await deleteAttestation({
-            //                     uuid: selectedTemplateUuid,
-            //                 })
-
-            //                 closeToast()
-            //             }}
-            //         >
-            //             <FontAwesomeIcon icon={faTrash} /> Forcer la suppression ?
-            //         </Button>
-            //     </div>
-            // )
-
             toast(
                 ({ closeToast }) => (
                     <div>
@@ -172,31 +152,33 @@ export function AttestationTemplatesPage() {
                                 <ListGroup className="template-list">
                                     {templates.length > 0 &&
                                         templates.map(({ uuid, title, description }) => (
-                                            <AttestationModelItem
-                                                {...{
-                                                    key: uuid,
-                                                    uuid,
-                                                    title,
-                                                    description,
-                                                    isActive: selectedTemplateUuid === uuid,
-                                                    onClick: () => {
-                                                        if (isDirty) {
-                                                            setDiscardWarningData({
-                                                                isVisible: true,
-                                                                selectNewTemplate: () => {
-                                                                    setSelectedTemplateUuid(uuid)
+                                            <ListGroup.Item
+                                                key={uuid}
+                                                onClick={() => {
+                                                    if (isDirty) {
+                                                        setDiscardWarningData({
+                                                            isVisible: true,
+                                                            selectNewTemplate: () => {
+                                                                setSelectedTemplateUuid(uuid)
 
-                                                                    reset({ uuid, title, description, file: {} })
-                                                                },
-                                                            })
-                                                        } else {
-                                                            setSelectedTemplateUuid(uuid)
+                                                                reset({ uuid, title, description, file: {} })
+                                                            },
+                                                        })
+                                                    } else {
+                                                        setSelectedTemplateUuid(uuid)
 
-                                                            reset({ uuid, title, description, file: {} })
-                                                        }
-                                                    },
+                                                        reset({ uuid, title, description, file: {} })
+                                                    }
                                                 }}
-                                            />
+                                                className={classNames({
+                                                    'active-template': selectedTemplateUuid === uuid,
+                                                })}
+                                            >
+                                                <div className="d-flex align-items-start justify-content-between">
+                                                    <h4 className="d-inline-block">{title}</h4>
+                                                </div>
+                                                {description && <p>{description}</p>}
+                                            </ListGroup.Item>
                                         ))}
                                 </ListGroup>
                             )}

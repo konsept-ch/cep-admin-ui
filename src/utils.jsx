@@ -119,17 +119,6 @@ export const getUniqueId = () => {
 
 export const inscriptionStatuses = Object.values(STATUSES)
 
-export const draftVariables = {
-    PARTICIPANT_NOM: '[PARTICIPANT_NOM]',
-    SESSION_NOM: '[SESSION_NOM]',
-    SESSION_DATE_DÉBUT: '[SESSION_DATE_DÉBUT]',
-    LIEU: '[LIEU]',
-    SESSION_RÉSUMÉ_DATES: '[SESSION_RÉSUMÉ_DATES]',
-    PARTICIPANT_CIVILITÉ: '[PARTICIPANT_CIVILITÉ]',
-    INSCRIPTION_DATE: '[INSCRIPTION_DATE]',
-    EVALUATION_LIEN: '[EVALUATION_LIEN]',
-}
-
 export const formatDate = ({ dateString, isTimeVisible, isDateVisible }) => {
     if (dateString == null) {
         return

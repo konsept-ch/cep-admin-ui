@@ -94,26 +94,6 @@ export function ContractTemplatesPage() {
                 autoClose: false,
             })
 
-            // const RetryToast = ({ closeToast }) => (
-            //     <div>
-            //         <p>Ce modèle d'attestation a déjà été utilisé.</p>
-            //         <p>Si vous le supprimez, il n'y aura plus de trâce dans les inscriptions qui l'ont utilisés.</p>
-            //         <Button
-            //             className="d-block mb-1"
-            //             variant="primary"
-            //             onClick={async () => {
-            //                 const { error: forceDeleteError } = await deleteAttestation({
-            //                     uuid: selectedTemplateUuid,
-            //                 })
-
-            //                 closeToast()
-            //             }}
-            //         >
-            //             <FontAwesomeIcon icon={faTrash} /> Forcer la suppression ?
-            //         </Button>
-            //     </div>
-            // )
-
             toast(
                 ({ closeToast }) => (
                     <div>

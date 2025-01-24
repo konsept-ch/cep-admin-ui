@@ -9,7 +9,38 @@ export const templatesApi = createApi({
         getTemplates: builder.query({
             query: () => '',
         }),
+        createTemplate: builder.mutation({
+            query: () => ({
+                url: '',
+                method: 'POST',
+            }),
+        }),
+        updateTemplate: builder.mutation({
+            query: ({ uuid, data }) => ({
+                url: uuid,
+                method: 'PUT',
+                body: data,
+            }),
+        }),
+        deleteTemplate: builder.mutation({
+            query: ({ uuid }) => ({
+                url: uuid,
+                method: 'DELETE',
+            }),
+        }),
+        inviteTemplate: builder.mutation({
+            query: ({ uuid }) => ({
+                url: `${uuid}/invite`,
+                method: 'POST',
+            }),
+        }),
     }),
 })
 
-export const { useGetTemplatesQuery } = templatesApi
+export const {
+    useGetTemplatesQuery,
+    useCreateTemplateMutation,
+    useUpdateTemplateMutation,
+    useDeleteTemplateMutation,
+    useInviteTemplateMutation,
+} = templatesApi
