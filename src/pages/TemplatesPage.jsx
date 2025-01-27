@@ -22,7 +22,7 @@ import { EmailTemplateBodyInput } from '../components/EmailTemplateBodyInput'
 
 export function TemplatesPage() {
     const {
-        data: templates,
+        data: templates = [],
         isLoading,
         isFetching,
         isError,
@@ -119,71 +119,70 @@ export function TemplatesPage() {
                                 <p>Aucun modèle, vous pouvez créer un nouveau</p>
                             ) : (
                                 <ListGroup className="template-list">
-                                    {templates.length > 0 &&
-                                        templates.map(
-                                            ({
-                                                templateId,
-                                                title,
-                                                descriptionText,
-                                                emailSubject,
-                                                emailBody,
-                                                smsBody,
-                                                statuses,
-                                                usedByEvaluation,
-                                                isUsedForSessionInvites,
-                                            }) => (
-                                                <ListGroup.Item
-                                                    key={templateId}
-                                                    className={classNames({
-                                                        'active-template': selectedTemplateUuid === templateId,
-                                                    })}
-                                                    onClick={() => {
-                                                        if (isDirty) {
-                                                            setDiscardWarningData({
-                                                                isVisible: true,
-                                                                selectNewTemplate: () => {
-                                                                    setSelectedTemplateUuid(templateId)
+                                    {templates.map(
+                                        ({
+                                            templateId,
+                                            title,
+                                            descriptionText,
+                                            emailSubject,
+                                            emailBody,
+                                            smsBody,
+                                            statuses,
+                                            usedByEvaluation,
+                                            isUsedForSessionInvites,
+                                        }) => (
+                                            <ListGroup.Item
+                                                key={templateId}
+                                                className={classNames({
+                                                    'active-template': selectedTemplateUuid === templateId,
+                                                })}
+                                                onClick={() => {
+                                                    if (isDirty) {
+                                                        setDiscardWarningData({
+                                                            isVisible: true,
+                                                            selectNewTemplate: () => {
+                                                                setSelectedTemplateUuid(templateId)
 
-                                                                    reset({
-                                                                        templateId,
-                                                                        title,
-                                                                        descriptionText,
-                                                                        emailSubject,
-                                                                        emailBody,
-                                                                        smsBody,
-                                                                        statuses,
-                                                                        usedByEvaluation,
-                                                                    })
-                                                                },
-                                                            })
-                                                        } else {
-                                                            setSelectedTemplateUuid(templateId)
+                                                                reset({
+                                                                    templateId,
+                                                                    title,
+                                                                    descriptionText,
+                                                                    emailSubject,
+                                                                    emailBody,
+                                                                    smsBody,
+                                                                    statuses,
+                                                                    usedByEvaluation,
+                                                                })
+                                                            },
+                                                        })
+                                                    } else {
+                                                        setSelectedTemplateUuid(templateId)
 
-                                                            reset({
-                                                                templateId,
-                                                                title,
-                                                                descriptionText,
-                                                                emailSubject,
-                                                                emailBody,
-                                                                smsBody,
-                                                                statuses,
-                                                                usedByEvaluation,
-                                                            })
-                                                        }
-                                                    }}
-                                                >
-                                                    <div className="d-flex align-items-start justify-content-between">
-                                                        <h4 className="d-inline-block">{title}</h4>
-                                                        {isUsedForSessionInvites && (
-                                                            <Badge bg="warning" text="dark">
-                                                                Sessions invitées
-                                                            </Badge>
-                                                        )}
-                                                    </div>
-                                                    {descriptionText && <p>{descriptionText}</p>}
-                                                </ListGroup.Item>
-                                            )
-                                        )}
+                                                        reset({
+                                                            templateId,
+                                                            title,
+                                                            descriptionText,
+                                                            emailSubject,
+                                                            emailBody,
+                                                            smsBody,
+                                                            statuses,
+                                                            usedByEvaluation,
+                                                        })
+                                                    }
+                                                }}
+                                            >
+                                                <div className="d-flex align-items-start justify-content-between">
+                                                    <h4 className="d-inline-block">{title}</h4>
+                                                    {isUsedForSessionInvites && (
+                                                        <Badge bg="warning" text="dark">
+                                                            Sessions invitées
+                                                        </Badge>
+                                                    )}
+                                                </div>
+                                                {descriptionText && <p>{descriptionText}</p>}
+                                            </ListGroup.Item>
+                                        )
+                                    )}
                                 </ListGroup>
                             )}
                             <Button

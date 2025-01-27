@@ -10,7 +10,6 @@ import { inscriptionsReducer } from './reducers/inscriptions'
 import { parametersReducer } from './reducers/parameters'
 import { loadingReducer } from './reducers/loading'
 import { templatesReducer } from './reducers/templates'
-import { formateursReducer } from './reducers/formateurs'
 import { authApi } from './services/auth'
 import { usersApi } from './services/users'
 import { organizationsApi } from './services/organizations'
@@ -25,6 +24,7 @@ import { contractsApi } from './services/contracts'
 import { evaluationTemplatesApi } from './services/evaluationTemplates'
 import { eventsApi } from './services/events'
 import { evaluationsApi } from './services/evaluations'
+import { formateursApi } from './services/formateurs'
 import { templatesApi } from './services/templates'
 import { tutorsApi } from './services/tutors'
 
@@ -38,7 +38,6 @@ export const store = configureStore({
         parameters: parametersReducer,
         loading: loadingReducer,
         templates: templatesReducer,
-        formateurs: formateursReducer,
         // Add the generated reducer as a specific top-level slice
         [authApi.reducerPath]: authApi.reducer,
         [usersApi.reducerPath]: usersApi.reducer,
@@ -53,6 +52,7 @@ export const store = configureStore({
         [contractsApi.reducerPath]: contractsApi.reducer,
         [evaluationTemplatesApi.reducerPath]: evaluationTemplatesApi.reducer,
         [eventsApi.reducerPath]: eventsApi.reducer,
+        [formateursApi.reducerPath]: formateursApi.reducer,
         [evaluationsApi.reducerPath]: evaluationsApi.reducer,
         [templatesApi.reducerPath]: templatesApi.reducer,
         [tutorsApi.reducerPath]: tutorsApi.reducer,
@@ -74,6 +74,7 @@ export const store = configureStore({
             evaluationTemplatesApi.middleware,
             eventsApi.middleware,
             evaluationsApi.middleware,
+            formateursApi.middleware,
             templatesApi.middleware,
             tutorsApi.middleware,
             rtkQueryErrorLogger,

@@ -14,9 +14,7 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
     const {
         data: attestationTemplates,
         isLoading,
-        isFetching,
         isError,
-        refetch,
     } = useGetAttestationsQuery(null, {
         refetchOnMountOrArgChange: true,
     })
@@ -193,10 +191,8 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
                                         <EmailTemplateBodyInput
                                             className="email-preview"
                                             onChange={() => {}}
-                                            value={{
-                                                value: templatePreviews.emailSubject,
-                                                templateId: selectedTemplateData.templateId,
-                                            }}
+                                            templateId={selectedTemplateData.templateId}
+                                            value={templatePreviews.emailSubject}
                                             readOnly
                                         />
                                     ) : (
@@ -209,10 +205,8 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
                                         <EmailTemplateBodyInput
                                             className="email-preview"
                                             onChange={() => {}}
-                                            value={{
-                                                value: templatePreviews.emailContent,
-                                                templateId: selectedTemplateData.templateId,
-                                            }}
+                                            templateId={selectedTemplateData.templateId}
+                                            value={templatePreviews.emailContent}
                                             readOnly
                                         />
                                     ) : (
@@ -225,10 +219,8 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
                                         <EmailTemplateBodyInput
                                             className="email-preview"
                                             onChange={() => {}}
-                                            value={{
-                                                value: templatePreviews.smsContent,
-                                                templateId: selectedTemplateData.templateId,
-                                            }}
+                                            templateId={selectedTemplateData.templateId}
+                                            value={templatePreviews.smsContent}
                                             readOnly
                                         />
                                     ) : (

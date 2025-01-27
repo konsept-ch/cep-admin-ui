@@ -26,9 +26,7 @@ export const MassStatusUpdateModal = ({ closeModal, inscriptionsData, updateStat
     const {
         data: attestationTemplates,
         isLoading,
-        isFetching,
         isError,
-        refetch,
     } = useGetAttestationsQuery(null, {
         refetchOnMountOrArgChange: true,
     })
@@ -220,10 +218,8 @@ export const MassStatusUpdateModal = ({ closeModal, inscriptionsData, updateStat
                                         <EmailTemplateBodyInput
                                             className="email-preview"
                                             onChange={() => {}}
-                                            value={{
-                                                value: selectedTemplateData.emailSubject,
-                                                templateId: selectedTemplateData.templateId,
-                                            }}
+                                            templateId={selectedTemplateData.templateId}
+                                            value={selectedTemplateData.emailSubject}
                                             readOnly
                                         />
                                     ) : (
@@ -236,10 +232,8 @@ export const MassStatusUpdateModal = ({ closeModal, inscriptionsData, updateStat
                                         <EmailTemplateBodyInput
                                             className="email-preview"
                                             onChange={() => {}}
-                                            value={{
-                                                value: selectedTemplateData.emailBody,
-                                                templateId: selectedTemplateData.templateId,
-                                            }}
+                                            templateId={selectedTemplateData.templateId}
+                                            value={selectedTemplateData.emailBody}
                                             readOnly
                                         />
                                     ) : (
@@ -252,10 +246,8 @@ export const MassStatusUpdateModal = ({ closeModal, inscriptionsData, updateStat
                                         <EmailTemplateBodyInput
                                             className="email-preview"
                                             onChange={() => {}}
-                                            value={{
-                                                value: selectedTemplateData.smsBody,
-                                                templateId: selectedTemplateData.templateId,
-                                            }}
+                                            templateId={selectedTemplateData.templateId}
+                                            value={selectedTemplateData.smsBody}
                                             readOnly
                                         />
                                     ) : (

@@ -3,7 +3,6 @@ import { inscriptionsSelectors } from './inscriptions'
 import { parametersSelectors } from './parameters'
 import { loadingSelectors } from './loading'
 import { templatesSelectors } from './templates'
-import { formateursSelectors } from './formateurs'
 
 export const roomsAndEventsSelector = (state) => agendaSelectors.roomsAndEventsSelector(state.agenda)
 export const inscriptionsSelector = (state) => inscriptionsSelectors.inscriptionsSelector(state.inscriptions)
@@ -14,4 +13,3 @@ export const templatesLoadingSelector = (state) => loadingSelectors.templatesLoa
 export const templatesSelector = (state) => templatesSelectors.templatesSelector(state.templates)
 export const templateForInvitesSelector = (state) => templatesSelectors.templateForInvitesSelector(state.templates)
 export const templatePreviewsSelector = (state) => templatesSelectors.templatePreviewsSelector(state.templates)
-export const formateursSelector = (state) => formateursSelectors.formateursSelector(state.formateurs)
