@@ -4,7 +4,7 @@ import { prepareBaseQuery } from './serviceUtils'
 
 export const templatesApi = createApi({
     reducerPath: 'templatesApi',
-    baseQuery: prepareBaseQuery({ servicePath: 'templates' }),
+    baseQuery: prepareBaseQuery({ path: 'templates' }),
     endpoints: (builder) => ({
         getTemplates: builder.query({
             query: () => '',

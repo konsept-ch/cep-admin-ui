@@ -1,7 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query/react'
 
-import { rtkQueryErrorLogger } from './rtkQueryErrorLogger'
 import { authApi } from './services/auth'
 import { usersApi } from './services/users'
 import { organizationsApi } from './services/organizations'
@@ -62,7 +61,6 @@ export const store = configureStore({
             formateursApi.middleware,
             templatesApi.middleware,
             tutorsApi.middleware,
-            rtkQueryErrorLogger,
         ]),
 })
 

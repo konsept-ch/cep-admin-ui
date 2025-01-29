@@ -4,7 +4,7 @@ import { prepareBaseQuery } from './serviceUtils'
 
 export const manualInvoicesApi = createApi({
     reducerPath: 'manualInvoicesApi',
-    baseQuery: prepareBaseQuery({ servicePath: 'manual-invoices' }),
+    baseQuery: prepareBaseQuery({ path: 'manual-invoices' }),
     endpoints: (builder) => ({
         getEnums: builder.query({
             query: () => 'enums',

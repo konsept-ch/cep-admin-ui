@@ -4,7 +4,7 @@ import { prepareBaseQuery } from './serviceUtils'
 
 export const agendaApi = createApi({
     reducerPath: 'agendaApi',
-    baseQuery: prepareBaseQuery({ servicePath: 'agenda' }),
+    baseQuery: prepareBaseQuery({ path: 'agenda' }),
     endpoints: (builder) => ({
         getAgenda: builder.query({
             query: () => '',

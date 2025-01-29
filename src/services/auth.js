@@ -4,7 +4,7 @@ import { prepareBaseQuery } from './serviceUtils'
 
 export const authApi = createApi({
     reducerPath: 'authApi',
-    baseQuery: prepareBaseQuery({ servicePath: 'auth' }),
+    baseQuery: prepareBaseQuery({ path: 'auth' }),
     endpoints: (builder) => ({
         sendCode: builder.mutation({
             query: (data) => ({

@@ -4,7 +4,7 @@ import { prepareBaseQuery } from './serviceUtils'
 
 export const attestationsApi = createApi({
     reducerPath: 'attestationsApi',
-    baseQuery: prepareBaseQuery({ servicePath: 'attestations' }),
+    baseQuery: prepareBaseQuery({ path: 'attestations' }),
     endpoints: (builder) => ({
         getAttestations: builder.query({
             query: () => '',

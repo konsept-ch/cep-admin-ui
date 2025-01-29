@@ -18,7 +18,7 @@ import {
 
 export function AttestationTemplatesPage() {
     const {
-        data: templates,
+        data: templates = [],
         isLoading,
         isFetching,
         isError,
@@ -40,7 +40,7 @@ export function AttestationTemplatesPage() {
     const [discardWarningData, setDiscardWarningData] = useState({ isVisible: false })
 
     const fileName = useMemo(
-        () => templates?.find(({ uuid }) => uuid === selectedTemplateUuid)?.fileOriginalName,
+        () => templates.find(({ uuid }) => uuid === selectedTemplateUuid)?.fileOriginalName,
         [templates, selectedTemplateUuid]
     )
 
@@ -150,36 +150,35 @@ export function AttestationTemplatesPage() {
                                 <p>Aucun modèle, vous pouvez créer un nouveau</p>
                             ) : (
                                 <ListGroup className="template-list">
-                                    {templates.length > 0 &&
-                                        templates.map(({ uuid, title, description }) => (
-                                            <ListGroup.Item
-                                                key={uuid}
-                                                onClick={() => {
-                                                    if (isDirty) {
-                                                        setDiscardWarningData({
-                                                            isVisible: true,
-                                                            selectNewTemplate: () => {
-                                                                setSelectedTemplateUuid(uuid)
+                                    {templates.map(({ uuid, title, description }) => (
+                                        <ListGroup.Item
+                                            key={uuid}
+                                            onClick={() => {
+                                                if (isDirty) {
+                                                    setDiscardWarningData({
+                                                        isVisible: true,
+                                                        selectNewTemplate: () => {
+                                                            setSelectedTemplateUuid(uuid)
 
-                                                                reset({ uuid, title, description, file: {} })
-                                                            },
-                                                        })
-                                                    } else {
-                                                        setSelectedTemplateUuid(uuid)
+                                                            reset({ uuid, title, description, file: {} })
+                                                        },
+                                                    })
+                                                } else {
+                                                    setSelectedTemplateUuid(uuid)
 
-                                                        reset({ uuid, title, description, file: {} })
-                                                    }
-                                                }}
-                                                className={classNames({
-                                                    'active-template': selectedTemplateUuid === uuid,
-                                                })}
-                                            >
-                                                <div className="d-flex align-items-start justify-content-between">
-                                                    <h4 className="d-inline-block">{title}</h4>
-                                                </div>
-                                                {description && <p>{description}</p>}
-                                            </ListGroup.Item>
-                                        ))}
+                                                    reset({ uuid, title, description, file: {} })
+                                                }
+                                            }}
+                                            className={classNames({
+                                                'active-template': selectedTemplateUuid === uuid,
+                                            })}
+                                        >
+                                            <div className="d-flex align-items-start justify-content-between">
+                                                <h4 className="d-inline-block">{title}</h4>
+                                            </div>
+                                            {description && <p>{description}</p>}
+                                        </ListGroup.Item>
+                                    ))}
                                 </ListGroup>
                             )}
                             <Button

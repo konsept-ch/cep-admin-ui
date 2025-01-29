@@ -4,7 +4,7 @@ import { prepareBaseQuery } from './serviceUtils'
 
 export const formateursApi = createApi({
     reducerPath: 'formateursApi',
-    baseQuery: prepareBaseQuery({ servicePath: 'inscriptions/formateurs' }),
+    baseQuery: prepareBaseQuery({ path: 'inscriptions/formateurs' }),
     endpoints: (builder) => ({
         getFormateurs: builder.query({
             query: () => '',

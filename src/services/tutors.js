@@ -4,7 +4,7 @@ import { prepareBaseQuery } from './serviceUtils'
 
 export const tutorsApi = createApi({
     reducerPath: 'tutorsApi',
-    baseQuery: prepareBaseQuery({ servicePath: 'tutors' }),
+    baseQuery: prepareBaseQuery({ path: 'tutors' }),
     endpoints: (builder) => ({
         getTutors: builder.query({
             query: () => '',
