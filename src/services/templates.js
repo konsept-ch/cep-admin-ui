@@ -34,6 +34,12 @@ export const templatesApi = createApi({
                 method: 'POST',
             }),
         }),
+        getTemplate: builder.query({
+            query: ({ uuid }) => `${uuid}`,
+        }),
+        getTemplatePreview: builder.query({
+            query: ({ template, session, inscription }) => `${template}/previews/${session}/${inscription}`,
+        }),
     }),
 })
 
@@ -43,4 +49,6 @@ export const {
     useUpdateTemplateMutation,
     useDeleteTemplateMutation,
     useInviteTemplateMutation,
+    useLazyGetTemplateQuery,
+    useLazyGetTemplatePreviewQuery,
 } = templatesApi

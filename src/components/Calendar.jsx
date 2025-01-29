@@ -1,5 +1,4 @@
 import { useState, useMemo, useCallback } from 'react'
-import { useSelector } from 'react-redux'
 import { Offcanvas } from 'react-bootstrap'
 import classNames from 'classnames'
 import FullCalendar from '@fullcalendar/react'
@@ -10,56 +9,22 @@ import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid'
 import luxon2Plugin from '@fullcalendar/luxon2'
 import frLocale from '@fullcalendar/core/locales/fr'
 import adaptivePlugin from '@fullcalendar/adaptive'
-import { DateTime } from 'luxon'
 
-import { loadingSelector } from '../reducers'
 import { DATE_FORMAT_OPTIONS, DATE_FORMAT_SWISS_FRENCH } from '../constants/constants'
 import { Event } from './Event'
 
-export const Calendar = ({ resources, events, calendarRef, refreshCallback }) => {
+export const Calendar = ({ resources, events, calendarRef, refreshCallback, loading }) => {
     const [selectedEvent, setSelectedEvent] = useState(null)
-    const isSagaLoading = useSelector(loadingSelector)
-
-    const eventsMemoized = useMemo(
-        () =>
-            events.map((event) => ({
-                ...event,
-                title: event.name,
-                resourceId: event.room?.id,
-                // start: Intl.DateTimeFormat(DATE_FORMAT_SWISS_FRENCH, {
-                //     hour: 'numeric',
-                //     minute: 'numeric',
-                // }).format(new Date(event.start)),
-                start: DateTime.fromISO(event.start, { zone: 'UTC' }).toISO(),
-                end: DateTime.fromISO(event.end, { zone: 'UTC' }).toISO(),
-                display: 'block',
-            })),
-        [events]
-    )
-
-    const resourcesMemoized = useMemo(
-        () => resources.map((resource) => ({ ...resource, title: resource.name })),
-        [resources]
-    )
 
     const customButtons = useMemo(
         () => ({
             myCustomButton: {
-                text: isSagaLoading ? '...' : '↺',
-                // icon: 'arrow-clockwise',
-                // text: (
-                //     <div>
-                //         <FontAwesomeIcon
-                //             className={classNames('refresh-agenda', { 'is-loader': isSagaLoading })}
-                //             icon={faRefresh}
-                //         />
-                //     </div>
-                // ),
+                text: loading ? '...' : '↺',
                 click: refreshCallback,
                 hint: 'Rafraîchir données de Claroline',
             },
         }),
-        [isSagaLoading, refreshCallback]
+        [loading, refreshCallback]
     )
 
     const eventOrder = useCallback(
@@ -106,15 +71,13 @@ export const Calendar = ({ resources, events, calendarRef, refreshCallback }) =>
                 aspectRatio={3}
                 allDaySlot={false}
                 locale={frLocale}
-                // timeZone="Europe/Zurich"
                 eventOrder={eventOrder}
-                resources={resourcesMemoized}
-                events={eventsMemoized}
+                resources={resources}
+                events={events}
                 resourceAreaHeaderContent="Salles"
                 height="100%"
                 schedulerLicenseKey="CC-Attribution-NonCommercial-NoDerivatives"
                 initialView="dayGridWeek"
-                // themeSystem="bootstrap5"
                 customButtons={customButtons}
                 headerToolbar={{
                     left: 'today prev,next myCustomButton',
@@ -168,23 +131,6 @@ export const Calendar = ({ resources, events, calendarRef, refreshCallback }) =>
                     </Offcanvas.Body>
                 </Offcanvas>
             )}
-            {/* {selectedEvent && (
-                <Modal show={selectedEvent !== null} onHide={() => setSelectedEvent(null)}>
-                    <Modal.Header closeButton>
-                        <Modal.Title as="h4">{selectedEvent.title}</Modal.Title>
-                    </Modal.Header>
-
-                    <Modal.Body>
-                        <Event selectedEvent={selectedEvent} />
-                    </Modal.Body>
-
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={() => setSelectedEvent(null)}>
-                            Fermer
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
-            )} */}
         </>
     )
 }

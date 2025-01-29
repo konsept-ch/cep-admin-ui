@@ -27,6 +27,7 @@ import { evaluationsApi } from './services/evaluations'
 import { formateursApi } from './services/formateurs'
 import { templatesApi } from './services/templates'
 import { tutorsApi } from './services/tutors'
+import { agendaApi } from './services/agenda'
 
 const sagaMiddleware = createSagaMiddleware()
 
@@ -39,6 +40,7 @@ export const store = configureStore({
         loading: loadingReducer,
         templates: templatesReducer,
         // Add the generated reducer as a specific top-level slice
+        [agendaApi.reducerPath]: agendaApi.reducer,
         [authApi.reducerPath]: authApi.reducer,
         [usersApi.reducerPath]: usersApi.reducer,
         [organizationsApi.reducerPath]: organizationsApi.reducer,
@@ -60,6 +62,7 @@ export const store = configureStore({
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat([
             sagaMiddleware,
+            agendaApi.middleware,
             authApi.middleware,
             usersApi.middleware,
             organizationsApi.middleware,

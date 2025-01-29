@@ -28,7 +28,7 @@ export const EvaluationModal = ({ closeModal, isVisible, data }) => {
         refetchOnMountOrArgChange: true,
     })
 
-    const [fetchUsers, { data: users, isLoading: isUsersFetching }] = useLazyGetUsersQuery()
+    const [fetchUsers, { data: users = [], isLoading: isUsersFetching }] = useLazyGetUsersQuery()
 
     const [createEvaluation, { isLoading: isEvaluationCreating }] = useCreateEvaluationMutation()
 
@@ -140,7 +140,7 @@ export const EvaluationModal = ({ closeModal, isVisible, data }) => {
                         {selectedSession ? (
                             isUsersFetching ? (
                                 <span>Chargement des participants</span>
-                            ) : users && users.length > 0 ? (
+                            ) : users.length > 0 ? (
                                 <ListGroup>
                                     {users.map(({ uuid, fullname }) => (
                                         <ListGroup.Item

@@ -1,27 +1,19 @@
 import { useState, useEffect } from 'react'
-import { Row, Modal, Button, ListGroup, Alert, Spinner, Tooltip, OverlayTrigger } from 'react-bootstrap'
-import { useSelector, useDispatch } from 'react-redux'
+import { Row, Modal, Button, ListGroup, Alert, Spinner } from 'react-bootstrap'
 import { AgGridReact } from 'ag-grid-react'
 import classNames from 'classnames'
-import { fetchParametersAction } from '../actions/parameters.ts'
-import { fetchTemplateRawPreviewAction } from '../actions/templates.ts'
-import { parametersSelector, loadingSelector, templatesLoadingSelector } from '../reducers'
+import { useGetTemplatesQuery, useLazyGetTemplateQuery } from '../services/templates.js'
 import { statusWarnings, inscriptionsGridRowClassRules, formatDate } from '../utils'
+import { ConfirmInscriptionChangeButton } from '.'
 import { EmailTemplateBodyInput } from './EmailTemplateBodyInput'
 import { useGetAttestationsQuery } from '../services/attestations'
 
 export const MassStatusUpdateModal = ({ closeModal, inscriptionsData, updateStatus, selectedRowsData, isUpdating }) => {
-    const [selectedTemplateData, setSelectedTemplateData] = useState(null)
+    const [selectedTemplateId, setSelectedTemplateId] = useState(null)
     const [gridApi, setGridApi] = useState(null)
 
-    const parameters = useSelector(parametersSelector)
-    const isSagaLoading = useSelector(loadingSelector)
-    const areTemplatesLoading = useSelector(templatesLoadingSelector)
-    const dispatch = useDispatch()
-
-    useEffect(() => {
-        dispatch(fetchParametersAction())
-    }, [])
+    const { data: templates = [], isLoading: isTemplatesLoading, isError: isTemplatesError } = useGetTemplatesQuery()
+    const [refetchPreview, { data: preview = {}, isFetching: isPreviewLoading }] = useLazyGetTemplateQuery()
 
     const {
         data: attestationTemplates,
@@ -33,21 +25,9 @@ export const MassStatusUpdateModal = ({ closeModal, inscriptionsData, updateStat
 
     const [selectedAttestationTemplateUuid, setSelectedAttestationTemplateUuid] = useState(null)
 
-    useEffect(() => {
-        gridApi?.sizeColumnsToFit()
-    }, [gridApi])
-
-    const isEmailTemplateSelected = selectedTemplateData !== null && selectedTemplateData.templateId !== 'no-email'
-
-    const fetchTemplatePreviews = ({ templateId }) => {
-        dispatch(fetchTemplateRawPreviewAction({ templateId }))
-    }
-
-    const emailTemplates = parameters?.emailTemplates
-        ? parameters.emailTemplates.filter((template) =>
-              template.statuses.find((status) => status.value === inscriptionsData.newStatus)
-          )
-        : []
+    const emailTemplates = templates.filter((template) =>
+        template.statuses.find((status) => status.value === inscriptionsData.newStatus)
+    )
 
     const columnDefs = [
         {
@@ -138,14 +118,12 @@ export const MassStatusUpdateModal = ({ closeModal, inscriptionsData, updateStat
         },
     ]
 
+    useEffect(() => {
+        gridApi?.sizeColumnsToFit()
+    }, [gridApi])
+
     return (
-        <Modal
-            show
-            onHide={() => closeModal()}
-            backdrop="static"
-            keyboard={false}
-            dialogClassName="mass-status-change-modal"
-        >
+        <Modal show onHide={closeModal} backdrop="static" keyboard={false} dialogClassName="mass-status-change-modal">
             <Modal.Header closeButton>
                 <Modal.Title as="h3">Modifier statut en mass</Modal.Title>
             </Modal.Header>
@@ -166,60 +144,52 @@ export const MassStatusUpdateModal = ({ closeModal, inscriptionsData, updateStat
                             </Alert.Heading>
                         </Alert>
                         <h6>Choix de modèle</h6>
-                        <ListGroup>
-                            <ListGroup.Item
-                                onClick={() =>
-                                    setSelectedTemplateData({
-                                        templateId: 'no-email',
-                                        emailBody: 'Aucun e-mail ne sera envoyé',
-                                        emailSubject: null,
-                                        smsSubject: null,
-                                    })
-                                }
-                                className={classNames({
-                                    'active-template': selectedTemplateData?.templateId === 'no-email',
-                                })}
-                            >
-                                <h4>Aucun e-mail</h4>
-                                <p>Aucun e-mail ne sera envoyé</p>
-                            </ListGroup.Item>
-                            {emailTemplates.length > 0 &&
-                                emailTemplates.map(
-                                    ({ title, descriptionText, emailBody, templateId, emailSubject, smsBody }) => (
-                                        <ListGroup.Item
-                                            key={templateId}
-                                            onClick={() => {
-                                                setSelectedTemplateData({
-                                                    templateId,
-                                                    emailBody,
-                                                    emailSubject,
-                                                    smsBody,
-                                                })
-                                                fetchTemplatePreviews({ templateId })
-                                            }}
-                                            className={classNames({
-                                                'active-template': selectedTemplateData?.templateId === templateId,
-                                            })}
-                                        >
-                                            <h4>{title}</h4>
-                                            <p>{descriptionText}</p>
-                                        </ListGroup.Item>
-                                    )
-                                )}
-                        </ListGroup>
+                        {isTemplatesLoading ? (
+                            'Chargement...'
+                        ) : isTemplatesError ? (
+                            'Erreur de chargement des modèles.'
+                        ) : (
+                            <ListGroup>
+                                <ListGroup.Item
+                                    onClick={() => setSelectedTemplateId(null)}
+                                    className={classNames({
+                                        'active-template': selectedTemplateId === null,
+                                    })}
+                                >
+                                    <h4>Aucun e-mail</h4>
+                                    <p>Aucun e-mail ne sera envoyé</p>
+                                </ListGroup.Item>
+                                {emailTemplates.map(({ title, description, templateId }) => (
+                                    <ListGroup.Item
+                                        key={templateId}
+                                        onClick={() => {
+                                            refetchPreview({
+                                                uuid: templateId,
+                                            }).then(() => setSelectedTemplateId(templateId))
+                                        }}
+                                        className={classNames({
+                                            'active-template': selectedTemplateId === templateId,
+                                        })}
+                                    >
+                                        <h4>{title}</h4>
+                                        <p>{description}</p>
+                                    </ListGroup.Item>
+                                ))}
+                            </ListGroup>
+                        )}
                     </div>
                     <div className="col template-preview">
                         <h6>Aperçu de l'e-mail</h6>
-                        {isEmailTemplateSelected ? (
+                        {selectedTemplateId !== null ? (
                             <dl>
                                 <dt>Sujet de l'email</dt>
                                 <dd>
-                                    {!areTemplatesLoading ? (
+                                    {!isPreviewLoading ? (
                                         <EmailTemplateBodyInput
                                             className="email-preview"
                                             onChange={() => {}}
-                                            templateId={selectedTemplateData.templateId}
-                                            value={selectedTemplateData.emailSubject}
+                                            templateId={selectedTemplateId}
+                                            value={preview.emailSubject}
                                             readOnly
                                         />
                                     ) : (
@@ -228,12 +198,12 @@ export const MassStatusUpdateModal = ({ closeModal, inscriptionsData, updateStat
                                 </dd>
                                 <dt>Corps de l'e-mail</dt>
                                 <dd>
-                                    {!areTemplatesLoading ? (
+                                    {!isPreviewLoading ? (
                                         <EmailTemplateBodyInput
                                             className="email-preview"
                                             onChange={() => {}}
-                                            templateId={selectedTemplateData.templateId}
-                                            value={selectedTemplateData.emailBody}
+                                            templateId={selectedTemplateId}
+                                            value={preview.emailBody}
                                             readOnly
                                         />
                                     ) : (
@@ -242,12 +212,12 @@ export const MassStatusUpdateModal = ({ closeModal, inscriptionsData, updateStat
                                 </dd>
                                 <dt>Corps de l'SMS</dt>
                                 <dd>
-                                    {!areTemplatesLoading ? (
+                                    {!isPreviewLoading ? (
                                         <EmailTemplateBodyInput
                                             className="email-preview"
                                             onChange={() => {}}
-                                            templateId={selectedTemplateData.templateId}
-                                            value={selectedTemplateData.smsBody}
+                                            templateId={selectedTemplateId}
+                                            value={preview.smsBody}
                                             readOnly
                                         />
                                     ) : (
@@ -255,10 +225,8 @@ export const MassStatusUpdateModal = ({ closeModal, inscriptionsData, updateStat
                                     )}
                                 </dd>
                             </dl>
-                        ) : selectedTemplateData?.templateId === 'no-email' ? (
-                            'Aucun e-mail ne sera envoyé'
                         ) : (
-                            'Sélectionnez un modèle'
+                            'Aucun e-mail ne sera envoyé'
                         )}
                     </div>
                 </div>
@@ -283,10 +251,10 @@ export const MassStatusUpdateModal = ({ closeModal, inscriptionsData, updateStat
                                 <ListGroup>
                                     <ListGroup.Item
                                         onClick={() => {
-                                            setSelectedAttestationTemplateUuid('no-attestation')
+                                            setSelectedAttestationTemplateUuid(null)
                                         }}
                                         className={classNames({
-                                            'active-template': selectedAttestationTemplateUuid === 'no-attestation',
+                                            'active-template': selectedAttestationTemplateUuid === null,
                                         })}
                                     >
                                         <h4>Aucune attestation</h4>
@@ -314,45 +282,16 @@ export const MassStatusUpdateModal = ({ closeModal, inscriptionsData, updateStat
                     ))}
             </Modal.Body>
             <Modal.Footer>
-                <OverlayTrigger
-                    placement="top"
-                    overlay={
-                        <Tooltip>
-                            {selectedTemplateData === null
-                                ? "D'abord sélectionnez un modèle"
-                                : 'Appliquer le changement'}
-                        </Tooltip>
+                <ConfirmInscriptionChangeButton
+                    isLoading={isTemplatesLoading || isUpdating}
+                    variant="primary"
+                    onClick={() =>
+                        updateStatus({ emailTemplateId: selectedTemplateId, selectedAttestationTemplateUuid })
                     }
                 >
-                    <div>
-                        <Button
-                            disabled={selectedTemplateData === null}
-                            variant="primary"
-                            onClick={() => {
-                                const templateId =
-                                    selectedTemplateData?.templateId === 'no-email'
-                                        ? null
-                                        : selectedTemplateData.templateId
-
-                                updateStatus({ emailTemplateId: templateId, selectedAttestationTemplateUuid })
-                            }}
-                        >
-                            {isSagaLoading || isUpdating ? (
-                                <>
-                                    <Spinner animation="grow" size="sm" /> Confirmer...
-                                </>
-                            ) : (
-                                'Confirmer sans SMS'
-                            )}
-                        </Button>
-                    </div>
-                </OverlayTrigger>
-                <Button
-                    variant="secondary"
-                    onClick={() => {
-                        closeModal()
-                    }}
-                >
+                    Confirmer sans SMS
+                </ConfirmInscriptionChangeButton>
+                <Button variant="secondary" onClick={closeModal}>
                     Annuler
                 </Button>
             </Modal.Footer>

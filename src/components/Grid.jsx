@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
-import { useSelector } from 'react-redux'
 import { AgGridReact } from 'ag-grid-react'
 import {
     Row,
@@ -19,12 +18,9 @@ import PuffLoader from 'react-spinners/PuffLoader'
 import classNames from 'classnames'
 
 import { localeText } from '../agGridLocaleText'
-import { gridLoadingSelector } from '../reducers'
 import { gridContextMenu, STATUSES } from '../utils'
 import { useLocation } from 'react-router-dom'
 import { mapPathnameToIcon } from '../constants/constants'
-
-const Loader = () => <PuffLoader color="#e8ca01" loading size={100} />
 
 export const Grid = ({
     name,
@@ -42,8 +38,6 @@ export const Grid = ({
 }) => {
     const [gridApi, setGridApi] = useState(null)
     const [filterValue, setFilterValue] = useState('')
-    const isGridLoading = useSelector(gridLoadingSelector)
-    const isLoading = isDataLoading ?? isGridLoading
     const location = useLocation()
 
     useEffect(() => {
@@ -53,13 +47,13 @@ export const Grid = ({
     useEffect(() => {
         // this setTimeout fixes a race condition
         setTimeout(() => {
-            if (isLoading) {
+            if (isDataLoading) {
                 gridApi?.showLoadingOverlay()
             } else {
                 gridApi?.hideOverlay()
             }
         }, 0)
-    }, [isLoading, gridApi])
+    }, [isDataLoading, gridApi])
 
     useEffect(() => {
         // this setTimeout fixes a race condition
@@ -172,8 +166,6 @@ export const Grid = ({
             <div className="ag-theme-alpine general-grid">
                 <AgGridReact
                     {...{
-                        // debug: true,
-                        // suppressReactUi: true, // TODO: report issues with frozen rows and cells on initial load
                         sideBar: {
                             toolPanels: ['columns', 'filters'],
                             defaultToolPanel: false,
@@ -216,7 +208,7 @@ export const Grid = ({
                             ],
                         },
                         components: {
-                            customLoadingOverlay: Loader,
+                            customLoadingOverlay: () => <PuffLoader color="#e8ca01" loading size={100} />,
                             ...components,
                         },
                         loadingOverlayComponent: 'customLoadingOverlay',
