@@ -40,16 +40,16 @@ export const ChangeOrganizationModal = ({ inscriptionId, onHide, onDone }) => {
                     <Button
                         disabled={!selected || isOrganizationUpdating}
                         variant="primary"
-                        onClick={async () => {
-                            const { data } = await updateOrganization({
+                        onClick={() => {
+                            updateOrganization({
                                 inscriptionId,
                                 organizationId: selected.value,
                             })
-                            if (data) {
-                                toast.success(data.message)
-                                hide()
-                                onDone()
-                            }
+                                .unwrap()
+                                .then(() => {
+                                    hide()
+                                    onDone()
+                                })
                         }}
                     >
                         Sélectionner

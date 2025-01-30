@@ -4,7 +4,7 @@ import { prepareBaseQuery } from './serviceUtils'
 
 export const sessionsApi = createApi({
     reducerPath: 'sessionsApi',
-    baseQuery: prepareBaseQuery({ servicePath: 'sessions' }),
+    baseQuery: prepareBaseQuery({ path: 'sessions' }),
     endpoints: (builder) => ({
         getSessions: builder.query({
             query: () => '',

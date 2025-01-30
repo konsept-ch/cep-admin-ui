@@ -5,8 +5,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAt, faAddressCard, faArrowRightToBracket, faKey } from '@fortawesome/free-solid-svg-icons'
 import { faPaperPlane } from '@fortawesome/free-regular-svg-icons'
 
-import { cookies, clearAllAuthCookies, keepAuthAlive, callApi } from './utils'
-import { authCookiesMaxAgeSeconds, MIDDLEWARE_URL } from './constants/config'
+import { cookies, clearAllAuthCookies, keepAuthAlive } from './utils'
+import { authCookiesMaxAgeSeconds } from './constants/config'
+import { useSendCodeMutation, useCheckCodeAndTokenMutation } from './services/auth'
 import { ButtonIcon } from './components'
 
 let keepAliveInterval
@@ -15,21 +16,19 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
     const [email, setEmail] = useState(cookies.get('email') || '')
     const [code, setCode] = useState('')
     const [token, setToken] = useState('')
-    const [isCodeLoading, setCodeLoading] = useState(false)
-    const [isCodeSent, setCodeSent] = useState(false)
-    const [isLoginLoading, setLoginLoading] = useState(false)
     const [shouldRememberMe, setShouldRememberMe] = useState(true)
+
+    const [sendCode, { isLoading: isCodeLoading, isSuccess: isCodeSent }] = useSendCodeMutation()
+    const [checkCodeAndToken, { isLoading: isLoginLoading }] = useCheckCodeAndTokenMutation()
 
     const maxAge = process.env.NODE_ENV === 'development' ? 999999 : authCookiesMaxAgeSeconds[shouldRememberMe]
     const path = '/'
 
     useEffect(() => {
         cookies.addChangeListener(({ name, value }) => {
-            // clear when logout event is triggered
             if (name === 'isLoggedIn' && typeof value === 'undefined') {
                 setCode('')
                 setToken('')
-                setCodeSent(false)
                 setShouldRememberMe(false)
                 setLoggedIn(false)
                 clearInterval(keepAliveInterval)
@@ -48,68 +47,38 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    const onSendCodeButtonClick = (event) => {
-        event.preventDefault()
-        setCodeLoading(true)
-        setCodeSent(false)
+    async function onSendCodeButtonClick(e) {
+        e.preventDefault()
+
         cookies.set('email', email, { path, maxAge: 99999999 })
-        ;(async () => {
-            const response = await (
-                await fetch(new URL('auth/sendCode', MIDDLEWARE_URL).href, {
-                    method: 'post',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*',
-                    },
-                    body: JSON.stringify({ email }),
-                })
-            ).json()
 
-            const { isCodeSendingSuccessful } = response
+        const { data } = await sendCode({ email })
 
-            if (isCodeSendingSuccessful) {
-                setCodeSent(true)
-            } else {
-                toast.error("Votre token n'est pas trouvé dans Claroline, merci de contacter votre administrateur")
-            }
-            setCodeLoading(false)
-        })()
+        if (!data.isCodeSendingSuccessful)
+            toast.error("Votre token n'est pas trouvé dans Claroline, merci de contacter votre administrateur")
     }
 
-    const onLoginButtonClick = (event) => {
-        event.preventDefault()
-        setLoginLoading(true)
-        ;(async () => {
-            const response = await callApi({
-                path: 'auth/checkCodeAndToken',
-                method: 'post',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email, code, token }),
-                // successCallback: () => toast.success('Login OK !'),
-            })
+    async function onLoginButtonClick(e) {
+        e.preventDefault()
 
-            const { areCodeAndTokenCorrect } = response
+        const { data } = await checkCodeAndToken({ email, code, token })
 
-            if (areCodeAndTokenCorrect) {
-                cookies.set('rememberMe', shouldRememberMe, { path, maxAge })
-                cookies.set('isLoggedIn', true, { path, maxAge })
-                cookies.set('code', code, { path, maxAge })
-                cookies.set('token', token, { path, maxAge })
+        if (data.areCodeAndTokenCorrect) {
+            cookies.set('rememberMe', shouldRememberMe, { path, maxAge })
+            cookies.set('isLoggedIn', true, { path, maxAge })
+            cookies.set('code', code, { path, maxAge })
+            cookies.set('token', token, { path, maxAge })
 
-                setLoggedIn(true)
+            setLoggedIn(true)
 
-                keepAliveInterval = setInterval(() => {
-                    keepAuthAlive({ path, maxAge })
-                }, (maxAge / 2) * 1000)
-            } else {
-                toast.error(
-                    "Votre token n'est pas trouvé dans Claroline ou n'est pas associé à votre compte, ou votre code e-mail n'est pas correct"
-                )
-            }
-            setLoginLoading(false)
-        })()
+            keepAliveInterval = setInterval(() => {
+                keepAuthAlive({ path, maxAge })
+            }, (maxAge / 2) * 1000)
+        } else {
+            toast.error(
+                "Votre token n'est pas trouvé dans Claroline ou n'est pas associé à votre compte, ou votre code e-mail n'est pas correct"
+            )
+        }
     }
 
     return isLoggedIn ? (
@@ -140,23 +109,6 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                                     Vous allez recevoir un e-mail avec un code temporaire
                                 </Form.Text>
                             </Form.Group>
-                            {/* <Form.Group className="mb-3">
-                                <Form.Label>Environnement de travail</Form.Label>
-                                <InputGroup>
-                                    <InputGroup.Text>
-                                        <FontAwesomeIcon icon={faGlobe} />
-                                    </InputGroup.Text>
-                                    <Form.Select
-                                        aria-label="Environnement"
-                                        // value={type}
-                                        // onChange={onChangeEventField({ fieldName: 'type', id })}
-                                    >
-                                        <option value="dev">DEV (cep-dev.ch)</option>
-                                        <option value="val">VAL (cep-val.ch)</option>
-                                        <option value="prod">PROD (cep.swiss)</option>
-                                    </Form.Select>
-                                </InputGroup>
-                            </Form.Group> */}
                             <Button variant="primary" type="submit">
                                 <ButtonIcon isLoading={isCodeLoading} icon={faPaperPlane} />
                                 Envoyer code

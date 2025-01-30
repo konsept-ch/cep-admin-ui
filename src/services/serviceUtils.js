@@ -1,49 +1,51 @@
-import { fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { Button } from 'react-bootstrap'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faRotateRight } from '@fortawesome/free-solid-svg-icons'
 import { toast } from 'react-toastify'
 
 import { MIDDLEWARE_URL } from '../constants/config'
 import { cookies } from '../utils'
 
-export const prepareBaseQuery = ({ servicePath }) => {
+async function response2Json(response) {
     try {
-        return fetchBaseQuery({
-            baseUrl: new URL(servicePath, MIDDLEWARE_URL).href,
-            prepareHeaders: (headers) => {
-                headers.set('Access-Control-Allow-Origin', '*')
-                headers.set('x-login-email-address', cookies.get('email'))
-                headers.set('x-login-email-code', cookies.get('code'))
-                headers.set('x-login-token', cookies.get('token'))
-                return headers
-            },
-        })
-    } catch (error) {
-        // Missing HTTPS? Redirect here or elsewhere?
-        console.error(error)
-
-        const RetryToast = () => (
-            <div>
-                Erreur de URL
-                {window.location.protocol === 'http:' && (
-                    <>
-                        {' '}
-                        - vous devez utiliser HTTPS
-                        <Button
-                            className="d-block mb-1"
-                            variant="primary"
-                            onClick={() => {
-                                window.location.protocol = 'https:'
-                            }}
-                        >
-                            <FontAwesomeIcon icon={faRotateRight} /> Utiliser HTTPS
-                        </Button>
-                    </>
-                )}
-            </div>
-        )
-
-        toast(<RetryToast />, { autoClose: false })
+        return await response.json()
+    } catch (ex) {
+        return { message: `${response.status} ${response.statusText}` }
     }
 }
+
+export const prepareBaseQuery =
+    ({ path }) =>
+    async (options) => {
+        const { url, method, body } =
+            typeof options === 'string' ? { url: options, method: 'GET', body: null } : options
+        const isFormData = body instanceof FormData
+
+        try {
+            const response = await fetch(new URL(`${path}/${url}`, MIDDLEWARE_URL).href, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                    'x-login-email-address': cookies.get('email'),
+                    'x-login-email-code': cookies.get('code'),
+                    'x-login-token': cookies.get('token'),
+                },
+                mode: 'cors',
+                redirect: 'error',
+                method,
+                body: body && !isFormData ? JSON.stringify(body) : body,
+            })
+
+            const json = await response2Json(response)
+
+            if (!response.ok) throw json
+            if (json.message) toast[json.severity || 'success'](json.message)
+
+            //if (response.headers.has('metadata')) setStorage(JSON.parse(atob(response.headers.get('metadata'))))
+
+            return { data: json }
+        } catch (err) {
+            if (err.message) toast.error(err.message, { autoClose: false })
+            return {
+                error: true,
+            }
+        }
+    }

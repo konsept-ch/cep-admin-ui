@@ -1,19 +1,12 @@
-import { useEffect, useMemo } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useMemo } from 'react'
 import { Helmet } from 'react-helmet-async'
 
 import { Grid } from '../components'
-import { fetchFormateursAction } from '../actions/formateurs.ts'
-import { formateursSelector } from '../reducers'
+import { useGetFormateursQuery } from '../services/formateurs'
 import { formatDate } from '../utils'
 
 export function FormateursPage() {
-    const dispatch = useDispatch()
-    const formateurs = useSelector(formateursSelector)
-
-    useEffect(() => {
-        dispatch(fetchFormateursAction())
-    }, [dispatch])
+    const { data: formateurs = [], isFetching } = useGetFormateursQuery()
 
     const columnDefs = useMemo(
         () => [
@@ -117,7 +110,7 @@ export function FormateursPage() {
             <Helmet>
                 <title>Formateurs - Former22</title>
             </Helmet>
-            <Grid name="Formateurs" columnDefs={columnDefs} rowData={rowData} />
+            <Grid name="Formateurs" columnDefs={columnDefs} rowData={rowData} isDataLoading={isFetching} />
         </>
     )
 }

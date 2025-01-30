@@ -2,14 +2,14 @@ import { createApi } from '@reduxjs/toolkit/query/react'
 
 import { prepareBaseQuery } from './serviceUtils'
 
-export const tutorsApi = createApi({
-    reducerPath: 'tutorsApi',
-    baseQuery: prepareBaseQuery({ path: 'tutors' }),
+export const formateursApi = createApi({
+    reducerPath: 'formateursApi',
+    baseQuery: prepareBaseQuery({ path: 'inscriptions/formateurs' }),
     endpoints: (builder) => ({
-        getTutors: builder.query({
+        getFormateurs: builder.query({
             query: () => '',
         }),
-        updateTutor: builder.mutation({
+        updateFormateur: builder.mutation({
             query: ({ uuid, data }) => ({
                 url: uuid,
                 method: 'PUT',
@@ -19,4 +19,4 @@ export const tutorsApi = createApi({
     }),
 })
 
-export const { useGetTutorsQuery, useLazyGetTutorsQuery, useUpdateTutorMutation } = tutorsApi
+export const { useGetFormateursQuery, useLazyGetFormateursQuery, useUpdateFormateurMutation } = formateursApi

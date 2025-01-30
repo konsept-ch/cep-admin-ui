@@ -17,7 +17,7 @@ import {
 
 export function ContractTemplatesPage() {
     const {
-        data: templates,
+        data: templates = [],
         isLoading,
         isFetching,
         isError,
@@ -39,7 +39,7 @@ export function ContractTemplatesPage() {
     const [discardWarningData, setDiscardWarningData] = useState({ isVisible: false })
 
     const fileName = useMemo(
-        () => templates?.find(({ uuid }) => uuid === selectedTemplateUuid)?.fileOriginalName,
+        () => templates.find(({ uuid }) => uuid === selectedTemplateUuid)?.fileOriginalName,
         [templates, selectedTemplateUuid]
     )
 
@@ -93,26 +93,6 @@ export function ContractTemplatesPage() {
             toast.error('Ce modèle de contrat a déjà été utilisé et ne peut plus être supprimé.', {
                 autoClose: false,
             })
-
-            // const RetryToast = ({ closeToast }) => (
-            //     <div>
-            //         <p>Ce modèle d'attestation a déjà été utilisé.</p>
-            //         <p>Si vous le supprimez, il n'y aura plus de trâce dans les inscriptions qui l'ont utilisés.</p>
-            //         <Button
-            //             className="d-block mb-1"
-            //             variant="primary"
-            //             onClick={async () => {
-            //                 const { error: forceDeleteError } = await deleteAttestation({
-            //                     uuid: selectedTemplateUuid,
-            //                 })
-
-            //                 closeToast()
-            //             }}
-            //         >
-            //             <FontAwesomeIcon icon={faTrash} /> Forcer la suppression ?
-            //         </Button>
-            //     </div>
-            // )
 
             toast(
                 ({ closeToast }) => (
@@ -170,34 +150,33 @@ export function ContractTemplatesPage() {
                                 <p>Aucun modèle, vous pouvez créer un nouveau</p>
                             ) : (
                                 <ListGroup className="template-list">
-                                    {templates.length > 0 &&
-                                        templates.map(({ uuid, title, description }) => (
-                                            <ContractModelItem
-                                                {...{
-                                                    key: uuid,
-                                                    uuid,
-                                                    title,
-                                                    description,
-                                                    isActive: selectedTemplateUuid === uuid,
-                                                    onClick: () => {
-                                                        if (isDirty) {
-                                                            setDiscardWarningData({
-                                                                isVisible: true,
-                                                                selectNewTemplate: () => {
-                                                                    setSelectedTemplateUuid(uuid)
+                                    {templates.map(({ uuid, title, description }) => (
+                                        <ContractModelItem
+                                            {...{
+                                                key: uuid,
+                                                uuid,
+                                                title,
+                                                description,
+                                                isActive: selectedTemplateUuid === uuid,
+                                                onClick: () => {
+                                                    if (isDirty) {
+                                                        setDiscardWarningData({
+                                                            isVisible: true,
+                                                            selectNewTemplate: () => {
+                                                                setSelectedTemplateUuid(uuid)
 
-                                                                    reset({ uuid, title, description, file: {} })
-                                                                },
-                                                            })
-                                                        } else {
-                                                            setSelectedTemplateUuid(uuid)
+                                                                reset({ uuid, title, description, file: {} })
+                                                            },
+                                                        })
+                                                    } else {
+                                                        setSelectedTemplateUuid(uuid)
 
-                                                            reset({ uuid, title, description, file: {} })
-                                                        }
-                                                    },
-                                                }}
-                                            />
-                                        ))}
+                                                        reset({ uuid, title, description, file: {} })
+                                                    }
+                                                },
+                                            }}
+                                        />
+                                    ))}
                                 </ListGroup>
                             )}
                             <Button
