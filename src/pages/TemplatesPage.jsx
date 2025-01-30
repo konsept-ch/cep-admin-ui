@@ -48,16 +48,19 @@ export function TemplatesPage() {
 
     const onAddButtonClick = async () => {
         const { data, error } = await createTemplate()
+        if (error) return
 
-        if (error == null) {
-            toast.success("Modèle d'e-mail créée")
-
-            setSelectedTemplateUuid(data.templateId)
-
-            reset({ title: data.title, description: data.description })
-        } else {
-            toast.error("Erreur de création du modèle d'e-mail", { autoClose: false })
-        }
+        setSelectedTemplateUuid(data.templateId)
+        reset({
+            templateId: data.templateId,
+            title: '',
+            descriptionText: '',
+            emailSubject: '',
+            emailBody: '',
+            smsBody: '',
+            statuses: [],
+            usedByEvaluation: false,
+        })
 
         await refetch()
     }

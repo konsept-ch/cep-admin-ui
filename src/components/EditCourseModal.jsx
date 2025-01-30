@@ -289,22 +289,13 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, setSelecte
                             <Button
                                 variant="primary"
                                 disabled={!isDirty}
-                                onClick={handleSubmit(async (newData) => {
-                                    const { error: mutationError } = await updateCourse({
+                                onClick={handleSubmit((newData) => {
+                                    updateCourse({
                                         courseId: selectedCourseData.id,
                                         newData: formatToFlatObject(newData),
                                     })
-                                    if (typeof mutationError === 'undefined') {
-                                        closeCourseEditModal()
-                                    } else {
-                                        toast.error(
-                                            <>
-                                                <p>{mutationError.status}</p>
-                                                <p>{mutationError.error}</p>
-                                            </>,
-                                            { autoClose: false }
-                                        )
-                                    }
+                                        .unwrap()
+                                        .then(closeCourseEditModal)
                                 })}
                             >
                                 {isCourseUpdating ? (

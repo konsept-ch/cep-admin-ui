@@ -4,19 +4,23 @@ import classNames from 'classnames'
 import { statusWarnings, formatDate } from '../utils'
 import { EmailTemplateBodyInput } from './EmailTemplateBodyInput'
 import { ConfirmInscriptionChangeButton } from '.'
-import { useGetAttestationsQuery } from '../services/attestations'
-import { useGetTemplatesQuery, useLazyGetTemplatePreviewQuery } from '../services/templates'
+import { useGetMinimumAttestationsQuery } from '../services/attestations'
+import { useGetMinimumTemplatesQuery, useLazyGetTemplatePreviewQuery } from '../services/templates'
 
 export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }) => {
     const [selectedTemplateId, setSelectedTemplateId] = useState(null)
     const [selectedAttestationTemplateUuid, setSelectedAttestationTemplateUuid] = useState(null)
     const [remark, setRemark] = useState(statusUpdateData.remark)
 
-    const { data: attestationTemplates = [], isLoading, isError } = useGetAttestationsQuery()
-    const { data: templates = [], isLoading: isTemplatesLoading, isError: isTemplatesError } = useGetTemplatesQuery()
+    const { data: attestationTemplates = [], isLoading, isError } = useGetMinimumAttestationsQuery()
+    const {
+        data: templates = [],
+        isLoading: isTemplatesLoading,
+        isError: isTemplatesError,
+    } = useGetMinimumTemplatesQuery()
     const [refetchPreview, { data: preview = {}, isFetching: isPreviewLoading }] = useLazyGetTemplatePreviewQuery()
 
-    const emailTemplates = templates.filter((template) =>
+    const filteredTemplates = templates.filter((template) =>
         template.statuses.find((status) => status.value === statusUpdateData.newStatus)
     )
 
@@ -113,7 +117,7 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
                                     <h4>Aucun e-mail</h4>
                                     <p>Aucun e-mail ne sera envoyé</p>
                                 </ListGroup.Item>
-                                {emailTemplates.map(({ title, description, templateId }) => (
+                                {filteredTemplates.map(({ title, descriptionText, templateId }) => (
                                     <ListGroup.Item
                                         key={templateId}
                                         onClick={() => {
@@ -128,7 +132,7 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
                                         })}
                                     >
                                         <h4>{title}</h4>
-                                        <p>{description}</p>
+                                        <p>{descriptionText}</p>
                                     </ListGroup.Item>
                                 ))}
                             </ListGroup>

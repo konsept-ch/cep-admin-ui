@@ -16,7 +16,7 @@ export const AgendaPage = () => {
         refetch,
         isLoading: firstLoading,
         isFetching: loading,
-    } = useGetAgendaQuery()
+    } = useGetAgendaQuery(null, { refetchOnMountOrArgChange: true })
     const [selectedRoomIds, setSelectedRoomIds] = useState({})
     const [isRoomSelectionExpanded, setRoomSelectionExpanded] = useState(true)
     const [isRoomsExpanded, setRoomsExpanded] = useState(true)

@@ -113,27 +113,16 @@ export function EditSessionModal({ selectedSessionData, closeModal, isModalOpen 
                             <Button
                                 variant="primary"
                                 disabled={!isDirty}
-                                onClick={handleSubmit(async (newData) => {
+                                onClick={handleSubmit((newData) => {
                                     const { id, name, startDate } = selectedSessionData
-
-                                    const { error: mutationError } = await updateSession({
+                                    updateSession({
                                         sessionId: id,
                                         sessionName: name,
                                         startDate,
                                         ...formatToFlatObject(newData),
                                     })
-                                    if (typeof mutationError === 'undefined') {
-                                        toast.success('Succès !')
-                                        closeModal()
-                                    } else {
-                                        toast.error(
-                                            <>
-                                                <p>{mutationError.status}</p>
-                                                <p>{mutationError.error}</p>
-                                            </>,
-                                            { autoClose: false }
-                                        )
-                                    }
+                                        .unwrap()
+                                        .then(closeModal)
                                 })}
                             >
                                 {isSessionUpdating ? (

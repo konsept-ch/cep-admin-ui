@@ -9,6 +9,9 @@ export const attestationsApi = createApi({
         getAttestations: builder.query({
             query: () => '',
         }),
+        getMinimumAttestations: builder.query({
+            query: () => 'minimum',
+        }),
         createAttestation: builder.mutation({
             query: () => ({
                 url: '',
@@ -34,6 +37,7 @@ export const attestationsApi = createApi({
 
 export const {
     useGetAttestationsQuery,
+    useGetMinimumAttestationsQuery,
     useCreateAttestationMutation,
     useUpdateAttestationMutation,
     useDeleteAttestationMutation,

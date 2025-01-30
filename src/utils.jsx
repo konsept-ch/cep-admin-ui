@@ -111,12 +111,6 @@ export const statusWarnings = {
 export const checkAreInSameLockGroup = (status1) => (status2) =>
     lockGroups.some((lockGroup) => lockGroup.includes(status1) && lockGroup.includes(status2))
 
-export const getUniqueId = () => {
-    const dateString = Date.now().toString(36)
-    const randomness = Math.random().toString(36).substr(2)
-    return dateString + randomness
-}
-
 export const inscriptionStatuses = Object.values(STATUSES)
 
 export const formatDate = ({ dateString, isTimeVisible, isDateVisible }) => {

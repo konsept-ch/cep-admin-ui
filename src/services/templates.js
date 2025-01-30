@@ -9,6 +9,9 @@ export const templatesApi = createApi({
         getTemplates: builder.query({
             query: () => '',
         }),
+        getMinimumTemplates: builder.query({
+            query: () => 'minimum',
+        }),
         createTemplate: builder.mutation({
             query: () => ({
                 url: '',
@@ -45,6 +48,7 @@ export const templatesApi = createApi({
 
 export const {
     useGetTemplatesQuery,
+    useGetMinimumTemplatesQuery,
     useCreateTemplateMutation,
     useUpdateTemplateMutation,
     useDeleteTemplateMutation,

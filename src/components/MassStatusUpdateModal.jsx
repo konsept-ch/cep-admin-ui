@@ -25,7 +25,7 @@ export const MassStatusUpdateModal = ({ closeModal, inscriptionsData, updateStat
 
     const [selectedAttestationTemplateUuid, setSelectedAttestationTemplateUuid] = useState(null)
 
-    const emailTemplates = templates.filter((template) =>
+    const filteredTemplates = templates.filter((template) =>
         template.statuses.find((status) => status.value === inscriptionsData.newStatus)
     )
 
@@ -159,7 +159,7 @@ export const MassStatusUpdateModal = ({ closeModal, inscriptionsData, updateStat
                                     <h4>Aucun e-mail</h4>
                                     <p>Aucun e-mail ne sera envoyé</p>
                                 </ListGroup.Item>
-                                {emailTemplates.map(({ title, description, templateId }) => (
+                                {filteredTemplates.map(({ title, description, templateId }) => (
                                     <ListGroup.Item
                                         key={templateId}
                                         onClick={() => {
