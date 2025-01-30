@@ -239,7 +239,7 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
                             remark,
                             emailTemplateId: selectedTemplateId,
                             shouldSendSms: false,
-                            selectedAttestationTemplateUuid: selectedAttestationTemplateUuid,
+                            selectedAttestationTemplateUuid,
                         })
                     }
                 >
@@ -253,7 +253,7 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
                             remark,
                             emailTemplateId: selectedTemplateId,
                             shouldSendSms: true,
-                            selectedAttestationTemplateUuid: selectedAttestationTemplateUuid,
+                            selectedAttestationTemplateUuid,
                         })
                     }
                 >
