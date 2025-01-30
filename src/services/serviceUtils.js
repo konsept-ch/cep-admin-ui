@@ -19,7 +19,7 @@ export const prepareBaseQuery =
         const isFormData = body instanceof FormData
 
         try {
-            const response = await fetch(new URL(path + '/' + url, MIDDLEWARE_URL).href, {
+            const response = await fetch(new URL(`${path}/${url}`, MIDDLEWARE_URL).href, {
                 headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
