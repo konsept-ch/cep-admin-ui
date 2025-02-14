@@ -402,9 +402,8 @@ export function TutorsPage() {
                     <Button
                         variant="primary"
                         disabled={updating}
-                        onClick={handleSubmit(async (data) => {
-                            console.log(data)
-                            const response = await updateTutor({
+                        onClick={handleSubmit((data) =>
+                            updateTutor({
                                 uuid: data.id,
                                 data: {
                                     address: data.address,
@@ -432,13 +431,11 @@ export function TutorsPage() {
                                     domains: data.domains.map((o) => o.v),
                                     status: data.status?.v,
                                 },
-                            })
-                            if (response.data) {
-                                toast.success(response.data.message)
+                            }).then(() => {
                                 refetch()
                                 setVisible(false)
-                            }
-                        })}
+                            })
+                        )}
                     >
                         Enregistrer
                     </Button>
