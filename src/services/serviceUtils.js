@@ -21,7 +21,7 @@ export const prepareBaseQuery =
         try {
             const response = await fetch(new URL(`${path}/${url}`, MIDDLEWARE_URL).href, {
                 headers: {
-                    'Content-Type': 'application/json',
+                    ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
                     Accept: 'application/json',
                     'Access-Control-Allow-Origin': '*',
                     'x-login-email-address': cookies.get('email'),
@@ -45,7 +45,7 @@ export const prepareBaseQuery =
         } catch (err) {
             if (err.message) toast.error(err.message, { autoClose: false })
             return {
-                error: true,
+                error: err,
             }
         }
     }
