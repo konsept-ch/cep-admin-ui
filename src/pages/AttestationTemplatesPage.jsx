@@ -74,62 +74,22 @@ export function AttestationTemplatesPage() {
             formData.append('file', uploadedFile)
         }
 
-        const { error } = await updateAttestation({ uuid: selectedTemplateUuid, formData })
-
-        if (error == null) {
-            toast.success("Modèle d'attestation modifiée")
-        } else {
-            toast.error("Erreur de modification du modèle d'attestation", { autoClose: false })
-        }
+        await updateAttestation({ uuid: selectedTemplateUuid, formData })
 
         reset({ title, description, file: {} })
 
         await refetch()
     })
 
-    const onDeleteButtonClick = async ({ shouldForceDelete }) => {
-        const { error } = await deleteAttestation({ uuid: selectedTemplateUuid, shouldForceDelete })
-
-        if (error.status === 400) {
-            toast.error("Ce modèle d'attestation a déjà été utilisé et ne peut plus être supprimé.", {
-                autoClose: false,
+    const onDeleteButtonClick = () => {
+        deleteAttestation({ uuid: selectedTemplateUuid })
+            .unwrap()
+            .then(() => {
+                setSelectedTemplateUuid(null)
+                setIsDeleteWarningVisible(false)
             })
-            toast(
-                ({ closeToast }) => (
-                    <div>
-                        <p>Ce modèle d'attestation a déjà été utilisé.</p>
-                        <p>Si vous le supprimez, il n'y aura plus de trâce dans les inscriptions qui l'ont utilisé.</p>
-                        <Button
-                            className="d-block mb-1"
-                            variant="danger"
-                            onClick={async () => {
-                                await onDeleteButtonClick({ shouldForceDelete: true })
-
-                                closeToast()
-                            }}
-                        >
-                            <FontAwesomeIcon icon={faTrash} /> Forcer la suppression ?
-                        </Button>
-                    </div>
-                ),
-                {
-                    autoClose: false,
-                    toastId: `retry-delete`,
-                }
-            )
-        } else if (error) {
-            console.error(error)
-
-            toast.error("Erreur de suppression du modèle d'attestation", { autoClose: false })
-        } else {
-            toast.success("Modèle d'attestation supprimée")
-
-            setSelectedTemplateUuid(null)
-
-            setIsDeleteWarningVisible(false)
-        }
-
-        await refetch()
+            .catch(() => {})
+            .finally(() => refetch())
     }
 
     return (
@@ -240,7 +200,15 @@ export function AttestationTemplatesPage() {
                                     </div>
                                     <CommonModal
                                         title="Avertissement"
-                                        content={<p>Êtes-vous sûr de vouloir supprimer ce modèle?</p>}
+                                        content={
+                                            <>
+                                                <p>Êtes-vous sûr de vouloir supprimer ce modèle?</p>
+                                                <strong>
+                                                    Si vous le supprimez, il n'y aura plus de trâce dans les
+                                                    inscriptions qui l'ont utilisé.
+                                                </strong>
+                                            </>
+                                        }
                                         footer={
                                             <Button
                                                 variant="danger"
