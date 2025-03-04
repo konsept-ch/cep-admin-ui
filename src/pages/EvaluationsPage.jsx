@@ -5,7 +5,6 @@ import { Helmet } from 'react-helmet-async'
 import { Grid, EvaluationModal } from '../components'
 import { useGetEvaluationsQuery } from '../services/evaluations'
 import { MIDDLEWARE_URL } from '../constants/config'
-import { PATH_EVALUATIONS } from '../constants/constants'
 import { gotoUrl, gridContextMenu } from '../utils'
 
 export function EvaluationsPage() {
@@ -116,6 +115,20 @@ export function EvaluationsPage() {
                                   name: 'Exporter résultats',
                                   action: () =>
                                       gotoUrl(new URL(`/evaluations/${node.data.uuid}/export`, MIDDLEWARE_URL).href),
+                              },
+                              'separator',
+                          ]
+                        : node.level === 1
+                        ? [
+                              {
+                                  name: 'Exporter résultats du cours',
+                                  action: () =>
+                                      gotoUrl(
+                                          new URL(
+                                              `/evaluations/${node.allLeafChildren[0].data.year}/${node.allLeafChildren[0].data.courseUuid}/export/`,
+                                              MIDDLEWARE_URL
+                                          ).href
+                                      ),
                               },
                               'separator',
                           ]
