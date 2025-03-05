@@ -115,22 +115,21 @@ export const inscriptionStatuses = Object.values(STATUSES)
 
 export const formatDate = ({ dateString, isTimeVisible, isDateVisible }) => {
     if (dateString == null) {
-        return
+        return ''
     }
 
     const date = new Date(dateString)
-    const getDay = () => (date.getDate() < 10 ? `0${date.getDate()}` : date.getDate())
-    const getMonth = () => {
-        const month = date.getMonth() + 1
-        return month < 10 ? `0${month}` : month
-    }
-    const getMinutes = () => {
-        return date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()
-    }
-    const getDate = () => (isDateVisible === true ? `${getDay()}.${getMonth()}.${date.getFullYear()}` : null)
-    const getTime = () => (isTimeVisible === true ? `${date.getHours()}h${getMinutes()}` : null)
-
-    return [getDate(), getTime()].filter(Boolean).join(', ')
+    return `${
+        isDateVisible
+            ? `${date.getDate() < 10 ? '0' : ''}${date.getDate()}.${date.getMonth() < 9 ? '0' : ''}${
+                  date.getMonth() + 1
+              }.${date.getFullYear()}`
+            : ''
+    }${
+        isTimeVisible
+            ? `${isDateVisible ? ', ' : ''}${date.getHours()}h${date.getMinutes() < 10 ? '0' : ''}${date.getMinutes()}`
+            : ''
+    }`
 }
 
 export const callApi = async ({ path = '', method = 'GET', headers, body, successCallback = () => {} }) => {
