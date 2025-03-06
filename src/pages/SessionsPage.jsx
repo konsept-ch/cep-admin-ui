@@ -14,7 +14,7 @@ export function SessionsPage() {
     const [selectedSessionId, setSelectedSessionId] = useState()
 
     const {
-        data: sessions,
+        data: sessions = [],
         isFetching,
         refetch: refetchSessions,
     } = useGetSessionsQuery(null, { refetchOnMountOrArgChange: true })
@@ -64,7 +64,7 @@ export function SessionsPage() {
                 headerTooltip: 'Le code de la session',
             },
             {
-                field: 'duration',
+                field: 'quotaDays',
                 headerName: 'Durée (jours)',
                 filter: 'agNumberColumnFilter',
                 headerTooltip: 'La durée de la session',
@@ -93,12 +93,45 @@ export function SessionsPage() {
                 width: 150,
             },
             {
+                field: 'year',
+                headerName: 'Année',
+                filter: 'agTextColumnFilter',
+                headerTooltip: "L'année de la session",
+            },
+            {
                 field: 'startDate',
                 headerName: 'Date de début',
                 filter: 'agDateColumnFilter',
+                filterParams: {
+                    comparator(filterLocalDateAtMidnight, cellValue) {
+                        if (cellValue === null) return 0
+                        const parts = cellValue.split('.')
+                        const value = new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]))
+                        return value < filterLocalDateAtMidnight ? -1 : value > filterLocalDateAtMidnight ? 1 : 0
+                    },
+                },
                 headerTooltip: 'La date de début de la session',
-                valueFormatter: ({ value }) => formatDate({ dateString: value, isDateVisible: true }),
-                type: 'numericColumn',
+                valueGetter: ({ data }) => formatDate({ dateString: data.startDate, isDateVisible: true }),
+            },
+            {
+                field: 'coordinator',
+                headerName: 'CF (coordinateur)',
+                filter: 'agSetColumnFilter',
+                headerTooltip: 'Le coordinateur de la formation',
+                width: 170,
+            },
+            {
+                field: 'responsible',
+                headerName: 'RF (responsable)',
+                filter: 'agSetColumnFilter',
+                headerTooltip: 'Le responsable de la formation',
+                width: 170,
+            },
+            {
+                field: 'theme',
+                headerName: 'Domaine de compétences',
+                filter: 'agTextColumnFilter',
+                headerTooltip: 'Le domaine de compétences de la formation',
             },
             {
                 field: 'fees',
@@ -108,20 +141,22 @@ export function SessionsPage() {
                 type: 'numericColumn',
             },
             {
-                field: 'creationDate',
+                field: 'created',
                 headerName: 'Date de création',
                 filter: 'agDateColumnFilter',
                 headerTooltip: 'La date de création de la session',
                 valueFormatter: ({ value }) => formatDate({ dateString: value, isDateVisible: true }),
                 type: 'numericColumn',
+                hide: true,
             },
             {
-                field: 'lastModifiedDate',
+                field: 'updated',
                 headerName: 'Dernière modification',
                 filter: 'agDateColumnFilter',
                 headerTooltip: 'La date de la dernière modification',
                 valueFormatter: ({ value }) => formatDate({ dateString: value, isDateVisible: true }),
                 type: 'numericColumn',
+                hide: true,
             },
             {
                 field: 'occupation',
@@ -156,72 +191,8 @@ export function SessionsPage() {
                 filter: 'agSetColumnFilter',
                 headerTooltip: 'Le lieu de la session',
             },
-            // {
-            //     field: 'invited',
-            //     headerName: 'Invitée',
-            //     filter: 'agTextColumnFilter',
-            //     cellEditor: 'agRichSelectCellEditor',
-            //     headerTooltip: 'Si la session est invitée',
-            //     editable: true,
-            //     valueGetter: ({ data: { invited } }) => (invited ? 'Oui' : 'Non'),
-            //     cellEditorParams: { values: ['Oui', 'Non'] },
-            //     onCellValueChanged: (data) => {
-            //         const areInvitesSentMapper = {
-            //             Oui: true,
-            //             Non: false,
-            //         }
-
-            //         return dispatch(
-            //             updateSessionAction({
-            //                 sessionId: data.data.id,
-            //                 areInvitesSent: areInvitesSentMapper[data.newValue],
-            //                 sessionName: data.data.name,
-            //                 startDate: data.data.startDate,
-            //             })
-            //         )
-            //     },
-            // },
         ],
         []
-    )
-
-    const rowData = sessions?.map(
-        ({
-            id,
-            name,
-            code,
-            sessionFormat,
-            sessionLocation,
-            hidden,
-            startDate,
-            fees,
-            created,
-            updated,
-            quotaDays,
-            areInvitesSent,
-            isUsedForQuota,
-            availables,
-            occupation,
-            category,
-        }) => ({
-            id,
-            name,
-            code,
-            duration: quotaDays,
-            creationDate: created,
-            lastModifiedDate: updated,
-            hidden,
-            invited: areInvitesSent,
-            startDate,
-            fees,
-            quotaDays,
-            isUsedForQuota,
-            sessionFormat,
-            sessionLocation,
-            availables,
-            occupation,
-            category,
-        })
     )
 
     return (
@@ -231,7 +202,7 @@ export function SessionsPage() {
             </Helmet>
             <EditSessionModal
                 {...{
-                    selectedSessionData: rowData?.find(({ id }) => id === selectedSessionId),
+                    selectedSessionData: sessions.find(({ id }) => id === selectedSessionId),
                     closeModal: () => {
                         setIsSessionModalOpen(false)
                         setSelectedSessionId()
@@ -252,7 +223,7 @@ export function SessionsPage() {
             <Grid
                 name="Sessions"
                 columnDefs={columnDefs}
-                rowData={rowData}
+                rowData={sessions}
                 isDataLoading={isFetching}
                 getContextMenuItems={({ node: { data } }) => [
                     {

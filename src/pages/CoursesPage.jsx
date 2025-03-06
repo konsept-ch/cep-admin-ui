@@ -98,7 +98,6 @@ export function CoursesPage() {
             headerTooltip: 'Le responsable de la formation',
             width: 170,
         },
-
         {
             field: 'typeStage',
             headerName: 'Type stage',
@@ -135,6 +134,7 @@ export function CoursesPage() {
             headerTooltip: 'La date de création de la formation',
             valueFormatter: ({ value }) => formatDate({ dateString: value, isDateVisible: true }),
             type: 'numericColumn',
+            hide: true,
         },
         {
             field: 'lastModifiedDate',
@@ -143,12 +143,13 @@ export function CoursesPage() {
             headerTooltip: 'La date de la dernière modification',
             valueFormatter: ({ value }) => formatDate({ dateString: value, isDateVisible: true }),
             type: 'numericColumn',
+            hide: true,
         },
         {
             field: 'theme',
-            headerName: 'Thème',
+            headerName: 'Domaine de compétences',
             filter: 'agTextColumnFilter',
-            headerTooltip: 'Le thème de la formation',
+            headerTooltip: 'Le domaine de compétences de la formation',
         },
         {
             field: 'targetAudience',
