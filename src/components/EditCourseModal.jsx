@@ -54,13 +54,13 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, setSelecte
 
     const themeValues = useMemo(
         () => [
-            { value: 'Informatique & Compétences numériques', label: 'Informatique & Compétences numériques' },
-            { value: 'Administration & Politiques publiques', label: 'Administration & Politiques publiques' },
-            { value: 'Intelligence collective & Agilité', label: 'Intelligence collective & Agilité' },
-            { value: 'Organisation & Management', label: 'Organisation & Management' },
-            { value: 'Communication & Relations', label: 'Communication & Relations' },
-            { value: 'Efficacité personnelle', label: 'Efficacité personnelle' },
-            { value: 'Prévention & Santé', label: 'Prévention & Santé' },
+            { value: 'Informatique & Compétences numériques', label: 'Numériques' },
+            { value: 'Administration & Politiques publiques', label: 'Spécifiques à l’administration publique' },
+            { value: 'Intelligence collective & Agilité', label: 'Pédagogiques et de facilitation' },
+            { value: 'Organisation & Management', label: 'Managériales et de leadership' },
+            { value: 'Communication & Relations', label: 'Sociales' },
+            { value: 'Efficacité personnelle', label: 'Personnelles' },
+            { value: 'Prévention & Santé', label: 'Méthodologiques et organisationnelles' },
             { value: 'Apprentissage', label: 'Apprentissage' },
         ],
         []
@@ -193,7 +193,7 @@ export function EditCourseModal({ refetchCourses, selectedCourseData, setSelecte
                                 />
                             </Col>
                             <Col>
-                                <Form.Label>Thème</Form.Label>
+                                <Form.Label>Domaine de compétences</Form.Label>
                                 <Controller
                                     name="theme"
                                     control={control}

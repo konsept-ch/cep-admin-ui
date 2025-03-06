@@ -58,6 +58,7 @@ export function SeancesPage() {
                 headerTooltip: 'La date de création de la session',
                 valueFormatter: ({ value }) => formatDate({ dateString: value, isDateVisible: true }),
                 type: 'numericColumn',
+                hide: true,
             },
             {
                 field: 'lastModifiedDate',
@@ -66,6 +67,7 @@ export function SeancesPage() {
                 headerTooltip: 'La date de la dernière modification',
                 valueFormatter: ({ value }) => formatDate({ dateString: value, isDateVisible: true }),
                 type: 'numericColumn',
+                hide: true,
             },
             {
                 field: 'hidden',
