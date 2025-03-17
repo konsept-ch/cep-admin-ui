@@ -4,7 +4,7 @@
 FROM node:18-slim as build-deps
 ARG FONTAWESOME_NPM_AUTH_TOKEN
 WORKDIR /usr/src/app
-COPY ["package.json", "package-lock.json*", ".npmrc", "./"]
+COPY ["package.json", "package-lock.json*", "./"]
 RUN npm config set '//npm.fontawesome.com/:_authToken' "$FONTAWESOME_NPM_AUTH_TOKEN"
 RUN npm ci
 COPY . .
