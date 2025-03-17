@@ -2,7 +2,6 @@ import { useEffect, useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
 import { toast } from 'react-toastify'
-import { DateTime } from 'luxon'
 
 import { Grid, StatusUpdateModal, MassStatusUpdateModal } from '../components'
 import { fetchInscriptionsAction, updateInscriptionStatusAction } from '../actions/inscriptions'
@@ -23,7 +22,7 @@ import {
 import { useUpdateInscriptionStatusMutation } from '../services/inscriptions'
 
 const formatDateTime = ({ value }: any) =>
-    DateTime.fromJSDate(value).setLocale('fr-CH').toLocaleString(DateTime.DATE_SHORT)
+    Intl.DateTimeFormat('fr-CH', { year: 'numeric', month: 'numeric', day: 'numeric' }).format(value)
 
 export function InscriptionsPage() {
     const dispatch = useDispatch()
