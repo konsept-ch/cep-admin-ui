@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react'
 import { Button } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPen } from '@fortawesome/pro-light-svg-icons'
+import { faPen } from '@fortawesome/free-solid-svg-icons'
 
 import { Grid, CourseDetailsModal, /* EditBtnCellRenderer, */ EditCourseModal } from '../components'
 import { formatDate } from '../utils'

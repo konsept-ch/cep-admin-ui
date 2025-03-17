@@ -2,14 +2,8 @@ import { useState, useEffect } from 'react'
 import { Button, Col, Container, Form, InputGroup, Row } from 'react-bootstrap'
 import { toast } from 'react-toastify'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-    faAt,
-    faInputNumeric,
-    faKeySkeleton,
-    faPaperPlaneTop,
-    faArrowRightToBracket,
-    // faGlobe,
-} from '@fortawesome/pro-regular-svg-icons'
+import { faAt, faAddressCard, faArrowRightToBracket, faKey } from '@fortawesome/free-solid-svg-icons'
+import { faPaperPlane } from '@fortawesome/free-regular-svg-icons'
 
 import { cookies, clearAllAuthCookies, keepAuthAlive, callApi } from './utils'
 import { authCookiesMaxAgeSeconds, MIDDLEWARE_URL } from './constants/config'
@@ -149,25 +143,8 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                                     Vous allez recevoir un e-mail avec un code temporaire
                                 </Form.Text>
                             </Form.Group>
-                            {/* <Form.Group className="mb-3">
-                                <Form.Label>Environnement de travail</Form.Label>
-                                <InputGroup>
-                                    <InputGroup.Text>
-                                        <FontAwesomeIcon icon={faGlobe} />
-                                    </InputGroup.Text>
-                                    <Form.Select
-                                        aria-label="Environnement"
-                                        // value={type}
-                                        // onChange={onChangeEventField({ fieldName: 'type', id })}
-                                    >
-                                        <option value="dev">DEV (cep-dev.ch)</option>
-                                        <option value="val">VAL (cep-val.ch)</option>
-                                        <option value="prod">PROD (cep.swiss)</option>
-                                    </Form.Select>
-                                </InputGroup>
-                            </Form.Group> */}
                             <Button variant="primary" type="submit">
-                                <ButtonIcon isLoading={isCodeLoading} icon={faPaperPlaneTop} />
+                                <ButtonIcon isLoading={isCodeLoading} icon={faPaperPlane} />
                                 Envoyer code
                             </Button>
                         </Form>
@@ -178,7 +155,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                                 <Form.Label>Code reçu</Form.Label>
                                 <InputGroup>
                                     <InputGroup.Text>
-                                        <FontAwesomeIcon icon={faInputNumeric} />
+                                        <FontAwesomeIcon icon={faAddressCard} />
                                     </InputGroup.Text>
                                     <Form.Control
                                         type="number"
@@ -195,7 +172,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                                 <Form.Label>Jeton d'authentification</Form.Label>
                                 <InputGroup>
                                     <InputGroup.Text>
-                                        <FontAwesomeIcon icon={faKeySkeleton} />
+                                        <FontAwesomeIcon icon={faKey} />
                                     </InputGroup.Text>
                                     <Form.Control
                                         type="password"

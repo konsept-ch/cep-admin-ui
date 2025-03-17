@@ -119,6 +119,20 @@ export function EvaluationsPage() {
                               },
                               'separator',
                           ]
+                        : node.level === 1
+                        ? [
+                              {
+                                  name: 'Exporter résultats du cours',
+                                  action: () =>
+                                      gotoUrl(
+                                          new URL(
+                                              `/evaluations/${node.allLeafChildren[0].data.year}/${node.allLeafChildren[0].data.courseUuid}/export/`,
+                                              MIDDLEWARE_URL
+                                          ).href
+                                      ),
+                              },
+                              'separator',
+                          ]
                         : []),
                     ...gridContextMenu,
                 ]}

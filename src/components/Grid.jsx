@@ -14,7 +14,7 @@ import {
     Form,
 } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFilterCircleXmark } from '@fortawesome/pro-light-svg-icons'
+import { faFilterCircleXmark } from '@fortawesome/free-solid-svg-icons'
 import PuffLoader from 'react-spinners/PuffLoader'
 import classNames from 'classnames'
 

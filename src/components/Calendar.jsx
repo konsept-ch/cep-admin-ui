@@ -11,8 +11,6 @@ import luxon2Plugin from '@fullcalendar/luxon2'
 import frLocale from '@fullcalendar/core/locales/fr'
 import adaptivePlugin from '@fullcalendar/adaptive'
 import { DateTime } from 'luxon'
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-// import { faRefresh } from '@fortawesome/pro-solid-svg-icons'
 
 import { loadingSelector } from '../reducers'
 import { DATE_FORMAT_OPTIONS, DATE_FORMAT_SWISS_FRENCH } from '../constants/constants'
