@@ -18,19 +18,24 @@ import {
     checkAreInSameLockGroup,
 } from '../utils'
 import { useUpdateInscriptionStatusMutation } from '../services/inscriptions'
+import { useGenerateAttestationMutation } from '../services/attestations'
 import { ChangeOrganizationModal } from '../components/ChangeOrganizationModal'
+import { GenerateAttestationModal } from '../components/GenerateAttestationModal'
 
 export function InscriptionsPage() {
     const dispatch = useDispatch()
     const [statusUpdateData, setStatusUpdateData] = useState(null)
     const [statusMassUpdateData, setStatusMassUpdateData] = useState(null)
+    const [attestationData, setAttestationData] = useState(null)
     const [selectedRowsData, setSelectedRowsData] = useState([])
     const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false)
     const [isMassUpdateModalVisible, setIsMassUpdateModalVisible] = useState(false)
+    const [isAttestationVisible, setAttestationVisible] = useState(false)
     const [selectedInscriptionId, setSelectedInscriptionId] = useState(null)
     const inscriptions = useSelector(inscriptionsSelector)
     const [activePredefinedFiltersById, setActivePredefinedFiltersById] = useState({ onlyWebEntries: false })
 
+    const [generateAttestation] = useGenerateAttestationMutation()
     const [updateInscriptionStatus, { isLoading: isUpdatingInscriptionStatus }] = useUpdateInscriptionStatusMutation()
 
     const predefinedFilters = [
@@ -421,30 +426,13 @@ export function InscriptionsPage() {
                                         : '',
                             })),
                         },
-                        selectedRowsData.length <= 1 && {
-                            name: 'Créer attestation',
+                        {
+                            name: `Créer attestation ${selectedRowsData.length > 1 ? 'en masse' : ''}`,
                             action: () => {
-                                if (data != null) {
-                                    setIsUpdateModalVisible(true)
-                                    setStatusUpdateData({
-                                        ...inscriptions.find(({ id }) => id === data?.id),
-                                        newStatus: data?.status,
-                                        isCreatingAttestation: true,
-                                    })
-                                }
-                            },
-                        },
-                        selectedRowsData.length > 1 && {
-                            name: 'Créer attestation en masse',
-                            action: () => {
-                                if (data != null) {
-                                    setIsMassUpdateModalVisible(true)
-                                    setStatusMassUpdateData({
-                                        status: data?.status,
-                                        newStatus: data?.status,
-                                        isCreatingAttestation: true,
-                                    })
-                                }
+                                setAttestationVisible(true)
+                                setAttestationData(
+                                    selectedRowsData.length === 0 ? [data?.id] : selectedRowsData.map((r) => r.id)
+                                )
                             },
                         },
                         selectedRowsData.length <= 1 &&
@@ -477,6 +465,21 @@ export function InscriptionsPage() {
                         ) || []
 
                     setSelectedRowsData(filteredSelectedRowsData)
+                }}
+            />
+
+            <GenerateAttestationModal
+                show={isAttestationVisible}
+                closeModal={() => {
+                    setAttestationVisible(false)
+                }}
+                generateAttestation={({ selectedAttestationTemplateUuid }) => {
+                    generateAttestation({
+                        uuids: attestationData,
+                        selectedAttestationTemplateUuid,
+                    })
+                        .unwrap()
+                        .then(() => toast.success('La génération à été effectuée avec succès'))
                 }}
             />
 
