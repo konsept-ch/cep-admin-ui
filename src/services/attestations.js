@@ -32,6 +32,16 @@ export const attestationsApi = createApi({
                 method: 'DELETE',
             }),
         }),
+        generateAttestation: builder.mutation({
+            query: ({ uuids, selectedAttestationTemplateUuid }) => ({
+                url: 'generate',
+                method: 'POST',
+                body: {
+                    uuids,
+                    selectedAttestationTemplateUuid,
+                },
+            }),
+        }),
     }),
 })
 
@@ -41,4 +51,5 @@ export const {
     useCreateAttestationMutation,
     useUpdateAttestationMutation,
     useDeleteAttestationMutation,
+    useGenerateAttestationMutation,
 } = attestationsApi
