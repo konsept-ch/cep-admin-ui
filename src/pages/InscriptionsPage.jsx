@@ -427,7 +427,7 @@ export function InscriptionsPage() {
                             action: () => {
                                 setAttestationVisible(true)
                                 setAttestationData(
-                                    selectedRowsData.length == 0 ? [data?.id] : selectedRowsData.map((r) => r.id)
+                                    selectedRowsData.length === 0 ? [data?.id] : selectedRowsData.map((r) => r.id)
                                 )
                             },
                         },
