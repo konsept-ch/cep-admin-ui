@@ -36,7 +36,7 @@ export function InscriptionsPage() {
         data: inscriptions = [],
         isFetching: inscriptionsLoading,
         refetch: refetchInscriptions,
-    } = useGetInscriptionsQuery()
+    } = useGetInscriptionsQuery(null, { refetchOnMountOrArgChange: true })
 
     const predefinedFilters = [
         { id: 'onlyWebEntries', label: [STATUSES.ENTREE_WEB, STATUSES.VALIDE_PAR_RH].join('; ') },

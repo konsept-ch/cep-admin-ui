@@ -2,10 +2,8 @@
 
 # Stage 1 - the build process
 FROM node:18-bullseye-slim as build-deps
-ARG FONTAWESOME_NPM_AUTH_TOKEN
 WORKDIR /usr/src/app
 COPY ["package.json", "package-lock.json*", "./"]
-RUN npm config set '//npm.fontawesome.com/:_authToken' "$FONTAWESOME_NPM_AUTH_TOKEN"
 RUN npm ci
 COPY . .
 RUN npm run ci:check
