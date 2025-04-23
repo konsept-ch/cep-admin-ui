@@ -18,8 +18,8 @@ export const Calendar = ({ resources, events, calendarRef, refreshCallback, load
 
     const customButtons = useMemo(
         () => ({
-            myCustomButton: {
-                text: loading ? '...' : '↺',
+            refresh: {
+                text: '↺',
                 click: refreshCallback,
                 hint: 'Rafraîchir données de Claroline',
             },
@@ -80,7 +80,7 @@ export const Calendar = ({ resources, events, calendarRef, refreshCallback, load
                 initialView="dayGridWeek"
                 customButtons={customButtons}
                 headerToolbar={{
-                    left: 'today prev,next myCustomButton',
+                    left: 'today prev,next refresh',
                     center: 'title',
                     right: 'dayGridDay,dayGridWeek,dayGridMonth listWeek,listMonth resourceTimeGridDay,resourceTimeGridWeek resourceTimeline,resourceTimelineWorkWeek',
                 }}

@@ -33,6 +33,16 @@
     height: calc(100% - 132px); // 132px is the height of the header (73px) + footer (59px)
 }
 
+.calendar-loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    inset: 0;
+    z-index: 999;
+    background-color: rgba(255, 255, 255, .66);
+}
+
 .room-selection {
     height: 100%;
     width: 300px;

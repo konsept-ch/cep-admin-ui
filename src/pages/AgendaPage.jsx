@@ -9,6 +9,7 @@ import { DateTime } from 'luxon'
 import { Calendar, RoomSelection, BulkSelect, ExpandController, RoomCheckbox } from '../components'
 import { useGetAgendaQuery } from '../services/agenda'
 import { ROOM_TYPE_VIRTUAL } from '../constants/agenda'
+import PuffLoader from 'react-spinners/PuffLoader'
 
 export const AgendaPage = () => {
     const {
@@ -82,7 +83,12 @@ export const AgendaPage = () => {
             <Helmet>
                 <title>Agenda - Former22</title>
             </Helmet>
-            <div className="calendar-page mt-3">
+            <div className="calendar-page pt-3 position-relative">
+                {loading && (
+                    <div className="calendar-loader">
+                        <PuffLoader color="#e8ca01" loading size={100} />
+                    </div>
+                )}
                 <Container fluid>
                     <Calendar
                         resources={resourcesMemoized}
