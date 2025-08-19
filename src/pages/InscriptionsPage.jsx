@@ -474,8 +474,6 @@ export function InscriptionsPage() {
                         uuids: attestationData,
                         selectedAttestationTemplateUuid,
                     })
-                        .unwrap()
-                        .then(() => toast.success('La génération à été effectuée avec succès'))
                 }}
             />
 
