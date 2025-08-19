@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Modal, Button, ListGroup, Row } from 'react-bootstrap'
 import classNames from 'classnames'
 import { ConfirmInscriptionChangeButton } from '.'
-import { useGetAttestationsQuery } from '../services/attestations'
+import { useGetMinimumAttestationsQuery } from '../services/attestations'
 
 export const GenerateAttestationModal = ({ show, closeModal, generateAttestation }) => {
     const [selectedAttestationTemplateUuid, setSelectedAttestationTemplateUuid] = useState(null)
