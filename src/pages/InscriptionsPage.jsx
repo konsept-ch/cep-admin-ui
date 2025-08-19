@@ -30,7 +30,7 @@ export function InscriptionsPage() {
     const [selectedInscriptionId, setSelectedInscriptionId] = useState(null)
     const [activePredefinedFiltersById, setActivePredefinedFiltersById] = useState({ onlyWebEntries: false })
 
-    const [generateAttestation, { isLoading: generatingAttestation }] = useGenerateAttestationMutation()
+    const [generateAttestation] = useGenerateAttestationMutation()
     const [updateInscriptionStatus, { isLoading: isUpdatingInscriptionStatus }] = useUpdateInscriptionStatusMutation()
     const {
         data: inscriptions = [],
