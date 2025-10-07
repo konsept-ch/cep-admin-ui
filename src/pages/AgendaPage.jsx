@@ -78,6 +78,36 @@ export const AgendaPage = () => {
         [events, selectedRoomIds, searchedRooms]
     )
 
+    // Center calendar around the most relevant date present in dataset (closest to today),
+    // useful when ARCHIVE_MODE is enabled and recent years have no events.
+    useEffect(() => {
+        if (!calendarRef?.current) return
+        if (!events || events.length === 0) return
+
+        const now = new Date()
+        let nearestStart = null
+        for (const e of events) {
+            const d = new Date(e.start)
+            if (!nearestStart) {
+                nearestStart = d
+                continue
+            }
+            const diff = Math.abs(d - now)
+            const best = Math.abs(nearestStart - now)
+            if (diff < best) {
+                nearestStart = d
+            }
+        }
+
+        try {
+            if (nearestStart) {
+                calendarRef.current.getApi().gotoDate(nearestStart)
+            }
+        } catch (_e) {
+            // ignore if calendar not yet ready
+        }
+    }, [events])
+
     return (
         <>
             <Helmet>

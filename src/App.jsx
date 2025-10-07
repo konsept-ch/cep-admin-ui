@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import { HelmetProvider, Helmet } from 'react-helmet-async'
 import { ToastContainer } from 'react-toastify'
 import { Container } from 'react-bootstrap'
@@ -71,6 +71,7 @@ export function App() {
                 <ErrorBoundary>
                     <AuthWrapper {...{ isLoggedIn, setLoggedIn }}>
                         <Routes>
+                            <Route path="/" element={<Navigate to={`/${PATH_AGENDA}`} replace />} />
                             <Route
                                 exact
                                 path="/"

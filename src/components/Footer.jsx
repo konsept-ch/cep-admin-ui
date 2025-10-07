@@ -3,6 +3,7 @@ import { Nav, Navbar } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFileLines, faMessage } from '@fortawesome/free-regular-svg-icons'
 import { PATH_NOTIFICATIONS } from '../constants/constants'
+import { APP_VERSION } from '../version'
 
 export const Footer = ({ isLoggedIn }) => {
     const navigate = useNavigate()
@@ -19,6 +20,9 @@ export const Footer = ({ isLoggedIn }) => {
                 <Navbar bg="light" expand="xl" className="mt-auto">
                     <Nav className="me-auto" />
                     <Nav activeKey={location.pathname}>
+                        <Navbar.Text className="me-3">
+                            <small className="text-muted">v{APP_VERSION}</small>
+                        </Navbar.Text>
                         <Nav.Link>
                             <FontAwesomeIcon icon={faFileLines} /> Logs
                         </Nav.Link>

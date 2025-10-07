@@ -68,188 +68,189 @@ export const Navigation = ({ isLoggedIn }) => {
                 <Navbar.Brand href="/" onClick={goTo('/')}>
                     CEP - Former22 ({`${currentRunningEnv[0].toUpperCase()}${currentRunningEnv.slice(1)}`})
                 </Navbar.Brand>
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                {isLoggedIn && <Navbar.Toggle aria-controls="basic-navbar-nav" />}
                 <Navbar.Collapse id="basic-navbar-nav">
-                    <Nav className="me-auto" activeKey={location.pathname}>
-                        <Nav.Link href={`/${PATH_AGENDA}`} onClick={goTo(PATH_AGENDA)}>
-                            <FontAwesomeIcon icon={faCalendarDays} /> Agenda
-                        </Nav.Link>
-                        <NavDropdown
-                            active={location.pathname.startsWith(`/${PATH_INSCRIPTIONS}`)}
-                            title={
-                                <>
-                                    <FontAwesomeIcon icon={faCalendarCheck} /> Inscriptions
-                                </>
-                            }
-                        >
-                            <Nav.Link
-                                href={`/${PATH_INSCRIPTIONS}/${PATH_INSCRIPTIONS}`}
-                                onClick={goTo(`${PATH_INSCRIPTIONS}/${PATH_INSCRIPTIONS}`)}
-                            >
-                                <FontAwesomeIcon icon={faCalendarCheck} /> Participants
+                    {isLoggedIn && (
+                        <Nav className="me-auto" activeKey={location.pathname}>
+                            <Nav.Link href={`/${PATH_AGENDA}`} onClick={goTo(PATH_AGENDA)}>
+                                <FontAwesomeIcon icon={faCalendarDays} /> Agenda
                             </Nav.Link>
-                            <Nav.Link
-                                href={`/${PATH_INSCRIPTIONS}/${PATH_FORMATEURS}`}
-                                onClick={goTo(`${PATH_INSCRIPTIONS}/${PATH_FORMATEURS}`)}
+                            <NavDropdown
+                                active={location.pathname.startsWith(`/${PATH_INSCRIPTIONS}`)}
+                                title={
+                                    <>
+                                        <FontAwesomeIcon icon={faCalendarCheck} /> Inscriptions
+                                    </>
+                                }
                             >
-                                <FontAwesomeIcon icon={faChalkboardUser} /> Formateurs
-                            </Nav.Link>
-                            <Nav.Link
-                                href={`/${PATH_INSCRIPTIONS}/${PATH_ANNULATIONS}`}
-                                onClick={goTo(`${PATH_INSCRIPTIONS}/${PATH_ANNULATIONS}`)}
+                                <Nav.Link
+                                    href={`/${PATH_INSCRIPTIONS}/${PATH_INSCRIPTIONS}`}
+                                    onClick={goTo(`${PATH_INSCRIPTIONS}/${PATH_INSCRIPTIONS}`)}
+                                >
+                                    <FontAwesomeIcon icon={faCalendarCheck} /> Participants
+                                </Nav.Link>
+                                <Nav.Link
+                                    href={`/${PATH_INSCRIPTIONS}/${PATH_FORMATEURS}`}
+                                    onClick={goTo(`${PATH_INSCRIPTIONS}/${PATH_FORMATEURS}`)}
+                                >
+                                    <FontAwesomeIcon icon={faChalkboardUser} /> Formateurs
+                                </Nav.Link>
+                                <Nav.Link
+                                    href={`/${PATH_INSCRIPTIONS}/${PATH_ANNULATIONS}`}
+                                    onClick={goTo(`${PATH_INSCRIPTIONS}/${PATH_ANNULATIONS}`)}
+                                >
+                                    <FontAwesomeIcon icon={faBan} /> Annulations
+                                </Nav.Link>
+                                <Nav.Link
+                                    href={`/${PATH_INSCRIPTIONS}/${PATH_REFUSED_BY_HR}`}
+                                    onClick={goTo(`${PATH_INSCRIPTIONS}/${PATH_REFUSED_BY_HR}`)}
+                                >
+                                    <FontAwesomeIcon icon={faUserSlash} /> Refusée par RH
+                                </Nav.Link>
+                            </NavDropdown>
+                            <NavDropdown
+                                active={location.pathname.startsWith(`/${PATH_CATALOGUE}`)}
+                                title={
+                                    <>
+                                        <FontAwesomeIcon icon={faBook} /> Catalogue
+                                    </>
+                                }
                             >
-                                <FontAwesomeIcon icon={faBan} /> Annulations
-                            </Nav.Link>
-                            <Nav.Link
-                                href={`/${PATH_INSCRIPTIONS}/${PATH_REFUSED_BY_HR}`}
-                                onClick={goTo(`${PATH_INSCRIPTIONS}/${PATH_REFUSED_BY_HR}`)}
-                            >
-                                <FontAwesomeIcon icon={faUserSlash} /> Refusée par RH
-                            </Nav.Link>
-                        </NavDropdown>
-                        <NavDropdown
-                            active={location.pathname.startsWith(`/${PATH_CATALOGUE}`)}
-                            title={
-                                <>
-                                    <FontAwesomeIcon icon={faBook} /> Catalogue
-                                </>
-                            }
-                        >
-                            <Nav.Link
-                                href={`/${PATH_CATALOGUE}/${PATH_FORMATIONS}`}
-                                onClick={goTo(`${PATH_CATALOGUE}/${PATH_FORMATIONS}`)}
-                            >
-                                <FontAwesomeIcon icon={faGraduationCap} /> Formations
-                            </Nav.Link>
-                            <Nav.Link
-                                href={`/${PATH_CATALOGUE}/${PATH_SESSIONS}`}
-                                onClick={goTo(`${PATH_CATALOGUE}/${PATH_SESSIONS}`)}
-                            >
-                                <FontAwesomeIcon icon={faDisplay} /> Sessions
-                            </Nav.Link>
-                            <Nav.Link
-                                href={`/${PATH_CATALOGUE}/${PATH_SEANCES}`}
-                                onClick={goTo(`${PATH_CATALOGUE}/${PATH_SEANCES}`)}
-                            >
-                                <FontAwesomeIcon icon={faBookOpen} /> Séances
-                            </Nav.Link>
-                            <Nav.Link
-                                href={`/${PATH_CATALOGUE}/${PATH_CONTRACTS}`}
-                                onClick={goTo(`${PATH_CATALOGUE}/${PATH_CONTRACTS}`)}
-                            >
-                                <FontAwesomeIcon icon={faFileContract} /> Contrats
-                            </Nav.Link>
-                            <Nav.Link
-                                href={`/${PATH_CATALOGUE}/${PATH_EVALUATIONS}`}
-                                onClick={goTo(`${PATH_CATALOGUE}/${PATH_EVALUATIONS}`)}
-                            >
-                                <FontAwesomeIcon icon={faDna} /> Évaluations
-                            </Nav.Link>
-                        </NavDropdown>
-                        {/* <Nav.Link href={`/${PATH_TEMPLATES}`} onClick={goTo(PATH_TEMPLATES)}>
+                                <Nav.Link
+                                    href={`/${PATH_CATALOGUE}/${PATH_FORMATIONS}`}
+                                    onClick={goTo(`${PATH_CATALOGUE}/${PATH_FORMATIONS}`)}
+                                >
+                                    <FontAwesomeIcon icon={faGraduationCap} /> Formations
+                                </Nav.Link>
+                                <Nav.Link
+                                    href={`/${PATH_CATALOGUE}/${PATH_SESSIONS}`}
+                                    onClick={goTo(`${PATH_CATALOGUE}/${PATH_SESSIONS}`)}
+                                >
+                                    <FontAwesomeIcon icon={faDisplay} /> Sessions
+                                </Nav.Link>
+                                <Nav.Link
+                                    href={`/${PATH_CATALOGUE}/${PATH_SEANCES}`}
+                                    onClick={goTo(`${PATH_CATALOGUE}/${PATH_SEANCES}`)}
+                                >
+                                    <FontAwesomeIcon icon={faBookOpen} /> Séances
+                                </Nav.Link>
+                                <Nav.Link
+                                    href={`/${PATH_CATALOGUE}/${PATH_CONTRACTS}`}
+                                    onClick={goTo(`${PATH_CATALOGUE}/${PATH_CONTRACTS}`)}
+                                >
+                                    <FontAwesomeIcon icon={faFileContract} /> Contrats
+                                </Nav.Link>
+                                <Nav.Link
+                                    href={`/${PATH_CATALOGUE}/${PATH_EVALUATIONS}`}
+                                    onClick={goTo(`${PATH_CATALOGUE}/${PATH_EVALUATIONS}`)}
+                                >
+                                    <FontAwesomeIcon icon={faDna} /> Évaluations
+                                </Nav.Link>
+                            </NavDropdown>
+                            {/* <Nav.Link href={`/${PATH_TEMPLATES}`} onClick={goTo(PATH_TEMPLATES)}>
                             <FontAwesomeIcon icon={faEnvelopeOpenText} /> Modèles
                         </Nav.Link> */}
-                        <NavDropdown
-                            active={location.pathname.startsWith(`/${PATH_TEMPLATES}`)}
-                            title={
-                                <>
-                                    <FontAwesomeIcon icon={faEnvelopeOpenText} /> Modèles
-                                </>
-                            }
-                        >
-                            <Nav.Link
-                                href={`/${PATH_TEMPLATES}/${PATH_EMAIL_TEMPLATES}`}
-                                onClick={goTo(`${PATH_TEMPLATES}/${PATH_EMAIL_TEMPLATES}`)}
+                            <NavDropdown
+                                active={location.pathname.startsWith(`/${PATH_TEMPLATES}`)}
+                                title={
+                                    <>
+                                        <FontAwesomeIcon icon={faEnvelopeOpenText} /> Modèles
+                                    </>
+                                }
                             >
-                                <FontAwesomeIcon icon={faEnvelopeOpenText} /> E-mails
-                            </Nav.Link>
-                            <Nav.Link
-                                href={`/${PATH_TEMPLATES}/${PATH_ATTESTATION_TEMPLATES}`}
-                                onClick={goTo(`${PATH_TEMPLATES}/${PATH_ATTESTATION_TEMPLATES}`)}
+                                <Nav.Link
+                                    href={`/${PATH_TEMPLATES}/${PATH_EMAIL_TEMPLATES}`}
+                                    onClick={goTo(`${PATH_TEMPLATES}/${PATH_EMAIL_TEMPLATES}`)}
+                                >
+                                    <FontAwesomeIcon icon={faEnvelopeOpenText} /> E-mails
+                                </Nav.Link>
+                                <Nav.Link
+                                    href={`/${PATH_TEMPLATES}/${PATH_ATTESTATION_TEMPLATES}`}
+                                    onClick={goTo(`${PATH_TEMPLATES}/${PATH_ATTESTATION_TEMPLATES}`)}
+                                >
+                                    <FontAwesomeIcon icon={faCertificate} /> Attestations
+                                </Nav.Link>
+                                <Nav.Link
+                                    href={`/${PATH_TEMPLATES}/${PATH_CONTRACTS}`}
+                                    onClick={goTo(`${PATH_TEMPLATES}/${PATH_CONTRACTS}`)}
+                                >
+                                    <FontAwesomeIcon icon={faFileContract} /> Contrats
+                                </Nav.Link>
+                                <Nav.Link
+                                    href={`/${PATH_TEMPLATES}/${PATH_EVALUATIONS}`}
+                                    onClick={goTo(`${PATH_TEMPLATES}/${PATH_EVALUATIONS}`)}
+                                >
+                                    <FontAwesomeIcon icon={faDna} /> Évaluations
+                                </Nav.Link>
+                            </NavDropdown>
+                            <NavDropdown
+                                active={location.pathname.startsWith(`/${PATH_INVOICE}`)}
+                                title={
+                                    <>
+                                        <FontAwesomeIcon icon={faFileInvoiceDollar} /> Factures
+                                    </>
+                                }
                             >
-                                <FontAwesomeIcon icon={faCertificate} /> Attestations
-                            </Nav.Link>
-                            <Nav.Link
-                                href={`/${PATH_TEMPLATES}/${PATH_CONTRACTS}`}
-                                onClick={goTo(`${PATH_TEMPLATES}/${PATH_CONTRACTS}`)}
+                                <Nav.Link
+                                    href={`/${PATH_INVOICE}/${PATH_INVOICE_DIRECT}`}
+                                    onClick={goTo(`${PATH_INVOICE}/${PATH_INVOICE_DIRECT}`)}
+                                >
+                                    <FontAwesomeIcon icon={faFileInvoiceDollar} /> Directes
+                                </Nav.Link>
+                                <Nav.Link
+                                    href={`/${PATH_INVOICE}/${PATH_INVOICE_GROUPED}`}
+                                    onClick={goTo(`${PATH_INVOICE}/${PATH_INVOICE_GROUPED}`)}
+                                >
+                                    <FontAwesomeIcon icon={faObjectGroup} /> Groupées
+                                </Nav.Link>
+                                <Nav.Link
+                                    href={`/${PATH_INVOICE}/${PATH_INVOICE_MANUAL}`}
+                                    onClick={goTo(`${PATH_INVOICE}/${PATH_INVOICE_MANUAL}`)}
+                                >
+                                    <FontAwesomeIcon icon={faHandHoldingDollar} /> Manuelles
+                                </Nav.Link>
+                                <Nav.Link
+                                    href={`/${PATH_INVOICE}/${PATH_INVOICE_ALL}`}
+                                    onClick={goTo(`${PATH_INVOICE}/${PATH_INVOICE_ALL}`)}
+                                >
+                                    <FontAwesomeIcon icon={faInfinity} /> Toutes
+                                </Nav.Link>
+                                <Nav.Link
+                                    href={`/${PATH_INVOICE}/${PATH_INVOICE_QUOTAS}`}
+                                    onClick={goTo(`${PATH_INVOICE}/${PATH_INVOICE_QUOTAS}`)}
+                                >
+                                    <FontAwesomeIcon icon={faPersonCircleCheck} /> Quotas
+                                </Nav.Link>
+                            </NavDropdown>
+                            <NavDropdown
+                                active={location.pathname.startsWith(`/${PATH_COMMUNITY}`)}
+                                title={
+                                    <>
+                                        <FontAwesomeIcon icon={faUsers} /> Communauté
+                                    </>
+                                }
                             >
-                                <FontAwesomeIcon icon={faFileContract} /> Contrats
-                            </Nav.Link>
-                            <Nav.Link
-                                href={`/${PATH_TEMPLATES}/${PATH_EVALUATIONS}`}
-                                onClick={goTo(`${PATH_TEMPLATES}/${PATH_EVALUATIONS}`)}
-                            >
-                                <FontAwesomeIcon icon={faDna} /> Évaluations
-                            </Nav.Link>
-                        </NavDropdown>
-                        <NavDropdown
-                            active={location.pathname.startsWith(`/${PATH_INVOICE}`)}
-                            title={
-                                <>
-                                    <FontAwesomeIcon icon={faFileInvoiceDollar} /> Factures
-                                </>
-                            }
-                        >
-                            <Nav.Link
-                                href={`/${PATH_INVOICE}/${PATH_INVOICE_DIRECT}`}
-                                onClick={goTo(`${PATH_INVOICE}/${PATH_INVOICE_DIRECT}`)}
-                            >
-                                <FontAwesomeIcon icon={faFileInvoiceDollar} /> Directes
-                            </Nav.Link>
-                            <Nav.Link
-                                href={`/${PATH_INVOICE}/${PATH_INVOICE_GROUPED}`}
-                                onClick={goTo(`${PATH_INVOICE}/${PATH_INVOICE_GROUPED}`)}
-                            >
-                                <FontAwesomeIcon icon={faObjectGroup} /> Groupées
-                            </Nav.Link>
-                            <Nav.Link
-                                href={`/${PATH_INVOICE}/${PATH_INVOICE_MANUAL}`}
-                                onClick={goTo(`${PATH_INVOICE}/${PATH_INVOICE_MANUAL}`)}
-                            >
-                                <FontAwesomeIcon icon={faHandHoldingDollar} /> Manuelles
-                            </Nav.Link>
-                            <Nav.Link
-                                href={`/${PATH_INVOICE}/${PATH_INVOICE_ALL}`}
-                                onClick={goTo(`${PATH_INVOICE}/${PATH_INVOICE_ALL}`)}
-                            >
-                                <FontAwesomeIcon icon={faInfinity} /> Toutes
-                            </Nav.Link>
-                            <Nav.Link
-                                href={`/${PATH_INVOICE}/${PATH_INVOICE_QUOTAS}`}
-                                onClick={goTo(`${PATH_INVOICE}/${PATH_INVOICE_QUOTAS}`)}
-                            >
-                                <FontAwesomeIcon icon={faPersonCircleCheck} /> Quotas
-                            </Nav.Link>
-                        </NavDropdown>
-                        <NavDropdown
-                            active={location.pathname.startsWith(`/${PATH_COMMUNITY}`)}
-                            title={
-                                <>
-                                    <FontAwesomeIcon icon={faUsers} /> Communauté
-                                </>
-                            }
-                        >
-                            <Nav.Link
-                                href={`/${PATH_COMMUNITY}/${PATH_USERS}`}
-                                onClick={goTo(`${PATH_COMMUNITY}/${PATH_USERS}`)}
-                            >
-                                <FontAwesomeIcon icon={faUsers} /> Utilisateurs
-                            </Nav.Link>
-                            <Nav.Link
-                                href={`/${PATH_COMMUNITY}/${PATH_ORGANIZATIONS}`}
-                                onClick={goTo(`${PATH_COMMUNITY}/${PATH_ORGANIZATIONS}`)}
-                            >
-                                <FontAwesomeIcon icon={faList} /> Organisations
-                            </Nav.Link>
-                            <Nav.Link
-                                href={`/${PATH_COMMUNITY}/${PATH_FORMATEURS}`}
-                                onClick={goTo(`${PATH_COMMUNITY}/${PATH_FORMATEURS}`)}
-                            >
-                                <FontAwesomeIcon icon={faChalkboardUser} /> Formateurs
-                            </Nav.Link>
-                        </NavDropdown>
+                                <Nav.Link
+                                    href={`/${PATH_COMMUNITY}/${PATH_USERS}`}
+                                    onClick={goTo(`${PATH_COMMUNITY}/${PATH_USERS}`)}
+                                >
+                                    <FontAwesomeIcon icon={faUsers} /> Utilisateurs
+                                </Nav.Link>
+                                <Nav.Link
+                                    href={`/${PATH_COMMUNITY}/${PATH_ORGANIZATIONS}`}
+                                    onClick={goTo(`${PATH_COMMUNITY}/${PATH_ORGANIZATIONS}`)}
+                                >
+                                    <FontAwesomeIcon icon={faList} /> Organisations
+                                </Nav.Link>
+                                <Nav.Link
+                                    href={`/${PATH_COMMUNITY}/${PATH_FORMATEURS}`}
+                                    onClick={goTo(`${PATH_COMMUNITY}/${PATH_FORMATEURS}`)}
+                                >
+                                    <FontAwesomeIcon icon={faChalkboardUser} /> Formateurs
+                                </Nav.Link>
+                            </NavDropdown>
 
-                        {/* <NavDropdown
+                            {/* <NavDropdown
                             title={
                                 <>
                                     <FontAwesomeIcon icon={faDollar} /> Finances
@@ -270,7 +271,8 @@ export const Navigation = ({ isLoggedIn }) => {
                         <Nav.Link>
                             <FontAwesomeIcon icon={faGear} /> Paramètres
                         </Nav.Link> */}
-                    </Nav>
+                        </Nav>
+                    )}
                     {isLoggedIn && (
                         <Nav>
                             <Nav.Link
