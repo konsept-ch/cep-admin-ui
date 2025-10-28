@@ -4,10 +4,10 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [archive-0.0.4] - 2025-10-28
 ### Fixed
-- Corrected contract download filenames by decoding `Content-Disposition` headers (including UTF-8 encodings).
+- Corrected contract download filenames by decoding `Content-Disposition`, sanitising names, and deriving extensions from MIME types.
 
 ### Added
-- Unit tests for filename extraction in `resolveFilename`.
+- Unit tests covering filename resolution and MIME-based extension fallbacks.
 
 ## [0.0.3] - 2025-10-28
 ### Fixed
