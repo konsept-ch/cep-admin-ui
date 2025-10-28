@@ -1,6 +1,13 @@
-# Changelog
+﻿# Changelog
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+
+## [archive-0.0.4] - 2025-10-28
+### Fixed
+- Corrected contract download filenames by decoding `Content-Disposition` headers (including UTF-8 encodings).
+
+### Added
+- Unit tests for filename extraction in `resolveFilename`.
 
 ## [0.0.3] - 2025-10-28
 ### Fixed
