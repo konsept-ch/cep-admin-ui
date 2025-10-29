@@ -33,6 +33,7 @@ export const prepareBaseQuery =
                 method,
                 body: body && !isFormData ? JSON.stringify(body) : body,
             })
+            if (options.responseHandler) return await options.responseHandler(response)
 
             const json = await response2Json(response)
 
