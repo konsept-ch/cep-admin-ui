@@ -2,6 +2,10 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [archive-0.0.6] - 2025-10-31
+### Fixed
+- Ensure custom `responseHandler`s only run on successful responses, preserving error propagation and toast notifications from `prepareBaseQuery`.
+
 ## [archive-0.0.4] - 2025-10-28
 ### Fixed
 - Corrected contract download filenames by decoding `Content-Disposition`, sanitising names, and deriving extensions from MIME types.

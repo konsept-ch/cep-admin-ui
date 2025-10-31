@@ -40,7 +40,11 @@ describe('buildDownloadFilename', () => {
     it('appends extension when missing', () => {
         const header = 'attachment; filename="Contrat formateur"'
         expect(
-            buildDownloadFilename({ contentDisposition: header, mimeType: 'application/pdf', fallbackBaseName: 'contrat' })
+            buildDownloadFilename({
+                contentDisposition: header,
+                mimeType: 'application/pdf',
+                fallbackBaseName: 'contrat',
+            })
         ).toBe('Contrat formateur.pdf')
     })
 
@@ -68,7 +72,11 @@ describe('buildDownloadFilename', () => {
     it('retains existing extension', () => {
         const header = 'attachment; filename="Contrat.pdf"'
         expect(
-            buildDownloadFilename({ contentDisposition: header, mimeType: 'application/pdf', fallbackBaseName: 'contrat' })
+            buildDownloadFilename({
+                contentDisposition: header,
+                mimeType: 'application/pdf',
+                fallbackBaseName: 'contrat',
+            })
         ).toBe('Contrat.pdf')
     })
 

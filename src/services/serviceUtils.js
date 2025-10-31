@@ -114,14 +114,10 @@ export const prepareBaseQuery =
                 ...fetchOverrides,
             })
 
-            const handlerResponse = responseHandler ? response.clone() : null
-            const data =
-                responseHandler && handlerResponse
-                    ? await responseHandler(handlerResponse)
-                    : await parseBody(response.clone())
+            const parsedBody = await parseBody(response.clone())
 
             if (!response.ok) {
-                const errorData = (await parseBody(response)) ?? data
+                const errorData = parsedBody ?? (await parseBody(response))
                 const errorPayload = toErrorPayload(response, errorData)
                 showToastIfAny({ ...errorPayload, severity: 'error' })
 
@@ -130,6 +126,14 @@ export const prepareBaseQuery =
                 }
             }
 
+            if (responseHandler) {
+                const handlerResult = await responseHandler(response)
+                showToastIfAny(parsedBody)
+
+                return { data: handlerResult }
+            }
+
+            const data = parsedBody ?? (await parseBody(response))
             const toastPayload =
                 data && typeof data === 'object' && !Array.isArray(data)
                     ? data
