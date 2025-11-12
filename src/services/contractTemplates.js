@@ -23,9 +23,8 @@ export const contractTemplatesApi = createApi({
             }),
         }),
         deleteContract: builder.mutation({
-            query: ({ uuid, shouldForceDelete }) => ({
+            query: ({ uuid }) => ({
                 url: uuid,
-                params: { shouldForceDelete },
                 method: 'DELETE',
             }),
         }),

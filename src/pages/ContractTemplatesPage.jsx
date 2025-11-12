@@ -73,62 +73,16 @@ export function ContractTemplatesPage() {
             formData.append('file', uploadedFile)
         }
 
-        const { error } = await updateContract({ uuid: selectedTemplateUuid, formData })
-
-        if (error == null) {
-            toast.success('Modèle de contrat modifiée')
-        } else {
-            toast.error('Erreur de modification du modèle de contrat', { autoClose: false })
-        }
-
+        await updateContract({ uuid: selectedTemplateUuid, formData })
         reset({ title, description, file: {} })
 
         await refetch()
     })
 
-    const onDeleteButtonClick = async ({ shouldForceDelete }) => {
-        const { error } = await deleteContract({ uuid: selectedTemplateUuid, shouldForceDelete })
-
-        if (error.status === 400) {
-            toast.error('Ce modèle de contrat a déjà été utilisé et ne peut plus être supprimé.', {
-                autoClose: false,
-            })
-
-            toast(
-                ({ closeToast }) => (
-                    <div>
-                        <p>Ce modèle de contrat a déjà été utilisé.</p>
-                        <p>Si vous le supprimez, il n'y aura plus de trâce dans les inscriptions qui l'ont utilisé.</p>
-                        <Button
-                            className="d-block mb-1"
-                            variant="danger"
-                            onClick={async () => {
-                                await onDeleteButtonClick({ shouldForceDelete: true })
-
-                                closeToast()
-                            }}
-                        >
-                            <FontAwesomeIcon icon={faTrash} /> Forcer la suppression ?
-                        </Button>
-                    </div>
-                ),
-                {
-                    autoClose: false,
-                    toastId: `retry-delete`,
-                }
-            )
-        } else if (error) {
-            console.error(error)
-
-            toast.error('Erreur de suppression du modèle de contrat', { autoClose: false })
-        } else {
-            toast.success('Modèle de contrat supprimée')
-
-            setSelectedTemplateUuid(null)
-
-            setIsDeleteWarningVisible(false)
-        }
-
+    const onDeleteButtonClick = async () => {
+        await deleteContract({ uuid: selectedTemplateUuid })
+        setSelectedTemplateUuid(null)
+        setIsDeleteWarningVisible(false)
         await refetch()
     }
 
