@@ -1,19 +1,19 @@
 const mapCurrentUrlToEnv = {
-    'https://former22.cep.swiss': 'prod',
-    'https://former22.cep-val.ch': 'val',
+    'https://former22.dgcs.swiss': 'prod',
+    'https://former22.dgcs-val.ch': 'val',
     'http://localhost:3000': 'local',
     'http://127.0.0.1:3000': 'local',
     'https://former22.formationdgcs.ch': 'dgcs-prod',
-    'https://former22.cffe.cep.swiss': 'cffe-prod',
-    'https://former22.cffe.cep-val.ch': 'cffe-val',
+    'https://former22.cffe.dgcs.swiss': 'cffe-prod',
+    'https://former22.cffe.dgcs-val.ch': 'cffe-val',
 }
 const mapCurrentEnvToMiddlewareUrl = {
-    prod: 'https://middleware.cep.swiss',
-    val: 'https://middleware.cep-val.ch',
+    prod: 'https://middleware.dgcs.swiss',
+    val: 'https://middleware.dgcs-val.ch',
     local: 'http://localhost:4000',
     'dgcs-prod': 'https://middleware.formationdgcs.ch',
-    'cffe-prod': 'https://middleware.cffe.cep.swiss',
-    'cffe-val': 'https://middleware.cffe.cep-val.ch',
+    'cffe-prod': 'https://middleware.cffe.dgcs.swiss',
+    'cffe-val': 'https://middleware.cffe.dgcs-val.ch',
 }
 
 export const currentRunningEnv = mapCurrentUrlToEnv[window.location.origin] ?? 'other'

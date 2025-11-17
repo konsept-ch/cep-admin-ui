@@ -63,7 +63,7 @@ export class ErrorBoundary extends Component {
                     </p>
                     <p>
                         <a
-                            href={`mailto:info@konsept.ch?cc=info.cep@vd.ch&subject=Erreur&body=${encodeURIComponent(
+                            href={`mailto:info@konsept.ch?cc=info.dgcs@vd.ch&subject=Erreur&body=${encodeURIComponent(
                                 `Bonjour
 
 Nous avons observé l'erreur suivante (texte ci-dessous généré par l'application) :

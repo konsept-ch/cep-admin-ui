@@ -85,5 +85,5 @@ jobs:
       #     labels: ${{ steps.meta.outputs.labels }}
       #     build-args: |
       #       FONTAWESOME_NPM_AUTH_TOKEN=${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}
-      #       REACT_APP_SERVICES_URL=https://middleware.cep-val.ch
+      #       REACT_APP_SERVICES_URL=https://middleware.dgcs-val.ch
       #     provenance: false

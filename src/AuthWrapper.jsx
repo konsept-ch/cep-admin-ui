@@ -154,9 +154,9 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                                         // value={type}
                                         // onChange={onChangeEventField({ fieldName: 'type', id })}
                                     >
-                                        <option value="dev">DEV (cep-dev.ch)</option>
-                                        <option value="val">VAL (cep-val.ch)</option>
-                                        <option value="prod">PROD (cep.swiss)</option>
+                                        <option value="dev">DEV (dgcs-dev.ch)</option>
+                                        <option value="val">VAL (dgcs-val.ch)</option>
+                                        <option value="prod">PROD (dgcs.swiss)</option>
                                     </Form.Select>
                                 </InputGroup>
                             </Form.Group> */}
