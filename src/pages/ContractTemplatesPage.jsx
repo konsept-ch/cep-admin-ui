@@ -47,13 +47,8 @@ export function ContractTemplatesPage() {
         const { data, error } = await createContract()
 
         if (error == null) {
-            toast.success('Modèle de contrat créée')
-
             setSelectedTemplateUuid(data.uuid)
-
             reset({ title: data.title, description: data.description, file: {} })
-        } else {
-            toast.error('Erreur de création du modèle de contrat', { autoClose: false })
         }
 
         await refetch()
