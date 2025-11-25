@@ -52,10 +52,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
 
         cookies.set('email', email, { path, maxAge: 99999999 })
 
-        const { data } = await sendCode({ email })
-
-        if (!data.isCodeSendingSuccessful)
-            toast.error("Votre token n'est pas trouvé dans Claroline, merci de contacter votre administrateur")
+        await sendCode({ email })
     }
 
     async function onLoginButtonClick(e) {
@@ -63,7 +60,7 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
 
         const { data } = await checkCodeAndToken({ email, code, token })
 
-        if (data.areCodeAndTokenCorrect) {
+        if (data.authenticated) {
             cookies.set('rememberMe', shouldRememberMe, { path, maxAge })
             cookies.set('isLoggedIn', true, { path, maxAge })
             cookies.set('code', code, { path, maxAge })
@@ -74,10 +71,6 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
             keepAliveInterval = setInterval(() => {
                 keepAuthAlive({ path, maxAge })
             }, (maxAge / 2) * 1000)
-        } else {
-            toast.error(
-                "Votre token n'est pas trouvé dans Claroline ou n'est pas associé à votre compte, ou votre code e-mail n'est pas correct"
-            )
         }
     }
 
