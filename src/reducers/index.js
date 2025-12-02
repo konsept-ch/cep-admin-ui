@@ -5,7 +5,8 @@ import { loadingSelectors } from './loading'
 import { templatesSelectors } from './templates'
 import { formateursSelectors } from './formateurs'
 
-export const roomsAndEventsSelector = (state) => agendaSelectors.roomsAndEventsSelector(state.agenda)
+export const roomsAndEventsSelector = (state) =>
+    agendaSelectors.roomsAndEventsSelector(state?.agenda ?? {}) ?? { rooms: [], events: [] }
 export const inscriptionsSelector = (state) => inscriptionsSelectors.inscriptionsSelector(state.inscriptions)
 export const parametersSelector = (state) => parametersSelectors.parametersSelector(state.parameters)
 export const loadingSelector = (state) => loadingSelectors.loadingSelector(state.loading)

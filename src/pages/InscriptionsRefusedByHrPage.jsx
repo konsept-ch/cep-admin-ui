@@ -58,7 +58,19 @@ export function InscriptionsRefusedByHrPage() {
         refetchOnMountOrArgChange: true,
     })
 
-    const rowData = inscriptions
+    const inscriptionsList = useMemo(() => {
+        if (Array.isArray(inscriptions)) {
+            return inscriptions
+        }
+
+        if (Array.isArray(inscriptions?.data)) {
+            return inscriptions.data
+        }
+
+        return []
+    }, [inscriptions])
+
+    const rowData = inscriptionsList
         ?.filter((current) => current != null)
         .map(({ id, user = {}, session, status, attestationTitle, inscriptionDate, type, coordinator, isPending }) => ({
             id,

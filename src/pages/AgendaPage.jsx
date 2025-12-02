@@ -12,7 +12,7 @@ import { roomsAndEventsSelector } from '../reducers'
 import { ROOM_TYPE_VIRTUAL } from '../constants/agenda'
 
 export const AgendaPage = () => {
-    const { rooms, events } = useSelector(roomsAndEventsSelector)
+    const { rooms = [], events = [] } = useSelector(roomsAndEventsSelector) || {}
     const [selectedRoomIds, setSelectedRoomIds] = useState({})
     const dispatch = useDispatch()
     const [isRoomSelectionExpanded, setRoomSelectionExpanded] = useState(true)

@@ -8,7 +8,8 @@ export const agendaReducer = (state = initialState, action) => {
     switch (action.type) {
         case SET_AGENDA:
             return {
-                roomsAndEvents: action.payload.roomsAndEvents,
+                roomsAndEvents:
+                    action.payload?.roomsAndEvents ?? state.roomsAndEvents ?? initialState.roomsAndEvents,
             }
         default:
             return state
@@ -16,5 +17,5 @@ export const agendaReducer = (state = initialState, action) => {
 }
 
 export const agendaSelectors = {
-    roomsAndEventsSelector: (state) => state.roomsAndEvents,
+    roomsAndEventsSelector: (state) => state?.roomsAndEvents ?? initialState.roomsAndEvents,
 }
