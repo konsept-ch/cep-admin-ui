@@ -187,11 +187,7 @@ export const EvaluationModal = ({ closeModal, isVisible, data }) => {
                                 template: selectedTemplateUuid,
                                 email: selectedEmailUuid,
                                 users: selectedUserUuids,
-                            }).then((response) => {
-                                const msg = response.error ? response.error : response.data.message
-                                if (!response.error) toast.success(msg)
-                                onCloseModal()
-                            })
+                            }).unwrap().then(() => onCloseModal())
                         }}
                     >
                         Générer évaluation

@@ -17,6 +17,7 @@ export const evaluationsApi = createApi({
         }),
         createEvaluation: builder.mutation({
             query: (body) => ({
+                url: '',
                 method: 'POST',
                 body,
             }),
