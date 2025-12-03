@@ -187,7 +187,9 @@ export const EvaluationModal = ({ closeModal, isVisible, data }) => {
                                 template: selectedTemplateUuid,
                                 email: selectedEmailUuid,
                                 users: selectedUserUuids,
-                            }).unwrap().then(() => onCloseModal())
+                            })
+                                .unwrap()
+                                .then(() => onCloseModal())
                         }}
                     >
                         Générer évaluation
