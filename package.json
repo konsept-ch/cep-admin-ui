@@ -10,6 +10,8 @@
     "npm": ">=8.19.3"
   },
   "scripts": {
+    "prestart": "node scripts/prebuild.js",
+    "prebuild": "node scripts/prebuild.js",
     "start": "cross-env TSC_COMPILE_ON_ERROR=true DISABLE_ESLINT_PLUGIN=true react-scripts start",
     "test": "react-scripts test --watchAll=false",
     "build": "react-scripts build",
