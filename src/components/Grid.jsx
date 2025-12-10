@@ -32,8 +32,7 @@ export const Grid = ({
     components = {},
     defaultColDef,
     defaultSortModel,
-    defaultFilterModel = undefined,
-    onPathnameChange = null,
+    filterModel = undefined,
     ...gridProps
 }) => {
     const [gridApi, setGridApi] = useState(null)
@@ -78,16 +77,9 @@ export const Grid = ({
     }, [activePredefinedFiltersById, name, rowData, gridApi])
 
     useEffect(() => {
-        if (rowData?.length > 0 && defaultFilterModel !== undefined && gridApi != null) {
-            gridApi.setFilterModel(defaultFilterModel)
-        }
-    }, [gridApi, rowData])
-
-    useEffect(() => {
-        if (onPathnameChange != null) {
-            onPathnameChange(gridApi)
-        }
-    }, [onPathnameChange, gridApi])
+        if (filterModel === undefined || gridApi == null) return
+        gridApi.setFilterModel(filterModel)
+    }, [gridApi, filterModel])
 
     const onGridReady = useCallback(
         ({ api, columnApi }) => {
