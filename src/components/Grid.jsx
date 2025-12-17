@@ -130,13 +130,10 @@ export const Grid = ({
         })
     }, [gridColumnApi, sortModel, defaultSortModel])
 
-    const onGridReady = useCallback(
-        ({ api, columnApi }) => {
-            setGridApi(api)
-            setGridColumnApi(columnApi)
-        },
-        []
-    )
+    const onGridReady = useCallback(({ api, columnApi }) => {
+        setGridApi(api)
+        setGridColumnApi(columnApi)
+    }, [])
 
     const pageIcon = useMemo(() => mapPathnameToIcon[location.pathname], [location.pathname])
 
