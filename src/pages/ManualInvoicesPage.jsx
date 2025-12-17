@@ -76,10 +76,15 @@ export function ManualInvoicesPage() {
         refetch: refetchInvoices,
     } = useGetManualInvoicesQuery(null, { refetchOnMountOrArgChange: true })
 
-    const storageKey = useMemo(() => `manualInvoicesFilter:${location.pathname}`, [location.pathname])
+    const filterStorageKey = useMemo(() => `manualInvoicesFilter:${location.pathname}`, [location.pathname])
+    const sortStorageKey = useMemo(() => `manualInvoicesSort:${location.pathname}`, [location.pathname])
+    const groupStorageKey = useMemo(() => `manualInvoicesGroup:${location.pathname}`, [location.pathname])
+
     const defaultFilterModel = useMemo(() => getDefaultFilterModel(location.pathname), [location.pathname])
+    const defaultSortModel = useMemo(() => [{ colId: 'invoiceNumber', sort: 'asc', sortIndex: 0 }], [])
+    const defaultGroupModel = useMemo(() => [], [])
     const [filterModel, setFilterModel] = useState(() => {
-        const stored = sessionStorage.getItem(storageKey)
+        const stored = sessionStorage.getItem(filterStorageKey)
         if (stored) {
             try {
                 return JSON.parse(stored)
@@ -91,11 +96,11 @@ export function ManualInvoicesPage() {
     })
 
     useEffect(() => {
-        sessionStorage.setItem(storageKey, JSON.stringify(filterModel))
-    }, [filterModel, storageKey])
+        sessionStorage.setItem(filterStorageKey, JSON.stringify(filterModel))
+    }, [filterModel, filterStorageKey])
 
     useEffect(() => {
-        const stored = sessionStorage.getItem(storageKey)
+        const stored = sessionStorage.getItem(filterStorageKey)
         if (stored) {
             try {
                 setFilterModel(JSON.parse(stored))
@@ -105,7 +110,65 @@ export function ManualInvoicesPage() {
             }
         }
         setFilterModel(defaultFilterModel)
-    }, [defaultFilterModel, storageKey])
+    }, [defaultFilterModel, filterStorageKey])
+
+    const [sortModel, setSortModel] = useState(() => {
+        const stored = sessionStorage.getItem(sortStorageKey)
+        if (stored) {
+            try {
+                return JSON.parse(stored)
+            } catch (error) {
+                // ignore parse errors and fall back to defaults
+            }
+        }
+        return defaultSortModel
+    })
+
+    useEffect(() => {
+        sessionStorage.setItem(sortStorageKey, JSON.stringify(sortModel))
+    }, [sortModel, sortStorageKey])
+
+    useEffect(() => {
+        const stored = sessionStorage.getItem(sortStorageKey)
+        if (stored) {
+            try {
+                setSortModel(JSON.parse(stored))
+                return
+            } catch (error) {
+                // ignore parse errors and fall back to defaults
+            }
+        }
+        setSortModel(defaultSortModel)
+    }, [defaultSortModel, sortStorageKey])
+
+    const [groupModel, setGroupModel] = useState(() => {
+        const stored = sessionStorage.getItem(groupStorageKey)
+        if (stored) {
+            try {
+                return JSON.parse(stored)
+            } catch (error) {
+                // ignore parse errors and fall back to defaults
+            }
+        }
+        return defaultGroupModel
+    })
+
+    useEffect(() => {
+        sessionStorage.setItem(groupStorageKey, JSON.stringify(groupModel))
+    }, [groupModel, groupStorageKey])
+
+    useEffect(() => {
+        const stored = sessionStorage.getItem(groupStorageKey)
+        if (stored) {
+            try {
+                setGroupModel(JSON.parse(stored))
+                return
+            } catch (error) {
+                // ignore parse errors and fall back to defaults
+            }
+        }
+        setGroupModel(defaultGroupModel)
+    }, [defaultGroupModel, groupStorageKey])
 
     const openInvoiceEditModal = ({ id }) => {
         if (id == null) return
@@ -298,6 +361,32 @@ export function ManualInvoicesPage() {
         })
     }
 
+    const handleSortChange = ({ columnApi }) => {
+        const nextModel = (columnApi?.getColumnState?.() ?? [])
+            .filter(({ sort }) => sort != null)
+            .map(({ colId, sort, sortIndex }) => ({ colId, sort, sortIndex }))
+            .sort((a, b) => (a.sortIndex ?? 0) - (b.sortIndex ?? 0))
+
+        setSortModel((previous) => {
+            const prevString = JSON.stringify(previous ?? [])
+            const nextString = JSON.stringify(nextModel)
+            return prevString === nextString ? previous : nextModel
+        })
+    }
+
+    const handleGroupChange = ({ columnApi }) => {
+        const nextModel = (columnApi?.getColumnState?.() ?? [])
+            .filter(({ rowGroup }) => rowGroup === true)
+            .map(({ colId, rowGroupIndex }) => ({ colId, rowGroup: true, rowGroupIndex }))
+            .sort((a, b) => (a.rowGroupIndex ?? 0) - (b.rowGroupIndex ?? 0))
+
+        setGroupModel((previous) => {
+            const prevString = JSON.stringify(previous ?? [])
+            const nextString = JSON.stringify(nextModel)
+            return prevString === nextString ? previous : nextModel
+        })
+    }
+
     return (
         <>
             <Helmet>
@@ -308,7 +397,9 @@ export function ManualInvoicesPage() {
                 columnDefs={columnDefs}
                 rowData={invoicesData}
                 isDataLoading={isFetchingInvoices || isStatusesUpdating}
-                defaultSortModel={[{ colId: 'invoiceNumber', sort: 'asc', sortIndex: 0 }]}
+                defaultSortModel={defaultSortModel}
+                sortModel={sortModel}
+                groupModel={groupModel}
                 filterModel={filterModel}
                 getContextMenuItems={({ node: { data } }) => [
                     {
@@ -458,6 +549,8 @@ export function ManualInvoicesPage() {
                     ...gridContextMenu,
                 ]}
                 onFilterChanged={handleFilterChange}
+                onSortChanged={handleSortChange}
+                onColumnRowGroupChanged={handleGroupChange}
                 onRowSelected={({
                     api: {
                         selectionService: { selectedNodes },

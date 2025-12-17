@@ -32,10 +32,13 @@ export const Grid = ({
     components = {},
     defaultColDef,
     defaultSortModel,
+    sortModel,
+    groupModel,
     filterModel = undefined,
     ...gridProps
 }) => {
     const [gridApi, setGridApi] = useState(null)
+    const [gridColumnApi, setGridColumnApi] = useState(null)
     const [filterValue, setFilterValue] = useState('')
     const location = useLocation()
 
@@ -81,15 +84,58 @@ export const Grid = ({
         gridApi.setFilterModel(filterModel)
     }, [gridApi, filterModel])
 
+    useEffect(() => {
+        if (gridColumnApi == null || groupModel === undefined) return
+
+        if (Array.isArray(groupModel) && groupModel.length === 0) {
+            const resetState = (gridColumnApi.getColumnState?.() ?? []).map(({ colId }) => ({
+                colId,
+                rowGroup: false,
+                rowGroupIndex: null,
+            }))
+            gridColumnApi.applyColumnState({
+                state: resetState,
+                defaultState: { rowGroup: false, rowGroupIndex: null },
+            })
+            return
+        }
+
+        gridColumnApi.applyColumnState({
+            state: groupModel,
+            defaultState: { rowGroup: false, rowGroupIndex: null },
+        })
+    }, [gridColumnApi, groupModel])
+
+    useEffect(() => {
+        if (gridColumnApi == null) return
+        const modelToApply = sortModel ?? defaultSortModel
+        if (modelToApply === undefined) return
+
+        if (Array.isArray(modelToApply) && modelToApply.length === 0) {
+            const resetState = (gridColumnApi.getColumnState?.() ?? []).map(({ colId }) => ({
+                colId,
+                sort: null,
+                sortIndex: null,
+            }))
+            gridColumnApi.applyColumnState({
+                state: resetState,
+                defaultState: { sort: null, sortIndex: null },
+            })
+            return
+        }
+
+        gridColumnApi.applyColumnState({
+            state: modelToApply,
+            defaultState: { sort: null, sortIndex: null },
+        })
+    }, [gridColumnApi, sortModel, defaultSortModel])
+
     const onGridReady = useCallback(
         ({ api, columnApi }) => {
             setGridApi(api)
-
-            if (defaultSortModel !== undefined) {
-                columnApi.applyColumnState({ state: defaultSortModel })
-            }
+            setGridColumnApi(columnApi)
         },
-        [defaultSortModel]
+        []
     )
 
     const pageIcon = useMemo(() => mapPathnameToIcon[location.pathname], [location.pathname])
