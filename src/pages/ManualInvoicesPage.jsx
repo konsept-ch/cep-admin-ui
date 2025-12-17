@@ -1,4 +1,4 @@
-import { useRef, useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import { Container, Button } from 'react-bootstrap'
 import { Helmet } from 'react-helmet-async'
@@ -39,9 +39,23 @@ const csvOptions = {
 const formatInvoiceDate = ({ value }) =>
     DateTime.fromISO(value, { zone: 'UTC' }).setLocale('fr-CH').toLocaleString(DateTime.DATE_SHORT)
 
-export function ManualInvoicesPage() {
-    const [fetchCount, setFetchCount] = useState(0)
+const getDefaultFilterModel = (pathname) => ({
+    status: {
+        filterType: 'set',
+        values:
+            mapPathnameToInvoiceType[pathname] == null
+                ? ['Envoyée', 'Non transmissible']
+                : ['En préparation', 'A traiter', 'Exportée', 'Annulée'],
+    },
+    invoiceType: ['Directe', 'Groupée', 'Manuelle', 'Quota'].includes(mapPathnameToInvoiceType[pathname])
+        ? {
+              filterType: 'set',
+              values: [mapPathnameToInvoiceType[pathname]],
+          }
+        : null,
+})
 
+export function ManualInvoicesPage() {
     const [isManualInvoiceModalOpen, setIsManualInvoiceModalOpen] = useState(false)
     const [selectedInvoiceId, setSelectedInvoiceId] = useState()
     const [selectedRowsIds, setSelectedRowsIds] = useState([])
@@ -62,7 +76,39 @@ export function ManualInvoicesPage() {
         refetch: refetchInvoices,
     } = useGetManualInvoicesQuery(null, { refetchOnMountOrArgChange: true })
 
+    const storageKey = useMemo(() => `manualInvoicesFilter:${location.pathname}`, [location.pathname])
+    const defaultFilterModel = useMemo(() => getDefaultFilterModel(location.pathname), [location.pathname])
+    const [filterModel, setFilterModel] = useState(() => {
+        const stored = sessionStorage.getItem(storageKey)
+        if (stored) {
+            try {
+                return JSON.parse(stored)
+            } catch (error) {
+                // ignore parse errors and fall back to defaults
+            }
+        }
+        return defaultFilterModel
+    })
+
+    useEffect(() => {
+        sessionStorage.setItem(storageKey, JSON.stringify(filterModel))
+    }, [filterModel, storageKey])
+
+    useEffect(() => {
+        const stored = sessionStorage.getItem(storageKey)
+        if (stored) {
+            try {
+                setFilterModel(JSON.parse(stored))
+                return
+            } catch (error) {
+                // ignore parse errors and fall back to defaults
+            }
+        }
+        setFilterModel(defaultFilterModel)
+    }, [defaultFilterModel, storageKey])
+
     const openInvoiceEditModal = ({ id }) => {
+        if (id == null) return
         setSelectedInvoiceId(id)
         setIsManualInvoiceModalOpen(true)
     }
@@ -81,7 +127,8 @@ export function ManualInvoicesPage() {
                 cellRenderer: ({ data }) => (
                     <Button
                         variant="primary"
-                        onClick={() => openInvoiceEditModal({ id: data.id })}
+                        onClick={() => openInvoiceEditModal({ id: data?.id })}
+                        disabled={data?.id == null}
                         size="sm"
                         className="edit-button-style"
                     >
@@ -242,30 +289,14 @@ export function ManualInvoicesPage() {
         []
     )
 
-    const filterModel = useMemo(
-        () => fetchCount < 1 ? ({}) : ({
-            status: {
-                filterType: 'set',
-                values:
-                    mapPathnameToInvoiceType[location.pathname] == null
-                        ? ['Envoyée', 'Non transmissible']
-                        : ['En préparation', 'A traiter', 'Exportée', 'Annulée'],
-            },
-            invoiceType: ['Directe', 'Groupée', 'Manuelle', 'Quota'].includes(
-                mapPathnameToInvoiceType[location.pathname]
-            )
-                ? {
-                      filterType: 'set',
-                      values: [mapPathnameToInvoiceType[location.pathname]],
-                  }
-                : null,
-        }),
-        [location.pathname, fetchCount]
-    )
-
-    useEffect(() => {
-        setFetchCount(fetchCount + 1)
-    }, [invoicesData])
+    const handleFilterChange = ({ api }) => {
+        const nextModel = api?.getFilterModel?.() ?? {}
+        setFilterModel((previous) => {
+            const prevString = JSON.stringify(previous ?? {})
+            const nextString = JSON.stringify(nextModel)
+            return prevString === nextString ? previous : nextModel
+        })
+    }
 
     return (
         <>
@@ -278,6 +309,7 @@ export function ManualInvoicesPage() {
                 rowData={invoicesData}
                 isDataLoading={isFetchingInvoices || isStatusesUpdating}
                 defaultSortModel={[{ colId: 'invoiceNumber', sort: 'asc', sortIndex: 0 }]}
+                filterModel={filterModel}
                 getContextMenuItems={({ node: { data } }) => [
                     {
                         name: 'Exporter pour Crésus',
@@ -425,6 +457,7 @@ export function ManualInvoicesPage() {
                     'separator',
                     ...gridContextMenu,
                 ]}
+                onFilterChanged={handleFilterChange}
                 onRowSelected={({
                     api: {
                         selectionService: { selectedNodes },
@@ -434,7 +467,7 @@ export function ManualInvoicesPage() {
                         Object.values(selectedNodes).reduce(
                             (previous, current) => [
                                 ...previous,
-                                ...(typeof current !== 'undefined' && typeof previous !== 'undefined'
+                                ...(current?.data?.id != null && typeof previous !== 'undefined'
                                     ? [current.data.id]
                                     : []),
                             ],
@@ -443,7 +476,6 @@ export function ManualInvoicesPage() {
 
                     setSelectedRowsIds(filteredSelectedRowsIds)
                 }}
-                filterModel={filterModel}
             />
             <Container fluid className="mb-2">
                 {location.pathname === `/${PATH_INVOICE}/${PATH_INVOICE_DIRECT}` && (

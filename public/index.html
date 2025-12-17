@@ -6,6 +6,30 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#000000" />
         <meta name="description" content="CEP - Former22" />
+        <script>
+            ;(function () {
+                // CRA dev overlay can show this as a runtime error even when the app continues to work.
+                // Register early (before the bundle) to stop propagation of this dev-only browser noise.
+                var re = /ResizeObserver loop (limit exceeded|completed with undelivered notifications)/i
+
+                window.addEventListener(
+                    'error',
+                    function (event) {
+                        if (re.test((event && event.message) || '')) {
+                            if (event.preventDefault) event.preventDefault()
+                            if (event.stopImmediatePropagation) event.stopImmediatePropagation()
+                        }
+                    },
+                    true
+                )
+
+                var originalConsoleError = console.error
+                console.error = function () {
+                    if (re.test(String(arguments[0] || ''))) return
+                    return originalConsoleError.apply(this, arguments)
+                }
+            })()
+        </script>
         <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
