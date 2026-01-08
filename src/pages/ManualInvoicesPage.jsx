@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import { Container, Button } from 'react-bootstrap'
 import { Helmet } from 'react-helmet-async'
@@ -79,21 +79,39 @@ export function ManualInvoicesPage() {
     const filterStorageKey = useMemo(() => `manualInvoicesFilter:${location.pathname}`, [location.pathname])
     const sortStorageKey = useMemo(() => `manualInvoicesSort:${location.pathname}`, [location.pathname])
     const groupStorageKey = useMemo(() => `manualInvoicesGroup:${location.pathname}`, [location.pathname])
+    const resetAllStorageKey = useMemo(() => 'manualInvoicesAllReset', [])
 
     const defaultFilterModel = useMemo(() => getDefaultFilterModel(location.pathname), [location.pathname])
+    const lockedInvoiceType = useMemo(() => mapPathnameToInvoiceType[location.pathname], [location.pathname])
+    const applyLockedInvoiceType = useMemo(
+        () => (model) => {
+            if (lockedInvoiceType == null) {
+                return model
+            }
+            return {
+                ...model,
+                invoiceType: {
+                    filterType: 'set',
+                    values: [lockedInvoiceType],
+                },
+            }
+        },
+        [lockedInvoiceType]
+    )
     const defaultSortModel = useMemo(() => [{ colId: 'invoiceNumber', sort: 'asc', sortIndex: 0 }], [])
     const defaultGroupModel = useMemo(() => [], [])
     const [filterModel, setFilterModel] = useState(() => {
         const stored = sessionStorage.getItem(filterStorageKey)
         if (stored) {
             try {
-                return JSON.parse(stored)
+                return applyLockedInvoiceType(JSON.parse(stored))
             } catch (error) {
                 // ignore parse errors and fall back to defaults
             }
         }
-        return defaultFilterModel
+        return applyLockedInvoiceType(defaultFilterModel)
     })
+    const shouldIgnoreInitialFilterClearRef = useRef(Object.keys(defaultFilterModel ?? {}).length > 0)
 
     useEffect(() => {
         sessionStorage.setItem(filterStorageKey, JSON.stringify(filterModel))
@@ -103,14 +121,32 @@ export function ManualInvoicesPage() {
         const stored = sessionStorage.getItem(filterStorageKey)
         if (stored) {
             try {
-                setFilterModel(JSON.parse(stored))
+                setFilterModel(applyLockedInvoiceType(JSON.parse(stored)))
                 return
             } catch (error) {
                 // ignore parse errors and fall back to defaults
             }
         }
-        setFilterModel(defaultFilterModel)
-    }, [defaultFilterModel, filterStorageKey])
+        setFilterModel(applyLockedInvoiceType(defaultFilterModel))
+    }, [applyLockedInvoiceType, defaultFilterModel, filterStorageKey])
+    useEffect(() => {
+        shouldIgnoreInitialFilterClearRef.current = Object.keys(defaultFilterModel ?? {}).length > 0
+    }, [defaultFilterModel])
+    useEffect(() => {
+        if (location.pathname !== `/${PATH_INVOICE}/${PATH_INVOICE_ALL}`) return
+        const resetToken = sessionStorage.getItem(resetAllStorageKey)
+        if (!resetToken) return
+        sessionStorage.removeItem(resetAllStorageKey)
+        setFilterModel(applyLockedInvoiceType(defaultFilterModel))
+    }, [applyLockedInvoiceType, defaultFilterModel, location.pathname, resetAllStorageKey])
+    useEffect(() => {
+        const handleResetAll = () => {
+            if (location.pathname !== `/${PATH_INVOICE}/${PATH_INVOICE_ALL}`) return
+            setFilterModel(applyLockedInvoiceType(defaultFilterModel))
+        }
+        window.addEventListener('manualInvoicesAllReset', handleResetAll)
+        return () => window.removeEventListener('manualInvoicesAllReset', handleResetAll)
+    }, [applyLockedInvoiceType, defaultFilterModel, location.pathname])
 
     const [sortModel, setSortModel] = useState(() => {
         const stored = sessionStorage.getItem(sortStorageKey)
@@ -244,6 +280,7 @@ export function ManualInvoicesPage() {
                     newRowAction: 'keep',
                 },
                 width: 150,
+                suppressFiltersToolPanel: lockedInvoiceType != null,
             },
             {
                 field: 'courseYear',
@@ -349,14 +386,21 @@ export function ManualInvoicesPage() {
                 width: 150,
             },
         ],
-        []
+        [lockedInvoiceType]
     )
 
     const handleFilterChange = ({ api }) => {
-        const nextModel = api?.getFilterModel?.() ?? {}
+        const nextModel = applyLockedInvoiceType(api?.getFilterModel?.() ?? {})
         setFilterModel((previous) => {
             const prevString = JSON.stringify(previous ?? {})
             const nextString = JSON.stringify(nextModel)
+            const prevModel = previous ?? {}
+            const nextIsEmpty = Object.keys(nextModel).length === 0
+            const prevIsEmpty = Object.keys(prevModel).length === 0
+            if (shouldIgnoreInitialFilterClearRef.current && nextIsEmpty && !prevIsEmpty) {
+                return previous
+            }
+            shouldIgnoreInitialFilterClearRef.current = false
             return prevString === nextString ? previous : nextModel
         })
     }
