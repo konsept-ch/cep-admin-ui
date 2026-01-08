@@ -212,6 +212,7 @@ export function InscriptionsRefusedByHrPage() {
                 ]}
                 groupDefaultExpanded={1}
                 groupDisplayType="groupRows"
+                showGroupSummary={true}
                 groupIncludeFooter={false}
             />
         </>

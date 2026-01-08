@@ -342,6 +342,7 @@ export function InscriptionsPage() {
                 ]}
                 groupDefaultExpanded={1}
                 groupDisplayType="groupRows"
+                showGroupSummary={true}
                 groupIncludeFooter={false}
                 getContextMenuItems={({ node: { data } = { data: {} } } = { node: { data: {} } }) => {
                     const checkLockGroupForSelectedStatus = checkAreInSameLockGroup(data?.status)

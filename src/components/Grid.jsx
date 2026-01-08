@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from 'react'
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import {
     Row,
@@ -21,6 +21,7 @@ import { localeText } from '../agGridLocaleText'
 import { gridContextMenu, STATUSES } from '../utils'
 import { useLocation } from 'react-router-dom'
 import { mapPathnameToIcon } from '../constants/constants'
+import { GroupSummaryBar } from './GroupSummaryBar'
 
 export const Grid = ({
     name,
@@ -35,11 +36,15 @@ export const Grid = ({
     sortModel,
     groupModel,
     filterModel = undefined,
+    showGroupSummary = false,
     ...gridProps
 }) => {
     const [gridApi, setGridApi] = useState(null)
     const [gridColumnApi, setGridColumnApi] = useState(null)
     const [filterValue, setFilterValue] = useState('')
+    const [groupSummaryItems, setGroupSummaryItems] = useState([])
+    const groupSummaryKeyRef = useRef('')
+    const [groupSummaryRowIndex, setGroupSummaryRowIndex] = useState(null)
     const location = useLocation()
 
     useEffect(() => {
@@ -83,6 +88,72 @@ export const Grid = ({
         if (filterModel === undefined || gridApi == null) return
         gridApi.setFilterModel(filterModel)
     }, [gridApi, filterModel])
+
+    const updateGroupSummary = useCallback(() => {
+        if (!showGroupSummary || gridApi == null) return
+
+        const focusedCell = gridApi.getFocusedCell?.()
+        const rowIndex =
+            groupSummaryRowIndex ??
+            (focusedCell && typeof focusedCell.rowIndex === 'number' ? focusedCell.rowIndex : null)
+
+        const row = rowIndex != null ? gridApi.getDisplayedRowAtIndex(rowIndex) : gridApi.getDisplayedRowAtIndex(0)
+
+        if (row == null) {
+            setGroupSummaryItems([])
+            groupSummaryKeyRef.current = ''
+            return
+        }
+
+        let cursor = row
+        if (!cursor.group && cursor.parent) {
+            cursor = cursor.parent
+        }
+
+        if (!cursor?.group) {
+            setGroupSummaryItems([])
+            groupSummaryKeyRef.current = ''
+            return
+        }
+
+        const items = []
+        while (cursor?.group && cursor.level >= 0) {
+            const count = cursor.allChildrenCount
+            const value = cursor.key ?? ''
+            const text = count == null ? value : `${value} (${count})`
+            items.push({
+                text,
+                tooltip: value,
+            })
+            cursor = cursor.parent
+        }
+
+        items.reverse()
+        const key = items.map(({ text }) => text).join('|')
+        if (key === groupSummaryKeyRef.current) return
+
+        groupSummaryKeyRef.current = key
+        setGroupSummaryItems(items)
+    }, [gridApi, showGroupSummary])
+
+    useEffect(() => {
+        if (!showGroupSummary || gridApi == null) return
+        updateGroupSummary()
+
+        const handleUpdate = () => updateGroupSummary()
+        const handleRowClicked = (event) => setGroupSummaryRowIndex(event?.rowIndex ?? null)
+        gridApi.addEventListener('modelUpdated', handleUpdate)
+        gridApi.addEventListener('displayedRowsChanged', handleUpdate)
+        gridApi.addEventListener('bodyScroll', handleUpdate)
+        gridApi.addEventListener('rowClicked', handleRowClicked)
+
+        return () => {
+            gridApi.removeEventListener('modelUpdated', handleUpdate)
+            gridApi.removeEventListener('displayedRowsChanged', handleUpdate)
+            gridApi.removeEventListener('bodyScroll', handleUpdate)
+            gridApi.removeEventListener('rowClicked', handleRowClicked)
+        }
+    }, [gridApi, showGroupSummary, updateGroupSummary])
 
     useEffect(() => {
         if (gridColumnApi == null || groupModel === undefined) return
@@ -198,6 +269,7 @@ export const Grid = ({
                     </Col>
                 </Row>
             </Container>
+            {showGroupSummary && <GroupSummaryBar items={groupSummaryItems} />}
             <div className="ag-theme-alpine general-grid">
                 <AgGridReact
                     {...{
@@ -214,7 +286,7 @@ export const Grid = ({
                         animateRows: true,
                         groupIncludeFooter: true,
                         groupSelectsChildren: true,
-                        groupRowsSticky: true,
+                        groupRowsSticky: false,
                         suppressAggFuncInHeader: true,
                         rowSelection: 'multiple',
                         suppressRowClickSelection: true,
