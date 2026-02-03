@@ -42,7 +42,8 @@ export function InscriptionsRefusedByHrPage() {
                 filter: 'agSetColumnFilter',
                 headerTooltip: 'Le coordinateur de la formation',
                 width: 170,
-                rowGroup: true,
+                initialRowGroup: true,
+                initialRowGroupIndex: 0,
                 hide: true,
                 // TODO: sort ignoring accents
                 comparator: (_valueA, _valueB, nodeA, nodeB) => {
@@ -56,7 +57,8 @@ export function InscriptionsRefusedByHrPage() {
                 headerTooltip: "L'année de début de la session",
                 sort: 'asc',
                 type: 'numericColumn',
-                rowGroup: true,
+                initialRowGroup: true,
+                initialRowGroupIndex: 1,
                 hide: true,
             },
             {
@@ -64,7 +66,8 @@ export function InscriptionsRefusedByHrPage() {
                 headerName: 'Formation',
                 filter: 'agTextColumnFilter',
                 headerTooltip: 'Le nom de la formation',
-                rowGroup: true,
+                initialRowGroup: true,
+                initialRowGroupIndex: 2,
                 hide: true,
                 // TODO: sort ignoring accents
                 comparator: (_valueA, _valueB, nodeA, nodeB) => {
@@ -76,7 +79,8 @@ export function InscriptionsRefusedByHrPage() {
                 headerName: 'Session',
                 filter: 'agTextColumnFilter',
                 headerTooltip: "Le nom de la session dans laquelle l'utilisateur s'est inscrit",
-                rowGroup: true,
+                initialRowGroup: true,
+                initialRowGroupIndex: 3,
                 hide: true,
                 // TODO: sort ignoring accents
                 comparator: (_valueA, _valueB, nodeA, nodeB) => {
