@@ -1,5 +1,9 @@
 # CEP Survey Data
 
+## Git workflow
+
+Guide court de branching/versioning: [docs/GIT_VERSIONING.md](docs/GIT_VERSIONING.md)
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
