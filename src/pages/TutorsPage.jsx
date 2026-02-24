@@ -171,6 +171,10 @@ export function TutorsPage() {
                                 <Form.Label>Année d'entrée</Form.Label>
                                 <Form.Control type="text" {...register('year')} />
                             </Form.Group>
+                            <Form.Group className="mb-3" controlId="phoneNumber">
+                                <Form.Label>N° téléphone</Form.Label>
+                                <Form.Control type="text" {...register('phoneNumber')} />
+                            </Form.Group>
                             <Form.Check type="checkbox" id="cv" label="CV envoyé" {...register('cv')} />
                             <Form.Check
                                 type="checkbox"
@@ -256,6 +260,7 @@ export function TutorsPage() {
                                                 { v: 'Technologies numériques' },
                                                 { v: 'Technopédagogie' },
                                                 { v: 'Vision commune' },
+                                                { v: 'Autre(s)' },
                                             ]}
                                             getOptionLabel={(o) => o.v}
                                             getOptionValue={(o) => o.v}
@@ -385,6 +390,14 @@ export function TutorsPage() {
                                 <Form.Label>Formation continue (année - titre)</Form.Label>
                                 <Form.Control as="textarea" rows={2} {...register('training')} />
                             </Form.Group>
+                            <Form.Group className="mb-3" controlId="rfResponsible">
+                                <Form.Label>RF responsable</Form.Label>
+                                <Form.Control type="text" {...register('rfResponsible')} />
+                            </Form.Group>
+                            <Form.Group className="mb-3" controlId="givenTitles">
+                                <Form.Label>Titres donnés</Form.Label>
+                                <Form.Control type="text" {...register('givenTitles')} />
+                            </Form.Group>
                         </Col>
                         <Col>
                             <Form.Group className="mb-3" controlId="educational">
@@ -409,6 +422,7 @@ export function TutorsPage() {
                                     address: data.address,
                                     email: data.email,
                                     year: data.year,
+                                    phoneNumber: data.phoneNumber,
                                     cv: data.cv,
                                     cert: data.cert,
                                     expertises: data.expertises,
@@ -422,6 +436,8 @@ export function TutorsPage() {
                                     dates: data.dates,
                                     links: data.links,
                                     educational: data.educational,
+                                    rfResponsible: data.rfResponsible,
+                                    givenTitles: data.givenTitles,
                                     course: data.course,
                                     pitch: data.pitch,
                                     scenario: data.scenario,
