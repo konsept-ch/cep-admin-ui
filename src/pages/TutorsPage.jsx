@@ -392,11 +392,11 @@ export function TutorsPage() {
                             </Form.Group>
                             <Form.Group className="mb-3" controlId="rfResponsible">
                                 <Form.Label>RF responsable</Form.Label>
-                                <Form.Control type="text" {...register('rfResponsible')} />
+                                <Form.Control as="textarea" rows={2} {...register('rfResponsible')} />
                             </Form.Group>
                             <Form.Group className="mb-3" controlId="givenTitles">
                                 <Form.Label>Titres donnés</Form.Label>
-                                <Form.Control type="text" {...register('givenTitles')} />
+                                <Form.Control as="textarea" rows={2} {...register('givenTitles')} />
                             </Form.Group>
                         </Col>
                         <Col>
