@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import { Container, Button } from 'react-bootstrap'
 import { Helmet } from 'react-helmet-async'
@@ -39,6 +39,22 @@ const csvOptions = {
 const formatInvoiceDate = ({ value }) =>
     DateTime.fromISO(value, { zone: 'UTC' }).setLocale('fr-CH').toLocaleString(DateTime.DATE_SHORT)
 
+const getDefaultFilterModel = (pathname) => ({
+    status: {
+        filterType: 'set',
+        values:
+            mapPathnameToInvoiceType[pathname] == null
+                ? ['Envoyée', 'Non transmissible']
+                : ['En préparation', 'A traiter', 'Exportée', 'Annulée'],
+    },
+    invoiceType: ['Directe', 'Groupée', 'Manuelle', 'Quota'].includes(mapPathnameToInvoiceType[pathname])
+        ? {
+              filterType: 'set',
+              values: [mapPathnameToInvoiceType[pathname]],
+          }
+        : null,
+})
+
 export function ManualInvoicesPage() {
     const [isManualInvoiceModalOpen, setIsManualInvoiceModalOpen] = useState(false)
     const [selectedInvoiceId, setSelectedInvoiceId] = useState()
@@ -55,215 +71,365 @@ export function ManualInvoicesPage() {
     const location = useLocation()
 
     const {
-        data: invoicesData,
+        data: invoicesData = [],
         isFetching: isFetchingInvoices,
         refetch: refetchInvoices,
     } = useGetManualInvoicesQuery(null, { refetchOnMountOrArgChange: true })
 
+    const filterStorageKey = useMemo(() => `manualInvoicesFilter:${location.pathname}`, [location.pathname])
+    const sortStorageKey = useMemo(() => `manualInvoicesSort:${location.pathname}`, [location.pathname])
+    const groupStorageKey = useMemo(() => `manualInvoicesGroup:${location.pathname}`, [location.pathname])
+    const resetAllStorageKey = useMemo(() => 'manualInvoicesAllReset', [])
+
+    const defaultFilterModel = useMemo(() => getDefaultFilterModel(location.pathname), [location.pathname])
+    const lockedInvoiceType = useMemo(() => mapPathnameToInvoiceType[location.pathname], [location.pathname])
+    const applyLockedInvoiceType = useMemo(
+        () => (model) => {
+            if (lockedInvoiceType == null) {
+                return model
+            }
+            return {
+                ...model,
+                invoiceType: {
+                    filterType: 'set',
+                    values: [lockedInvoiceType],
+                },
+            }
+        },
+        [lockedInvoiceType]
+    )
+    const defaultSortModel = useMemo(() => [{ colId: 'invoiceNumber', sort: 'asc', sortIndex: 0 }], [])
+    const defaultGroupModel = useMemo(() => [], [])
+    const [filterModel, setFilterModel] = useState(() => {
+        const stored = sessionStorage.getItem(filterStorageKey)
+        if (stored) {
+            try {
+                return applyLockedInvoiceType(JSON.parse(stored))
+            } catch (error) {
+                // ignore parse errors and fall back to defaults
+            }
+        }
+        return applyLockedInvoiceType(defaultFilterModel)
+    })
+    const shouldIgnoreInitialFilterClearRef = useRef(Object.keys(defaultFilterModel ?? {}).length > 0)
+
+    useEffect(() => {
+        sessionStorage.setItem(filterStorageKey, JSON.stringify(filterModel))
+    }, [filterModel, filterStorageKey])
+
+    useEffect(() => {
+        const stored = sessionStorage.getItem(filterStorageKey)
+        if (stored) {
+            try {
+                setFilterModel(applyLockedInvoiceType(JSON.parse(stored)))
+                return
+            } catch (error) {
+                // ignore parse errors and fall back to defaults
+            }
+        }
+        setFilterModel(applyLockedInvoiceType(defaultFilterModel))
+    }, [applyLockedInvoiceType, defaultFilterModel, filterStorageKey])
+    useEffect(() => {
+        shouldIgnoreInitialFilterClearRef.current = Object.keys(defaultFilterModel ?? {}).length > 0
+    }, [defaultFilterModel])
+    useEffect(() => {
+        if (location.pathname !== `/${PATH_INVOICE}/${PATH_INVOICE_ALL}`) return
+        const resetToken = sessionStorage.getItem(resetAllStorageKey)
+        if (!resetToken) return
+        sessionStorage.removeItem(resetAllStorageKey)
+        setFilterModel(applyLockedInvoiceType(defaultFilterModel))
+    }, [applyLockedInvoiceType, defaultFilterModel, location.pathname, resetAllStorageKey])
+    useEffect(() => {
+        const handleResetAll = () => {
+            if (location.pathname !== `/${PATH_INVOICE}/${PATH_INVOICE_ALL}`) return
+            setFilterModel(applyLockedInvoiceType(defaultFilterModel))
+        }
+        window.addEventListener('manualInvoicesAllReset', handleResetAll)
+        return () => window.removeEventListener('manualInvoicesAllReset', handleResetAll)
+    }, [applyLockedInvoiceType, defaultFilterModel, location.pathname])
+
+    const [sortModel, setSortModel] = useState(() => {
+        const stored = sessionStorage.getItem(sortStorageKey)
+        if (stored) {
+            try {
+                return JSON.parse(stored)
+            } catch (error) {
+                // ignore parse errors and fall back to defaults
+            }
+        }
+        return defaultSortModel
+    })
+
+    useEffect(() => {
+        sessionStorage.setItem(sortStorageKey, JSON.stringify(sortModel))
+    }, [sortModel, sortStorageKey])
+
+    useEffect(() => {
+        const stored = sessionStorage.getItem(sortStorageKey)
+        if (stored) {
+            try {
+                setSortModel(JSON.parse(stored))
+                return
+            } catch (error) {
+                // ignore parse errors and fall back to defaults
+            }
+        }
+        setSortModel(defaultSortModel)
+    }, [defaultSortModel, sortStorageKey])
+
+    const [groupModel, setGroupModel] = useState(() => {
+        const stored = sessionStorage.getItem(groupStorageKey)
+        if (stored) {
+            try {
+                return JSON.parse(stored)
+            } catch (error) {
+                // ignore parse errors and fall back to defaults
+            }
+        }
+        return defaultGroupModel
+    })
+
+    useEffect(() => {
+        sessionStorage.setItem(groupStorageKey, JSON.stringify(groupModel))
+    }, [groupModel, groupStorageKey])
+
+    useEffect(() => {
+        const stored = sessionStorage.getItem(groupStorageKey)
+        if (stored) {
+            try {
+                setGroupModel(JSON.parse(stored))
+                return
+            } catch (error) {
+                // ignore parse errors and fall back to defaults
+            }
+        }
+        setGroupModel(defaultGroupModel)
+    }, [defaultGroupModel, groupStorageKey])
+
     const openInvoiceEditModal = ({ id }) => {
+        if (id == null) return
         setSelectedInvoiceId(id)
         setIsManualInvoiceModalOpen(true)
     }
 
-    const [columnDefs] = useState([
-        {
-            field: 'edit',
-            headerName: '',
-            headerTooltip: "Modifier l'utilisateur",
-            cellClass: 'edit-column',
-            pinned: 'left',
-            maxWidth: 60,
-            filter: false,
-            sortable: false,
-            cellRenderer: ({ data }) => (
-                <Button
-                    variant="primary"
-                    onClick={() => openInvoiceEditModal({ id: data.id })}
-                    size="sm"
-                    className="edit-button-style"
-                >
-                    <FontAwesomeIcon icon={faPen} />
-                </Button>
-            ),
-        },
-        {
-            field: 'number',
-            headerName: 'Numéro',
-            tooltipField: 'invoiceNumber',
-            headerTooltip: 'Numéro de facture',
-            filter: 'agTextColumnFilter',
-            width: 160,
-            checkboxSelection: true,
-            headerCheckboxSelection: true,
-        },
-        {
-            field: 'invoiceDate',
-            headerName: 'Date de facture',
-            tooltipField: 'invoiceDate',
-            headerTooltip: 'Date de facture',
-            filter: 'agDateColumnFilter',
-            width: 170,
-            valueFormatter: formatInvoiceDate,
-        },
-        {
-            field: 'client',
-            headerName: 'Client',
-            tooltipField: 'client',
-            headerTooltip: 'Organisation/Utilisateur',
-            filter: 'agTextColumnFilter',
-            valueGetter: ({ data }) => (data?.organizationCode !== 'NREF' ? data?.organizationName : 'Nom+Prénom'),
-        },
-        {
-            field: 'organizationName',
-            headerName: 'Organisation',
-            tooltipField: 'organizationName',
-            headerTooltip: 'Organisation',
-            filter: 'agSetColumnFilter',
-            hide: true,
-        },
-        {
-            field: 'status',
-            headerName: 'Statut',
-            tooltipField: 'statut',
-            headerTooltip: 'Statut',
-            filter: 'agSetColumnFilter',
-            filterParams: {
-                newRowAction: 'keep',
+    const columnDefs = useMemo(
+        () => [
+            {
+                field: 'edit',
+                headerName: '',
+                headerTooltip: "Modifier l'utilisateur",
+                cellClass: 'edit-column',
+                pinned: 'left',
+                maxWidth: 60,
+                filter: false,
+                sortable: false,
+                cellRenderer: ({ data }) => (
+                    <Button
+                        variant="primary"
+                        onClick={() => openInvoiceEditModal({ id: data?.id })}
+                        disabled={data?.id == null}
+                        size="sm"
+                        className="edit-button-style"
+                    >
+                        <FontAwesomeIcon icon={faPen} />
+                    </Button>
+                ),
             },
-            width: 150,
-        },
-        {
-            field: 'courseYear',
-            headerName: 'Année',
-            tooltipField: 'courseYear',
-            headerTooltip: 'Année de formation',
-            filter: 'agNumberColumnFilter',
-            width: 120,
-            hide: true,
-        },
-        {
-            field: 'userFullName',
-            headerName: 'Créateur',
-            tooltipField: 'userFullName',
-            headerTooltip: "Le nom complet de l'utilisateur qui a créé la facture",
-            filter: 'agTextColumnFilter',
-            valueGetter: ({ data }) => `${data?.user.lastName} ${data?.user.firstName}`,
-        },
-        {
-            field: 'itemAmounts',
-            headerName: 'Total hors TVA',
-            tooltipField: 'itemAmounts',
-            headerTooltip: 'La somme des montants des articles, hors TVA',
-            filter: 'agTextColumnFilter',
-            width: 170,
-            valueGetter: ({ data }) =>
-                data?.items
-                    ?.map(({ price, amount }) => Number(price) * Number(amount))
-                    .reduce((a, b) => Number(a) + Number(b), 0)
-                    .toFixed(2),
-        },
-        {
-            field: 'itemAmountsWithVat',
-            headerName: 'Total avec TVA',
-            tooltipField: 'itemAmountsWithVat',
-            headerTooltip: 'La somme des montants des articles, avec TVA',
-            filter: 'agTextColumnFilter',
-            width: 170,
-            valueGetter: ({ data }) =>
-                data?.items
-                    ?.map(
-                        ({ price, vatCode, amount }) =>
-                            Number(amount) *
-                            (vatCode?.value === 'TVA' ? Number(price) + (Number(price) * 7.7) / 100 : Number(price))
-                    )
-                    .reduce((a, b) => Number(a) + Number(b), 0)
-                    .toFixed(2),
-        },
-        {
-            field: 'reason',
-            headerName: 'Raison',
-            tooltipField: 'reason',
-            headerTooltip: 'Raison de la facture, utilisé pour les pénalités',
-            filter: 'agSetColumnFilter',
-            width: 150,
-        },
-
-        {
-            field: 'sessionCodes',
-            headerName: 'Codes sessions',
-            tooltipField: 'sessionCodes',
-            headerTooltip: 'Les codes des sessions de chaque article',
-            filter: 'agTextColumnFilter',
-            width: 170,
-            valueGetter: ({ data }) =>
-                data?.items
-                    ?.map(({ sessionCode }) => sessionCode)
-                    .filter(Boolean)
-                    .join(', '),
-        },
-        {
-            field: 'participantNames',
-            headerName: 'Noms participants',
-            tooltipField: 'participantNames',
-            headerTooltip: 'Les noms des participants de chaque article',
-            filter: 'agTextColumnFilter',
-            width: 170,
-            valueGetter: ({ data }) =>
-                data?.items
-                    ?.map(({ participantName }) => participantName)
-                    .filter(Boolean)
-                    .join(', '),
-        },
-        {
-            field: 'validationTypes',
-            headerName: 'Types de validations par RH',
-            tooltipField: 'validationTypes',
-            headerTooltip: 'Les types de validations par RH',
-            filter: 'agTextColumnFilter',
-            width: 170,
-            valueGetter: ({ data }) =>
-                data?.items
-                    ?.map(({ validationType }) => validationType)
-                    .filter((type) => type != null)
-                    .join(', '),
-        },
-        {
-            field: 'invoiceType',
-            headerName: 'Type',
-            tooltipField: 'invoiceType',
-            headerTooltip: 'Type de la facture, utilisé pour filtrer selon la page',
-            filter: 'agSetColumnFilter',
-            width: 150,
-        },
-    ])
-
-    const filterModel = useMemo(
-        () => ({
-            status: {
-                filterType: 'set',
-                values:
-                    mapPathnameToInvoiceType[location.pathname] == null
-                        ? ['Envoyée', 'Non transmissible']
-                        : ['En préparation', 'A traiter', 'Exportée', 'Annulée'],
+            {
+                field: 'number',
+                headerName: 'Numéro',
+                tooltipField: 'invoiceNumber',
+                headerTooltip: 'Numéro de facture',
+                filter: 'agTextColumnFilter',
+                width: 160,
+                checkboxSelection: true,
+                headerCheckboxSelection: true,
             },
-            invoiceType: ['Directe', 'Groupée', 'Manuelle', 'Quota'].includes(
-                mapPathnameToInvoiceType[location.pathname]
-            )
-                ? {
-                      filterType: 'set',
-                      values: [mapPathnameToInvoiceType[location.pathname]],
-                  }
-                : null,
-        }),
-        [location.pathname]
+            {
+                field: 'invoiceDate',
+                headerName: 'Date de facture',
+                tooltipField: 'invoiceDate',
+                headerTooltip: 'Date de facture',
+                filter: 'agDateColumnFilter',
+                width: 170,
+                valueFormatter: formatInvoiceDate,
+            },
+            {
+                field: 'client',
+                headerName: 'Client',
+                tooltipField: 'client',
+                headerTooltip: 'Organisation/Utilisateur',
+                filter: 'agTextColumnFilter',
+                valueGetter: ({ data }) => (data?.organizationCode !== 'NREF' ? data?.organizationName : 'Nom+Prénom'),
+            },
+            {
+                field: 'organizationName',
+                headerName: 'Organisation',
+                tooltipField: 'organizationName',
+                headerTooltip: 'Organisation',
+                filter: 'agSetColumnFilter',
+                hide: true,
+            },
+            {
+                field: 'status',
+                headerName: 'Statut',
+                tooltipField: 'statut',
+                headerTooltip: 'Statut',
+                filter: 'agSetColumnFilter',
+                filterParams: {
+                    newRowAction: 'keep',
+                },
+                width: 150,
+                suppressFiltersToolPanel: lockedInvoiceType != null,
+            },
+            {
+                field: 'courseYear',
+                headerName: 'Année',
+                tooltipField: 'courseYear',
+                headerTooltip: 'Année de formation',
+                filter: 'agNumberColumnFilter',
+                width: 120,
+                hide: true,
+            },
+            {
+                field: 'userFullName',
+                headerName: 'Créateur',
+                tooltipField: 'userFullName',
+                headerTooltip: "Le nom complet de l'utilisateur qui a créé la facture",
+                filter: 'agTextColumnFilter',
+                valueGetter: ({ data }) => `${data?.user.lastName} ${data?.user.firstName}`,
+            },
+            {
+                field: 'itemAmounts',
+                headerName: 'Total hors TVA',
+                tooltipField: 'itemAmounts',
+                headerTooltip: 'La somme des montants des articles, hors TVA',
+                filter: 'agTextColumnFilter',
+                width: 170,
+                valueGetter: ({ data }) =>
+                    data?.items
+                        ?.map(({ price, amount }) => Number(price) * Number(amount))
+                        .reduce((a, b) => Number(a) + Number(b), 0)
+                        .toFixed(2),
+            },
+            {
+                field: 'itemAmountsWithVat',
+                headerName: 'Total avec TVA',
+                tooltipField: 'itemAmountsWithVat',
+                headerTooltip: 'La somme des montants des articles, avec TVA',
+                filter: 'agTextColumnFilter',
+                width: 170,
+                valueGetter: ({ data }) =>
+                    data?.items
+                        ?.map(
+                            ({ price, vatCode, amount }) =>
+                                Number(amount) *
+                                (vatCode?.value === 'TVA' ? Number(price) + (Number(price) * 7.7) / 100 : Number(price))
+                        )
+                        .reduce((a, b) => Number(a) + Number(b), 0)
+                        .toFixed(2),
+            },
+            {
+                field: 'reason',
+                headerName: 'Raison',
+                tooltipField: 'reason',
+                headerTooltip: 'Raison de la facture, utilisé pour les pénalités',
+                filter: 'agSetColumnFilter',
+                width: 150,
+            },
+
+            {
+                field: 'sessionCodes',
+                headerName: 'Codes sessions',
+                tooltipField: 'sessionCodes',
+                headerTooltip: 'Les codes des sessions de chaque article',
+                filter: 'agTextColumnFilter',
+                width: 170,
+                valueGetter: ({ data }) =>
+                    data?.items
+                        ?.map(({ sessionCode }) => sessionCode)
+                        .filter(Boolean)
+                        .join(', '),
+            },
+            {
+                field: 'participantNames',
+                headerName: 'Noms participants',
+                tooltipField: 'participantNames',
+                headerTooltip: 'Les noms des participants de chaque article',
+                filter: 'agTextColumnFilter',
+                width: 170,
+                valueGetter: ({ data }) =>
+                    data?.items
+                        ?.map(({ participantName }) => participantName)
+                        .filter(Boolean)
+                        .join(', '),
+            },
+            {
+                field: 'validationTypes',
+                headerName: 'Types de validations par RH',
+                tooltipField: 'validationTypes',
+                headerTooltip: 'Les types de validations par RH',
+                filter: 'agTextColumnFilter',
+                width: 170,
+                valueGetter: ({ data }) =>
+                    data?.items
+                        ?.map(({ validationType }) => validationType)
+                        .filter((type) => type != null)
+                        .join(', '),
+            },
+            {
+                field: 'invoiceType',
+                headerName: 'Type',
+                tooltipField: 'invoiceType',
+                headerTooltip: 'Type de la facture, utilisé pour filtrer selon la page',
+                filter: 'agSetColumnFilter',
+                width: 150,
+            },
+        ],
+        [lockedInvoiceType]
     )
 
-    const onPathnameChange = useCallback(
-        (gridApi) => {
-            gridApi?.setFilterModel(filterModel)
-        },
-        [filterModel]
-    )
+    const handleFilterChange = ({ api }) => {
+        const nextModel = applyLockedInvoiceType(api?.getFilterModel?.() ?? {})
+        setFilterModel((previous) => {
+            const prevString = JSON.stringify(previous ?? {})
+            const nextString = JSON.stringify(nextModel)
+            const prevModel = previous ?? {}
+            const nextIsEmpty = Object.keys(nextModel).length === 0
+            const prevIsEmpty = Object.keys(prevModel).length === 0
+            if (shouldIgnoreInitialFilterClearRef.current && nextIsEmpty && !prevIsEmpty) {
+                return previous
+            }
+            shouldIgnoreInitialFilterClearRef.current = false
+            return prevString === nextString ? previous : nextModel
+        })
+    }
+
+    const handleSortChange = ({ columnApi }) => {
+        const nextModel = (columnApi?.getColumnState?.() ?? [])
+            .filter(({ sort }) => sort != null)
+            .map(({ colId, sort, sortIndex }) => ({ colId, sort, sortIndex }))
+            .sort((a, b) => (a.sortIndex ?? 0) - (b.sortIndex ?? 0))
+
+        setSortModel((previous) => {
+            const prevString = JSON.stringify(previous ?? [])
+            const nextString = JSON.stringify(nextModel)
+            return prevString === nextString ? previous : nextModel
+        })
+    }
+
+    const handleGroupChange = ({ columnApi }) => {
+        const nextModel = (columnApi?.getColumnState?.() ?? [])
+            .filter(({ rowGroup }) => rowGroup === true)
+            .map(({ colId, rowGroupIndex }) => ({ colId, rowGroup: true, rowGroupIndex }))
+            .sort((a, b) => (a.rowGroupIndex ?? 0) - (b.rowGroupIndex ?? 0))
+
+        setGroupModel((previous) => {
+            const prevString = JSON.stringify(previous ?? [])
+            const nextString = JSON.stringify(nextModel)
+            return prevString === nextString ? previous : nextModel
+        })
+    }
 
     return (
         <>
@@ -275,7 +441,10 @@ export function ManualInvoicesPage() {
                 columnDefs={columnDefs}
                 rowData={invoicesData}
                 isDataLoading={isFetchingInvoices || isStatusesUpdating}
-                defaultSortModel={[{ colId: 'invoiceNumber', sort: 'asc', sortIndex: 0 }]}
+                defaultSortModel={defaultSortModel}
+                sortModel={sortModel}
+                groupModel={groupModel}
+                filterModel={filterModel}
                 getContextMenuItems={({ node: { data } }) => [
                     {
                         name: 'Exporter pour Crésus',
@@ -423,6 +592,9 @@ export function ManualInvoicesPage() {
                     'separator',
                     ...gridContextMenu,
                 ]}
+                onFilterChanged={handleFilterChange}
+                onSortChanged={handleSortChange}
+                onColumnRowGroupChanged={handleGroupChange}
                 onRowSelected={({
                     api: {
                         selectionService: { selectedNodes },
@@ -432,7 +604,7 @@ export function ManualInvoicesPage() {
                         Object.values(selectedNodes).reduce(
                             (previous, current) => [
                                 ...previous,
-                                ...(typeof current !== 'undefined' && typeof previous !== 'undefined'
+                                ...(current?.data?.id != null && typeof previous !== 'undefined'
                                     ? [current.data.id]
                                     : []),
                             ],
@@ -441,8 +613,6 @@ export function ManualInvoicesPage() {
 
                     setSelectedRowsIds(filteredSelectedRowsIds)
                 }}
-                defaultFilterModel={filterModel}
-                onPathnameChange={onPathnameChange}
             />
             <Container fluid className="mb-2">
                 {location.pathname === `/${PATH_INVOICE}/${PATH_INVOICE_DIRECT}` && (
@@ -508,7 +678,7 @@ export function ManualInvoicesPage() {
             {isManualInvoiceModalOpen && (
                 <ManualInvoiceModal
                     refetchInvoices={refetchInvoices}
-                    selectedInvoiceData={invoicesData?.find(({ id }) => id === selectedInvoiceId)}
+                    selectedInvoiceData={invoicesData.find(({ id }) => id === selectedInvoiceId)}
                     closeModal={() => {
                         setIsManualInvoiceModalOpen(false)
                         setSelectedInvoiceId()

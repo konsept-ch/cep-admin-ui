@@ -34,7 +34,9 @@ export function InvoiceModal({ refetchInvoices, selectedInvoiceData, closeModal,
 
     const closeInvoiceModal = () => {
         closeModal()
-        refetchInvoices()
+        setTimeout(() => {
+            refetchInvoices()
+        }, 0)
     }
 
     return (

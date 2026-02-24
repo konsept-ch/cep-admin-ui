@@ -40,8 +40,6 @@ export const prepareBaseQuery =
             if (!response.ok) throw json
             if (json.message) toast[json.severity || 'success'](json.message)
 
-            //if (response.headers.has('metadata')) setStorage(JSON.parse(atob(response.headers.get('metadata'))))
-
             return { data: json }
         } catch (err) {
             if (err.message) toast.error(err.message, { autoClose: false })

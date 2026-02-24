@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from 'react'
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import {
     Row,
@@ -21,6 +21,7 @@ import { localeText } from '../agGridLocaleText'
 import { gridContextMenu, STATUSES } from '../utils'
 import { useLocation } from 'react-router-dom'
 import { mapPathnameToIcon } from '../constants/constants'
+import { GroupSummaryBar } from './GroupSummaryBar'
 
 export const Grid = ({
     name,
@@ -32,12 +33,18 @@ export const Grid = ({
     components = {},
     defaultColDef,
     defaultSortModel,
-    defaultFilterModel = undefined,
-    onPathnameChange = null,
+    sortModel,
+    groupModel,
+    filterModel = undefined,
+    showGroupSummary = false,
     ...gridProps
 }) => {
     const [gridApi, setGridApi] = useState(null)
+    const [gridColumnApi, setGridColumnApi] = useState(null)
     const [filterValue, setFilterValue] = useState('')
+    const [groupSummaryItems, setGroupSummaryItems] = useState([])
+    const groupSummaryKeyRef = useRef('')
+    const [groupSummaryRowIndex, setGroupSummaryRowIndex] = useState(null)
     const location = useLocation()
 
     useEffect(() => {
@@ -78,27 +85,126 @@ export const Grid = ({
     }, [activePredefinedFiltersById, name, rowData, gridApi])
 
     useEffect(() => {
-        if (rowData?.length > 0 && defaultFilterModel !== undefined && gridApi != null) {
-            gridApi.setFilterModel(defaultFilterModel)
+        if (filterModel === undefined || gridApi == null) return
+        gridApi.setFilterModel(filterModel)
+    }, [gridApi, filterModel])
+
+    const updateGroupSummary = useCallback(() => {
+        if (!showGroupSummary || gridApi == null) return
+
+        const focusedCell = gridApi.getFocusedCell?.()
+        const rowIndex =
+            groupSummaryRowIndex ??
+            (focusedCell && typeof focusedCell.rowIndex === 'number' ? focusedCell.rowIndex : null)
+
+        const row = rowIndex != null ? gridApi.getDisplayedRowAtIndex(rowIndex) : gridApi.getDisplayedRowAtIndex(0)
+
+        if (row == null) {
+            setGroupSummaryItems([])
+            groupSummaryKeyRef.current = ''
+            return
         }
-    }, [gridApi, rowData])
+
+        let cursor = row
+        if (!cursor.group && cursor.parent) {
+            cursor = cursor.parent
+        }
+
+        if (!cursor?.group) {
+            setGroupSummaryItems([])
+            groupSummaryKeyRef.current = ''
+            return
+        }
+
+        const items = []
+        while (cursor?.group && cursor.level >= 0) {
+            const count = cursor.allChildrenCount
+            const value = cursor.key ?? ''
+            const text = count == null ? value : `${value} (${count})`
+            items.push({
+                text,
+                tooltip: value,
+            })
+            cursor = cursor.parent
+        }
+
+        items.reverse()
+        const key = items.map(({ text }) => text).join('|')
+        if (key === groupSummaryKeyRef.current) return
+
+        groupSummaryKeyRef.current = key
+        setGroupSummaryItems(items)
+    }, [gridApi, showGroupSummary])
 
     useEffect(() => {
-        if (onPathnameChange != null) {
-            onPathnameChange(gridApi)
+        if (!showGroupSummary || gridApi == null) return
+        updateGroupSummary()
+
+        const handleUpdate = () => updateGroupSummary()
+        const handleRowClicked = (event) => setGroupSummaryRowIndex(event?.rowIndex ?? null)
+        gridApi.addEventListener('modelUpdated', handleUpdate)
+        gridApi.addEventListener('displayedRowsChanged', handleUpdate)
+        gridApi.addEventListener('bodyScroll', handleUpdate)
+        gridApi.addEventListener('rowClicked', handleRowClicked)
+
+        return () => {
+            gridApi.removeEventListener('modelUpdated', handleUpdate)
+            gridApi.removeEventListener('displayedRowsChanged', handleUpdate)
+            gridApi.removeEventListener('bodyScroll', handleUpdate)
+            gridApi.removeEventListener('rowClicked', handleRowClicked)
         }
-    }, [onPathnameChange, gridApi])
+    }, [gridApi, showGroupSummary, updateGroupSummary])
 
-    const onGridReady = useCallback(
-        ({ api, columnApi }) => {
-            setGridApi(api)
+    useEffect(() => {
+        if (gridColumnApi == null || groupModel === undefined) return
 
-            if (defaultSortModel !== undefined) {
-                columnApi.applyColumnState({ state: defaultSortModel })
-            }
-        },
-        [defaultSortModel]
-    )
+        if (Array.isArray(groupModel) && groupModel.length === 0) {
+            const resetState = (gridColumnApi.getColumnState?.() ?? []).map(({ colId }) => ({
+                colId,
+                rowGroup: false,
+                rowGroupIndex: null,
+            }))
+            gridColumnApi.applyColumnState({
+                state: resetState,
+                defaultState: { rowGroup: false, rowGroupIndex: null },
+            })
+            return
+        }
+
+        gridColumnApi.applyColumnState({
+            state: groupModel,
+            defaultState: { rowGroup: false, rowGroupIndex: null },
+        })
+    }, [gridColumnApi, groupModel])
+
+    useEffect(() => {
+        if (gridColumnApi == null) return
+        const modelToApply = sortModel ?? defaultSortModel
+        if (modelToApply === undefined) return
+
+        if (Array.isArray(modelToApply) && modelToApply.length === 0) {
+            const resetState = (gridColumnApi.getColumnState?.() ?? []).map(({ colId }) => ({
+                colId,
+                sort: null,
+                sortIndex: null,
+            }))
+            gridColumnApi.applyColumnState({
+                state: resetState,
+                defaultState: { sort: null, sortIndex: null },
+            })
+            return
+        }
+
+        gridColumnApi.applyColumnState({
+            state: modelToApply,
+            defaultState: { sort: null, sortIndex: null },
+        })
+    }, [gridColumnApi, sortModel, defaultSortModel])
+
+    const onGridReady = useCallback(({ api, columnApi }) => {
+        setGridApi(api)
+        setGridColumnApi(columnApi)
+    }, [])
 
     const pageIcon = useMemo(() => mapPathnameToIcon[location.pathname], [location.pathname])
 
@@ -163,6 +269,7 @@ export const Grid = ({
                     </Col>
                 </Row>
             </Container>
+            {showGroupSummary && <GroupSummaryBar items={groupSummaryItems} />}
             <div className="ag-theme-alpine general-grid">
                 <AgGridReact
                     {...{
@@ -179,7 +286,7 @@ export const Grid = ({
                         animateRows: true,
                         groupIncludeFooter: true,
                         groupSelectsChildren: true,
-                        groupRowsSticky: true,
+                        groupRowsSticky: false,
                         suppressAggFuncInHeader: true,
                         rowSelection: 'multiple',
                         suppressRowClickSelection: true,

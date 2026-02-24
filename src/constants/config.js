@@ -16,6 +16,7 @@ const mapCurrentEnvToMiddlewareUrl = {
     'dgcs-prod': 'https://middleware.formationdgcs.ch',
     'cffe-prod': 'https://middleware.cffe.cep.swiss',
     'cffe-val': 'https://middleware.cffe.cep-val.ch',
+    archive: 'https://middleware.archive.cep.swiss',
 }
 
 export const currentRunningEnv = mapCurrentUrlToEnv[window.location.origin] ?? 'other'
