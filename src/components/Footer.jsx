@@ -21,7 +21,9 @@ export const Footer = ({ isLoggedIn }) => {
                     <Nav className="me-auto" />
                     <Nav activeKey={location.pathname}>
                         <Navbar.Text className="me-3">
-                            <small className="text-muted">Admin v{ADMIN_VERSION} | Former v{FORMER_VERSION}</small>
+                            <small className="text-muted">
+                                Admin v{ADMIN_VERSION} | Former v{FORMER_VERSION}
+                            </small>
                         </Navbar.Text>
                         <Nav.Link>
                             <FontAwesomeIcon icon={faFileLines} /> Logs
