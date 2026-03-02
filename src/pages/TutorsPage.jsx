@@ -65,6 +65,11 @@ export function TutorsPage() {
                 headerName: 'E-mail',
             },
             {
+                field: 'phoneNumber',
+                headerName: 'N° téléphone',
+                initialHide: true,
+            },
+            {
                 field: 'year',
                 headerName: "Année d'entrée",
             },
@@ -97,6 +102,16 @@ export function TutorsPage() {
             {
                 field: 'training',
                 headerName: 'Formation continue',
+            },
+            {
+                field: 'rfResponsible',
+                headerName: 'RF responsable',
+                initialHide: true,
+            },
+            {
+                field: 'givenTitles',
+                headerName: 'Titres donnés',
+                initialHide: true,
             },
             {
                 field: 'roles',
