@@ -1,29 +1,29 @@
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { Container, Button, Collapse, InputGroup, FormControl, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons'
 import { faFilterCircleXmark } from '@fortawesome/free-solid-svg-icons'
 import { Helmet } from 'react-helmet-async'
+import { DateTime } from 'luxon'
 
 import { Calendar, RoomSelection, BulkSelect, ExpandController, RoomCheckbox } from '../components'
-import { fetchAgendaAction } from '../actions/agenda.ts'
-import { roomsAndEventsSelector } from '../reducers'
+import { useGetAgendaQuery } from '../services/agenda'
 import { ROOM_TYPE_VIRTUAL } from '../constants/agenda'
+import PuffLoader from 'react-spinners/PuffLoader'
 
 export const AgendaPage = () => {
-    const { rooms, events } = useSelector(roomsAndEventsSelector)
+    const {
+        data: { rooms = [], events = [] } = {},
+        refetch,
+        isLoading: firstLoading,
+        isFetching: loading,
+    } = useGetAgendaQuery(null, { refetchOnMountOrArgChange: true })
     const [selectedRoomIds, setSelectedRoomIds] = useState({})
-    const dispatch = useDispatch()
     const [isRoomSelectionExpanded, setRoomSelectionExpanded] = useState(true)
     const [isRoomsExpanded, setRoomsExpanded] = useState(true)
     const [isInternalRoomsExpanded, setInternalRoomsExpanded] = useState(true)
     const [searchTerm, setSearchTerm] = useState('')
     const calendarRef = useRef(null)
-
-    useEffect(() => {
-        dispatch(fetchAgendaAction())
-    }, [dispatch])
 
     useEffect(() => {
         if (Object.keys(selectedRoomIds).length <= 1) {
@@ -33,7 +33,7 @@ export const AgendaPage = () => {
 
             setSelectedRoomIds(initialSelectedRoomIds)
         }
-    }, [rooms]) // called when rooms are fetched
+    }, [firstLoading]) // called when rooms are fetched
 
     const handleSearch = (e) => setSearchTerm(e.target.value)
 
@@ -51,35 +51,81 @@ export const AgendaPage = () => {
     )
 
     const resourcesMemoized = useMemo(
-        () => searchedRooms.filter(({ id }) => selectedRoomIds[id]),
+        () =>
+            searchedRooms
+                .filter(({ id }) => selectedRoomIds[id])
+                .map((resource) => ({ ...resource, title: resource.name })),
         [searchedRooms, selectedRoomIds]
     )
 
     const eventsMemoized = useMemo(
         () =>
-            events.filter(
-                ({ room }) =>
-                    (selectedRoomIds[room?.id] && searchedRooms.some((searchedRoom) => searchedRoom.id === room?.id)) ||
-                    (selectedRoomIds['no-room'] && (room == null || room.id === undefined))
-            ),
+            events
+                .filter(
+                    ({ room }) =>
+                        (selectedRoomIds[room?.id] &&
+                            searchedRooms.some((searchedRoom) => searchedRoom.id === room?.id)) ||
+                        (selectedRoomIds['no-room'] && (room == null || room.id === undefined))
+                )
+                .map((event) => ({
+                    ...event,
+                    title: event.name,
+                    resourceId: event.room?.id,
+                    start: DateTime.fromISO(event.start, { zone: 'UTC' }).toISO(),
+                    end: DateTime.fromISO(event.end, { zone: 'UTC' }).toISO(),
+                    display: 'block',
+                })),
         [events, selectedRoomIds, searchedRooms]
     )
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const refreshCallback = useCallback(() => dispatch(fetchAgendaAction()), [])
+    // Center calendar around the most relevant date present in dataset (closest to today),
+    // useful when ARCHIVE_MODE is enabled and recent years have no events.
+    useEffect(() => {
+        if (!calendarRef?.current) return
+        if (!events || events.length === 0) return
+
+        const now = new Date()
+        let nearestStart = null
+        for (const e of events) {
+            const d = new Date(e.start)
+            if (!nearestStart) {
+                nearestStart = d
+                continue
+            }
+            const diff = Math.abs(d - now)
+            const best = Math.abs(nearestStart - now)
+            if (diff < best) {
+                nearestStart = d
+            }
+        }
+
+        try {
+            if (nearestStart) {
+                calendarRef.current.getApi().gotoDate(nearestStart)
+            }
+        } catch (_e) {
+            // ignore if calendar not yet ready
+        }
+    }, [events])
 
     return (
         <>
             <Helmet>
                 <title>Agenda - Former22</title>
             </Helmet>
-            <div className="calendar-page mt-3">
+            <div className="calendar-page pt-3 position-relative">
+                {loading && (
+                    <div className="calendar-loader">
+                        <PuffLoader color="#e8ca01" loading size={100} />
+                    </div>
+                )}
                 <Container fluid>
                     <Calendar
                         resources={resourcesMemoized}
                         events={eventsMemoized}
                         calendarRef={calendarRef}
-                        refreshCallback={refreshCallback}
+                        refreshCallback={refetch}
+                        loading={loading}
                     />
                 </Container>
                 <div className="d-flex">
@@ -188,12 +234,6 @@ export const AgendaPage = () => {
                                                         selectedRoomIds={selectedRoomIds}
                                                         setSelectedRoomIds={setSelectedRoomIds}
                                                     />
-
-                                                    {/* <ul>
-                                                    <li className="room-item">
-                                                        <div className="room-name">No room</div>
-                                                    </li>
-                                                </ul> */}
                                                 </ul>
                                             </div>
                                         </Collapse>

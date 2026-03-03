@@ -17,7 +17,7 @@ import {
 
 export function ContractTemplatesPage() {
     const {
-        data: templates,
+        data: templates = [],
         isLoading,
         isFetching,
         isError,
@@ -39,7 +39,7 @@ export function ContractTemplatesPage() {
     const [discardWarningData, setDiscardWarningData] = useState({ isVisible: false })
 
     const fileName = useMemo(
-        () => templates?.find(({ uuid }) => uuid === selectedTemplateUuid)?.fileOriginalName,
+        () => templates.find(({ uuid }) => uuid === selectedTemplateUuid)?.fileOriginalName,
         [templates, selectedTemplateUuid]
     )
 
@@ -47,13 +47,8 @@ export function ContractTemplatesPage() {
         const { data, error } = await createContract()
 
         if (error == null) {
-            toast.success('Modèle de contrat créée')
-
             setSelectedTemplateUuid(data.uuid)
-
             reset({ title: data.title, description: data.description, file: {} })
-        } else {
-            toast.error('Erreur de création du modèle de contrat', { autoClose: false })
         }
 
         await refetch()
@@ -73,82 +68,17 @@ export function ContractTemplatesPage() {
             formData.append('file', uploadedFile)
         }
 
-        const { error } = await updateContract({ uuid: selectedTemplateUuid, formData })
-
-        if (error == null) {
-            toast.success('Modèle de contrat modifiée')
-        } else {
-            toast.error('Erreur de modification du modèle de contrat', { autoClose: false })
-        }
+        await updateContract({ uuid: selectedTemplateUuid, formData })
 
         reset({ title, description, file: {} })
 
         await refetch()
     })
 
-    const onDeleteButtonClick = async ({ shouldForceDelete }) => {
-        const { error } = await deleteContract({ uuid: selectedTemplateUuid, shouldForceDelete })
-
-        if (error.status === 400) {
-            toast.error('Ce modèle de contrat a déjà été utilisé et ne peut plus être supprimé.', {
-                autoClose: false,
-            })
-
-            // const RetryToast = ({ closeToast }) => (
-            //     <div>
-            //         <p>Ce modèle d'attestation a déjà été utilisé.</p>
-            //         <p>Si vous le supprimez, il n'y aura plus de trâce dans les inscriptions qui l'ont utilisés.</p>
-            //         <Button
-            //             className="d-block mb-1"
-            //             variant="primary"
-            //             onClick={async () => {
-            //                 const { error: forceDeleteError } = await deleteAttestation({
-            //                     uuid: selectedTemplateUuid,
-            //                 })
-
-            //                 closeToast()
-            //             }}
-            //         >
-            //             <FontAwesomeIcon icon={faTrash} /> Forcer la suppression ?
-            //         </Button>
-            //     </div>
-            // )
-
-            toast(
-                ({ closeToast }) => (
-                    <div>
-                        <p>Ce modèle de contrat a déjà été utilisé.</p>
-                        <p>Si vous le supprimez, il n'y aura plus de trâce dans les inscriptions qui l'ont utilisé.</p>
-                        <Button
-                            className="d-block mb-1"
-                            variant="danger"
-                            onClick={async () => {
-                                await onDeleteButtonClick({ shouldForceDelete: true })
-
-                                closeToast()
-                            }}
-                        >
-                            <FontAwesomeIcon icon={faTrash} /> Forcer la suppression ?
-                        </Button>
-                    </div>
-                ),
-                {
-                    autoClose: false,
-                    toastId: `retry-delete`,
-                }
-            )
-        } else if (error) {
-            console.error(error)
-
-            toast.error('Erreur de suppression du modèle de contrat', { autoClose: false })
-        } else {
-            toast.success('Modèle de contrat supprimée')
-
-            setSelectedTemplateUuid(null)
-
-            setIsDeleteWarningVisible(false)
-        }
-
+    const onDeleteButtonClick = async () => {
+        await deleteContract({ uuid: selectedTemplateUuid })
+        setSelectedTemplateUuid(null)
+        setIsDeleteWarningVisible(false)
         await refetch()
     }
 
@@ -170,34 +100,33 @@ export function ContractTemplatesPage() {
                                 <p>Aucun modèle, vous pouvez créer un nouveau</p>
                             ) : (
                                 <ListGroup className="template-list">
-                                    {templates.length > 0 &&
-                                        templates.map(({ uuid, title, description }) => (
-                                            <ContractModelItem
-                                                {...{
-                                                    key: uuid,
-                                                    uuid,
-                                                    title,
-                                                    description,
-                                                    isActive: selectedTemplateUuid === uuid,
-                                                    onClick: () => {
-                                                        if (isDirty) {
-                                                            setDiscardWarningData({
-                                                                isVisible: true,
-                                                                selectNewTemplate: () => {
-                                                                    setSelectedTemplateUuid(uuid)
+                                    {templates.map(({ uuid, title, description }) => (
+                                        <ContractModelItem
+                                            {...{
+                                                key: uuid,
+                                                uuid,
+                                                title,
+                                                description,
+                                                isActive: selectedTemplateUuid === uuid,
+                                                onClick: () => {
+                                                    if (isDirty) {
+                                                        setDiscardWarningData({
+                                                            isVisible: true,
+                                                            selectNewTemplate: () => {
+                                                                setSelectedTemplateUuid(uuid)
 
-                                                                    reset({ uuid, title, description, file: {} })
-                                                                },
-                                                            })
-                                                        } else {
-                                                            setSelectedTemplateUuid(uuid)
+                                                                reset({ uuid, title, description, file: {} })
+                                                            },
+                                                        })
+                                                    } else {
+                                                        setSelectedTemplateUuid(uuid)
 
-                                                            reset({ uuid, title, description, file: {} })
-                                                        }
-                                                    },
-                                                }}
-                                            />
-                                        ))}
+                                                        reset({ uuid, title, description, file: {} })
+                                                    }
+                                                },
+                                            }}
+                                        />
+                                    ))}
                                 </ListGroup>
                             )}
                             <Button

@@ -110,21 +110,18 @@ export const ContractModal = ({ closeModal, selectedCourse, isVisible, refetchEv
                     isSelectedTemplateDataNull={selectedContractTemplateUuid === null}
                     isLoading={isFetchingTemplates || isUpdatingContract}
                     variant="primary"
-                    onClick={async () => {
-                        const { error } = await updateContract({
+                    onClick={() => {
+                        updateContract({
                             userId: selectedCourse.user.uuid,
                             courseId: selectedCourse.uuid,
                             templateId: selectedContractTemplateUuid,
                             year: selectedCourse.year,
                         })
-
-                        if (error == null) {
-                            refetchEvents()
-                            closeModal()
-                            toast.success('Le contrat a été généré avec succès.')
-                        } else {
-                            toast.error(error, { autoClose: false })
-                        }
+                            .unwrap()
+                            .then(() => {
+                                refetchEvents()
+                                closeModal()
+                            })
                     }}
                 >
                     Créer contrat

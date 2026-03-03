@@ -4,7 +4,7 @@ import { prepareBaseQuery } from './serviceUtils'
 
 export const contractsApi = createApi({
     reducerPath: 'contractsApi',
-    baseQuery: prepareBaseQuery({ servicePath: 'contracts' }),
+    baseQuery: prepareBaseQuery({ path: 'contracts' }),
     endpoints: (builder) => ({
         downloadContract: builder.query({
             async queryFn({ contractId }, _queryApi, _extraOptions, fetchWithBQ) {

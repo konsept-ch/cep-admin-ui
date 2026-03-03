@@ -233,7 +233,9 @@ export function ManualInvoiceModal({
 
     const closeInvoiceModal = () => {
         closeModal()
-        refetchInvoices()
+        setTimeout(() => {
+            refetchInvoices()
+        }, 0)
     }
 
     const isEditModal = selectedInvoiceData !== undefined

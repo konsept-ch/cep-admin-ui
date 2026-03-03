@@ -4,10 +4,13 @@ import { prepareBaseQuery } from './serviceUtils'
 
 export const attestationsApi = createApi({
     reducerPath: 'attestationsApi',
-    baseQuery: prepareBaseQuery({ servicePath: 'attestations' }),
+    baseQuery: prepareBaseQuery({ path: 'attestations' }),
     endpoints: (builder) => ({
         getAttestations: builder.query({
             query: () => '',
+        }),
+        getMinimumAttestations: builder.query({
+            query: () => 'minimum',
         }),
         createAttestation: builder.mutation({
             query: () => ({
@@ -44,6 +47,7 @@ export const attestationsApi = createApi({
 
 export const {
     useGetAttestationsQuery,
+    useGetMinimumAttestationsQuery,
     useCreateAttestationMutation,
     useUpdateAttestationMutation,
     useDeleteAttestationMutation,

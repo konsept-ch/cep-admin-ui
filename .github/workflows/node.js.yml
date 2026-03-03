@@ -19,6 +19,5 @@ jobs:
         with:
           node-version: 18
       - run: |
-          npm config set '//npm.fontawesome.com/:_authToken' "${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}"
           npm ci
       - run: npm run ci:check

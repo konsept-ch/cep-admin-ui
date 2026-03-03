@@ -65,6 +65,11 @@ export function TutorsPage() {
                 headerName: 'E-mail',
             },
             {
+                field: 'phoneNumber',
+                headerName: 'N° téléphone',
+                initialHide: true,
+            },
+            {
                 field: 'year',
                 headerName: "Année d'entrée",
             },
@@ -97,6 +102,16 @@ export function TutorsPage() {
             {
                 field: 'training',
                 headerName: 'Formation continue',
+            },
+            {
+                field: 'rfResponsible',
+                headerName: 'RF responsable',
+                initialHide: true,
+            },
+            {
+                field: 'givenTitles',
+                headerName: 'Titres donnés',
+                initialHide: true,
             },
             {
                 field: 'roles',
@@ -170,6 +185,10 @@ export function TutorsPage() {
                             <Form.Group className="mb-3" controlId="year">
                                 <Form.Label>Année d'entrée</Form.Label>
                                 <Form.Control type="text" {...register('year')} />
+                            </Form.Group>
+                            <Form.Group className="mb-3" controlId="phoneNumber">
+                                <Form.Label>N° téléphone</Form.Label>
+                                <Form.Control type="text" {...register('phoneNumber')} />
                             </Form.Group>
                             <Form.Check type="checkbox" id="cv" label="CV envoyé" {...register('cv')} />
                             <Form.Check
@@ -256,6 +275,7 @@ export function TutorsPage() {
                                                 { v: 'Technologies numériques' },
                                                 { v: 'Technopédagogie' },
                                                 { v: 'Vision commune' },
+                                                { v: 'Autre(s)' },
                                             ]}
                                             getOptionLabel={(o) => o.v}
                                             getOptionValue={(o) => o.v}
@@ -385,6 +405,14 @@ export function TutorsPage() {
                                 <Form.Label>Formation continue (année - titre)</Form.Label>
                                 <Form.Control as="textarea" rows={2} {...register('training')} />
                             </Form.Group>
+                            <Form.Group className="mb-3" controlId="rfResponsible">
+                                <Form.Label>RF responsable</Form.Label>
+                                <Form.Control as="textarea" rows={2} {...register('rfResponsible')} />
+                            </Form.Group>
+                            <Form.Group className="mb-3" controlId="givenTitles">
+                                <Form.Label>Titres donnés</Form.Label>
+                                <Form.Control as="textarea" rows={2} {...register('givenTitles')} />
+                            </Form.Group>
                         </Col>
                         <Col>
                             <Form.Group className="mb-3" controlId="educational">
@@ -402,14 +430,14 @@ export function TutorsPage() {
                     <Button
                         variant="primary"
                         disabled={updating}
-                        onClick={handleSubmit(async (data) => {
-                            console.log(data)
-                            const response = await updateTutor({
+                        onClick={handleSubmit((data) =>
+                            updateTutor({
                                 uuid: data.id,
                                 data: {
                                     address: data.address,
                                     email: data.email,
                                     year: data.year,
+                                    phoneNumber: data.phoneNumber,
                                     cv: data.cv,
                                     cert: data.cert,
                                     expertises: data.expertises,
@@ -423,6 +451,8 @@ export function TutorsPage() {
                                     dates: data.dates,
                                     links: data.links,
                                     educational: data.educational,
+                                    rfResponsible: data.rfResponsible,
+                                    givenTitles: data.givenTitles,
                                     course: data.course,
                                     pitch: data.pitch,
                                     scenario: data.scenario,
@@ -432,13 +462,11 @@ export function TutorsPage() {
                                     domains: data.domains.map((o) => o.v),
                                     status: data.status?.v,
                                 },
-                            })
-                            if (response.data) {
-                                toast.success(response.data.message)
+                            }).then(() => {
                                 refetch()
                                 setVisible(false)
-                            }
-                        })}
+                            })
+                        )}
                     >
                         Enregistrer
                     </Button>

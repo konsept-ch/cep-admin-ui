@@ -4,8 +4,11 @@ import { prepareBaseQuery } from './serviceUtils'
 
 export const inscriptionsApi = createApi({
     reducerPath: 'inscriptionsApi',
-    baseQuery: prepareBaseQuery({ servicePath: 'inscriptions' }),
+    baseQuery: prepareBaseQuery({ path: 'inscriptions' }),
     endpoints: (builder) => ({
+        getInscriptions: builder.query({
+            query: () => '',
+        }),
         updateOrganization: builder.mutation({
             query: ({ inscriptionId, organizationId }) => ({
                 url: `${inscriptionId}/organization`,
@@ -45,6 +48,7 @@ export const inscriptionsApi = createApi({
 })
 
 export const {
+    useGetInscriptionsQuery,
     useGetInscriptionCancellationsQuery,
     useGetInscriptionsRefusedByHrQuery,
     useUpdateOrganizationMutation,

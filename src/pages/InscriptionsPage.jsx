@@ -1,11 +1,8 @@
-import { useEffect, useState, useMemo } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useState, useMemo } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { toast } from 'react-toastify'
 
 import { Grid, StatusUpdateModal, MassStatusUpdateModal } from '../components'
-import { fetchInscriptionsAction, updateInscriptionStatusAction } from '../actions/inscriptions'
-import { inscriptionsSelector } from '../reducers'
 import {
     inscriptionStatuses,
     formatDate,
@@ -17,13 +14,12 @@ import {
     lockGroups,
     checkAreInSameLockGroup,
 } from '../utils'
-import { useUpdateInscriptionStatusMutation } from '../services/inscriptions'
+import { useGetInscriptionsQuery, useUpdateInscriptionStatusMutation } from '../services/inscriptions'
 import { useGenerateAttestationMutation } from '../services/attestations'
 import { ChangeOrganizationModal } from '../components/ChangeOrganizationModal'
 import { GenerateAttestationModal } from '../components/GenerateAttestationModal'
 
 export function InscriptionsPage() {
-    const dispatch = useDispatch()
     const [statusUpdateData, setStatusUpdateData] = useState(null)
     const [statusMassUpdateData, setStatusMassUpdateData] = useState(null)
     const [attestationData, setAttestationData] = useState(null)
@@ -32,20 +28,19 @@ export function InscriptionsPage() {
     const [isMassUpdateModalVisible, setIsMassUpdateModalVisible] = useState(false)
     const [isAttestationVisible, setAttestationVisible] = useState(false)
     const [selectedInscriptionId, setSelectedInscriptionId] = useState(null)
-    const inscriptions = useSelector(inscriptionsSelector)
     const [activePredefinedFiltersById, setActivePredefinedFiltersById] = useState({ onlyWebEntries: false })
 
     const [generateAttestation] = useGenerateAttestationMutation()
     const [updateInscriptionStatus, { isLoading: isUpdatingInscriptionStatus }] = useUpdateInscriptionStatusMutation()
+    const {
+        data: inscriptions = [],
+        isFetching: inscriptionsLoading,
+        refetch: refetchInscriptions,
+    } = useGetInscriptionsQuery(null, { refetchOnMountOrArgChange: true })
 
     const predefinedFilters = [
         { id: 'onlyWebEntries', label: [STATUSES.ENTREE_WEB, STATUSES.VALIDE_PAR_RH].join('; ') },
-        // { id: 'filter2', label: 'Filter 2' },
     ]
-
-    useEffect(() => {
-        dispatch(fetchInscriptionsAction())
-    }, [dispatch])
 
     const isMassUpdatePossible =
         selectedRowsData.length > 1 &&
@@ -71,7 +66,8 @@ export function InscriptionsPage() {
                 filter: 'agSetColumnFilter',
                 headerTooltip: 'Le coordinateur de la formation',
                 width: 170,
-                rowGroup: true,
+                initialRowGroup: true,
+                initialRowGroupIndex: 0,
                 hide: true,
                 // TODO: sort ignoring accents
                 comparator: (_valueA, _valueB, nodeA, nodeB) => {
@@ -85,7 +81,8 @@ export function InscriptionsPage() {
                 headerTooltip: "L'année de début de la session",
                 sort: 'asc',
                 type: 'numericColumn',
-                rowGroup: true,
+                initialRowGroup: true,
+                initialRowGroupIndex: 1,
                 hide: true,
             },
             {
@@ -93,7 +90,8 @@ export function InscriptionsPage() {
                 headerName: 'Formation',
                 filter: 'agTextColumnFilter',
                 headerTooltip: 'Le nom de la formation',
-                rowGroup: true,
+                initialRowGroup: true,
+                initialRowGroupIndex: 2,
                 hide: true,
                 // TODO: sort ignoring accents
                 comparator: (_valueA, _valueB, nodeA, nodeB) => {
@@ -105,7 +103,8 @@ export function InscriptionsPage() {
                 headerName: 'Session',
                 filter: 'agTextColumnFilter',
                 headerTooltip: "Le nom de la session dans laquelle l'utilisateur s'est inscrit",
-                rowGroup: true,
+                initialRowGroup: true,
+                initialRowGroupIndex: 3,
                 hide: true,
                 // TODO: sort ignoring accents
                 comparator: (_valueA, _valueB, nodeA, nodeB) => {
@@ -328,6 +327,7 @@ export function InscriptionsPage() {
                 columnDefs={columnDefs}
                 rowData={rowData}
                 rowClassRules={inscriptionsGridRowClassRules}
+                isDataLoading={inscriptionsLoading}
                 autoGroupColumnDef={{
                     minWidth: 480,
                     cellRendererParams: {
@@ -346,6 +346,7 @@ export function InscriptionsPage() {
                 ]}
                 groupDefaultExpanded={1}
                 groupDisplayType="groupRows"
+                showGroupSummary={true}
                 groupIncludeFooter={false}
                 getContextMenuItems={({ node: { data } = { data: {} } } = { node: { data: {} } }) => {
                     const checkLockGroupForSelectedStatus = checkAreInSameLockGroup(data?.status)
@@ -478,8 +479,6 @@ export function InscriptionsPage() {
                         uuids: attestationData,
                         selectedAttestationTemplateUuid,
                     })
-                        .unwrap()
-                        .then(() => toast.success('La génération à été effectuée avec succès'))
                 }}
             />
 
@@ -488,29 +487,26 @@ export function InscriptionsPage() {
                     closeModal={() => {
                         setStatusUpdateData(null)
                         setIsUpdateModalVisible(false)
-                        dispatch(fetchInscriptionsAction())
+                        refetchInscriptions()
                     }}
                     statusUpdateData={statusUpdateData}
-                    updateStatus={({ emailTemplateId, shouldSendSms, selectedAttestationTemplateUuid, remark }) =>
-                        dispatch(
-                            updateInscriptionStatusAction({
-                                inscriptionId: statusUpdateData?.id,
-                                newStatus: statusUpdateData?.newStatus,
-                                remark,
-                                emailTemplateId,
-                                selectedAttestationTemplateUuid,
-                                shouldSendSms,
-                                successCallback: () => {
-                                    setIsUpdateModalVisible(false)
-                                    setStatusUpdateData(null)
-                                    dispatch(fetchInscriptionsAction())
-                                    toast.success(
-                                        `Statut d'inscription modifié de "${statusUpdateData?.status}" à "${statusUpdateData?.newStatus}"`
-                                    )
-                                },
-                            })
-                        )
-                    }
+                    updateStatus={({ emailTemplateId, shouldSendSms, selectedAttestationTemplateUuid, remark }) => {
+                        updateInscriptionStatus({
+                            inscriptionId: statusUpdateData?.id,
+                            newStatus: statusUpdateData?.newStatus,
+                            remark,
+                            emailTemplateId,
+                            selectedAttestationTemplateUuid,
+                            shouldSendSms,
+                        }).then(() => {
+                            setIsUpdateModalVisible(false)
+                            setStatusUpdateData(null)
+                            refetchInscriptions()
+                            toast.success(
+                                `Statut d'inscription modifié de "${statusUpdateData?.status}" à "${statusUpdateData?.newStatus}"`
+                            )
+                        })
+                    }}
                 />
             )}
 
@@ -519,31 +515,12 @@ export function InscriptionsPage() {
                     closeModal={() => {
                         setIsMassUpdateModalVisible(false)
                         setStatusMassUpdateData(null)
-                        dispatch(fetchInscriptionsAction())
+                        refetchInscriptions()
                     }}
                     inscriptionsData={statusMassUpdateData}
                     selectedRowsData={selectedRowsData}
                     isUpdating={isUpdatingInscriptionStatus}
                     updateStatus={async ({ emailTemplateId, selectedAttestationTemplateUuid }) => {
-                        // dispatch(
-                        //     massUpdateInscriptionStatusesAction({
-                        //         inscriptionsIds: selectedRowsData.map(({ id }) => id),
-                        //         newStatus: statusMassUpdateData.newStatus,
-                        //         emailTemplateId,
-                        //         successCallback: () => {
-                        //             setIsMassUpdateModalVisible(false)
-                        //             setStatusMassUpdateData(null)
-                        //             dispatch(fetchInscriptionsAction())
-                        //             toast.success(
-                        //                 `Plusieurs statuts d'inscription changés de "${statusMassUpdateData.status}" à "${statusMassUpdateData.newStatus}"`
-                        //             )
-                        //         },
-                        //     })
-                        // )
-                        // TODO: for-of:
-                        // await updateInscriptionStatus() mutation for each selected row
-                        // display toast with done/total
-
                         let hasErrors = false
 
                         for (const [index, { id, participant }] of selectedRowsData.entries()) {
@@ -587,7 +564,7 @@ export function InscriptionsPage() {
 
                         setIsMassUpdateModalVisible(false)
                         setStatusMassUpdateData(null)
-                        dispatch(fetchInscriptionsAction()) // TODO: use RTK Query service instead
+                        refetchInscriptions()
                     }}
                 />
             )}
@@ -595,7 +572,7 @@ export function InscriptionsPage() {
             <ChangeOrganizationModal
                 inscriptionId={selectedInscriptionId}
                 onHide={() => setSelectedInscriptionId(null)}
-                onDone={() => dispatch(fetchInscriptionsAction())}
+                onDone={() => refetchInscriptions()}
             />
         </>
     )

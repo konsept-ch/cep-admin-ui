@@ -3,11 +3,12 @@ import { ListGroup, Row, Col, Container, Button, FloatingLabel, Form } from 'rea
 import { Helmet } from 'react-helmet-async'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
+import classNames from 'classnames'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { faFloppyDisk } from '@fortawesome/free-regular-svg-icons'
 
-import { AttestationModelItem, CommonModal } from '../components'
+import { CommonModal } from '../components'
 import {
     useGetAttestationsQuery,
     useCreateAttestationMutation,
@@ -17,7 +18,7 @@ import {
 
 export function AttestationTemplatesPage() {
     const {
-        data: templates,
+        data: templates = [],
         isLoading,
         isFetching,
         isError,
@@ -39,7 +40,7 @@ export function AttestationTemplatesPage() {
     const [discardWarningData, setDiscardWarningData] = useState({ isVisible: false })
 
     const fileName = useMemo(
-        () => templates?.find(({ uuid }) => uuid === selectedTemplateUuid)?.fileOriginalName,
+        () => templates.find(({ uuid }) => uuid === selectedTemplateUuid)?.fileOriginalName,
         [templates, selectedTemplateUuid]
     )
 
@@ -73,83 +74,22 @@ export function AttestationTemplatesPage() {
             formData.append('file', uploadedFile)
         }
 
-        const { error } = await updateAttestation({ uuid: selectedTemplateUuid, formData })
-
-        if (error == null) {
-            toast.success("Modèle d'attestation modifiée")
-        } else {
-            toast.error("Erreur de modification du modèle d'attestation", { autoClose: false })
-        }
+        await updateAttestation({ uuid: selectedTemplateUuid, formData })
 
         reset({ title, description, file: {} })
 
         await refetch()
     })
 
-    const onDeleteButtonClick = async ({ shouldForceDelete }) => {
-        const { error } = await deleteAttestation({ uuid: selectedTemplateUuid, shouldForceDelete })
-
-        if (error.status === 400) {
-            toast.error("Ce modèle d'attestation a déjà été utilisé et ne peut plus être supprimé.", {
-                autoClose: false,
+    const onDeleteButtonClick = () => {
+        deleteAttestation({ uuid: selectedTemplateUuid })
+            .unwrap()
+            .then(() => {
+                setSelectedTemplateUuid(null)
+                setIsDeleteWarningVisible(false)
             })
-
-            // const RetryToast = ({ closeToast }) => (
-            //     <div>
-            //         <p>Ce modèle d'attestation a déjà été utilisé.</p>
-            //         <p>Si vous le supprimez, il n'y aura plus de trâce dans les inscriptions qui l'ont utilisés.</p>
-            //         <Button
-            //             className="d-block mb-1"
-            //             variant="primary"
-            //             onClick={async () => {
-            //                 const { error: forceDeleteError } = await deleteAttestation({
-            //                     uuid: selectedTemplateUuid,
-            //                 })
-
-            //                 closeToast()
-            //             }}
-            //         >
-            //             <FontAwesomeIcon icon={faTrash} /> Forcer la suppression ?
-            //         </Button>
-            //     </div>
-            // )
-
-            toast(
-                ({ closeToast }) => (
-                    <div>
-                        <p>Ce modèle d'attestation a déjà été utilisé.</p>
-                        <p>Si vous le supprimez, il n'y aura plus de trâce dans les inscriptions qui l'ont utilisé.</p>
-                        <Button
-                            className="d-block mb-1"
-                            variant="danger"
-                            onClick={async () => {
-                                await onDeleteButtonClick({ shouldForceDelete: true })
-
-                                closeToast()
-                            }}
-                        >
-                            <FontAwesomeIcon icon={faTrash} /> Forcer la suppression ?
-                        </Button>
-                    </div>
-                ),
-                {
-                    autoClose: false,
-                    toastId: `retry-delete`,
-                }
-            )
-        } else if (error) {
-            console.error(error)
-
-            toast.error("Erreur de suppression du modèle d'attestation", { autoClose: false })
-        } else {
-            toast.success("Modèle d'attestation supprimée")
-
-            setSelectedTemplateUuid(null)
-
-            setIsDeleteWarningVisible(false)
-        }
-
-        await refetch()
+            .catch(() => {})
+            .finally(() => refetch())
     }
 
     return (
@@ -170,34 +110,35 @@ export function AttestationTemplatesPage() {
                                 <p>Aucun modèle, vous pouvez créer un nouveau</p>
                             ) : (
                                 <ListGroup className="template-list">
-                                    {templates.length > 0 &&
-                                        templates.map(({ uuid, title, description }) => (
-                                            <AttestationModelItem
-                                                {...{
-                                                    key: uuid,
-                                                    uuid,
-                                                    title,
-                                                    description,
-                                                    isActive: selectedTemplateUuid === uuid,
-                                                    onClick: () => {
-                                                        if (isDirty) {
-                                                            setDiscardWarningData({
-                                                                isVisible: true,
-                                                                selectNewTemplate: () => {
-                                                                    setSelectedTemplateUuid(uuid)
-
-                                                                    reset({ uuid, title, description, file: {} })
-                                                                },
-                                                            })
-                                                        } else {
+                                    {templates.map(({ uuid, title, description }) => (
+                                        <ListGroup.Item
+                                            key={uuid}
+                                            onClick={() => {
+                                                if (isDirty) {
+                                                    setDiscardWarningData({
+                                                        isVisible: true,
+                                                        selectNewTemplate: () => {
                                                             setSelectedTemplateUuid(uuid)
 
                                                             reset({ uuid, title, description, file: {} })
-                                                        }
-                                                    },
-                                                }}
-                                            />
-                                        ))}
+                                                        },
+                                                    })
+                                                } else {
+                                                    setSelectedTemplateUuid(uuid)
+
+                                                    reset({ uuid, title, description, file: {} })
+                                                }
+                                            }}
+                                            className={classNames({
+                                                'active-template': selectedTemplateUuid === uuid,
+                                            })}
+                                        >
+                                            <div className="d-flex align-items-start justify-content-between">
+                                                <h4 className="d-inline-block">{title}</h4>
+                                            </div>
+                                            {description && <p>{description}</p>}
+                                        </ListGroup.Item>
+                                    ))}
                                 </ListGroup>
                             )}
                             <Button
@@ -259,7 +200,15 @@ export function AttestationTemplatesPage() {
                                     </div>
                                     <CommonModal
                                         title="Avertissement"
-                                        content={<p>Êtes-vous sûr de vouloir supprimer ce modèle?</p>}
+                                        content={
+                                            <>
+                                                <p>Êtes-vous sûr de vouloir supprimer ce modèle?</p>
+                                                <strong>
+                                                    Si vous le supprimez, il n'y aura plus de trâce dans les
+                                                    inscriptions qui l'ont utilisé.
+                                                </strong>
+                                            </>
+                                        }
                                         footer={
                                             <Button
                                                 variant="danger"

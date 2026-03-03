@@ -1,7 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { Button, Spinner, Row, Form, Col, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { useForm, Controller } from 'react-hook-form'
-import { toast } from 'react-toastify'
 import Select from 'react-select'
 
 import { CommonModal } from '../components'
@@ -113,27 +112,16 @@ export function EditSessionModal({ selectedSessionData, closeModal, isModalOpen 
                             <Button
                                 variant="primary"
                                 disabled={!isDirty}
-                                onClick={handleSubmit(async (newData) => {
+                                onClick={handleSubmit((newData) => {
                                     const { id, name, startDate } = selectedSessionData
-
-                                    const { error: mutationError } = await updateSession({
+                                    updateSession({
                                         sessionId: id,
                                         sessionName: name,
-                                        startDate,
+                                        startDate: new Date(startDate),
                                         ...formatToFlatObject(newData),
                                     })
-                                    if (typeof mutationError === 'undefined') {
-                                        toast.success('Succès !')
-                                        closeModal()
-                                    } else {
-                                        toast.error(
-                                            <>
-                                                <p>{mutationError.status}</p>
-                                                <p>{mutationError.error}</p>
-                                            </>,
-                                            { autoClose: false }
-                                        )
-                                    }
+                                        .unwrap()
+                                        .then(closeModal)
                                 })}
                             >
                                 {isSessionUpdating ? (

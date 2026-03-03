@@ -4,7 +4,7 @@ import { prepareBaseQuery } from './serviceUtils'
 
 export const contractTemplatesApi = createApi({
     reducerPath: 'contractTemplatesApi',
-    baseQuery: prepareBaseQuery({ servicePath: 'contract-templates' }),
+    baseQuery: prepareBaseQuery({ path: 'contract-templates' }),
     endpoints: (builder) => ({
         getContracts: builder.query({
             query: () => '',
@@ -23,9 +23,8 @@ export const contractTemplatesApi = createApi({
             }),
         }),
         deleteContract: builder.mutation({
-            query: ({ uuid, shouldForceDelete }) => ({
+            query: ({ uuid }) => ({
                 url: uuid,
-                params: { shouldForceDelete },
                 method: 'DELETE',
             }),
         }),

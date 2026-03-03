@@ -285,22 +285,13 @@ export function EditOrganizationModal({ refetchOrganizations, selectedOrganizati
                             <Button
                                 variant="primary"
                                 disabled={!isDirty}
-                                onClick={handleSubmit(async (newData) => {
-                                    const { error: mutationError } = await updateOrganization({
+                                onClick={handleSubmit((newData) => {
+                                    updateOrganization({
                                         id: selectedOrganizationData.id,
                                         body: { newData, organizationName: selectedOrganizationData.name },
                                     })
-                                    if (typeof mutationError === 'undefined') {
-                                        closeOrganizationEditModal()
-                                    } else {
-                                        toast.error(
-                                            <>
-                                                <p>{mutationError.status}</p>
-                                                <p>{mutationError.error}</p>
-                                            </>,
-                                            { autoClose: false }
-                                        )
-                                    }
+                                        .unwrap()
+                                        .then(closeOrganizationEditModal)
                                 })}
                             >
                                 {isOrganizationUpdating ? (

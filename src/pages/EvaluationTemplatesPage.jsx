@@ -19,7 +19,7 @@ import {
 
 export function EvaluationTemplatesPage() {
     const {
-        data: templates,
+        data: templates = [],
         isLoading,
         isFetching,
         isError,
@@ -55,7 +55,7 @@ export function EvaluationTemplatesPage() {
     const [discardWarningData, setDiscardWarningData] = useState({ isVisible: false })
 
     const filteredTemplates = useMemo(
-        () => (templates || []).filter((t) => t.category.value === selectedCategory.value),
+        () => templates.filter((t) => t.category.value === selectedCategory.value),
         [templates, selectedCategory]
     )
 

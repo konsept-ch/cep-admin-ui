@@ -61,6 +61,12 @@ export const Navigation = ({ isLoggedIn }) => {
         event.preventDefault()
         navigate(to)
     }
+    const goToWithInvoiceAllReset = (to) => (event) => {
+        event.preventDefault()
+        sessionStorage.setItem('manualInvoicesAllReset', String(Date.now()))
+        window.dispatchEvent(new Event('manualInvoicesAllReset'))
+        navigate(to)
+    }
 
     return (
         <Navbar bg="light" expand="xl" className={`is-running-in-${currentRunningEnv}`}>
@@ -210,7 +216,7 @@ export const Navigation = ({ isLoggedIn }) => {
                             </Nav.Link>
                             <Nav.Link
                                 href={`/${PATH_INVOICE}/${PATH_INVOICE_ALL}`}
-                                onClick={goTo(`${PATH_INVOICE}/${PATH_INVOICE_ALL}`)}
+                                onClick={goToWithInvoiceAllReset(`${PATH_INVOICE}/${PATH_INVOICE_ALL}`)}
                             >
                                 <FontAwesomeIcon icon={faInfinity} /> Toutes
                             </Nav.Link>

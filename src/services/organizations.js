@@ -4,7 +4,7 @@ import { prepareBaseQuery } from './serviceUtils'
 
 export const organizationsApi = createApi({
     reducerPath: 'organizationsApi',
-    baseQuery: prepareBaseQuery({ servicePath: 'organizations' }),
+    baseQuery: prepareBaseQuery({ path: 'organizations' }),
     endpoints: (builder) => ({
         getOrganizationsFlat: builder.query({
             query: () => 'flat',

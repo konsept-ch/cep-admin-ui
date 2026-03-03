@@ -4,7 +4,7 @@ import { prepareBaseQuery } from './serviceUtils'
 
 export const eventsApi = createApi({
     reducerPath: 'eventsApi',
-    baseQuery: prepareBaseQuery({ servicePath: 'events' }),
+    baseQuery: prepareBaseQuery({ path: 'events' }),
     endpoints: (builder) => ({
         getEvents: builder.query({
             query: () => '',

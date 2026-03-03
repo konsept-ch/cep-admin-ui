@@ -1,59 +1,11 @@
-import { /* useEffect, useState, */ useMemo } from 'react'
-// import { useDispatch, useSelector } from 'react-redux'
+import { useMemo } from 'react'
 import { Helmet } from 'react-helmet-async'
-// import { toast } from 'react-toastify'
 
-import { Grid /* , StatusUpdateModal, MassStatusUpdateModal */ } from '../components'
-// import { // fetchInscriptionsAction,
-// updateInscriptionStatusAction,
-// massUpdateInscriptionStatusesAction,
-// } from '../actions/inscriptions.ts'
-// import { inscriptionsSelector } from '../reducers'
-import {
-    // inscriptionStatuses,
-    formatDate,
-    inscriptionsGridRowClassRules,
-    // gridContextMenu,
-    // FINAL_STATUSES,
-    // STATUSES,
-    // UNSELECTABLE_STATUSES,
-} from '../utils'
+import { Grid } from '../components'
+import { formatDate, inscriptionsGridRowClassRules } from '../utils'
 import { useGetInscriptionsRefusedByHrQuery } from '../services/inscriptions'
 
 export function InscriptionsRefusedByHrPage() {
-    // const dispatch = useDispatch()
-    // const [statusUpdateData, setStatusUpdateData] = useState(null)
-    // const [statusMassUpdateData, setStatusMassUpdateData] = useState(null)
-    // const [selectedRowsData, setSelectedRowsData] = useState([])
-    // const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false)
-    // const [isMassUpdateModalVisible, setIsMassUpdateModalVisible] = useState(false)
-    // const inscriptions = useSelector(inscriptionsSelector)
-    // const [activePredefinedFiltersById, setActivePredefinedFiltersById] = useState({ onlyWebEntries: true })
-
-    // const predefinedFilters = [
-    //     { id: 'onlyWebEntries', label: [STATUSES.ENTREE_WEB, STATUSES.VALIDE_PAR_RH].join('; ') },
-    //     // { id: 'filter2', label: 'Filter 2' },
-    // ]
-
-    // useEffect(() => {
-    //     dispatch(fetchInscriptionsAction())
-    // }, [dispatch])
-
-    // const isMassUpdatePossible =
-    //     selectedRowsData.length > 1 &&
-    //     selectedRowsData.every((current, index, array) => {
-    //         const isFinalStatus = FINAL_STATUSES.includes(current.status)
-    //         const isSameStatus = index > 0 ? array[index - 1].status === current.status : true
-
-    //         if (!isFinalStatus && isSameStatus) {
-    //             return true
-    //         }
-
-    //         return false
-    //     })
-
-    // const checkIsSingleUpdatePossible = ({ status }) => selectedRowsData.length <= 1 && !FINAL_STATUSES.includes(status)
-
     const { data: inscriptions, isFetching } = useGetInscriptionsRefusedByHrQuery(null, {
         refetchOnMountOrArgChange: true,
     })
@@ -90,7 +42,8 @@ export function InscriptionsRefusedByHrPage() {
                 filter: 'agSetColumnFilter',
                 headerTooltip: 'Le coordinateur de la formation',
                 width: 170,
-                rowGroup: true,
+                initialRowGroup: true,
+                initialRowGroupIndex: 0,
                 hide: true,
                 // TODO: sort ignoring accents
                 comparator: (_valueA, _valueB, nodeA, nodeB) => {
@@ -104,7 +57,8 @@ export function InscriptionsRefusedByHrPage() {
                 headerTooltip: "L'année de début de la session",
                 sort: 'asc',
                 type: 'numericColumn',
-                rowGroup: true,
+                initialRowGroup: true,
+                initialRowGroupIndex: 1,
                 hide: true,
             },
             {
@@ -112,7 +66,8 @@ export function InscriptionsRefusedByHrPage() {
                 headerName: 'Formation',
                 filter: 'agTextColumnFilter',
                 headerTooltip: 'Le nom de la formation',
-                rowGroup: true,
+                initialRowGroup: true,
+                initialRowGroupIndex: 2,
                 hide: true,
                 // TODO: sort ignoring accents
                 comparator: (_valueA, _valueB, nodeA, nodeB) => {
@@ -124,7 +79,8 @@ export function InscriptionsRefusedByHrPage() {
                 headerName: 'Session',
                 filter: 'agTextColumnFilter',
                 headerTooltip: "Le nom de la session dans laquelle l'utilisateur s'est inscrit",
-                rowGroup: true,
+                initialRowGroup: true,
+                initialRowGroupIndex: 3,
                 hide: true,
                 // TODO: sort ignoring accents
                 comparator: (_valueA, _valueB, nodeA, nodeB) => {
@@ -238,10 +194,6 @@ export function InscriptionsRefusedByHrPage() {
             </Helmet>
             <Grid
                 name="Refusée par RH"
-                /* TODO: decouple active filters from Grid? */
-                // activePredefinedFiltersById={activePredefinedFiltersById}
-                // setActivePredefinedFiltersById={setActivePredefinedFiltersById}
-                // predefinedFilters={predefinedFilters}
                 columnDefs={columnDefs}
                 rowData={rowData}
                 rowClassRules={inscriptionsGridRowClassRules}
@@ -264,168 +216,9 @@ export function InscriptionsRefusedByHrPage() {
                 ]}
                 groupDefaultExpanded={1}
                 groupDisplayType="groupRows"
+                showGroupSummary={true}
                 groupIncludeFooter={false}
-                // getContextMenuItems={({ node: { data } }) => [
-                //     {
-                //         name: 'Envoyer e-mail',
-                //         action: () => {
-                //             setIsUpdateModalVisible(true)
-                //             setStatusUpdateData({
-                //                 ...inscriptions.find(({ id }) => id === data?.id),
-                //                 newStatus: data?.status,
-                //             })
-                //         },
-                //     },
-                //     selectedRowsData.length <= 1 && {
-                //         name: 'Modifier statut',
-                //         disabled: !checkIsSingleUpdatePossible({ status: data?.status }),
-                //         tooltip: FINAL_STATUSES.includes(data?.status) ? 'Statut final (non modifiable)' : '',
-                //         subMenu: inscriptionStatuses.map((currentStatus) => ({
-                //             name: currentStatus,
-                //             action: () => {
-                //                 setIsUpdateModalVisible(true)
-                //                 setStatusUpdateData({
-                //                     ...inscriptions.find(({ id }) => id === data?.id),
-                //                     newStatus: currentStatus,
-                //                 })
-                //             },
-                //             disabled: currentStatus === data?.status || UNSELECTABLE_STATUSES.includes(currentStatus),
-                //             checked: currentStatus === data?.status,
-                //             icon:
-                //                 FINAL_STATUSES.includes(currentStatus) && !UNSELECTABLE_STATUSES.includes(currentStatus)
-                //                     ? '!'
-                //                     : '',
-                //             tooltip:
-                //                 currentStatus === data?.status
-                //                     ? 'Statut actuel de la sélection'
-                //                     : UNSELECTABLE_STATUSES.includes(currentStatus)
-                //                     ? 'Statut dérivé (non sélectionnable)'
-                //                     : FINAL_STATUSES.includes(currentStatus)
-                //                     ? 'Statut final !'
-                //                     : '',
-                //         })),
-                //     },
-                //     selectedRowsData.length > 1 && {
-                //         name: 'Modifier statut en mass',
-                //         disabled: !isMassUpdatePossible,
-                //         tooltip: !isMassUpdatePossible ? 'Statut final (non modifiable)' : '',
-                //         subMenu: inscriptionStatuses.map((currentStatus) => ({
-                //             name: currentStatus,
-                //             action: () => {
-                //                 setIsMassUpdateModalVisible(true)
-                //                 setStatusMassUpdateData({
-                //                     status: data.status,
-                //                     newStatus: currentStatus,
-                //                 })
-                //             },
-                //             disabled: currentStatus === data.status || UNSELECTABLE_STATUSES.includes(currentStatus),
-                //             checked: currentStatus === data.status,
-                //             icon:
-                //                 FINAL_STATUSES.includes(currentStatus) && !UNSELECTABLE_STATUSES.includes(currentStatus)
-                //                     ? '!'
-                //                     : '',
-                //             tooltip:
-                //                 currentStatus === data.status
-                //                     ? 'Statut actuel de la sélection'
-                //                     : UNSELECTABLE_STATUSES.includes(currentStatus)
-                //                     ? 'Statut dérivé (non sélectionnable)'
-                //                     : '',
-                //         })),
-                //     },
-                //     {
-                //         name: 'Créer attestation',
-                //         action: () => {
-                //             if (data != null) {
-                //                 setIsUpdateModalVisible(true)
-                //                 setStatusUpdateData({
-                //                     ...inscriptions.find(({ id }) => id === data?.id),
-                //                     newStatus: data?.status,
-                //                     isCreatingAttestation: true,
-                //                 })
-                //             }
-                //         },
-                //     },
-                //     'separator',
-                //     ...gridContextMenu,
-                // ]}
-                // onRowSelected={({
-                //     api: {
-                //         selectionService: { selectedNodes },
-                //     },
-                // }) => {
-                //     const filteredSelectedRowsData =
-                //         Object.values(selectedNodes).reduce(
-                //             (previous, current) => [
-                //                 ...previous,
-                //                 ...(typeof current !== 'undefined' && typeof previous !== 'undefined'
-                //                     ? [current.data]
-                //                     : []),
-                //             ],
-                //             []
-                //         ) || []
-
-                //     setSelectedRowsData(filteredSelectedRowsData)
-                // }}
             />
-
-            {/* {isUpdateModalVisible && statusUpdateData && (
-                <StatusUpdateModal
-                    closeModal={() => {
-                        setStatusUpdateData(null)
-                        setIsUpdateModalVisible(false)
-                        dispatch(fetchInscriptionsAction())
-                    }}
-                    statusUpdateData={statusUpdateData}
-                    updateStatus={({ emailTemplateId, shouldSendSms, selectedAttestationTemplateUuid }) =>
-                        dispatch(
-                            updateInscriptionStatusAction({
-                                inscriptionId: statusUpdateData.id,
-                                newStatus: statusUpdateData.newStatus,
-                                emailTemplateId,
-                                selectedAttestationTemplateUuid,
-                                shouldSendSms,
-                                successCallback: () => {
-                                    setIsUpdateModalVisible(false)
-                                    setStatusUpdateData(null)
-                                    dispatch(fetchInscriptionsAction())
-                                    toast.success(
-                                        `Statut d'inscription modifié de "${statusUpdateData.status}" à "${statusUpdateData.newStatus}"`
-                                    )
-                                },
-                            })
-                        )
-                    }
-                />
-            )} */}
-
-            {/* {isMassUpdateModalVisible && statusMassUpdateData && (
-                <MassStatusUpdateModal
-                    closeModal={() => {
-                        setIsMassUpdateModalVisible(false)
-                        setStatusMassUpdateData(null)
-                        dispatch(fetchInscriptionsAction())
-                    }}
-                    inscriptionsData={statusMassUpdateData}
-                    selectedRowsData={selectedRowsData}
-                    updateStatus={({ emailTemplateId }) =>
-                        dispatch(
-                            massUpdateInscriptionStatusesAction({
-                                inscriptionsIds: selectedRowsData.map(({ id }) => id),
-                                newStatus: statusMassUpdateData.newStatus,
-                                emailTemplateId,
-                                successCallback: () => {
-                                    setIsMassUpdateModalVisible(false)
-                                    setStatusMassUpdateData(null)
-                                    dispatch(fetchInscriptionsAction())
-                                    toast.success(
-                                        `Plusieurs statuts d'inscription changés de "${statusMassUpdateData.status}" à "${statusMassUpdateData.newStatus}"`
-                                    )
-                                },
-                            })
-                        )
-                    }
-                />
-            )} */}
         </>
     )
 }

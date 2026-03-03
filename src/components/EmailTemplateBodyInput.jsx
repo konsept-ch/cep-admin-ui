@@ -4,7 +4,6 @@ import classNames from 'classnames'
 import { Editor, EditorState, Modifier, CompositeDecorator, ContentState, RichUtils } from 'draft-js'
 import { stateToHTML } from 'draft-js-export-html'
 import htmlToDraft from 'html-to-draftjs'
-import { draftVariables } from '../utils'
 
 const DecoratorStrategy = (entity) => (contentBlock, callback, contentState) => {
     contentBlock.findEntityRanges((character) => {
@@ -16,14 +15,14 @@ const DecoratorStrategy = (entity) => (contentBlock, callback, contentState) => 
 const DecoratorWrapper = (entity) => () => entity
 
 const entities = {
-    participantName: draftVariables.PARTICIPANT_NOM,
-    sessionName: draftVariables.SESSION_NOM,
-    startingDate: draftVariables.SESSION_DATE_DÉBUT,
-    location: draftVariables.LIEU,
-    lessons: draftVariables.SESSION_RÉSUMÉ_DATES,
-    civility: draftVariables.PARTICIPANT_CIVILITÉ,
-    inscriptionDate: draftVariables.INSCRIPTION_DATE,
-    evaluationLink: draftVariables.EVALUATION_LIEN,
+    participantName: '[PARTICIPANT_NOM]',
+    sessionName: '[SESSION_NOM]',
+    startingDate: '[SESSION_DATE_DÉBUT]',
+    location: '[LIEU]',
+    lessons: '[SESSION_RÉSUMÉ_DATES]',
+    civility: '[PARTICIPANT_CIVILITÉ]',
+    inscriptionDate: '[INSCRIPTION_DATE]',
+    evaluationLink: '[EVALUATION_LIEN]',
 }
 
 const decorator = new CompositeDecorator([
@@ -61,16 +60,17 @@ const decorator = new CompositeDecorator([
     },
 ])
 
-export const EmailTemplateBodyInput = ({
+export function EmailTemplateBodyInput({
     className,
     onChange,
-    value: { value, templateId: templateIdProp },
+    templateId,
+    value,
     shouldHandleKeyCommand,
     shouldHaveVariables,
     isEmailSubjectInput,
     shouldHaveBlockTag,
     ...rest
-}) => {
+}) {
     const convertStateFromHTML = (state) => {
         const blocksFromHTML = htmlToDraft(state)
         return ContentState.createFromBlockArray(blocksFromHTML.contentBlocks, blocksFromHTML.entityMap)
@@ -80,16 +80,11 @@ export const EmailTemplateBodyInput = ({
         editorState: EditorState.createWithContent(convertStateFromHTML(value), decorator),
     })
 
-    const [templateId, setTemplateId] = useState(templateIdProp)
-
     useEffect(() => {
-        if (templateId !== templateIdProp) {
-            setState({
-                editorState: EditorState.createWithContent(convertStateFromHTML(value), decorator),
-            })
-            setTemplateId(templateIdProp)
-        }
-    }, [value])
+        setState({
+            editorState: EditorState.createWithContent(convertStateFromHTML(value), decorator),
+        })
+    }, [templateId])
 
     const handleChange = (editorState) => {
         const htmlState = stateToHTML(editorState.getCurrentContent(), {
@@ -141,7 +136,12 @@ export const EmailTemplateBodyInput = ({
             {shouldHaveVariables && (
                 <div className="mt-2">
                     {Object.values(entities).map((entity) => (
-                        <Button variant="outline-dark" onClick={() => insert(entity)} className="me-2 mb-2">
+                        <Button
+                            key={entity}
+                            variant="outline-dark"
+                            onClick={() => insert(entity)}
+                            className="me-2 mb-2"
+                        >
                             {entity}
                         </Button>
                     ))}

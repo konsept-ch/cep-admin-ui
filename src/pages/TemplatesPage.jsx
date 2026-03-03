@@ -1,56 +1,107 @@
-import { useState, useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useState } from 'react'
 import Select from 'react-select'
-import { ListGroup, Row, Col, Container, Button, FloatingLabel, Form, Badge } from 'react-bootstrap'
-import classNames from 'classnames'
-import { equals } from 'ramda'
+import { ListGroup, Row, Col, Container, Badge, Button, FloatingLabel, Form } from 'react-bootstrap'
 import { Helmet } from 'react-helmet-async'
+import { Controller, useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
+import classNames from 'classnames'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTrash, faPlus, faRefresh } from '@fortawesome/free-solid-svg-icons'
+import { faFloppyDisk } from '@fortawesome/free-regular-svg-icons'
 
-import { templatesSelector, templateForInvitesSelector } from '../reducers'
 import { CommonModal } from '../components'
+import { inscriptionStatuses } from '../utils'
 import {
-    fetchTemplatesAction,
-    addTemplateAction,
-    deleteTemplateAction,
-    updateTemplateAction,
-} from '../actions/templates.ts'
-import { getUniqueId, inscriptionStatuses } from '../utils'
+    useGetTemplatesQuery,
+    useCreateTemplateMutation,
+    useUpdateTemplateMutation,
+    useDeleteTemplateMutation,
+    useInviteTemplateMutation,
+} from '../services/templates'
 import { EmailTemplateBodyInput } from '../components/EmailTemplateBodyInput'
 
 export function TemplatesPage() {
-    const [selectedTemplateData, setSelectedTemplateData] = useState(null)
-    const [isSessionInvitesModalVisible, setIsSessionInvitesModalVisible] = useState(false)
+    const {
+        data: templates = [],
+        isLoading,
+        isFetching,
+        isError,
+        refetch,
+    } = useGetTemplatesQuery(null, { refetchOnMountOrArgChange: true })
+    const [createTemplate, { isLoading: isCreating }] = useCreateTemplateMutation()
+    const [updateTemplate, { isLoading: isUpdating }] = useUpdateTemplateMutation()
+    const [deleteTemplate, { isLoading: isDeleting }] = useDeleteTemplateMutation()
+    const [inviteTemplate, { isLoading: isInviting }] = useInviteTemplateMutation()
+
+    const {
+        register,
+        handleSubmit,
+        control,
+        reset,
+        formState: { isDirty, errors },
+    } = useForm()
+
+    const [selectedTemplateUuid, setSelectedTemplateUuid] = useState(null)
     const [isDeleteWarningVisible, setIsDeleteWarningVisible] = useState(false)
+    const [isSessionInvitesModalVisible, setIsSessionInvitesModalVisible] = useState(false)
     const [discardWarningData, setDiscardWarningData] = useState({ isVisible: false })
-    const templates = useSelector(templatesSelector)
-    const templateForInvites = useSelector(templateForInvitesSelector)
-    const dispatch = useDispatch()
 
-    useEffect(() => {
-        dispatch(fetchTemplatesAction())
-    }, [])
+    const onAddButtonClick = async () => {
+        const { data, error } = await createTemplate()
+        if (error) return
 
-    const generateNewTemplate = () => ({
-        title: 'Nouveau modèle',
-        descriptionText: '',
-        emailBody: '',
-        emailSubject: '',
-        smsBody: '',
-        statuses: inscriptionStatuses.map((current) => ({ value: current, label: current })),
-        templateId: getUniqueId(),
-        isUsedForSessionInvites: false,
-        usedByEvaluation: false,
+        setSelectedTemplateUuid(data.templateId)
+        reset({
+            templateId: data.templateId,
+            title: '',
+            descriptionText: '',
+            emailSubject: '',
+            emailBody: '',
+            smsBody: '',
+            statuses: [],
+            usedByEvaluation: false,
+        })
+
+        await refetch()
+    }
+
+    const onApplyButtonClick = handleSubmit(async (data) => {
+        const { error } = await updateTemplate({
+            uuid: selectedTemplateUuid,
+            data,
+        })
+
+        if (error == null) {
+            toast.success("Modèle d'e-mail modifiée")
+        } else {
+            toast.error("Erreur de modification du modèle d'e-mail", { autoClose: false })
+        }
+
+        reset(data)
+
+        await refetch()
     })
 
-    const checkIsTemplateChanged = () => {
-        return (
-            selectedTemplateData !== null &&
-            templates != null &&
-            !equals(
-                templates.find(({ templateId }) => templateId === selectedTemplateData.templateId),
-                selectedTemplateData
-            )
-        )
+    const onDeleteButtonClick = async () => {
+        const { error } = await deleteTemplate({ uuid: selectedTemplateUuid })
+
+        if (error) {
+            toast.error("Erreur de suppression du modèle d'e-mail", { autoClose: false })
+        } else {
+            toast.success("Modèle d'e-mail supprimée")
+
+            setSelectedTemplateUuid(null)
+
+            setIsDeleteWarningVisible(false)
+        }
+
+        await refetch()
+    }
+
+    const onInviteTemplate = async () => {
+        await inviteTemplate({ uuid: selectedTemplateUuid })
+        await refetch()
+        setIsSessionInvitesModalVisible(false)
     }
 
     return (
@@ -60,326 +111,276 @@ export function TemplatesPage() {
             </Helmet>
             <Container fluid className="templates-page">
                 <h1>Modèles d'e-mails</h1>
-                <Row>
-                    <Col>
-                        <ListGroup className="template-list">
-                            {templates.length > 0 &&
-                                templates.map(
-                                    ({
-                                        title,
-                                        descriptionText,
-                                        emailBody,
-                                        statuses,
-                                        templateId,
-                                        isUsedForSessionInvites,
-                                        usedByEvaluation,
-                                        emailSubject,
-                                        smsBody,
-                                    }) => (
-                                        <ListGroup.Item
-                                            key={templateId}
-                                            onClick={() => {
-                                                checkIsTemplateChanged()
-                                                    ? setDiscardWarningData({
-                                                          isVisible: true,
-                                                          selectNewTemplate: () =>
-                                                              setSelectedTemplateData({
-                                                                  title,
-                                                                  descriptionText,
-                                                                  emailSubject,
-                                                                  smsBody,
-                                                                  emailBody,
-                                                                  statuses,
-                                                                  templateId,
-                                                                  isUsedForSessionInvites,
-                                                                  usedByEvaluation,
-                                                              }),
-                                                      })
-                                                    : setSelectedTemplateData({
-                                                          title,
-                                                          descriptionText,
-                                                          emailSubject,
-                                                          smsBody,
-                                                          emailBody,
-                                                          statuses,
-                                                          templateId,
-                                                          isUsedForSessionInvites,
-                                                          usedByEvaluation,
-                                                      })
-                                            }}
-                                            className={classNames({
-                                                'active-template': selectedTemplateData?.templateId === templateId,
-                                            })}
-                                        >
-                                            <div className="d-flex align-items-start justify-content-between">
-                                                <h4 className="d-inline-block">{title}</h4>
-                                                {isUsedForSessionInvites && (
-                                                    <Badge bg="warning" text="dark">
-                                                        Sessions invitées
-                                                    </Badge>
-                                                )}
-                                            </div>
-                                            {descriptionText && <p>{descriptionText}</p>}
-                                        </ListGroup.Item>
-                                    )
-                                )}
-                        </ListGroup>
-                        <Button
-                            variant="success"
-                            onClick={() => {
-                                if (checkIsTemplateChanged()) {
-                                    setDiscardWarningData({
-                                        isVisible: true,
-                                        selectNewTemplate: () => {
-                                            const newTemplateData = generateNewTemplate()
+                {isLoading ? (
+                    'Chargement...'
+                ) : isError ? (
+                    'Erreur de chargement des modèles.'
+                ) : (
+                    <Row>
+                        <Col>
+                            {templates.length === 0 ? (
+                                <p>Aucun modèle, vous pouvez créer un nouveau</p>
+                            ) : (
+                                <ListGroup className="template-list">
+                                    {templates.map(
+                                        ({
+                                            templateId,
+                                            title,
+                                            descriptionText,
+                                            emailSubject,
+                                            emailBody,
+                                            smsBody,
+                                            statuses,
+                                            usedByEvaluation,
+                                            isUsedForSessionInvites,
+                                        }) => (
+                                            <ListGroup.Item
+                                                key={templateId}
+                                                className={classNames({
+                                                    'active-template': selectedTemplateUuid === templateId,
+                                                })}
+                                                onClick={() => {
+                                                    if (isDirty) {
+                                                        setDiscardWarningData({
+                                                            isVisible: true,
+                                                            selectNewTemplate: () => {
+                                                                setSelectedTemplateUuid(templateId)
 
-                                            dispatch(addTemplateAction({ templateData: newTemplateData }))
-                                            setSelectedTemplateData(newTemplateData)
-                                        },
-                                    })
-                                } else {
-                                    const newTemplateData = generateNewTemplate()
+                                                                reset({
+                                                                    templateId,
+                                                                    title,
+                                                                    descriptionText,
+                                                                    emailSubject,
+                                                                    emailBody,
+                                                                    smsBody,
+                                                                    statuses,
+                                                                    usedByEvaluation,
+                                                                })
+                                                            },
+                                                        })
+                                                    } else {
+                                                        setSelectedTemplateUuid(templateId)
 
-                                    dispatch(addTemplateAction({ templateData: newTemplateData }))
-                                    setSelectedTemplateData(newTemplateData)
-                                }
-                            }}
-                            className="mt-2"
-                        >
-                            Ajouter
-                        </Button>
-                    </Col>
-                    {selectedTemplateData && (
-                        <Col className="template-preview">
-                            <FloatingLabel controlId="title" label="Titre" className="mb-2">
-                                <Form.Control
-                                    type="text"
-                                    placeholder="Titre de la séance"
-                                    value={selectedTemplateData.title}
-                                    onChange={({ target: { value } }) =>
-                                        setSelectedTemplateData({ ...selectedTemplateData, title: value })
-                                    }
-                                />
-                            </FloatingLabel>
-                            <FloatingLabel controlId="description" label="Description" className="mb-2">
-                                <Form.Control
-                                    as="textarea"
-                                    placeholder="Description de la séance"
-                                    style={{ height: '100px' }}
-                                    value={selectedTemplateData.descriptionText}
-                                    onChange={({ target: { value } }) =>
-                                        setSelectedTemplateData({ ...selectedTemplateData, descriptionText: value })
-                                    }
-                                />
-                            </FloatingLabel>
-                            <label>Sujet de l'email :</label>
-                            <EmailTemplateBodyInput
-                                className="email-subject-input"
-                                onChange={(value) =>
-                                    setSelectedTemplateData({ ...selectedTemplateData, emailSubject: value })
-                                }
-                                value={{
-                                    value: selectedTemplateData.emailSubject,
-                                    templateId: selectedTemplateData.templateId,
-                                }}
-                                shouldHaveVariables
-                                isEmailSubjectInput
-                            />
-                            <label>Corps de l'e-mail :</label>
-                            <EmailTemplateBodyInput
-                                className="email-body-input"
-                                onChange={(value) =>
-                                    setSelectedTemplateData({ ...selectedTemplateData, emailBody: value })
-                                }
-                                value={{
-                                    value: selectedTemplateData.emailBody,
-                                    templateId: selectedTemplateData.templateId,
-                                }}
-                                shouldHandleKeyCommand
-                                shouldHaveVariables
-                                shouldHaveBlockTag
-                            />
-                            <label>Texte de l'SMS :</label>
-                            <EmailTemplateBodyInput
-                                className="email-body-input"
-                                onChange={(value) =>
-                                    setSelectedTemplateData({ ...selectedTemplateData, smsBody: value })
-                                }
-                                value={{
-                                    value: selectedTemplateData.smsBody,
-                                    templateId: selectedTemplateData.templateId,
-                                }}
-                                shouldHaveVariables
-                            />
-                            <label>Valable pour statuts :</label>
-                            <Select
-                                onChange={(selectedStatuses) =>
-                                    setSelectedTemplateData({ ...selectedTemplateData, statuses: selectedStatuses })
-                                }
-                                value={selectedTemplateData.statuses}
-                                closeMenuOnSelect={false}
-                                isMulti
-                                options={inscriptionStatuses.map((current) => ({ value: current, label: current }))}
-                            />
-                            <Form.Check
+                                                        reset({
+                                                            templateId,
+                                                            title,
+                                                            descriptionText,
+                                                            emailSubject,
+                                                            emailBody,
+                                                            smsBody,
+                                                            statuses,
+                                                            usedByEvaluation,
+                                                        })
+                                                    }
+                                                }}
+                                            >
+                                                <div className="d-flex align-items-start justify-content-between">
+                                                    <h4 className="d-inline-block">{title}</h4>
+                                                    {isUsedForSessionInvites && (
+                                                        <Badge bg="warning" text="dark">
+                                                            Sessions invitées
+                                                        </Badge>
+                                                    )}
+                                                </div>
+                                                {descriptionText && <p>{descriptionText}</p>}
+                                            </ListGroup.Item>
+                                        )
+                                    )}
+                                </ListGroup>
+                            )}
+                            <Button
+                                variant="success"
+                                disabled={isFetching || isCreating}
+                                onClick={onAddButtonClick}
                                 className="mt-2"
-                                type="checkbox"
-                                label="Valable pour évaluation"
-                                checked={selectedTemplateData.usedByEvaluation}
-                                onChange={({ target: { checked } }) =>
-                                    setSelectedTemplateData({
-                                        ...selectedTemplateData,
-                                        usedByEvaluation: checked,
-                                    })
-                                }
-                            />
-                            <div className="d-flex justify-content-between mb-2">
-                                <div>
-                                    <Button
-                                        variant="primary"
-                                        onClick={() => {
-                                            dispatch(updateTemplateAction({ templateData: selectedTemplateData }))
-                                        }}
-                                        className="mt-2 me-2"
-                                        disabled={!checkIsTemplateChanged()}
-                                    >
-                                        Appliquer
-                                    </Button>
-                                    <Button
-                                        variant="danger"
-                                        onClick={() => setIsDeleteWarningVisible(true)}
-                                        className="mt-2"
-                                    >
-                                        Supprimer
-                                    </Button>
-                                </div>
-                                {selectedTemplateData.isUsedForSessionInvites ? (
-                                    <p className="mt-3">Utilisé pour sessions invitées</p>
-                                ) : (
-                                    <Button
-                                        variant="secondary"
-                                        onClick={() => {
-                                            if (templateForInvites) {
-                                                setIsSessionInvitesModalVisible(true)
-                                            } else {
-                                                dispatch(
-                                                    updateTemplateAction({
-                                                        templateData: {
-                                                            ...selectedTemplateData,
-                                                            isUsedForSessionInvites: true,
-                                                        },
-                                                    })
-                                                )
-                                                setSelectedTemplateData({
-                                                    ...selectedTemplateData,
-                                                    isUsedForSessionInvites: true,
-                                                })
-                                            }
-                                        }}
-                                        className="mt-2"
-                                    >
-                                        Utiliser pour sessions invitées
-                                    </Button>
-                                )}
-                                <CommonModal
-                                    title="User autre modèle pour sessions invitées"
-                                    content={
-                                        <>
-                                            <p>Il existe déjà un modèle pour les invitations à une session.</p>
-                                            <p>Êtes-vous sûr de vouloir mettre à jour le modèle ?</p>
-                                        </>
-                                    }
-                                    footer={
-                                        <Button
-                                            variant="secondary"
-                                            onClick={() => {
-                                                dispatch(
-                                                    updateTemplateAction({
-                                                        templateData: {
-                                                            ...templateForInvites,
-                                                            isUsedForSessionInvites: false,
-                                                        },
-                                                    })
-                                                )
-                                                dispatch(
-                                                    updateTemplateAction({
-                                                        templateData: {
-                                                            ...selectedTemplateData,
-                                                            isUsedForSessionInvites: true,
-                                                        },
-                                                    })
-                                                )
-                                                setSelectedTemplateData({
-                                                    ...selectedTemplateData,
-                                                    isUsedForSessionInvites: true,
-                                                })
-                                                setIsSessionInvitesModalVisible(false)
-                                            }}
-                                        >
-                                            Utiliser
-                                        </Button>
-                                    }
-                                    isVisible={isSessionInvitesModalVisible}
-                                    onHide={() => setIsSessionInvitesModalVisible(false)}
+                            >
+                                <FontAwesomeIcon icon={faPlus} />{' '}
+                                {isCreating ? 'Ajout en cours...' : isFetching ? 'Un instant...' : 'Ajouter'}
+                            </Button>
+                        </Col>
+                        {selectedTemplateUuid !== null && (
+                            <Col className="template-preview">
+                                <FloatingLabel controlId="title" label="Titre" className="mb-2">
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Titre de la séance"
+                                        isInvalid={errors.title}
+                                        {...register('title', {
+                                            required: { value: true, message: 'Le titre est requis' },
+                                        })}
+                                    />
+                                    <Form.Control.Feedback type="invalid">
+                                        {errors.title?.message}
+                                    </Form.Control.Feedback>
+                                </FloatingLabel>
+                                <FloatingLabel controlId="description" label="Description" className="mb-2">
+                                    <Form.Control
+                                        as="textarea"
+                                        placeholder="Description de la séance"
+                                        style={{ height: '100px' }}
+                                        {...register('descriptionText')}
+                                    />
+                                </FloatingLabel>
+                                <label className="mt-2">Sujet de l'e-mail :</label>
+                                <Controller
+                                    name="emailSubject"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <EmailTemplateBodyInput
+                                            className="email-subject-input"
+                                            templateId={selectedTemplateUuid}
+                                            onChange={field.onChange}
+                                            value={field.value}
+                                            shouldHaveVariables
+                                            isEmailSubjectInput
+                                        />
+                                    )}
                                 />
-                                <CommonModal
-                                    title="Avertissement"
-                                    content={<p>Êtes-vous sûr de vouloir supprimer ce modèle?</p>}
-                                    footer={
+                                <label>Corps de l'e-mail :</label>
+                                <Controller
+                                    name="emailBody"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <EmailTemplateBodyInput
+                                            className="email-body-input"
+                                            templateId={selectedTemplateUuid}
+                                            onChange={field.onChange}
+                                            value={field.value}
+                                            shouldHandleKeyCommand
+                                            shouldHaveVariables
+                                            shouldHaveBlockTag
+                                        />
+                                    )}
+                                />
+                                <label>Texte de l'SMS :</label>
+                                <Controller
+                                    name="smsBody"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <EmailTemplateBodyInput
+                                            className="email-body-input"
+                                            templateId={selectedTemplateUuid}
+                                            onChange={field.onChange}
+                                            value={field.value}
+                                            shouldHaveVariables
+                                        />
+                                    )}
+                                />
+                                <label>Valable pour statuts :</label>
+                                <Controller
+                                    name="statuses"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <Select
+                                            {...field}
+                                            closeMenuOnSelect={false}
+                                            isMulti
+                                            options={inscriptionStatuses.map((current) => ({
+                                                value: current,
+                                                label: current,
+                                            }))}
+                                        />
+                                    )}
+                                />
+                                <Form.Check
+                                    className="mt-2"
+                                    type="checkbox"
+                                    label="Valable pour évaluation"
+                                    {...register('usedByEvaluation')}
+                                />
+                                <div className="d-flex justify-content-between mb-2">
+                                    <div>
+                                        <Button
+                                            variant="primary"
+                                            onClick={onApplyButtonClick}
+                                            className="mt-2 me-2"
+                                            disabled={!isDirty || isUpdating || isFetching}
+                                        >
+                                            <FontAwesomeIcon icon={faFloppyDisk} />{' '}
+                                            {isUpdating ? 'Sauvegarde en cours...' : 'Appliquer'}
+                                        </Button>
                                         <Button
                                             variant="danger"
-                                            onClick={() => {
-                                                dispatch(
-                                                    deleteTemplateAction({
-                                                        templateId: selectedTemplateData.templateId,
-                                                    })
-                                                )
-                                                setSelectedTemplateData(null)
-                                                setIsDeleteWarningVisible(false)
-                                            }}
+                                            onClick={() => setIsDeleteWarningVisible(true)}
+                                            className="mt-2"
                                         >
-                                            Supprimer
+                                            <FontAwesomeIcon icon={faTrash} /> Supprimer
                                         </Button>
-                                    }
-                                    isVisible={isDeleteWarningVisible}
-                                    onHide={() => setIsDeleteWarningVisible(false)}
-                                />
-                                <CommonModal
-                                    title="Avertissement"
-                                    content={<p>Êtes-vous sûr de vouloir écarter vos modifications ?</p>}
-                                    footer={
-                                        <>
-                                            <Button
-                                                variant="primary"
-                                                onClick={() => {
-                                                    dispatch(
-                                                        updateTemplateAction({ templateData: selectedTemplateData })
-                                                    )
-                                                    discardWarningData.selectNewTemplate()
-                                                    setDiscardWarningData({ isVisible: false })
-                                                }}
-                                                className="me-2"
-                                            >
-                                                Appliquer
+                                    </div>
+                                    <Button
+                                        variant="secondary"
+                                        onClick={() => setIsSessionInvitesModalVisible(true)}
+                                        className="mt-2"
+                                    >
+                                        {isInviting ? 'Changement en cours...' : 'Utiliser pour sessions invitées'}
+                                    </Button>
+                                    <CommonModal
+                                        title="Modèle pour sessions invitées"
+                                        content={
+                                            <p>
+                                                Êtes-vous sûr de vouloir ce modèle pour les invitations à une session ?
+                                            </p>
+                                        }
+                                        footer={
+                                            <Button variant="secondary" onClick={onInviteTemplate}>
+                                                Utiliser
                                             </Button>
+                                        }
+                                        isVisible={isSessionInvitesModalVisible}
+                                        onHide={() => setIsSessionInvitesModalVisible(false)}
+                                    />
+                                    <CommonModal
+                                        title="Avertissement"
+                                        content={<p>Êtes-vous sûr de vouloir supprimer ce modèle?</p>}
+                                        footer={
                                             <Button
                                                 variant="danger"
-                                                onClick={() => {
-                                                    discardWarningData.selectNewTemplate()
-                                                    setDiscardWarningData({ isVisible: false })
-                                                }}
+                                                disabled={isDeleting}
+                                                onClick={onDeleteButtonClick}
                                             >
-                                                Écarter modifications
+                                                <FontAwesomeIcon icon={faTrash} />{' '}
+                                                {isDeleting ? 'Supprimer en cours...' : 'Supprimer'}
                                             </Button>
-                                        </>
-                                    }
-                                    isVisible={discardWarningData.isVisible}
-                                    onHide={() => setDiscardWarningData({ isVisible: false })}
-                                />
-                            </div>
-                        </Col>
-                    )}
-                </Row>
+                                        }
+                                        isVisible={isDeleteWarningVisible}
+                                        onHide={() => setIsDeleteWarningVisible(false)}
+                                    />
+                                    <CommonModal
+                                        title="Avertissement"
+                                        content={<p>Êtes-vous sûr de vouloir écarter vos modifications ?</p>}
+                                        footer={
+                                            <>
+                                                <Button
+                                                    variant="primary"
+                                                    onClick={() => {
+                                                        onApplyButtonClick()
+
+                                                        discardWarningData.selectNewTemplate()
+                                                        setDiscardWarningData({ isVisible: false })
+                                                    }}
+                                                    className="me-2"
+                                                >
+                                                    Appliquer
+                                                </Button>
+                                                <Button
+                                                    variant="danger"
+                                                    onClick={() => {
+                                                        discardWarningData.selectNewTemplate()
+                                                        setDiscardWarningData({ isVisible: false })
+                                                    }}
+                                                >
+                                                    Écarter modifications
+                                                </Button>
+                                            </>
+                                        }
+                                        isVisible={discardWarningData.isVisible}
+                                        onHide={() => setDiscardWarningData({ isVisible: false })}
+                                    />
+                                </div>
+                            </Col>
+                        )}
+                    </Row>
+                )}
             </Container>
         </>
     )
