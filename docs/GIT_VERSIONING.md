@@ -1,20 +1,17 @@
-# Git / Versioning (CEP Admin)
+# Commit avec une nouvelle version
+
+# Git / Versioning (CEP Reception)
 
 ## Scope
-This repository covers CEP Admin only.
+This repository covers CEP Reception only.
 
 - Active branches: `main`, `cep/val`, `cep/prod`
-- Release flow here: CEP Admin only
-
-Out of scope for this repo:
-- `evaluations` deployments
-- `reception` deployments
-
-Those are managed in their own dedicated repositories.
+- Release flow here: CEP Reception only
 
 ## Rules
-- Do not commit directly to `cep/val` or `cep/prod`.
-- Work from short-lived branches (`feat/...`, `fix/...`, `hotfix/...`).
+- Do not commit directly to `cep/prod`.
+- Work from `cep/val`.
+- No branches other than `main`, `cep/val`, and `cep/prod`.
 - Merge via PR.
 - Tags are immutable once published.
 
