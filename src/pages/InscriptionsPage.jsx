@@ -1,4 +1,5 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
+import { useLocation } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { toast } from 'react-toastify'
 
@@ -20,6 +21,7 @@ import { ChangeOrganizationModal } from '../components/ChangeOrganizationModal'
 import { GenerateAttestationModal } from '../components/GenerateAttestationModal'
 
 export function InscriptionsPage() {
+    const location = useLocation()
     const [statusUpdateData, setStatusUpdateData] = useState(null)
     const [statusMassUpdateData, setStatusMassUpdateData] = useState(null)
     const [attestationData, setAttestationData] = useState(null)
@@ -37,6 +39,115 @@ export function InscriptionsPage() {
         isFetching: inscriptionsLoading,
         refetch: refetchInscriptions,
     } = useGetInscriptionsQuery(null, { refetchOnMountOrArgChange: true })
+
+    const filterStorageKey = useMemo(() => `inscriptionsFilter:${location.pathname}`, [location.pathname])
+    const sortStorageKey = useMemo(() => `inscriptionsSort:${location.pathname}`, [location.pathname])
+    const groupStorageKey = useMemo(() => `inscriptionsGroup:${location.pathname}`, [location.pathname])
+
+    const defaultFilterModel = useMemo(() => ({}), [])
+    const defaultSortModel = useMemo(
+        () => [
+            { colId: 'coordinator', sort: 'asc', sortIndex: 0 },
+            { colId: 'startYear', sort: 'asc', sortIndex: 1 },
+            { colId: 'courseName', sort: 'asc', sortIndex: 2 },
+            { colId: 'sessionName', sort: 'asc', sortIndex: 3 },
+            { colId: 'participant', sort: 'asc', sortIndex: 4 },
+        ],
+        []
+    )
+    const defaultGroupModel = useMemo(() => [], [])
+
+    const [filterModel, setFilterModel] = useState(() => {
+        const stored = sessionStorage.getItem(filterStorageKey)
+        if (stored) {
+            try {
+                return JSON.parse(stored)
+            } catch (error) {
+                // ignore parse errors and fall back to defaults
+            }
+        }
+        return defaultFilterModel
+    })
+    const shouldIgnoreInitialFilterClearRef = useRef(Object.keys(defaultFilterModel ?? {}).length > 0)
+
+    useEffect(() => {
+        sessionStorage.setItem(filterStorageKey, JSON.stringify(filterModel))
+    }, [filterModel, filterStorageKey])
+
+    useEffect(() => {
+        const stored = sessionStorage.getItem(filterStorageKey)
+        if (stored) {
+            try {
+                setFilterModel(JSON.parse(stored))
+                return
+            } catch (error) {
+                // ignore parse errors and fall back to defaults
+            }
+        }
+        setFilterModel(defaultFilterModel)
+    }, [defaultFilterModel, filterStorageKey])
+
+    useEffect(() => {
+        shouldIgnoreInitialFilterClearRef.current = Object.keys(defaultFilterModel ?? {}).length > 0
+    }, [defaultFilterModel])
+
+    const [sortModel, setSortModel] = useState(() => {
+        const stored = sessionStorage.getItem(sortStorageKey)
+        if (stored) {
+            try {
+                return JSON.parse(stored)
+            } catch (error) {
+                // ignore parse errors and fall back to defaults
+            }
+        }
+        return defaultSortModel
+    })
+
+    useEffect(() => {
+        sessionStorage.setItem(sortStorageKey, JSON.stringify(sortModel))
+    }, [sortModel, sortStorageKey])
+
+    useEffect(() => {
+        const stored = sessionStorage.getItem(sortStorageKey)
+        if (stored) {
+            try {
+                setSortModel(JSON.parse(stored))
+                return
+            } catch (error) {
+                // ignore parse errors and fall back to defaults
+            }
+        }
+        setSortModel(defaultSortModel)
+    }, [defaultSortModel, sortStorageKey])
+
+    const [groupModel, setGroupModel] = useState(() => {
+        const stored = sessionStorage.getItem(groupStorageKey)
+        if (stored) {
+            try {
+                return JSON.parse(stored)
+            } catch (error) {
+                // ignore parse errors and fall back to defaults
+            }
+        }
+        return defaultGroupModel
+    })
+
+    useEffect(() => {
+        sessionStorage.setItem(groupStorageKey, JSON.stringify(groupModel))
+    }, [groupModel, groupStorageKey])
+
+    useEffect(() => {
+        const stored = sessionStorage.getItem(groupStorageKey)
+        if (stored) {
+            try {
+                setGroupModel(JSON.parse(stored))
+                return
+            } catch (error) {
+                // ignore parse errors and fall back to defaults
+            }
+        }
+        setGroupModel(defaultGroupModel)
+    }, [defaultGroupModel, groupStorageKey])
 
     const predefinedFilters = [
         { id: 'onlyWebEntries', label: [STATUSES.ENTREE_WEB, STATUSES.VALIDE_PAR_RH].join('; ') },
@@ -263,55 +374,101 @@ export function InscriptionsPage() {
         []
     )
 
-    const rowData = (inscriptions || [])
-        .filter((current) => current != null)
-        .map(
-            ({
-                id,
-                user = {},
-                session,
-                status,
-                attestationTitle,
-                inscriptionDate,
-                type,
-                coordinator,
-                codeCategory,
-                theme,
-                targetAudience,
-                isPending,
-                validationType,
-                organizationClientNumber,
-                invoiceNumber,
-            }) => ({
-                id,
-                participant: user.lastName != null ? `${user.lastName} ${user.firstName}` : 'Aucune inscription',
-                profession: user.profession,
-                type,
-                sessionName: session.name,
-                quotaDays: session.quotaDays,
-                isUsedForQuota: session.isUsedForQuota,
-                status,
-                attestationTitle,
-                startDate: session.startDate,
-                inscriptionDate,
-                organizationCode: user.organizationCode,
-                hierarchy: user.hierarchy,
-                organization: user.organization,
-                email: user.email,
-                coordinator,
-                codeCategory,
-                theme,
-                targetAudience,
-                courseName: session.courseName,
-                coursePrice: session.coursePrice,
-                courseDuration: session.courseDuration,
-                startYear: session.startYear,
-                isPending,
-                validationType,
-                organizationClientNumber,
-                invoiceNumber,
-            })
-        )
+    const rowData = useMemo(
+        () =>
+            (inscriptions || [])
+                .filter((current) => current != null)
+                .map(
+                    ({
+                        id,
+                        user = {},
+                        session,
+                        status,
+                        attestationTitle,
+                        inscriptionDate,
+                        type,
+                        coordinator,
+                        codeCategory,
+                        theme,
+                        targetAudience,
+                        isPending,
+                        validationType,
+                        organizationClientNumber,
+                        invoiceNumber,
+                    }) => ({
+                        id,
+                        participant: user.lastName != null ? `${user.lastName} ${user.firstName}` : 'Aucune inscription',
+                        profession: user.profession,
+                        type,
+                        sessionName: session.name,
+                        quotaDays: session.quotaDays,
+                        isUsedForQuota: session.isUsedForQuota,
+                        status,
+                        attestationTitle,
+                        startDate: session.startDate,
+                        inscriptionDate,
+                        organizationCode: user.organizationCode,
+                        hierarchy: user.hierarchy,
+                        organization: user.organization,
+                        email: user.email,
+                        coordinator,
+                        codeCategory,
+                        theme,
+                        targetAudience,
+                        courseName: session.courseName,
+                        coursePrice: session.coursePrice,
+                        courseDuration: session.courseDuration,
+                        startYear: session.startYear,
+                        isPending,
+                        validationType,
+                        organizationClientNumber,
+                        invoiceNumber,
+                    })
+                ),
+        [inscriptions]
+    )
+
+    const handleFilterChange = ({ api }) => {
+        const nextModel = api?.getFilterModel?.() ?? {}
+        setFilterModel((previous) => {
+            const prevString = JSON.stringify(previous ?? {})
+            const nextString = JSON.stringify(nextModel)
+            const prevModel = previous ?? {}
+            const nextIsEmpty = Object.keys(nextModel).length === 0
+            const prevIsEmpty = Object.keys(prevModel).length === 0
+            if (shouldIgnoreInitialFilterClearRef.current && nextIsEmpty && !prevIsEmpty) {
+                return previous
+            }
+            shouldIgnoreInitialFilterClearRef.current = false
+            return prevString === nextString ? previous : nextModel
+        })
+    }
+
+    const handleSortChange = ({ columnApi }) => {
+        const nextModel = (columnApi?.getColumnState?.() ?? [])
+            .filter(({ sort }) => sort != null)
+            .map(({ colId, sort, sortIndex }) => ({ colId, sort, sortIndex }))
+            .sort((a, b) => (a.sortIndex ?? 0) - (b.sortIndex ?? 0))
+
+        setSortModel((previous) => {
+            const prevString = JSON.stringify(previous ?? [])
+            const nextString = JSON.stringify(nextModel)
+            return prevString === nextString ? previous : nextModel
+        })
+    }
+
+    const handleGroupChange = ({ columnApi }) => {
+        const nextModel = (columnApi?.getColumnState?.() ?? [])
+            .filter(({ rowGroup }) => rowGroup === true)
+            .map(({ colId, rowGroup: isGrouped, rowGroupIndex }) => ({ colId, rowGroup: isGrouped, rowGroupIndex }))
+            .sort((a, b) => (a.rowGroupIndex ?? 0) - (b.rowGroupIndex ?? 0))
+
+        setGroupModel((previous) => {
+            const prevString = JSON.stringify(previous ?? [])
+            const nextString = JSON.stringify(nextModel)
+            return prevString === nextString ? previous : nextModel
+        })
+    }
 
     return (
         <>
@@ -337,17 +494,17 @@ export function InscriptionsPage() {
                 defaultColDef={{
                     aggFunc: false,
                 }}
-                defaultSortModel={[
-                    { colId: 'coordinator', sort: 'asc', sortIndex: 0 },
-                    { colId: 'startYear', sort: 'asc', sortIndex: 1 },
-                    { colId: 'courseName', sort: 'asc', sortIndex: 2 },
-                    { colId: 'sessionName', sort: 'asc', sortIndex: 3 },
-                    { colId: 'participant', sort: 'asc', sortIndex: 4 },
-                ]}
+                defaultSortModel={defaultSortModel}
+                sortModel={sortModel}
+                groupModel={groupModel}
+                filterModel={filterModel}
                 groupDefaultExpanded={1}
                 groupDisplayType="groupRows"
                 showGroupSummary={true}
                 groupIncludeFooter={false}
+                onFilterChanged={handleFilterChange}
+                onSortChanged={handleSortChange}
+                onColumnRowGroupChanged={handleGroupChange}
                 getContextMenuItems={({ node: { data } = { data: {} } } = { node: { data: {} } }) => {
                     const checkLockGroupForSelectedStatus = checkAreInSameLockGroup(data?.status)
 

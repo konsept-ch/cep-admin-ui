@@ -82,7 +82,7 @@ export const Grid = ({
                 gridApi.onFilterChanged()
             }
         }, 200)
-    }, [activePredefinedFiltersById, name, rowData, gridApi])
+    }, [activePredefinedFiltersById, name, gridApi])
 
     useEffect(() => {
         if (filterModel === undefined || gridApi == null) return
