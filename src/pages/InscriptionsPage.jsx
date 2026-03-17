@@ -397,7 +397,8 @@ export function InscriptionsPage() {
                         invoiceNumber,
                     }) => ({
                         id,
-                        participant: user.lastName != null ? `${user.lastName} ${user.firstName}` : 'Aucune inscription',
+                        participant:
+                            user.lastName != null ? `${user.lastName} ${user.firstName}` : 'Aucune inscription',
                         profession: user.profession,
                         type,
                         sessionName: session.name,
