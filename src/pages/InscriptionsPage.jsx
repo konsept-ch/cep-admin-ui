@@ -55,7 +55,15 @@ export function InscriptionsPage() {
         ],
         []
     )
-    const defaultGroupModel = useMemo(() => [], [])
+    const defaultGroupModel = useMemo(
+        () => [
+            { colId: 'coordinator', rowGroup: true, rowGroupIndex: 0 },
+            { colId: 'startYear', rowGroup: true, rowGroupIndex: 1 },
+            { colId: 'courseName', rowGroup: true, rowGroupIndex: 2 },
+            { colId: 'sessionName', rowGroup: true, rowGroupIndex: 3 },
+        ],
+        []
+    )
 
     const [filterModel, setFilterModel] = useState(() => {
         const stored = sessionStorage.getItem(filterStorageKey)
