@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react'
+import { act, render } from '@testing-library/react'
 
 import { InscriptionsPage } from './InscriptionsPage'
 
@@ -53,5 +53,60 @@ describe('InscriptionsPage grouping defaults', () => {
             { colId: 'courseName', rowGroup: true, rowGroupIndex: 2 },
             { colId: 'sessionName', rowGroup: true, rowGroupIndex: 3 },
         ])
+    })
+
+    test('uses initialHide for default grouped columns so user visibility changes are preserved', () => {
+        sessionStorage.clear()
+        mockGrid.mockClear()
+
+        render(<InscriptionsPage />)
+
+        const props = mockGrid.mock.calls[0][0]
+        const groupedFields = ['coordinator', 'startYear', 'courseName', 'sessionName']
+
+        groupedFields.forEach((field) => {
+            const column = props.columnDefs.find((definition) => definition.field === field)
+            expect(column).toBeDefined()
+            expect(column.initialHide).toBe(true)
+            expect(column.hide).toBeUndefined()
+        })
+    })
+
+    test('keeps grouped columns user-controllable after a group change rerender', () => {
+        sessionStorage.clear()
+        mockGrid.mockClear()
+
+        render(<InscriptionsPage />)
+
+        const firstProps = mockGrid.mock.calls.at(-1)[0]
+        const updatedGroupModel = [
+            { colId: 'startYear', rowGroup: true, rowGroupIndex: 0 },
+            { colId: 'courseName', rowGroup: true, rowGroupIndex: 1 },
+            { colId: 'sessionName', rowGroup: true, rowGroupIndex: 2 },
+        ]
+
+        act(() => {
+            firstProps.onColumnRowGroupChanged({
+                columnApi: {
+                    getColumnState: () => [
+                        { colId: 'coordinator', rowGroup: false, rowGroupIndex: null },
+                        { colId: 'startYear', rowGroup: true, rowGroupIndex: 0 },
+                        { colId: 'courseName', rowGroup: true, rowGroupIndex: 1 },
+                        { colId: 'sessionName', rowGroup: true, rowGroupIndex: 2 },
+                    ],
+                },
+            })
+        })
+
+        const rerenderedProps = mockGrid.mock.calls.at(-1)[0]
+        expect(rerenderedProps.groupModel).toEqual(updatedGroupModel)
+
+        const groupedFields = ['coordinator', 'startYear', 'courseName', 'sessionName']
+        groupedFields.forEach((field) => {
+            const column = rerenderedProps.columnDefs.find((definition) => definition.field === field)
+            expect(column).toBeDefined()
+            expect(column.initialHide).toBe(true)
+            expect(column.hide).toBeUndefined()
+        })
     })
 })

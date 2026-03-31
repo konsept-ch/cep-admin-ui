@@ -187,7 +187,7 @@ export function InscriptionsPage() {
                 width: 170,
                 initialRowGroup: true,
                 initialRowGroupIndex: 0,
-                hide: true,
+                initialHide: true,
                 // TODO: sort ignoring accents
                 comparator: (_valueA, _valueB, nodeA, nodeB) => {
                     return nodeA.key?.localeCompare(nodeB.key)
@@ -202,7 +202,7 @@ export function InscriptionsPage() {
                 type: 'numericColumn',
                 initialRowGroup: true,
                 initialRowGroupIndex: 1,
-                hide: true,
+                initialHide: true,
             },
             {
                 field: 'courseName',
@@ -211,7 +211,7 @@ export function InscriptionsPage() {
                 headerTooltip: 'Le nom de la formation',
                 initialRowGroup: true,
                 initialRowGroupIndex: 2,
-                hide: true,
+                initialHide: true,
                 // TODO: sort ignoring accents
                 comparator: (_valueA, _valueB, nodeA, nodeB) => {
                     return nodeA.key?.localeCompare(nodeB.key)
@@ -224,7 +224,7 @@ export function InscriptionsPage() {
                 headerTooltip: "Le nom de la session dans laquelle l'utilisateur s'est inscrit",
                 initialRowGroup: true,
                 initialRowGroupIndex: 3,
-                hide: true,
+                initialHide: true,
                 // TODO: sort ignoring accents
                 comparator: (_valueA, _valueB, nodeA, nodeB) => {
                     return nodeA.key?.localeCompare(nodeB.key)
