@@ -13,7 +13,6 @@ export function* callService({ endpoint, action, successCallback = () => {}, opt
             result = yield fetch(new URL(endpoint, MIDDLEWARE_URL).href, {
                 ...options,
                 headers: {
-                    'Access-Control-Allow-Origin': '*',
                     'x-login-email-address': cookies.get('email'),
                     'x-login-email-code': cookies.get('code'),
                     'x-login-token': cookies.get('token'),
@@ -70,7 +69,6 @@ export function* callService({ endpoint, action, successCallback = () => {}, opt
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*',
                 },
                 body: JSON.stringify({
                     errorDescription: `${window.location.href}\n<br/>${cookies.get('email')}\n<br/>${message ?? error}`,

@@ -62,7 +62,6 @@ export const AuthWrapper = ({ isLoggedIn, setLoggedIn, children }) => {
                     method: 'post',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*',
                     },
                     body: JSON.stringify({ email }),
                 })

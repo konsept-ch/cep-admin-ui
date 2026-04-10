@@ -170,7 +170,6 @@ export const callApi = async ({ path = '', method = 'GET', headers, body, succes
         try {
             const response = await fetch(new URL(path, MIDDLEWARE_URL).href, {
                 headers: {
-                    'Access-Control-Allow-Origin': '*',
                     'x-login-email-address': cookies.get('email'),
                     'x-login-email-code': cookies.get('code'),
                     'x-login-token': cookies.get('token'),
@@ -197,7 +196,6 @@ export const callApi = async ({ path = '', method = 'GET', headers, body, succes
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*',
                     },
                     body: JSON.stringify({
                         errorDescription: `${window.location.href}\n<br/>${cookies.get('email')}\n<br/>${
