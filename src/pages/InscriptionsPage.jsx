@@ -32,7 +32,7 @@ export function InscriptionsPage() {
     const [selectedInscriptionId, setSelectedInscriptionId] = useState(null)
     const [activePredefinedFiltersById, setActivePredefinedFiltersById] = useState({ onlyWebEntries: false })
 
-    const [generateAttestation] = useGenerateAttestationMutation()
+    const [generateAttestation, { isLoading: isGeneratingAttestation }] = useGenerateAttestationMutation()
     const [updateInscriptionStatus, { isLoading: isUpdatingInscriptionStatus }] = useUpdateInscriptionStatusMutation()
     const {
         data: inscriptions = [],
@@ -636,15 +636,36 @@ export function InscriptionsPage() {
             />
 
             <GenerateAttestationModal
+                isGenerating={isGeneratingAttestation}
                 show={isAttestationVisible}
                 closeModal={() => {
                     setAttestationVisible(false)
                 }}
-                generateAttestation={({ selectedAttestationTemplateUuid }) => {
-                    generateAttestation({
+                generateAttestation={async ({ selectedAttestationTemplateUuid }) => {
+                    // Le declencheur RTK Query resout avec { error } au lieu de rejeter :
+                    // sans ce test, un 500 du middleware ne produit aucun retour a l'ecran.
+                    const response = await generateAttestation({
                         uuids: attestationData,
                         selectedAttestationTemplateUuid,
                     })
+
+                    if (response.error) {
+                        toast.error("Erreur lors de la génération de l'attestation.")
+
+                        return
+                    }
+
+                    const { generated, failures } = response.data ?? {}
+
+                    if (failures?.length > 0) {
+                        toast.error(
+                            `${generated ?? 0} attestation(s) générée(s), ${failures.length} en échec : ${failures
+                                .map(({ participant }) => participant)
+                                .join(', ')}`
+                        )
+                    } else {
+                        toast.success(`${generated ?? attestationData?.length ?? 0} attestation(s) générée(s).`)
+                    }
                 }}
             />
 
@@ -656,22 +677,42 @@ export function InscriptionsPage() {
                         refetchInscriptions()
                     }}
                     statusUpdateData={statusUpdateData}
-                    updateStatus={({ emailTemplateId, shouldSendSms, selectedAttestationTemplateUuid, remark }) => {
-                        updateInscriptionStatus({
+                    updateStatus={async ({
+                        emailTemplateId,
+                        shouldSendSms,
+                        selectedAttestationTemplateUuid,
+                        remark,
+                    }) => {
+                        const response = await updateInscriptionStatus({
                             inscriptionId: statusUpdateData?.id,
                             newStatus: statusUpdateData?.newStatus,
                             remark,
                             emailTemplateId,
                             selectedAttestationTemplateUuid,
                             shouldSendSms,
-                        }).then(() => {
-                            setIsUpdateModalVisible(false)
-                            setStatusUpdateData(null)
-                            refetchInscriptions()
-                            toast.success(
-                                `Statut d'inscription modifié de "${statusUpdateData?.status}" à "${statusUpdateData?.newStatus}"`
-                            )
                         })
+
+                        const { status, newStatus } = statusUpdateData ?? {}
+
+                        setIsUpdateModalVisible(false)
+                        setStatusUpdateData(null)
+                        refetchInscriptions()
+
+                        // Le declencheur RTK Query resout avec { error } au lieu de rejeter.
+                        // Sans ce test, le bandeau vert s'affichait meme sur un 500.
+                        if (response.error) {
+                            toast.error(`Erreur : le statut n'a pas pu être modifié de "${status}" à "${newStatus}".`)
+
+                            return
+                        }
+
+                        toast.success(`Statut d'inscription modifié de "${status}" à "${newStatus}"`)
+
+                        // La generation d'attestation est desormais attendue cote middleware :
+                        // son echec remonte ici sans empecher le changement de statut.
+                        if (response.data?.attestationError) {
+                            toast.error(`Attestation : ${response.data.attestationError}`)
+                        }
                     }}
                 />
             )}
@@ -717,6 +758,20 @@ export function InscriptionsPage() {
                                         statusMassUpdateData.status
                                     }" à "${statusMassUpdateData.newStatus}"`
                                 )
+
+                                // Le statut peut etre enregistre alors que l'attestation a
+                                // echoue : le middleware remonte alors attestationError dans
+                                // une reponse 200. Sans ce test, l'echec reste invisible, ce
+                                // qui est precisement le defaut corrige en septembre 2026.
+                                if (response.data?.attestationError) {
+                                    hasErrors = true
+
+                                    toast.error(
+                                        `${index + 1}/${selectedRowsData.length} Attestation de "${participant}" : ${
+                                            response.data.attestationError
+                                        }`
+                                    )
+                                }
                             }
                         }
 

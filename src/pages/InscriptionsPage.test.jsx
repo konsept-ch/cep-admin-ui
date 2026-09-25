@@ -36,7 +36,7 @@ jest.mock('../services/inscriptions', () => ({
 }))
 
 jest.mock('../services/attestations', () => ({
-    useGenerateAttestationMutation: () => [jest.fn()],
+    useGenerateAttestationMutation: () => [jest.fn(), { isLoading: false }],
 }))
 
 describe('InscriptionsPage grouping defaults', () => {

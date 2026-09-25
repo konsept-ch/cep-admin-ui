@@ -4,7 +4,7 @@ import classNames from 'classnames'
 import { ConfirmInscriptionChangeButton } from '.'
 import { useGetMinimumAttestationsQuery } from '../services/attestations'
 
-export const GenerateAttestationModal = ({ show, closeModal, generateAttestation }) => {
+export const GenerateAttestationModal = ({ show, closeModal, generateAttestation, isGenerating = false }) => {
     const [selectedAttestationTemplateUuid, setSelectedAttestationTemplateUuid] = useState(null)
 
     const { data: attestationTemplates = [], isLoading, isError } = useGetMinimumAttestationsQuery()
@@ -58,6 +58,7 @@ export const GenerateAttestationModal = ({ show, closeModal, generateAttestation
             </Modal.Body>
             <Modal.Footer>
                 <ConfirmInscriptionChangeButton
+                    isLoading={isLoading || isGenerating}
                     variant="primary"
                     onClick={() =>
                         generateAttestation({
