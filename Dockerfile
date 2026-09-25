@@ -10,7 +10,7 @@ RUN npm run ci:check
 RUN npm run build
 
 # Stage 2 - the static server
-FROM nginx:1.24
+FROM nginx:1.28-bookworm
 COPY --from=build-deps /usr/src/app/build /var/www
 COPY nginx.conf /etc/nginx/nginx.conf
 EXPOSE 80
