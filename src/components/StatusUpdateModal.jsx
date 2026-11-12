@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Form, Modal, Button, ListGroup, Alert, Spinner, Row } from 'react-bootstrap'
 import classNames from 'classnames'
 import { statusWarnings, formatDate } from '../utils'
@@ -11,6 +11,27 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
     const [selectedTemplateId, setSelectedTemplateId] = useState(null)
     const [selectedAttestationTemplateUuid, setSelectedAttestationTemplateUuid] = useState(null)
     const [remark, setRemark] = useState(statusUpdateData.remark)
+    const [isSubmitting, setIsSubmitting] = useState(false)
+    // Le ref bloque un second clic avant meme que l'etat ne soit rendu.
+    const isSubmittingRef = useRef(false)
+
+    // Un seul envoi a la fois. La requete dure plusieurs secondes (e-mail, attestation,
+    // Claroline) : un second clic sur "Confirmer" partait aussi, et le middleware facturait
+    // deux fois la meme annulation, sous le meme numero.
+    // docs/90-incidents/2026-11-12-doublon-facture-26381040.md
+    const submit = async (params) => {
+        if (isSubmittingRef.current) return
+
+        isSubmittingRef.current = true
+        setIsSubmitting(true)
+
+        try {
+            await updateStatus(params)
+        } finally {
+            isSubmittingRef.current = false
+            setIsSubmitting(false)
+        }
+    }
 
     const { data: attestationTemplates = [], isLoading, isError } = useGetMinimumAttestationsQuery()
     const {
@@ -232,10 +253,10 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
             </Modal.Body>
             <Modal.Footer>
                 <ConfirmInscriptionChangeButton
-                    isLoading={isTemplatesLoading}
+                    isLoading={isTemplatesLoading || isSubmitting}
                     variant="primary"
                     onClick={() =>
-                        updateStatus({
+                        submit({
                             remark,
                             emailTemplateId: selectedTemplateId,
                             shouldSendSms: false,
@@ -246,10 +267,10 @@ export const StatusUpdateModal = ({ closeModal, statusUpdateData, updateStatus }
                     Confirmer
                 </ConfirmInscriptionChangeButton>
                 <ConfirmInscriptionChangeButton
-                    isLoading={isTemplatesLoading}
+                    isLoading={isTemplatesLoading || isSubmitting}
                     variant={statusUpdateData.user.shouldReceiveSms ? 'success' : 'warning'}
                     onClick={() =>
-                        updateStatus({
+                        submit({
                             remark,
                             emailTemplateId: selectedTemplateId,
                             shouldSendSms: true,
