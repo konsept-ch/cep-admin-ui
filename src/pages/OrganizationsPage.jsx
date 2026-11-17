@@ -108,7 +108,6 @@ export function OrganizationsPage() {
                 headerName: "Titre de l'organisation",
                 filter: 'agTextColumnFilter',
                 headerTooltip: "Le nom de l'organisation",
-                hide: true,
             },
             {
                 field: 'code',
@@ -127,14 +126,12 @@ export function OrganizationsPage() {
                 headerName: 'Type',
                 filter: 'agSetColumnFilter',
                 headerTooltip: "Le type de l'organisation",
-                hide: true,
             },
             {
                 field: 'billingMode',
                 headerName: 'Mode de facturation',
                 filter: 'agSetColumnFilter',
                 headerTooltip: "Le mode de facturation de l'organisation",
-                hide: true,
             },
             {
                 field: 'dailyRate',
@@ -142,7 +139,6 @@ export function OrganizationsPage() {
                 filter: 'agNumberColumnFilter',
                 headerTooltip: "Si tarif journalier négocié pour l'ensemble des cours",
                 type: 'numericColumn',
-                hide: true,
             },
             {
                 field: 'clientNumber',
@@ -150,7 +146,6 @@ export function OrganizationsPage() {
                 filter: 'agNumberColumnFilter',
                 headerTooltip: 'Utilisé pour le numéro de facture',
                 type: 'numericColumn',
-                hide: true,
             },
             {
                 field: 'flyersCount',
@@ -158,7 +153,6 @@ export function OrganizationsPage() {
                 filter: 'agNumberColumnFilter',
                 headerTooltip: "Le nombre de flyers de l'organisation",
                 type: 'numericColumn',
-                hide: true,
             },
             {
                 field: 'fullAddress',
@@ -185,56 +179,48 @@ export function OrganizationsPage() {
                 headerName: 'Intitulé adresse',
                 filter: 'agTextColumnFilter',
                 headerTooltip: "L'intitulé adresse de l'organisation",
-                hide: true,
             },
             {
                 field: 'postalAddressCountry',
                 headerName: 'Pays',
                 filter: 'agSetColumnFilter',
                 headerTooltip: "Le pays de l'organisation",
-                hide: true,
             },
             {
                 field: 'postalAddressCountryCode',
                 headerName: 'Code pays',
                 filter: 'agSetColumnFilter',
                 headerTooltip: "Le code pays de l'organisation",
-                hide: true,
             },
             {
                 field: 'postalAddressCode',
                 headerName: 'Code postal',
                 filter: 'agSetColumnFilter',
                 headerTooltip: "Le code postal de l'organisation",
-                hide: true,
             },
             {
                 field: 'postalAddressStreet',
                 headerName: 'Rue et numéro',
                 filter: 'agTextColumnFilter',
                 headerTooltip: "La rue et numéro de l'organisation",
-                hide: true,
             },
             {
                 field: 'postalAddressDepartment',
                 headerName: 'Département',
                 filter: 'agTextColumnFilter',
                 headerTooltip: "Le département de l'organisation",
-                hide: true,
             },
             {
                 field: 'postalAddressDepartmentCode',
                 headerName: 'Code département',
                 filter: 'agTextColumnFilter',
                 headerTooltip: "Le code département de l'organisation",
-                hide: true,
             },
             {
                 field: 'postalAddressLocality',
                 headerName: 'Localité',
                 filter: 'agSetColumnFilter',
                 headerTooltip: "La localité de l'organisation",
-                hide: true,
             },
         ],
         []
