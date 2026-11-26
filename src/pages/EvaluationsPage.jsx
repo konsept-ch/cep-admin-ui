@@ -4,8 +4,7 @@ import { Helmet } from 'react-helmet-async'
 
 import { Grid, EvaluationModal } from '../components'
 import { useGetEvaluationsQuery } from '../services/evaluations'
-import { MIDDLEWARE_URL } from '../constants/config'
-import { gotoUrl, gridContextMenu } from '../utils'
+import { downloadFromMiddleware, gridContextMenu } from '../utils'
 
 export function EvaluationsPage() {
     const LEVEL_COURSE = 2
@@ -114,7 +113,10 @@ export function EvaluationsPage() {
                               {
                                   name: 'Exporter résultats',
                                   action: () =>
-                                      gotoUrl(new URL(`/evaluations/${node.data.uuid}/export`, MIDDLEWARE_URL).href),
+                                      downloadFromMiddleware(
+                                          `/evaluations/${node.data.uuid}/export`,
+                                          `evaluation-${node.data.uuid}.pdf`
+                                      ),
                               },
                               'separator',
                           ]
@@ -123,11 +125,9 @@ export function EvaluationsPage() {
                               {
                                   name: 'Exporter résultats du cours',
                                   action: () =>
-                                      gotoUrl(
-                                          new URL(
-                                              `/evaluations/${node.allLeafChildren[0].data.year}/${node.allLeafChildren[0].data.courseUuid}/export/`,
-                                              MIDDLEWARE_URL
-                                          ).href
+                                      downloadFromMiddleware(
+                                          `/evaluations/${node.allLeafChildren[0].data.year}/${node.allLeafChildren[0].data.courseUuid}/export/`,
+                                          `evaluations-${node.allLeafChildren[0].data.year}-${node.allLeafChildren[0].data.courseUuid}.pdf`
                                       ),
                               },
                               'separator',

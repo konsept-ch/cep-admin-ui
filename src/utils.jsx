@@ -303,3 +303,37 @@ export const gotoUrl = (url) => {
     a.click()
     a.remove()
 }
+
+/**
+ * Telecharge un fichier d'une route protegee du middleware. Une simple navigation (`gotoUrl`)
+ * n'envoie pas les en-tetes `x-login-*` : c'est pour cela que les exports d'evaluation etaient
+ * publics. Ici, la requete est authentifiee, puis le fichier est propose au telechargement.
+ */
+export const downloadFromMiddleware = async (path, fileName) => {
+    try {
+        const response = await fetch(new URL(path, MIDDLEWARE_URL).href, {
+            headers: {
+                'x-login-email-address': cookies.get('email'),
+                'x-login-email-code': cookies.get('code'),
+                'x-login-token': cookies.get('token'),
+            },
+            mode: 'cors',
+        })
+
+        if (!response.ok) {
+            toast.error(`Le téléchargement a échoué (${response.status}).`)
+
+            return
+        }
+
+        const url = URL.createObjectURL(await response.blob())
+        const a = document.createElement('a')
+        a.setAttribute('href', url)
+        a.setAttribute('download', fileName)
+        a.click()
+        a.remove()
+        setTimeout(() => URL.revokeObjectURL(url), 10000)
+    } catch (error) {
+        toast.error('Le téléchargement a échoué.')
+    }
+}
